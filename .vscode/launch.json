@@ -1,0 +1,12 @@
+{
+    "name": "Python: Run with debugpy (3.7)",
+    "type": "python",
+    "request": "launch",
+    "program": "${workspaceFolder}/experiments/dqn_syc_txw_1x1_4phases_evaluation.py",
+    "python": "D:/Anaconda/envs/work_sumo_rl/python.exe",
+    "justMyCode": false,
+    "console": "integratedTerminal",
+    "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+    }
+}

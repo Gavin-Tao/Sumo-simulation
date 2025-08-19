@@ -1,0 +1,132 @@
+Loading net ... done.
+Skipped until: 0.00
+Error: No connection between edge 't_w' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_3'.
+Error: The vehicle 'trip_3' has no valid route.
+Error: No connection between edge 't_n' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_4'.
+Error: The vehicle 'trip_4' has no valid route.
+Error: No connection between edge 'e_t' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_5'.
+Error: The vehicle 'trip_5' has no valid route.
+Error: No connection between edge 't_s' and edge 's_t' found.
+Error: Mandatory edge 's_t' not reachable by vehicle 'trip_6'.
+Error: The vehicle 'trip_6' has no valid route.
+Error: No connection between edge 't_n' and edge 't_e' found.
+Error: Mandatory edge 't_e' not reachable by vehicle 'trip_7'.
+Error: The vehicle 'trip_7' has no valid route.
+Error: No connection between edge 't_s' and edge 't_w' found.
+Error: Mandatory edge 't_w' not reachable by vehicle 'trip_8'.
+Error: The vehicle 'trip_8' has no valid route.
+Error: No connection between edge 'n_t' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_9'.
+Error: The vehicle 'trip_9' has no valid route.
+Error: No connection between edge 'e_t' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_11'.
+Error: The vehicle 'trip_11' has no valid route.
+Error: No connection between edge 't_s' and edge 't_n' found.
+Error: Mandatory edge 't_n' not reachable by vehicle 'trip_14'.
+Error: The vehicle 'trip_14' has no valid route.
+Error: No connection between edge 'n_t' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_15'.
+Error: The vehicle 'trip_15' has no valid route.
+Error: No connection between edge 'w_t' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_16'.
+Error: The vehicle 'trip_16' has no valid route.
+Error: No connection between edge 't_s' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_17'.
+Error: The vehicle 'trip_17' has no valid route.
+Error: No connection between edge 't_w' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_18'.
+Error: The vehicle 'trip_18' has no valid route.
+Error: No connection between edge 't_s' and edge 's_t' found.
+Error: Mandatory edge 's_t' not reachable by vehicle 'trip_19'.
+Error: The vehicle 'trip_19' has no valid route.
+Error: No connection between edge 't_w' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_21'.
+Error: The vehicle 'trip_21' has no valid route.
+Error: No connection between edge 't_w' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_22'.
+Error: The vehicle 'trip_22' has no valid route.
+Error: No connection between edge 't_n' and edge 't_s' found.
+Error: Mandatory edge 't_s' not reachable by vehicle 'trip_24'.
+Error: The vehicle 'trip_24' has no valid route.
+Error: No connection between edge 't_w' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_25'.
+Error: The vehicle 'trip_25' has no valid route.
+Error: No connection between edge 't_n' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_26'.
+Error: The vehicle 'trip_26' has no valid route.
+Error: No connection between edge 't_e' and edge 't_s' found.
+Error: Mandatory edge 't_s' not reachable by vehicle 'trip_29'.
+Error: The vehicle 'trip_29' has no valid route.
+Error: No connection between edge 't_w' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_30'.
+Error: The vehicle 'trip_30' has no valid route.
+Error: No connection between edge 't_e' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_32'.
+Error: The vehicle 'trip_32' has no valid route.
+Error: No connection between edge 't_e' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_33'.
+Error: The vehicle 'trip_33' has no valid route.
+Error: No connection between edge 'w_t' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_34'.
+Error: The vehicle 'trip_34' has no valid route.
+Error: No connection between edge 't_e' and edge 't_s' found.
+Error: Mandatory edge 't_s' not reachable by vehicle 'trip_35'.
+Error: The vehicle 'trip_35' has no valid route.
+Error: No connection between edge 't_e' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_36'.
+Error: The vehicle 'trip_36' has no valid route.
+Error: No connection between edge 't_s' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_37'.
+Error: The vehicle 'trip_37' has no valid route.
+Error: No connection between edge 't_n' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_38'.
+Error: The vehicle 'trip_38' has no valid route.
+Error: No connection between edge 't_s' and edge 't_w' found.
+Error: Mandatory edge 't_w' not reachable by vehicle 'trip_40'.
+Error: The vehicle 'trip_40' has no valid route.
+Error: No connection between edge 't_e' and edge 't_w' found.
+Error: Mandatory edge 't_w' not reachable by vehicle 'trip_41'.
+Error: The vehicle 'trip_41' has no valid route.
+Error: No connection between edge 't_w' and edge 't_s' found.
+Error: Mandatory edge 't_s' not reachable by vehicle 'trip_42'.
+Error: The vehicle 'trip_42' has no valid route.
+Error: No connection between edge 't_n' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_43'.
+Error: The vehicle 'trip_43' has no valid route.
+Error: No connection between edge 'e_t' and edge 't_e' found.
+Error: Mandatory edge 't_e' not reachable by vehicle 'trip_44'.
+Error: The vehicle 'trip_44' has no valid route.
+Error: No connection between edge 'w_t' and edge 't_w' found.
+Error: Mandatory edge 't_w' not reachable by vehicle 'trip_46'.
+Error: The vehicle 'trip_46' has no valid route.
+Error: No connection between edge 't_n' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_47'.
+Error: The vehicle 'trip_47' has no valid route.
+Error: No connection between edge 'w_t' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_48'.
+Error: The vehicle 'trip_48' has no valid route.
+Error: No connection between edge 't_w' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_49'.
+Error: The vehicle 'trip_49' has no valid route.
+Error: No connection between edge 't_e' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_50'.
+Error: The vehicle 'trip_50' has no valid route.
+Error: No connection between edge 'w_t' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_51'.
+Error: The vehicle 'trip_51' has no valid route.
+Error: No connection between edge 't_n' and edge 'n_t' found.
+Error: Mandatory edge 'n_t' not reachable by vehicle 'trip_52'.
+Error: The vehicle 'trip_52' has no valid route.
+Error: No connection between edge 't_n' and edge 'e_t' found.
+Error: Mandatory edge 'e_t' not reachable by vehicle 'trip_53'.
+Error: The vehicle 'trip_53' has no valid route.
+Error: No connection between edge 'e_t' and edge 'w_t' found.
+Error: Mandatory edge 'w_t' not reachable by vehicle 'trip_54'.
+Error: The vehicle 'trip_54' has no valid route.
+Routes found between time steps 0.00 and 201.60.
+DijkstraRouter answered 42 queries and explored 1.79 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Quitting (on error).

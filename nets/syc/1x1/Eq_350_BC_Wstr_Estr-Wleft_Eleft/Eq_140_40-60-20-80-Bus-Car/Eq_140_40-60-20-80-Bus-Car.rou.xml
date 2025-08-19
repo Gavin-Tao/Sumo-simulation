@@ -1,0 +1,46 @@
+<routes>
+    <!-- 1. 先定义车辆类型 -->
+    <vType id="car"   color="1,0,0"/>
+    <vType id="bus"   color="0,0,1"/>
+
+    <!-- 路径定义（不变） -->
+    <route id="route_ns" edges="n_t t_s"/>
+    <route id="route_nw" edges="n_t t_w"/>
+    <route id="route_ne" edges="n_t t_e"/>
+    <route id="route_we" edges="w_t t_e"/>
+    <route id="route_wn" edges="w_t t_n"/>
+    <route id="route_ws" edges="w_t t_s"/>
+    <route id="route_ew" edges="e_t t_w"/>
+    <route id="route_en" edges="e_t t_n"/>
+    <route id="route_es" edges="e_t t_s"/>
+    <route id="route_sn" edges="s_t t_n"/>
+    <route id="route_se" edges="s_t t_e"/>
+    <route id="route_sw" edges="s_t t_w"/>
+
+    <!-- 直行走廊（E↔W）：bus 56/h（40%），car 84/h -->
+    <flow id="flow_ew_car"  route="route_ew" begin="0" end="1000" vehsPerHour="84"  type="car"/>
+    <flow id="flow_ew_bus"  route="route_ew" begin="0" end="1000" vehsPerHour="56"  type="bus"/>
+
+    <flow id="flow_we_car"  route="route_we" begin="0" end="1000" vehsPerHour="84"  type="car"/>
+    <flow id="flow_we_bus"  route="route_we" begin="0" end="1000" vehsPerHour="56"  type="bus"/>
+
+    <!-- 稀有左转（右侧通行的左转）：es、wn：bus 28/h（20%），car 112/h -->
+    <flow id="flow_es_car"  route="route_es" begin="0" end="1000" vehsPerHour="112" type="car"/>
+    <flow id="flow_es_bus"  route="route_es" begin="0" end="1000" vehsPerHour="28"  type="bus"/>
+
+    <flow id="flow_wn_car"  route="route_wn" begin="0" end="1000" vehsPerHour="112" type="car"/>
+    <flow id="flow_wn_bus"  route="route_wn" begin="0" end="1000" vehsPerHour="28"  type="bus"/>
+
+    <!-- 其余方向：bus=0，car=140/h -->
+    <flow id="flow_en_car"  route="route_en" begin="0" end="1000" vehsPerHour="140" type="car"/>
+    <flow id="flow_ws_car"  route="route_ws" begin="0" end="1000" vehsPerHour="140" type="car"/>
+
+    <flow id="flow_ns_car"  route="route_ns" begin="0" end="1000" vehsPerHour="140" type="car"/>
+    <flow id="flow_sn_car"  route="route_sn" begin="0" end="1000" vehsPerHour="140" type="car"/>
+
+    <flow id="flow_ne_car"  route="route_ne" begin="0" end="1000" vehsPerHour="140" type="car"/>
+    <flow id="flow_sw_car"  route="route_sw" begin="0" end="1000" vehsPerHour="140" type="car"/>
+
+    <flow id="flow_nw_car"  route="route_nw" begin="0" end="1000" vehsPerHour="140" type="car"/>
+    <flow id="flow_se_car"  route="route_se" begin="0" end="1000" vehsPerHour="140" type="car"/>
+</routes>

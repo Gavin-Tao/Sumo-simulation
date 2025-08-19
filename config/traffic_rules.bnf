@@ -1,0 +1,45 @@
+<participant> ::= "Ambulance" | "Bus" | "Car" | "Truck"
+<task> ::= "on" | "off" | "N/A"
+<np> ::= "L" | "M" | "H" | "-" | "N/A"
+<location> ::= "Hospital" | "City Centre" | "Industrial" | "Parking" | "Residential" | "-"
+<time> ::= "Peak" | "non" | "-"
+<state> ::= "Normal" | "Maintenance" | "Full loaded" | "Half loaded" | "Empty loaded" | "-"
+<priority> ::= "1" | "2" | "3" | "4" | "5"
+
+<context> ::= <task>? <np>? <location>? <time>? <state>?
+
+<policy> ::= <participant> <context>? <priority>
+
+<policies> ::= <policy> | <policy> <policies>
+
+<policy1> ::= "Ambulance" <context: "on" "-" "-" "-" "-"> "1"
+<policy2> ::= "Ambulance" <context: "off" "-" "Hospital" "-" "-"> "2"
+<policy3> ::= "Ambulance" <context: "off" "-" "-" "-" "Maintenance"> "3"
+<policy4> ::= "Ambulance" <context: "off" "-" "-" "Peak" "Normal"> "3"
+<policy5> ::= "Ambulance" <context: "off" "-" "-" "non" "Normal"> "4"
+<policy6> ::= "Ambulance" <context: "-" "-" "-" "-" "-"> "5"
+
+<policy7> ::= "Bus" <context: "on" "H" "-" "-" "-"> "2"
+<policy8> ::= "Bus" <context: "on" "M" "-" "-" "-"> "3"
+<policy9> ::= "Bus" <context: "on" "L" "-" "-" "-"> "4"
+<policy10> ::= "Bus" <context: "on" "M" "City Centre" "-" "-"> "2"
+<policy11> ::= "Bus" <context: "on" "-" "-" "Peak" "-"> "3"
+<policy12> ::= "Bus" <context: "on" "-" "City Centre" "Peak" "-"> "2"
+<policy13> ::= "Bus" <context: "off" "N/A" "-" "non" "Normal"> "5"
+<policy14> ::= "Bus" <context: "off" "N/A" "Parking" "-" "-"> "4"
+<policy15> ::= "Bus" <context: "off" "N/A" "-" "Peak" "-"> "4"
+<policy16> ::= "Bus" <context: "off" "N/A" "-" "-" "Maintenance"> "4"
+<policy17> ::= "Bus" <context: "-" "-" "-" "-" "-"> "6"
+
+<policy18> ::= "Car" <context: "N/A" "L" "-" "non" "Normal"> "5"
+<policy19> ::= "Car" <context: "N/A" "L" "Residential" "-" "-"> "4"
+<policy20> ::= "Car" <context: "N/A" "L" "-" "-" "Maintenance"> "4"
+<policy21> ::= "Car" <context: "N/A" "L" "-" "Peak" "-"> "4"
+<policy22> ::= "Car" <context: "-" "-" "-" "-" "-"> "6"
+
+<policy23> ::= "Truck" <context: "on" "L" "-" "-" "Full loaded"> "2"
+<policy24> ::= "Truck" <context: "on" "L" "-" "-" "Half loaded"> "3"
+<policy25> ::= "Truck" <context: "on" "L" "-" "-" "Empty loaded"> "4"
+<policy26> ::= "Truck" <context: "off" "L" "-" "non" "Normal"> "5"
+<policy27> ::= "Truck" <context: "off" "L" "-" "Peak" "-"> "4"
+<policy28> ::= "Truck" <context: "-" "-" "-" "-" "-"> "6"
