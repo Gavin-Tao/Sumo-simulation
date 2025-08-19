@@ -1,0 +1,5 @@
+1. python 版本太低了3.7，vscode不支持
+ImportError: cannot import name 'Literal' from 'typing' (D:\Anaconda\envs\torch_gpu_sumo_rl_no\lib\typing.py)
+解决方案：
+（1）pip install typing_extensions
+（2）把File "c:\Users\30261\.vscode\extensions\ms-python.debugpy-2025.10.0-win32-x64\bundled\libs\debugpy\_vendored\pydevd\_pydevd_bundle\pydevd_plugin_utils.py", line 4, in <module> from typing import Tuple, Literal里的这一行替换为from typing_extensions import Tuple

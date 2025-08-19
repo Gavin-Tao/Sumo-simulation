@@ -1,0 +1,29 @@
+<configuration>
+
+<input>
+<net-file value="intersection.net.xml"/>
+<route-files value="intersection_heavy.rou.xml"/>
+<additional-files value="outputs.add.xml"/>
+</input>
+
+<time>
+<begin value="0"/>
+<end value="500"/>
+<step-length value="0.1" />
+</time>
+	<gui_only>
+		<start value="t"/>
+		<quit-on-end value="t"/>
+		<delay value="20" />
+	</gui_only>
+	
+	
+	
+	<output>
+		<tripinfo-output value="output/tripinfo.out.xml"/>
+		<fcd-output value="output/fcd_output.xml"/>
+		
+		<!--<fcd-output.geo value="true"/>>-->
+	</output>
+
+</configuration>

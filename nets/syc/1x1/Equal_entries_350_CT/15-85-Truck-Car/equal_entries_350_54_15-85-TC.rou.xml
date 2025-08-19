@@ -1,0 +1,109 @@
+<routes>
+    <!-- 1. 先定义车辆类型 -->
+    <vType id="car"
+           color="1,0,0"/>
+    <vType id="truck"
+           color="0,0,1"/>
+    <!-- 路径定义（不变） -->
+    <route id="route_ns" edges="n_t t_s"/>
+    <route id="route_nw" edges="n_t t_w"/>
+    <route id="route_ne" edges="n_t t_e"/>
+    <route id="route_we" edges="w_t t_e"/>
+    <route id="route_wn" edges="w_t t_n"/>
+    <route id="route_ws" edges="w_t t_s"/>
+    <route id="route_ew" edges="e_t t_w"/>
+    <route id="route_en" edges="e_t t_n"/>
+    <route id="route_es" edges="e_t t_s"/>
+    <route id="route_sn" edges="s_t t_n"/>
+    <route id="route_se" edges="s_t t_e"/>
+    <route id="route_sw" edges="s_t t_w"/>
+
+    <!-- NS 组：6 条路线，15% 货车、85% 私家车 -->
+    <!-- 350 veh/h × 15% = 52.5 truck, 297.5 car -->
+    <flow id="flow_ns_car"   route="route_ns" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_ns_truck" route="route_ns" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_nw_car"   route="route_nw" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_nw_truck" route="route_nw" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_ne_car"   route="route_ne" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_ne_truck" route="route_ne" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_sn_car"   route="route_sn" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_sn_truck" route="route_sn" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_sw_car"   route="route_sw" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_sw_truck" route="route_sw" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_se_car"   route="route_se" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_se_truck" route="route_se" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+        <!-- WE 组：6 条路线，15% 货车、85% 私家车 -->
+    <!-- 350 veh/h × 15% = 52.5 truck, 297.5 car -->
+    <flow id="flow_we_car"   route="route_we" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_we_truck" route="route_we" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_ew_car"   route="route_ew" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_ew_truck" route="route_ew" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_wn_car"   route="route_wn" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_wn_truck" route="route_wn" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_ws_car"   route="route_ws" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_ws_truck" route="route_ws" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_en_car"   route="route_en" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_en_truck" route="route_en" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+    <flow id="flow_es_car"   route="route_es" begin="0" end="1000" vehsPerHour="297.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="car"   priority="5"/>
+    <flow id="flow_es_truck" route="route_es" begin="0" end="1000" vehsPerHour="52.5"
+          departSpeed="max" departPos="base" departLane="best"
+          type="truck" priority="4"/>
+
+</routes>

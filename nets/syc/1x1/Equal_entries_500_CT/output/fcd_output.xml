@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-08-14 14:39:21 by Eclipse SUMO GUI Version 1.16.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="E:\txw\sumo-rl\nets\syc\1x1\Equal_entries_500_CT\syc_4phases.net.xml"/>
+        <route-files value="E:\txw\sumo-rl\nets\syc\1x1\Equal_entries_500_CT\equal_entries_500_54_15-85-TC.rou.xml"/>
+        <additional-files value="E:\txw\sumo-rl\nets\syc\1x1\Equal_entries_500_CT\1x1_outputs.add.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="E:\txw\sumo-rl\nets\syc\1x1\Equal_entries_500_CT\output/fcd_output.xml"/>
+        <tripinfo-output value="E:\txw\sumo-rl\nets\syc\1x1\Equal_entries_500_CT\output/tripinfo.out.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+    </time>
+
+</configuration>
+-->
+
+<fcd-export xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/fcd_file.xsd">
+</fcd-export>

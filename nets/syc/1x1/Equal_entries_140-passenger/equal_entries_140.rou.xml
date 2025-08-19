@@ -1,0 +1,14 @@
+<routes>
+    <vType id="family_car" vClass="passenger" personCapacity="5"/>
+    <vType id="bus" vClass="bus" personCapacity="30"/>
+
+    <!-- Defining routes based on the original flows -->
+    <route id="route_ns" edges="n_t t_s"/>
+    <route id="route_nw" edges="n_t t_w"/>
+    <route id="route_ne" edges="n_t t_e"/>
+
+    <!-- Defining vehicles assigned to these routes -->
+    <vehicle id="veh1" type="family_car" route="route_ns" depart="0" personNumber="4"/>
+    <vehicle id="veh2" type="bus" route="route_nw" depart="10" personNumber="14"/>
+    <vehicle id="veh3" type="family_car" route="route_ne" depart="20" personNumber="2"/>
+</routes>

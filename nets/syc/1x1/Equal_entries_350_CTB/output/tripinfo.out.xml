@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-06-23 18:27:41 by Eclipse SUMO libsumo Version 1.19.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/libsumoConfiguration.xsd">
+
+    <input>
+        <net-file value="./nets/syc/1x1/Equal_entries_350_bus/syc_4phases.net.xml"/>
+        <route-files value="./nets/syc/1x1/Equal_entries_350_bus/equal_entries_350_bus.rou.xml"/>
+        <additional-files value="./nets/syc/1x1/Equal_entries_350_bus/1x1_outputs.add.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="./nets/syc/1x1/Equal_entries_350_bus/output/fcd_output.xml"/>
+        <tripinfo-output value="./nets/syc/1x1/Equal_entries_350_bus/output/tripinfo.out.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+    </time>
+
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="1000"/>
+        <max-depart-delay value="-1"/>
+    </processing>
+
+    <random_number>
+        <seed value="0"/>
+    </random_number>
+
+</configuration>
+-->
+
+<tripinfos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tripinfo_file.xsd">

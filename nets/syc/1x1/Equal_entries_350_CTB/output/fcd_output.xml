@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-06-23 18:27:41 by Eclipse SUMO libsumo Version 1.19.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/libsumoConfiguration.xsd">
+
+    <input>
+        <net-file value="./nets/syc/1x1/Equal_entries_350_bus/syc_4phases.net.xml"/>
+        <route-files value="./nets/syc/1x1/Equal_entries_350_bus/equal_entries_350_bus.rou.xml"/>
+        <additional-files value="./nets/syc/1x1/Equal_entries_350_bus/1x1_outputs.add.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="./nets/syc/1x1/Equal_entries_350_bus/output/fcd_output.xml"/>
+        <tripinfo-output value="./nets/syc/1x1/Equal_entries_350_bus/output/tripinfo.out.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+    </time>
+
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="1000"/>
+        <max-depart-delay value="-1"/>
+    </processing>
+
+    <random_number>
+        <seed value="0"/>
+    </random_number>
+
+</configuration>
+-->
+
+<fcd-export xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/fcd_file.xsd">
+    <timestep time="0.00">
+        <vehicle id="flow_en_car.0" x="194.90" y="8.00" angle="270.00" type="car" speed="13.07" pos="5.10" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="194.90" y="1.60" angle="270.00" type="car" speed="14.17" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="194.90" y="4.80" angle="270.00" type="car" speed="14.46" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="194.90" angle="180.00" type="car" speed="12.27" pos="5.10" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="194.90" angle="180.00" type="car" speed="15.51" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="194.90" angle="180.00" type="car" speed="14.31" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-194.90" angle="0.00" type="car" speed="15.63" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-194.90" angle="0.00" type="car" speed="13.13" pos="5.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-194.90" angle="0.00" type="car" speed="14.64" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-194.90" y="-4.80" angle="90.00" type="car" speed="12.94" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-194.90" y="-1.60" angle="90.00" type="car" speed="15.38" pos="5.10" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-194.90" y="-8.00" angle="90.00" type="car" speed="12.30" pos="5.10" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="1.00">
+        <vehicle id="flow_en_car.0" x="182.03" y="8.00" angle="270.00" type="car" speed="12.87" pos="17.97" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="194.90" y="8.00" angle="270.00" type="truck" speed="10.37" pos="5.10" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="181.40" y="1.60" angle="270.00" type="car" speed="13.50" pos="18.60" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="194.90" y="1.60" angle="270.00" type="truck" speed="11.00" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="181.45" y="4.80" angle="270.00" type="car" speed="13.45" pos="18.55" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="194.90" y="4.80" angle="270.00" type="truck" speed="10.95" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="183.02" angle="180.00" type="car" speed="11.88" pos="16.98" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="194.90" angle="180.00" type="truck" speed="9.38" pos="5.10" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="179.68" angle="180.00" type="car" speed="15.22" pos="20.32" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="194.90" angle="180.00" type="truck" speed="13.29" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="181.70" angle="180.00" type="car" speed="13.20" pos="18.30" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="194.90" angle="180.00" type="truck" speed="10.70" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-180.11" angle="0.00" type="car" speed="14.79" pos="19.89" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-194.90" angle="0.00" type="truck" speed="12.72" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-181.90" angle="0.00" type="car" speed="13.00" pos="18.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-194.90" angle="0.00" type="truck" speed="10.50" pos="5.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-181.02" angle="0.00" type="car" speed="13.88" pos="18.98" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-194.90" angle="0.00" type="truck" speed="11.50" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-182.01" y="-4.80" angle="90.00" type="car" speed="12.89" pos="17.99" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-194.90" y="-4.80" angle="90.00" type="truck" speed="10.39" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-180.11" y="-1.60" angle="90.00" type="car" speed="14.79" pos="19.89" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-194.90" y="-1.60" angle="90.00" type="truck" speed="12.72" pos="5.10" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-182.93" y="-8.00" angle="90.00" type="car" speed="11.97" pos="17.07" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-194.90" y="-8.00" angle="90.00" type="truck" speed="9.47" pos="5.10" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="2.00">
+        <vehicle id="flow_en_bus.0" x="194.90" y="8.00" angle="270.00" type="bus" speed="5.86" pos="5.10" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="169.55" y="8.00" angle="270.00" type="car" speed="12.49" pos="30.45" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="185.50" y="8.00" angle="270.00" type="truck" speed="9.40" pos="14.50" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="194.90" y="1.60" angle="270.00" type="bus" speed="6.74" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="168.43" y="1.60" angle="270.00" type="car" speed="12.97" pos="31.57" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="184.90" y="1.60" angle="270.00" type="truck" speed="10.00" pos="15.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="194.90" y="4.80" angle="270.00" type="bus" speed="7.71" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="167.78" y="4.80" angle="270.00" type="car" speed="13.67" pos="32.22" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="184.26" y="4.80" angle="270.00" type="truck" speed="10.64" pos="15.74" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="170.99" angle="180.00" type="car" speed="12.03" pos="29.01" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="194.90" angle="180.00" type="car" speed="4.94" pos="5.10" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="186.21" angle="180.00" type="truck" speed="8.69" pos="13.79" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="164.60" angle="180.00" type="car" speed="15.08" pos="35.40" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="194.90" angle="180.00" type="car" speed="10.11" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="182.29" angle="180.00" type="truck" speed="12.61" pos="17.71" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="168.45" angle="180.00" type="car" speed="13.25" pos="31.55" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="194.90" angle="180.00" type="car" speed="7.46" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="184.43" angle="180.00" type="truck" speed="10.47" pos="15.57" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-164.58" angle="0.00" type="car" speed="15.53" pos="35.42" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-194.90" angle="0.00" type="car" speed="9.56" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-182.84" angle="0.00" type="truck" speed="12.06" pos="17.16" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-169.32" angle="0.00" type="car" speed="12.57" pos="30.68" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-194.90" angle="0.00" type="car" speed="6.02" pos="5.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-185.39" angle="0.00" type="truck" speed="9.51" pos="14.61" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-167.54" angle="0.00" type="car" speed="13.49" pos="32.46" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-194.90" angle="0.00" type="car" speed="7.25" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-184.56" angle="0.00" type="truck" speed="10.34" pos="15.44" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-194.90" y="-4.80" angle="90.00" type="bus" speed="5.82" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-169.32" y="-4.80" angle="90.00" type="car" speed="12.69" pos="30.68" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-185.52" y="-4.80" angle="90.00" type="truck" speed="9.38" pos="14.48" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-194.90" y="-1.60" angle="90.00" type="bus" speed="9.82" pos="5.10" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-165.31" y="-1.60" angle="90.00" type="car" speed="14.80" pos="34.69" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-182.58" y="-1.60" angle="90.00" type="truck" speed="12.32" pos="17.42" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-194.90" y="-8.00" angle="90.00" type="bus" speed="5.14" pos="5.10" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-171.53" y="-8.00" angle="90.00" type="car" speed="11.40" pos="28.47" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-186.01" y="-8.00" angle="90.00" type="truck" speed="8.89" pos="13.99" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="3.00">
+        <vehicle id="flow_en_bus.0" x="189.16" y="8.00" angle="270.00" type="bus" speed="5.74" pos="10.84" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="157.61" y="8.00" angle="270.00" type="car" speed="11.93" pos="42.39" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="174.70" y="8.00" angle="270.00" type="truck" speed="10.80" pos="25.30" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="188.63" y="1.60" angle="270.00" type="bus" speed="6.27" pos="11.37" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="155.12" y="1.60" angle="270.00" type="car" speed="13.31" pos="44.88" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="174.40" y="1.60" angle="270.00" type="truck" speed="10.51" pos="25.60" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="188.35" y="4.80" angle="270.00" type="bus" speed="6.55" pos="11.65" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="154.44" y="4.80" angle="270.00" type="car" speed="13.34" pos="45.56" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="173.17" y="4.80" angle="270.00" type="truck" speed="11.09" pos="26.83" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="159.82" angle="180.00" type="car" speed="11.17" pos="40.18" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="191.11" angle="180.00" type="car" speed="3.79" pos="8.89" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="175.86" angle="180.00" type="truck" speed="10.34" pos="24.14" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="149.17" angle="180.00" type="car" speed="15.43" pos="50.83" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="185.20" angle="180.00" type="car" speed="9.70" pos="14.80" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="194.90" angle="180.00" type="car" speed="6.31" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="169.15" angle="180.00" type="truck" speed="13.14" pos="30.85" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="154.91" angle="180.00" type="car" speed="13.54" pos="45.09" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="187.59" angle="180.00" type="car" speed="7.31" pos="12.41" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="172.84" angle="180.00" type="truck" speed="11.59" pos="27.16" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-149.51" angle="0.00" type="car" speed="15.07" pos="50.49" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-185.66" angle="0.00" type="car" speed="9.24" pos="14.34" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-194.90" angle="0.00" type="car" speed="5.61" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-170.86" angle="0.00" type="truck" speed="11.99" pos="29.14" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-156.73" angle="0.00" type="car" speed="12.60" pos="43.27" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-189.81" angle="0.00" type="car" speed="5.09" pos="10.19" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-175.09" angle="0.00" type="truck" speed="10.30" pos="24.91" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-154.13" angle="0.00" type="car" speed="13.40" pos="45.87" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-188.89" angle="0.00" type="car" speed="6.01" pos="11.11" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-173.56" angle="0.00" type="truck" speed="11.01" pos="26.44" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-189.62" y="-4.80" angle="90.00" type="bus" speed="5.28" pos="10.38" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-156.92" y="-4.80" angle="90.00" type="car" speed="12.39" pos="43.08" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-174.28" y="-4.80" angle="90.00" type="truck" speed="11.24" pos="25.72" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-185.40" y="-1.60" angle="90.00" type="bus" speed="9.50" pos="14.60" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-150.81" y="-1.60" angle="90.00" type="car" speed="14.51" pos="49.19" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-194.90" y="-1.60" angle="90.00" type="car" speed="6.00" pos="5.10" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-169.85" y="-1.60" angle="90.00" type="truck" speed="12.74" pos="30.15" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-190.96" y="-8.00" angle="90.00" type="bus" speed="3.94" pos="9.04" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-160.10" y="-8.00" angle="90.00" type="car" speed="11.43" pos="39.90" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-176.62" y="-8.00" angle="90.00" type="truck" speed="9.39" pos="23.38" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="4.00">
+        <vehicle id="flow_en_bus.0" x="180.83" y="8.00" angle="270.00" type="bus" speed="8.33" pos="19.17" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="145.24" y="8.00" angle="270.00" type="car" speed="12.37" pos="54.76" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.1" x="194.90" y="8.00" angle="270.00" type="car" speed="7.45" pos="5.10" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="164.49" y="8.00" angle="270.00" type="truck" speed="10.21" pos="35.51" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="180.17" y="1.60" angle="270.00" type="bus" speed="8.46" pos="19.83" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="140.96" y="1.60" angle="270.00" type="car" speed="14.16" pos="59.04" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.1" x="194.90" y="1.60" angle="270.00" type="car" speed="7.85" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="161.79" y="1.60" angle="270.00" type="truck" speed="12.61" pos="38.21" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="180.47" y="4.80" angle="270.00" type="bus" speed="7.88" pos="19.53" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="141.24" y="4.80" angle="270.00" type="car" speed="13.20" pos="58.76" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.1" x="194.90" y="4.80" angle="270.00" type="car" speed="7.41" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="160.76" y="4.80" angle="270.00" type="truck" speed="12.40" pos="39.24" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="147.64" angle="180.00" type="car" speed="12.18" pos="52.36" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="185.75" angle="180.00" type="car" speed="5.36" pos="14.25" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.2" x="-1.60" y="194.90" angle="180.00" type="car" speed="2.51" pos="5.10" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="166.62" angle="180.00" type="truck" speed="9.24" pos="33.38" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="133.72" angle="180.00" type="car" speed="15.45" pos="66.28" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="174.06" angle="180.00" type="car" speed="11.14" pos="25.94" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="189.51" angle="180.00" type="car" speed="5.39" pos="10.49" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="154.77" angle="180.00" type="truck" speed="14.38" pos="45.23" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="141.07" angle="180.00" type="car" speed="13.84" pos="58.93" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="178.04" angle="180.00" type="car" speed="9.55" pos="21.96" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.2" x="-8.00" y="194.90" angle="180.00" type="car" speed="9.49" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="161.39" angle="180.00" type="truck" speed="11.45" pos="38.61" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-134.11" angle="0.00" type="car" speed="15.40" pos="65.89" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-176.34" angle="0.00" type="car" speed="9.32" pos="23.66" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-189.55" angle="0.00" type="car" speed="5.35" pos="10.45" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-158.91" angle="0.00" type="truck" speed="11.95" pos="41.09" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-143.78" angle="0.00" type="car" speed="12.95" pos="56.22" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-182.55" angle="0.00" type="car" speed="7.26" pos="17.45" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.2" x="4.80" y="-194.90" angle="0.00" type="car" speed="6.06" pos="5.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-164.81" angle="0.00" type="truck" speed="10.28" pos="35.19" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-140.55" angle="0.00" type="car" speed="13.58" pos="59.45" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-180.32" angle="0.00" type="car" speed="8.57" pos="19.68" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.2" x="1.60" y="-194.90" angle="0.00" type="car" speed="7.82" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-161.46" angle="0.00" type="truck" speed="12.10" pos="38.54" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-181.77" y="-4.80" angle="90.00" type="bus" speed="7.86" pos="18.23" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-144.80" y="-4.80" angle="90.00" type="car" speed="12.12" pos="55.20" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.1" x="-194.90" y="-4.80" angle="90.00" type="car" speed="6.74" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-163.31" y="-4.80" angle="90.00" type="truck" speed="10.97" pos="36.69" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-175.29" y="-1.60" angle="90.00" type="bus" speed="10.11" pos="24.71" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-135.78" y="-1.60" angle="90.00" type="car" speed="15.02" pos="64.22" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-189.81" y="-1.60" angle="90.00" type="car" speed="5.09" pos="10.19" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-156.85" y="-1.60" angle="90.00" type="truck" speed="13.00" pos="43.15" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-185.55" y="-8.00" angle="90.00" type="bus" speed="5.41" pos="14.45" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-148.14" y="-8.00" angle="90.00" type="car" speed="11.96" pos="51.86" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.1" x="-194.90" y="-8.00" angle="90.00" type="car" speed="2.76" pos="5.10" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-166.14" y="-8.00" angle="90.00" type="truck" speed="10.48" pos="33.86" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="5.00">
+        <vehicle id="flow_en_bus.0" x="171.12" y="8.00" angle="270.00" type="bus" speed="9.71" pos="28.88" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="132.63" y="8.00" angle="270.00" type="car" speed="12.61" pos="67.37" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.1" x="188.62" y="8.00" angle="270.00" type="car" speed="6.28" pos="11.38" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="153.52" y="8.00" angle="270.00" type="truck" speed="10.97" pos="46.48" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="169.39" y="1.60" angle="270.00" type="bus" speed="10.78" pos="30.61" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="127.05" y="1.60" angle="270.00" type="car" speed="13.91" pos="72.95" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.1" x="187.72" y="1.60" angle="270.00" type="car" speed="7.18" pos="12.28" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="149.08" y="1.60" angle="270.00" type="truck" speed="12.71" pos="50.92" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="171.39" y="4.80" angle="270.00" type="bus" speed="9.08" pos="28.61" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="127.76" y="4.80" angle="270.00" type="car" speed="13.47" pos="72.24" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.1" x="188.29" y="4.80" angle="270.00" type="car" speed="6.61" pos="11.71" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="148.54" y="4.80" angle="270.00" type="truck" speed="12.22" pos="51.46" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="135.91" angle="180.00" type="car" speed="11.73" pos="64.09" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="177.92" angle="180.00" type="car" speed="7.83" pos="22.08" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.2" x="-1.60" y="193.19" angle="180.00" type="car" speed="1.71" pos="6.81" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="155.63" angle="180.00" type="truck" speed="10.99" pos="44.37" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="118.51" angle="180.00" type="car" speed="15.22" pos="81.49" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="161.22" angle="180.00" type="car" speed="12.84" pos="38.78" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="182.37" angle="180.00" type="car" speed="7.14" pos="17.63" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.3" x="-4.80" y="194.90" angle="180.00" type="car" speed="6.09" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="140.41" angle="180.00" type="truck" speed="14.36" pos="59.59" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="127.97" angle="180.00" type="car" speed="13.10" pos="72.03" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="167.39" angle="180.00" type="car" speed="10.65" pos="32.61" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.2" x="-8.00" y="185.81" angle="180.00" type="car" speed="9.09" pos="14.19" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.3" x="-8.00" y="194.90" angle="180.00" type="car" speed="5.39" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="148.50" angle="180.00" type="truck" speed="12.89" pos="51.50" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-119.45" angle="0.00" type="car" speed="14.66" pos="80.55" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-165.93" angle="0.00" type="car" speed="10.41" pos="34.07" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-182.44" angle="0.00" type="car" speed="7.12" pos="17.56" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.3" x="8.00" y="-194.90" angle="0.00" type="car" speed="6.04" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-145.80" angle="0.00" type="truck" speed="13.11" pos="54.20" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-131.52" angle="0.00" type="car" speed="12.25" pos="68.48" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-172.74" angle="0.00" type="car" speed="9.81" pos="27.26" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.2" x="4.80" y="-189.72" angle="0.00" type="car" speed="5.18" pos="10.28" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-154.30" angle="0.00" type="truck" speed="10.51" pos="45.70" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-126.74" angle="0.00" type="car" speed="13.81" pos="73.26" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-170.39" angle="0.00" type="car" speed="9.93" pos="29.61" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.2" x="1.60" y="-187.57" angle="0.00" type="car" speed="7.33" pos="12.43" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-148.82" angle="0.00" type="truck" speed="12.64" pos="51.18" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-172.30" y="-4.80" angle="90.00" type="bus" speed="9.47" pos="27.70" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-131.99" y="-4.80" angle="90.00" type="car" speed="12.81" pos="68.01" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.1" x="-188.71" y="-4.80" angle="90.00" type="car" speed="6.19" pos="11.29" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-152.78" y="-4.80" angle="90.00" type="truck" speed="10.53" pos="47.22" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-163.79" y="-1.60" angle="90.00" type="bus" speed="11.50" pos="36.21" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-120.54" y="-1.60" angle="90.00" type="car" speed="15.24" pos="79.46" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-182.91" y="-1.60" angle="90.00" type="car" speed="6.90" pos="17.09" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.2" x="-194.90" y="-1.60" angle="90.00" type="car" speed="5.70" pos="5.10" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-144.48" y="-1.60" angle="90.00" type="truck" speed="12.37" pos="55.52" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-178.34" y="-8.00" angle="90.00" type="bus" speed="7.21" pos="21.66" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-136.82" y="-8.00" angle="90.00" type="car" speed="11.32" pos="63.18" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.1" x="-192.17" y="-8.00" angle="90.00" type="car" speed="2.73" pos="7.83" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-154.91" y="-8.00" angle="90.00" type="truck" speed="11.23" pos="45.09" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="6.00">
+        <vehicle id="flow_en_bus.0" x="160.55" y="8.00" angle="270.00" type="bus" speed="10.57" pos="39.45" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="119.94" y="8.00" angle="270.00" type="car" speed="12.68" pos="80.06" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.1" x="180.99" y="8.00" angle="270.00" type="car" speed="7.63" pos="19.01" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.2" x="194.90" y="8.00" angle="270.00" type="car" speed="7.02" pos="5.10" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="140.69" y="8.00" angle="270.00" type="truck" speed="12.83" pos="59.31" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="157.12" y="1.60" angle="270.00" type="bus" speed="12.27" pos="42.88" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="113.30" y="1.60" angle="270.00" type="car" speed="13.75" pos="86.70" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.1" x="178.64" y="1.60" angle="270.00" type="car" speed="9.08" pos="21.36" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.2" x="194.90" y="1.60" angle="270.00" type="car" speed="8.96" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="135.43" y="1.60" angle="270.00" type="truck" speed="13.65" pos="64.57" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="162.36" y="4.80" angle="270.00" type="bus" speed="9.03" pos="37.64" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="114.09" y="4.80" angle="270.00" type="car" speed="13.67" pos="85.91" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.1" x="179.93" y="4.80" angle="270.00" type="car" speed="8.35" pos="20.07" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.2" x="194.90" y="4.80" angle="270.00" type="car" speed="7.91" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="136.14" y="4.80" angle="270.00" type="truck" speed="12.40" pos="63.86" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="123.93" angle="180.00" type="car" speed="11.98" pos="76.07" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="168.31" angle="180.00" type="car" speed="9.61" pos="31.69" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.2" x="-1.60" y="188.93" angle="180.00" type="car" speed="4.26" pos="11.07" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="144.48" angle="180.00" type="truck" speed="11.15" pos="55.52" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="103.22" angle="180.00" type="car" speed="15.29" pos="96.78" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="147.21" angle="180.00" type="car" speed="14.01" pos="52.79" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="173.72" angle="180.00" type="car" speed="8.64" pos="26.28" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.3" x="-4.80" y="190.04" angle="180.00" type="car" speed="4.86" pos="9.96" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="126.97" angle="180.00" type="truck" speed="13.44" pos="73.03" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="114.73" angle="180.00" type="car" speed="13.24" pos="85.27" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="156.62" angle="180.00" type="car" speed="10.77" pos="43.38" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.2" x="-8.00" y="175.21" angle="180.00" type="car" speed="10.59" pos="24.79" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.3" x="-8.00" y="189.79" angle="180.00" type="car" speed="5.11" pos="10.21" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="135.82" angle="180.00" type="truck" speed="12.68" pos="64.18" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-105.10" angle="0.00" type="car" speed="14.35" pos="94.90" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-153.92" angle="0.00" type="car" speed="12.02" pos="46.08" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-173.82" angle="0.00" type="car" speed="8.61" pos="26.18" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.3" x="8.00" y="-188.90" angle="0.00" type="car" speed="6.00" pos="11.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-133.41" angle="0.00" type="truck" speed="12.39" pos="66.59" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-118.54" angle="0.00" type="car" speed="12.98" pos="81.46" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-162.10" angle="0.00" type="car" speed="10.64" pos="37.90" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.2" x="4.80" y="-183.21" angle="0.00" type="car" speed="6.51" pos="16.79" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.3" x="4.80" y="-194.90" angle="0.00" type="car" speed="5.35" pos="5.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-144.73" angle="0.00" type="truck" speed="9.57" pos="55.27" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-112.98" angle="0.00" type="car" speed="13.77" pos="87.02" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-157.91" angle="0.00" type="car" speed="12.48" pos="42.09" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.2" x="1.60" y="-178.58" angle="0.00" type="car" speed="8.99" pos="21.42" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.3" x="1.60" y="-194.90" angle="0.00" type="car" speed="8.91" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-135.49" angle="0.00" type="truck" speed="13.33" pos="64.51" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-161.80" y="-4.80" angle="90.00" type="bus" speed="10.50" pos="38.20" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-119.49" y="-4.80" angle="90.00" type="car" speed="12.50" pos="80.51" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.1" x="-180.17" y="-4.80" angle="90.00" type="car" speed="8.54" pos="19.83" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.2" x="-194.90" y="-4.80" angle="90.00" type="car" speed="7.89" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-140.14" y="-4.80" angle="90.00" type="truck" speed="12.64" pos="59.86" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-152.50" y="-1.60" angle="90.00" type="bus" speed="11.29" pos="47.50" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-105.52" y="-1.60" angle="90.00" type="car" speed="15.02" pos="94.48" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-174.53" y="-1.60" angle="90.00" type="car" speed="8.37" pos="25.47" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.2" x="-190.08" y="-1.60" angle="90.00" type="car" speed="4.82" pos="9.92" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-131.81" y="-1.60" angle="90.00" type="truck" speed="12.67" pos="68.19" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-169.67" y="-8.00" angle="90.00" type="bus" speed="8.67" pos="30.33" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-125.63" y="-8.00" angle="90.00" type="car" speed="11.19" pos="74.37" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.1" x="-187.72" y="-8.00" angle="90.00" type="car" speed="4.45" pos="12.28" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-145.07" y="-8.00" angle="90.00" type="truck" speed="9.84" pos="54.93" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="7.00">
+        <vehicle id="flow_en_bus.0" x="148.36" y="8.00" angle="270.00" type="bus" speed="12.19" pos="51.64" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="107.82" y="8.00" angle="270.00" type="car" speed="12.12" pos="92.18" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.1" x="171.13" y="8.00" angle="270.00" type="car" speed="9.86" pos="28.87" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.2" x="188.76" y="8.00" angle="270.00" type="car" speed="6.14" pos="11.24" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="128.00" y="8.00" angle="270.00" type="truck" speed="12.69" pos="72.00" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="144.23" y="1.60" angle="270.00" type="bus" speed="12.90" pos="55.77" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="99.83" y="1.60" angle="270.00" type="car" speed="13.47" pos="100.17" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.1" x="168.01" y="1.60" angle="270.00" type="car" speed="10.63" pos="31.99" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.2" x="186.64" y="1.60" angle="270.00" type="car" speed="8.26" pos="13.36" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.3" x="194.90" y="1.60" angle="270.00" type="car" speed="4.51" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="121.75" y="1.60" angle="270.00" type="truck" speed="13.69" pos="78.25" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="152.74" y="4.80" angle="270.00" type="bus" speed="9.62" pos="47.26" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="100.14" y="4.80" angle="270.00" type="car" speed="13.96" pos="99.86" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.1" x="170.60" y="4.80" angle="270.00" type="car" speed="9.33" pos="29.40" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.2" x="187.85" y="4.80" angle="270.00" type="car" speed="7.05" pos="12.15" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="123.19" y="4.80" angle="270.00" type="truck" speed="12.95" pos="76.81" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="112.78" angle="180.00" type="car" speed="11.15" pos="87.22" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="156.15" angle="180.00" type="car" speed="12.16" pos="43.85" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.2" x="-1.60" y="183.29" angle="180.00" type="car" speed="5.63" pos="16.71" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.3" x="-1.60" y="194.90" angle="180.00" type="car" speed="4.87" pos="5.10" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="132.61" angle="180.00" type="truck" speed="11.87" pos="67.39" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="88.60" angle="180.00" type="car" speed="14.61" pos="111.40" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="134.23" angle="180.00" type="car" speed="12.98" pos="65.77" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="162.58" angle="180.00" type="car" speed="11.14" pos="37.42" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.3" x="-4.80" y="183.35" angle="180.00" type="car" speed="6.69" pos="16.65" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.4" x="-4.80" y="194.90" angle="180.00" type="car" speed="5.37" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="113.14" angle="180.00" type="truck" speed="13.83" pos="86.86" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="100.75" angle="180.00" type="car" speed="13.98" pos="99.25" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="146.11" angle="180.00" type="car" speed="10.51" pos="53.89" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.2" x="-8.00" y="164.38" angle="180.00" type="car" speed="10.84" pos="35.62" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.3" x="-8.00" y="182.42" angle="180.00" type="car" speed="7.37" pos="17.58" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.4" x="-8.00" y="194.90" angle="180.00" type="car" speed="6.17" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="123.60" angle="180.00" type="truck" speed="12.22" pos="76.40" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-90.74" angle="0.00" type="car" speed="14.36" pos="109.26" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-141.99" angle="0.00" type="car" speed="11.93" pos="58.01" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-163.71" angle="0.00" type="car" speed="10.11" pos="36.29" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.3" x="8.00" y="-181.53" angle="0.00" type="car" speed="7.37" pos="18.47" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.4" x="8.00" y="-194.90" angle="0.00" type="car" speed="6.62" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-121.11" angle="0.00" type="truck" speed="12.30" pos="78.89" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-106.69" angle="0.00" type="car" speed="11.86" pos="93.31" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-153.21" angle="0.00" type="car" speed="8.88" pos="46.79" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.2" x="4.80" y="-174.39" angle="0.00" type="car" speed="8.82" pos="25.61" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.3" x="4.80" y="-190.66" angle="0.00" type="car" speed="4.24" pos="9.34" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-134.94" angle="0.00" type="truck" speed="9.79" pos="65.06" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-99.43" angle="0.00" type="car" speed="13.55" pos="100.57" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-145.84" angle="0.00" type="car" speed="12.06" pos="54.16" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.2" x="1.60" y="-167.34" angle="0.00" type="car" speed="11.24" pos="32.66" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.3" x="1.60" y="-187.01" angle="0.00" type="car" speed="7.89" pos="12.99" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.4" x="1.60" y="-194.90" angle="0.00" type="car" speed="3.78" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-121.67" angle="0.00" type="truck" speed="13.83" pos="78.33" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-149.68" y="-4.80" angle="90.00" type="bus" speed="12.12" pos="50.32" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-107.59" y="-4.80" angle="90.00" type="car" speed="11.89" pos="92.41" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.1" x="-169.56" y="-4.80" angle="90.00" type="car" speed="10.60" pos="30.44" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.2" x="-187.98" y="-4.80" angle="90.00" type="car" speed="6.92" pos="12.02" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-127.96" y="-4.80" angle="90.00" type="truck" speed="12.18" pos="72.04" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-140.67" y="-1.60" angle="90.00" type="bus" speed="11.83" pos="59.33" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-91.43" y="-1.60" angle="90.00" type="car" speed="14.09" pos="108.57" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-163.61" y="-1.60" angle="90.00" type="car" speed="10.92" pos="36.39" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.2" x="-182.92" y="-1.60" angle="90.00" type="car" speed="7.17" pos="17.08" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.3" x="-194.90" y="-1.60" angle="90.00" type="car" speed="5.83" pos="5.10" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-119.81" y="-1.60" angle="90.00" type="truck" speed="12.00" pos="80.19" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-160.32" y="-8.00" angle="90.00" type="bus" speed="9.35" pos="39.68" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-113.37" y="-8.00" angle="90.00" type="car" speed="12.26" pos="86.63" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.1" x="-181.92" y="-8.00" angle="90.00" type="car" speed="5.79" pos="18.08" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.2" x="-194.90" y="-8.00" angle="90.00" type="car" speed="5.64" pos="5.10" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-134.26" y="-8.00" angle="90.00" type="truck" speed="10.81" pos="65.74" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="8.00">
+        <vehicle id="flow_en_bus.0" x="136.84" y="8.00" angle="270.00" type="bus" speed="11.52" pos="63.16" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="95.54" y="8.00" angle="270.00" type="car" speed="12.28" pos="104.46" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.1" x="159.29" y="8.00" angle="270.00" type="car" speed="11.84" pos="40.71" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.2" x="181.13" y="8.00" angle="270.00" type="car" speed="7.63" pos="18.87" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.3" x="194.90" y="8.00" angle="270.00" type="car" speed="6.95" pos="5.10" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="116.97" y="8.00" angle="270.00" type="truck" speed="11.03" pos="83.03" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="130.92" y="1.60" angle="270.00" type="bus" speed="13.31" pos="69.08" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="86.10" y="1.60" angle="270.00" type="car" speed="13.72" pos="113.90" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.1" x="156.04" y="1.60" angle="270.00" type="car" speed="11.97" pos="43.96" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.2" x="175.85" y="1.60" angle="270.00" type="car" speed="10.79" pos="24.15" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.3" x="190.58" y="1.60" angle="270.00" type="car" speed="4.32" pos="9.42" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="108.35" y="1.60" angle="270.00" type="truck" speed="13.39" pos="91.65" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="142.76" y="4.80" angle="270.00" type="bus" speed="9.98" pos="57.24" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="86.07" y="4.80" angle="270.00" type="car" speed="14.07" pos="113.93" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.1" x="161.68" y="4.80" angle="270.00" type="car" speed="8.93" pos="38.32" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.2" x="179.50" y="4.80" angle="270.00" type="car" speed="8.35" pos="20.50" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.3" x="194.90" y="4.80" angle="270.00" type="car" speed="8.13" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="110.01" y="4.80" angle="270.00" type="truck" speed="13.18" pos="89.99" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="101.48" angle="180.00" type="car" speed="11.30" pos="98.52" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="143.63" angle="180.00" type="car" speed="12.52" pos="56.37" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.2" x="-1.60" y="176.18" angle="180.00" type="car" speed="7.11" pos="23.82" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.3" x="-1.60" y="190.08" angle="180.00" type="car" speed="4.82" pos="9.92" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="121.14" angle="180.00" type="truck" speed="11.46" pos="78.86" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="74.04" angle="180.00" type="car" speed="14.57" pos="125.96" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="120.67" angle="180.00" type="car" speed="13.56" pos="79.33" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="149.79" angle="180.00" type="car" speed="12.80" pos="50.21" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.3" x="-4.80" y="174.38" angle="180.00" type="car" speed="8.96" pos="25.62" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.4" x="-4.80" y="189.99" angle="180.00" type="car" speed="4.91" pos="10.01" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="99.31" angle="180.00" type="truck" speed="13.83" pos="100.69" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="87.10" angle="180.00" type="car" speed="13.65" pos="112.90" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="135.12" angle="180.00" type="car" speed="10.99" pos="64.88" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.2" x="-8.00" y="154.91" angle="180.00" type="car" speed="9.47" pos="45.09" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.3" x="-8.00" y="174.19" angle="180.00" type="car" speed="8.23" pos="25.81" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.4" x="-8.00" y="189.78" angle="180.00" type="car" speed="5.12" pos="10.22" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="110.43" angle="180.00" type="truck" speed="13.17" pos="89.57" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-76.07" angle="0.00" type="car" speed="14.68" pos="123.93" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-129.66" angle="0.00" type="car" speed="12.32" pos="70.34" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-151.39" angle="0.00" type="car" speed="12.32" pos="48.61" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.3" x="8.00" y="-171.70" angle="0.00" type="car" speed="9.83" pos="28.30" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.4" x="8.00" y="-189.10" angle="0.00" type="car" speed="5.80" pos="10.90" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-108.75" angle="0.00" type="truck" speed="12.35" pos="91.25" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-94.27" angle="0.00" type="car" speed="12.42" pos="105.73" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-143.80" angle="0.00" type="car" speed="9.41" pos="56.20" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.2" x="4.80" y="-163.93" angle="0.00" type="car" speed="10.45" pos="36.07" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.3" x="4.80" y="-184.12" angle="0.00" type="car" speed="6.54" pos="15.88" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.4" x="4.80" y="-194.90" angle="0.00" type="car" speed="4.91" pos="5.10" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-125.03" angle="0.00" type="truck" speed="9.91" pos="74.97" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-85.72" angle="0.00" type="car" speed="13.71" pos="114.28" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-133.73" angle="0.00" type="car" speed="12.11" pos="66.27" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.2" x="1.60" y="-156.28" angle="0.00" type="car" speed="11.06" pos="43.72" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.3" x="1.60" y="-177.62" angle="0.00" type="car" speed="9.39" pos="22.38" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.4" x="1.60" y="-192.24" angle="0.00" type="car" speed="2.66" pos="7.76" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-108.78" angle="0.00" type="truck" speed="12.89" pos="91.22" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-137.95" y="-4.80" angle="90.00" type="bus" speed="11.73" pos="62.05" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-95.49" y="-4.80" angle="90.00" type="car" speed="12.10" pos="104.51" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.1" x="-158.49" y="-4.80" angle="90.00" type="car" speed="11.07" pos="41.51" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.2" x="-179.26" y="-4.80" angle="90.00" type="car" speed="8.72" pos="20.74" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.3" x="-194.90" y="-4.80" angle="90.00" type="car" speed="8.43" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-116.85" y="-4.80" angle="90.00" type="truck" speed="11.11" pos="83.15" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-128.49" y="-1.60" angle="90.00" type="bus" speed="12.18" pos="71.51" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-77.23" y="-1.60" angle="90.00" type="car" speed="14.20" pos="122.77" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-153.01" y="-1.60" angle="90.00" type="car" speed="10.61" pos="46.99" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.2" x="-173.54" y="-1.60" angle="90.00" type="car" speed="9.37" pos="26.46" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.3" x="-190.00" y="-1.60" angle="90.00" type="car" speed="4.90" pos="10.00" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_truck.0" x="-108.03" y="-1.60" angle="90.00" type="truck" speed="11.78" pos="91.97" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_ws_bus.0" x="-151.17" y="-8.00" angle="90.00" type="bus" speed="9.16" pos="48.83" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.0" x="-101.36" y="-8.00" angle="90.00" type="car" speed="12.01" pos="98.64" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.1" x="-173.63" y="-8.00" angle="90.00" type="car" speed="8.29" pos="26.37" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_car.2" x="-189.87" y="-8.00" angle="90.00" type="car" speed="5.03" pos="10.13" lane="w_t_0" slope="0.00"/>
+        <vehicle id="flow_ws_truck.0" x="-122.13" y="-8.00" angle="90.00" type="truck" speed="12.13" pos="77.87" lane="w_t_0" slope="0.00"/>
+    </timestep>
+    <timestep time="9.00">
+        <vehicle id="flow_en_bus.0" x="125.61" y="8.00" angle="270.00" type="bus" speed="11.23" pos="74.39" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.0" x="83.66" y="8.00" angle="270.00" type="car" speed="11.88" pos="116.34" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.1" x="147.30" y="8.00" angle="270.00" type="car" speed="11.99" pos="52.70" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.2" x="171.09" y="8.00" angle="270.00" type="car" speed="10.04" pos="28.91" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_car.3" x="188.66" y="8.00" angle="270.00" type="car" speed="6.24" pos="11.34" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_en_truck.0" x="104.14" y="8.00" angle="270.00" type="truck" speed="12.83" pos="95.86" lane="e_t_0" slope="0.00"/>
+        <vehicle id="flow_es_bus.0" x="117.35" y="1.60" angle="270.00" type="bus" speed="13.56" pos="82.65" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.0" x="72.81" y="1.60" angle="270.00" type="car" speed="13.29" pos="127.19" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.1" x="143.20" y="1.60" angle="270.00" type="car" speed="12.84" pos="56.80" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.2" x="164.98" y="1.60" angle="270.00" type="car" speed="10.87" pos="35.02" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.3" x="184.12" y="1.60" angle="270.00" type="car" speed="6.47" pos="15.88" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_car.4" x="194.90" y="1.60" angle="270.00" type="car" speed="4.88" pos="5.10" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_es_truck.0" x="94.66" y="1.60" angle="270.00" type="truck" speed="13.70" pos="105.34" lane="e_t_2" slope="0.00"/>
+        <vehicle id="flow_ew_bus.0" x="133.35" y="4.80" angle="270.00" type="bus" speed="9.41" pos="66.65" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.0" x="72.22" y="4.80" angle="270.00" type="car" speed="13.85" pos="127.78" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.1" x="152.10" y="4.80" angle="270.00" type="car" speed="9.58" pos="47.90" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.2" x="170.66" y="4.80" angle="270.00" type="car" speed="8.84" pos="29.34" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.3" x="187.10" y="4.80" angle="270.00" type="car" speed="7.80" pos="12.90" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_car.4" x="194.90" y="4.80" angle="270.00" type="car" speed="3.59" pos="5.10" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ew_truck.0" x="95.83" y="4.80" angle="270.00" type="truck" speed="14.18" pos="104.17" lane="e_t_1" slope="0.00"/>
+        <vehicle id="flow_ne_car.0" x="-1.60" y="90.35" angle="180.00" type="car" speed="11.13" pos="109.65" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.1" x="-1.60" y="131.06" angle="180.00" type="car" speed="12.57" pos="68.94" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.2" x="-1.60" y="167.11" angle="180.00" type="car" speed="9.08" pos="32.89" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.3" x="-1.60" y="184.17" angle="180.00" type="car" speed="5.90" pos="15.83" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_car.4" x="-1.60" y="194.90" angle="180.00" type="car" speed="4.56" pos="5.10" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ne_truck.0" x="-1.60" y="109.83" angle="180.00" type="truck" speed="11.31" pos="90.17" lane="n_t_2" slope="0.00"/>
+        <vehicle id="flow_ns_car.0" x="-4.80" y="58.91" angle="180.00" type="car" speed="15.12" pos="141.09" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.1" x="-4.80" y="107.74" angle="180.00" type="car" speed="12.93" pos="92.26" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.2" x="-4.80" y="134.86" angle="180.00" type="car" speed="14.93" pos="65.14" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.3" x="-4.80" y="163.42" angle="180.00" type="car" speed="10.96" pos="36.58" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.4" x="-4.80" y="182.59" angle="180.00" type="car" speed="7.40" pos="17.41" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_car.5" x="-4.80" y="194.90" angle="180.00" type="car" speed="6.10" pos="5.10" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_ns_truck.0" x="-4.80" y="85.67" angle="180.00" type="truck" speed="13.64" pos="114.33" lane="n_t_1" slope="0.00"/>
+        <vehicle id="flow_nw_car.0" x="-8.00" y="73.34" angle="180.00" type="car" speed="13.76" pos="126.66" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.1" x="-8.00" y="124.50" angle="180.00" type="car" speed="10.62" pos="75.50" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.2" x="-8.00" y="143.70" angle="180.00" type="car" speed="11.20" pos="56.30" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.3" x="-8.00" y="165.61" angle="180.00" type="car" speed="8.59" pos="34.39" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.4" x="-8.00" y="182.11" angle="180.00" type="car" speed="7.66" pos="17.89" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_car.5" x="-8.00" y="194.90" angle="180.00" type="car" speed="6.47" pos="5.10" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_nw_truck.0" x="-8.00" y="96.60" angle="180.00" type="truck" speed="13.83" pos="103.40" lane="n_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.0" x="8.00" y="-60.82" angle="0.00" type="car" speed="15.25" pos="139.18" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.1" x="8.00" y="-118.20" angle="0.00" type="car" speed="11.46" pos="81.80" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.2" x="8.00" y="-138.80" angle="0.00" type="car" speed="12.59" pos="61.20" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.3" x="8.00" y="-160.40" angle="0.00" type="car" speed="11.31" pos="39.60" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.4" x="8.00" y="-181.52" angle="0.00" type="car" speed="7.59" pos="18.48" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_car.5" x="8.00" y="-194.90" angle="0.00" type="car" speed="6.73" pos="5.10" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_se_truck.0" x="8.00" y="-95.89" angle="0.00" type="truck" speed="12.86" pos="104.11" lane="s_t_0" slope="0.00"/>
+        <vehicle id="flow_sn_car.0" x="4.80" y="-82.07" angle="0.00" type="car" speed="12.20" pos="117.93" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.1" x="4.80" y="-133.78" angle="0.00" type="car" speed="10.02" pos="66.22" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.2" x="4.80" y="-154.10" angle="0.00" type="car" speed="9.83" pos="45.90" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.3" x="4.80" y="-175.76" angle="0.00" type="car" speed="8.36" pos="24.24" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_car.4" x="4.80" y="-190.19" angle="0.00" type="car" speed="4.71" pos="9.81" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sn_truck.0" x="4.80" y="-114.56" angle="0.00" type="truck" speed="10.47" pos="85.44" lane="s_t_1" slope="0.00"/>
+        <vehicle id="flow_sw_car.0" x="1.60" y="-72.09" angle="0.00" type="car" speed="13.63" pos="127.91" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.1" x="1.60" y="-120.66" angle="0.00" type="car" speed="13.08" pos="79.34" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.2" x="1.60" y="-145.78" angle="0.00" type="car" speed="10.50" pos="54.22" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.3" x="1.60" y="-165.79" angle="0.00" type="car" speed="11.83" pos="34.21" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.4" x="1.60" y="-186.99" angle="0.00" type="car" speed="5.25" pos="13.01" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_car.5" x="1.60" y="-194.90" angle="0.00" type="car" speed="1.16" pos="5.10" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_sw_truck.0" x="1.60" y="-95.02" angle="0.00" type="truck" speed="13.76" pos="104.98" lane="s_t_2" slope="0.00"/>
+        <vehicle id="flow_we_bus.0" x="-126.52" y="-4.80" angle="90.00" type="bus" speed="11.43" pos="73.48" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.0" x="-83.05" y="-4.80" angle="90.00" type="car" speed="12.44" pos="116.95" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.1" x="-147.40" y="-4.80" angle="90.00" type="car" speed="11.09" pos="52.60" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.2" x="-169.15" y="-4.80" angle="90.00" type="car" speed="10.11" pos="30.85" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.3" x="-186.82" y="-4.80" angle="90.00" type="car" speed="8.08" pos="13.18" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_car.4" x="-194.90" y="-4.80" angle="90.00" type="car" speed="4.15" pos="5.10" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_we_truck.0" x="-105.21" y="-4.80" angle="90.00" type="truck" speed="11.63" pos="94.79" lane="w_t_1" slope="0.00"/>
+        <vehicle id="flow_wn_bus.0" x="-116.56" y="-1.60" angle="90.00" type="bus" speed="11.93" pos="83.44" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.0" x="-63.13" y="-1.60" angle="90.00" type="car" speed="14.10" pos="136.87" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.1" x="-142.53" y="-1.60" angle="90.00" type="car" speed="10.48" pos="57.47" lane="w_t_2" slope="0.00"/>
+        <vehicle id="flow_wn_car.2" x="-164.43" y="-1.60" angle="90.00" type="car" speed="9.11" pos="35.57" lane="w_t_2" slop

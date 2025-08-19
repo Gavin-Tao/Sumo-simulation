@@ -1,0 +1,7 @@
+这个只是对于bus和car
+Eq_350: Equal Entry，每个车道都是350的总流量
+BC: bus and car
+Wstr_Estr: W方向的straight车道和E方向的straight车道
+Wleft_Eleft: W方向的left车道和E方向的left车道
+40-60：代表Bus和Car在Wstr_Estr上的比例是40%：60%
+20-80：代表Bus和Car在Wleft_Eleft上的比例是20%：80%
