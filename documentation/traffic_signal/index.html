@@ -371,6 +371,24 @@ The default reward function is ‘diff-waiting-time’. You can change the rewar
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_10_1">
+<span class="sig-name descname"><span class="pre">get_priority_pressure_10_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_10_1" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>计算按私家车/公交车加权后的压力 (10:1)：</dt><dd><p>pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_20_1">
+<span class="sig-name descname"><span class="pre">get_priority_pressure_20_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_20_1" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>计算按私家车/公交车加权后的压力 (20:1)：</dt><dd><p>pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_21">
 <span class="sig-name descname"><span class="pre">get_priority_pressure_21</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_21" title="Link to this definition">¶</a></dt>
 <dd><dl class="simple">
@@ -396,6 +414,15 @@ pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
 </dd>
 </dl>
 <p>私家车 weight=α，货车 weight=β。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_50_1">
+<span class="sig-name descname"><span class="pre">get_priority_pressure_50_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_50_1" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>计算按私家车/公交车加权后的压力 (50:1)：</dt><dd><p>pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -529,9 +556,12 @@ pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_out_lanes_density"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_out_lanes_density()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_pressure"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_pressure()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure()</span></code></a></li>
+<li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_10_1"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_10_1()</span></code></a></li>
+<li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_20_1"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_20_1()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_21"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_21()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_41"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_41()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_45"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_45()</span></code></a></li>
+<li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_50_1"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_50_1()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_51"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_51()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_priority_pressure_52"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_priority_pressure_52()</span></code></a></li>
 <li><a class="reference internal" href="#sumo_rl.environment.traffic_signal.TrafficSignal.get_total_queued"><code class="docutils literal notranslate"><span class="pre">TrafficSignal.get_total_queued()</span></code></a></li>
