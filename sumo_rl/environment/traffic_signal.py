@@ -247,6 +247,15 @@ class TrafficSignal:
         # a=self.get_pressure()
         return self.get_priority_pressure_41()
 
+    def _10_1_priority_pressure_reward(self):
+        return self.get_priority_pressure_10_1()
+
+    def _20_1_priority_pressure_reward(self):
+        return self.get_priority_pressure_20_1()
+
+    def _50_1_priority_pressure_reward(self):
+        return self.get_priority_pressure_50_1()
+
     def _45_priority_pressure_reward(self):
         # a=self.get_pressure()
         return self.get_priority_pressure_45()
@@ -489,6 +498,97 @@ class TrafficSignal:
             return priority_pressure
 
 
+    def get_priority_pressure_10_1(self, alpha: float = 1.0, beta: float = 10.0) -> float:
+        """
+        计算按私家车/公交车加权后的压力 (10:1)：
+          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
+        """
+        in_car = in_bus = out_car = out_bus = 0
+
+        # 累计进口车道上的私/公交车数
+        for lane in self.lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            for vid in vids:
+                if self.sumo.vehicle.getTypeID(vid) == "car":
+                    in_car += 1
+                else:
+                    in_bus += 1
+
+        # 累计出口车道上的私/公交车数
+        for lane in self.out_lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            for vid in vids:
+                if self.sumo.vehicle.getTypeID(vid) == "car":
+                    out_car += 1
+                else:
+                    out_bus += 1
+
+        delta_car = out_car - in_car
+        delta_bus = out_bus - in_bus
+        priority_pressure = alpha * delta_car + beta * delta_bus
+        return priority_pressure
+
+
+    def get_priority_pressure_20_1(self, alpha: float = 1.0, beta: float = 20.0) -> float:
+        """
+        计算按私家车/公交车加权后的压力 (20:1)：
+          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
+        """
+        in_car = in_bus = out_car = out_bus = 0
+
+        for lane in self.lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            for vid in vids:
+                if self.sumo.vehicle.getTypeID(vid) == "car":
+                    in_car += 1
+                else:
+                    in_bus += 1
+
+        for lane in self.out_lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            for vid in vids:
+                if self.sumo.vehicle.getTypeID(vid) == "car":
+                    out_car += 1
+                else:
+                    out_bus += 1
+
+        delta_car = out_car - in_car
+        delta_bus = out_bus - in_bus
+        priority_pressure = alpha * delta_car + beta * delta_bus
+        return priority_pressure
+
+
+    def get_priority_pressure_50_1(self, alpha: float = 1.0, beta: float = 50.0) -> float:
+        """
+        计算按私家车/公交车加权后的压力 (50:1)：
+          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
+        """
+        in_car = in_bus = out_car = out_bus = 0
+
+        for lane in self.lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            for vid in vids:
+                if self.sumo.vehicle.getTypeID(vid) == "car":
+                    in_car += 1
+                else:
+                    in_bus += 1
+
+        for lane in self.out_lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            for vid in vids:
+                if self.sumo.vehicle.getTypeID(vid) == "car":
+                    out_car += 1
+                else:
+                    out_bus += 1
+
+        delta_car = out_car - in_car
+        delta_bus = out_bus - in_bus
+        priority_pressure = alpha * delta_car + beta * delta_bus
+        return priority_pressure
+
+
+
+
     def get_priority_pressure_45(self, alpha: float = 1.25, beta: float = 1.0) -> float:
         """
         计算按私家车/货车加权后的压力：
@@ -674,6 +774,9 @@ class TrafficSignal:
         "51-priority-pressure":_51_priority_pressure_reward,
         "21-priority-pressure":_21_priority_pressure_reward,
         "41-priority-pressure":_41_priority_pressure_reward,
+        "10_1-priority-pressure": _10_1_priority_pressure_reward,
+        "20_1-priority-pressure": _20_1_priority_pressure_reward,
+        "50_1-priority-pressure": _50_1_priority_pressure_reward,
         "45-priority-pressure":_45_priority_pressure_reward,
         "CTB_priority-pressure":_CTB_priority_pressure_reward
     }
