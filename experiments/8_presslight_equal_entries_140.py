@@ -6,17 +6,11 @@ import torch
 import random
 import numpy as np
 
-#########################delete in linux#################################
-if "SUMO_HOME" in os.environ:
-    tools = os.path.join(os.environ["SUMO_HOME"], "tools")
-    sys.path.append(tools)
-else:
-    sys.exit("Please declare the environment variable 'SUMO_HOME'")
-##############################################################################
+
 
 ####################change to another one in linux ##############################   
-sys.path.insert(0, 'E:\\txw\\SUMO-RL') #第一优先在这个路径下去寻找包
-# sys.path.insert(0, '/home/jovyan/sumo-rl')  # 替换为实际路径
+# sys.path.insert(0, 'E:\\txw\\SUMO-RL') #第一优先在这个路径下去寻找包
+sys.path.insert(0, '/home/xiaowen/sumo-rl')  # 替换为实际路径
 ###################################################################################
 
 from sumo_rl.environment.env import SumoEnvironment
@@ -28,8 +22,8 @@ import math
 TIMESTAMP = "{0:%Y-%m-%dT%H-%M-%S/}".format(datetime.now())
 # 设置 SummaryWriter 的路径
 ############################ -1----修改路径----------------------#############################
-WRITER_PATH = "./logs/1x1/4_phases/equal_entries_140/Presslight/" + TIMESTAMP
-STORE_PATH  = "./models/1x1/4_phases/equal_entries_140/Presslight/checkpoint/" + TIMESTAMP
+WRITER_PATH = "~/sumo-rl/logs/1x1/4_phases/equal_entries_140/Presslight/" + TIMESTAMP
+STORE_PATH  = "~/sumo-rl/models/1x1/4_phases/equal_entries_140/Presslight/checkpoint/" + TIMESTAMP
 
 # 如果目录不存在，则创建
 for path in (WRITER_PATH, STORE_PATH):
@@ -66,8 +60,8 @@ if __name__ == "__main__":
     prs.add_argument(
         "-route",
         dest="route",
-        type=str,
-        default="./nets/syc/1x1/Equal_entries_140_CT/equal_entries_140_54_15-85-TC.rou.xml", ############################ -3----修改rou文件的路径----------------------#############################
+        type=str,   
+        default="/home/xiaowen/sumo-rl/nets/syc/1x1/Equal_entries_140_CT/equal_entries_140_54_15-85-TC.rou.xml", ############################ -3----修改rou文件的路径----------------------#############################
         help="Route definition xml file.\n",
     )
     prs.add_argument("-a", dest="alpha", type=float, default=0.1, required=False, help="Alpha learning rate.\n")
@@ -90,9 +84,9 @@ if __name__ == "__main__":
     out_csv = f"outputs/syc/{experiment_time}_alpha{args.alpha}_gamma{args.gamma}_eps{args.epsilon}_decay{args.decay}"
 
     env = SumoEnvironment(
-        net_file="./nets/syc/1x1/Equal_entries_140_CT/syc_4phases.net.xml", ############################ -4----修改net文件的路径----------------------#############################
+        net_file="/home/xiaowen/sumo-rl/nets/syc/1x1/Equal_entries_140_CT/syc_4phases.net.xml", ############################ -4----修改net文件的路径----------------------#############################
         route_file=args.route,
-        cfg_file = "./nets/syc/1x1/Equal_entries_350_CT/15-85-Truck-Car/syc_4phases_equal_entries_140_54_15-85-TC.sumocfg", ############################ -5----修改cfg文件的路径----------------------#############################
+        cfg_file = "/home/xiaowen/sumo-rl/nets/syc/1x1/Equal_entries_140_CT/syc_4phases_equal_entries_140_54_15-85-TC.sumocfg", ############################ -5----修改cfg文件的路径----------------------#############################
         out_csv_name=out_csv,
         use_gui=False,
         num_seconds=args.seconds,

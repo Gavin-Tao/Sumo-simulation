@@ -10,22 +10,16 @@ import math
 import matplotlib.pyplot as plt
 import csv
 
-#########################delete in linux#################################
-if "SUMO_HOME" in os.environ:
-    tools = os.path.join(os.environ["SUMO_HOME"], "tools")
-    sys.path.append(tools)
-else:
-    sys.exit("Please declare the environment variable 'SUMO_HOME'")
-##############################################################################
+
 
 ####################change to another one in linux ##############################   
     
-sys.path.insert(0, 'E:\\txw\\SUMO-RL') #第一优先在这个路径下去寻找包
+sys.path.insert(0, '/home/xiaowen/sumo-rl')  # 替换为实际路径
 # sys.path.insert(0, '/home/jovyan/sumo-rl')  # 替换为实际路径
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
-from sumo_rl.environment.observations import PriorityObservationFunction
+from sumo_rl.environment.observations import PressLightObservationFunction, PriorityObservationFunction
 
 from torch.utils.tensorboard import SummaryWriter
 import math
@@ -35,9 +29,20 @@ TIMESTAMP = "{0:%Y-%m-%dT%H-%M-%S/}".format(datetime.now())
 # path_checkpoint = "./models/1x1/heavy_low/checkpoint/2024-03-25T15-24-58/ckpt_2024-03-25T16-35-19_2000.pth" # heavy_low model
 # path_checkpoint = "./models/1x1/low_heavy/checkpoint/2024-03-25T17-33-11/ckpt_2024-03-25T18-51-19_2000.pth" # low_heavy model
 ################################ 第一个要改的地方 ####################################################################################
-path_checkpoint = os.path.expanduser("./model/ckpt_2025-08-20T22-21-52_5000.pth")
+# path_checkpoint = os.path.expanduser("/home/xiaowen/sumo-rl/experiments/models/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/21/2025-09-02T21-41-14/ckpt_2025-09-03T01-05-56_5000.pth")
+path_checkpoint = os.path.expanduser("/home/xiaowen/sumo-rl/experiments/models/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/91/2025-09-04T12-04-39/ckpt_2025-09-04T14-36-23_5000.pth")
+# 构建带有时间戳的文件路径
+csv_folder_path = "./test_csv/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/91/" + TIMESTAMP + "/"
+
+
 if not os.path.exists(path_checkpoint):
     raise FileNotFoundError(f"Checkpoint path not found: {path_checkpoint}")
+
+
+# 确保文件夹存在，如果不存在则创建
+if not os.path.exists(csv_folder_path):
+    os.makedirs(csv_folder_path)
+
 
 #实例化tensorboard的类SummaryWriter
 # tb_writer = SummaryWriter(log_dir = WRITER_PATH)
@@ -65,12 +70,8 @@ fieldnames = [
     "overall_total_count","overall_avg_wait","overall_avg_speed","overall_total_stopped","overall_total_produced","overall_total_throughput"
 ]
 
-# 构建带有时间戳的文件路径
-csv_folder_path = "./testing/" + TIMESTAMP + "/"
 
-# 确保文件夹存在，如果不存在则创建
-if not os.path.exists(csv_folder_path):
-    os.makedirs(csv_folder_path)
+
 
 # 拼接文件路径
 csv_file_path = os.path.join(csv_folder_path, "CT_evaluation.csv")
@@ -88,7 +89,7 @@ if __name__ == "__main__":
         dest="route",
         type=str,
         # default="./nets/syc/1x1/Equal_entries_350_bus/equal_entries_350_bus.rou.xml", # CTB
-        default="./nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml", # ##################第二个要改的地方###########################
+        default="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml", # ##################第二个要改的地方###########################
         # default="nets/syc/1x1/Low_heavy/low_heavy.rou.xml", # low_heavy
         # default="nets/syc/1x1/Equal_entries_500/equal_entries_500.rou.xml", # equal 500
         # default="nets/syc/1x1/Equal_entries_140/equal_entries_140.rou.xml", # equal 140
@@ -115,18 +116,18 @@ if __name__ == "__main__":
 
     env = SumoEnvironment(
         # net_file="./nets/syc/1x1/Equal_entries_350_bus/syc_4phases.net.xml",  # CTB
-        net_file="./nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/syc_4phases.net.xml",  ##############################第三个要改的地方##############################
+        net_file="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/syc_4phases.net.xml",  ##############################第三个要改的地方##############################
         # net_file="nets/syc/1x1/Low_heavy/syc_4phases.net.xml", # low_heavy
         # net_file="nets/syc/1x1/Equal_entries_500/syc_4phases.net.xml", # equal 500
         # net_file="nets/syc/1x1/Equal_entries_140/syc_4phases.net.xml", # equal 140
         route_file=args.route,
         out_csv_name=out_csv,
         # cfg_file = "./nets/syc/1x1/Equal_entries_350_bus/syc_4phases_equal_entries_350_bus.sumocfg", # CTB
-        cfg_file = "./nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.sumocfg", ##########################第三个要改的地方###########################
+        cfg_file = "/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.sumocfg", ##########################第三个要改的地方###########################
         # cfg_file = "nets/syc/1x1/Low_heavy/syc_4phases_low_heavy.sumocfg", # low_heavy
         # cfg_file = "nets/syc/1x1/Equal_entries_500/syc_4phases_equal_entries_500.sumocfg", # equal 500
         # cfg_file = "nets/syc/1x1/Equal_entries_140/syc_4phases_equal_entries_140.sumocfg", # equal 140
-        use_gui=True,
+        use_gui=False,
         num_seconds=args.seconds,
         min_green=args.min_green, 
         max_green=args.max_green,
@@ -134,7 +135,7 @@ if __name__ == "__main__":
         sumo_seed=seed, #固定住seed
         #single_agent= True, #设置成True貌似TL会报错。
         observation_class = PriorityObservationFunction, ###########################第四个要改的地方#################################
-        reward_fn = "41-priority-pressure", ############################第五个要改的地方#####################################
+        reward_fn = "91-priority-pressure", ############################第五个要改的地方#####################################
         delta_time = 5,
         single_agent=False,
     )

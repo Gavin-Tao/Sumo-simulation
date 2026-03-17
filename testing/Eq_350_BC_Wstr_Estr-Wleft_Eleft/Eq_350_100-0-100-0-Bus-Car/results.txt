@@ -1,0 +1,349 @@
+
+
+
+
+###################### 2:1 0-100
+
+(sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 2_Eq_350_21_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 78.10
+  avg_speed      : 2.11
+  stopped        : 56.89
+  produced       : 580
+  throughput     : 504
+  throughput_pct : 86.90%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 29.41
+  avg_speed      : 5.06
+  stopped        : 21.41
+  produced       : 588
+  throughput     : 553
+  throughput_pct : 94.05%
+--- overall ---
+  avg_wait        : 61.28
+  avg_speed       : 3.14
+  total_stopped   : 78.30
+  total_produced  : 1168
+  total_throughput: 1057
+  throughput_pct  : 90.50%
+
+
+###################### 4:1 0-100
+(sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 4_Eq_350_41_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 114.21
+  avg_speed      : 2.37
+  stopped        : 50.59
+  produced       : 568
+  throughput     : 510
+  throughput_pct : 89.79%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 62.61
+  avg_speed      : 3.05
+  stopped        : 42.49
+  produced       : 588
+  throughput     : 517
+  throughput_pct : 87.93%
+--- overall ---
+  avg_wait        : 86.05
+  avg_speed       : 2.75
+  total_stopped   : 93.08
+  total_produced  : 1156
+  total_throughput: 1027
+  throughput_pct  : 88.84%
+
+
+###################### 5:1 0-100
+(sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 5_Eq_350_51_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 58.00
+  avg_speed      : 2.18
+  stopped        : 54.48
+  produced       : 588
+  throughput     : 511
+  throughput_pct : 86.90%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 43.12
+  avg_speed      : 5.44
+  stopped        : 17.95
+  produced       : 588
+  throughput     : 550
+  throughput_pct : 93.54%
+--- overall ---
+  avg_wait        : 52.53
+  avg_speed       : 3.50
+  total_stopped   : 72.43
+  total_produced  : 1176
+  total_throughput: 1061
+  throughput_pct  : 90.22%
+
+###################### 6:1 0-100
+(sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 6_Eq_350_61_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 39.14
+  avg_speed      : 5.21
+  stopped        : 24.27
+  produced       : 588
+  throughput     : 549
+  throughput_pct : 93.37%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 16.04
+  avg_speed      : 5.97
+  stopped        : 15.32
+  produced       : 588
+  throughput     : 557
+  throughput_pct : 94.73%
+--- overall ---
+  avg_wait        : 31.82
+  avg_speed       : 5.40
+  total_stopped   : 39.59
+  total_produced  : 1176
+  total_throughput: 1106
+  throughput_pct  : 94.05%
+
+
+###################### 7:1 0-100
+(sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 7_Eq_350_71_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 39.14
+  avg_speed      : 5.21
+  stopped        : 24.27
+  produced       : 588
+  throughput     : 549
+  throughput_pct : 93.37%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 16.04
+  avg_speed      : 5.97
+  stopped        : 15.32
+  produced       : 588
+  throughput     : 557
+  throughput_pct : 94.73%
+--- overall ---
+  avg_wait        : 31.82
+  avg_speed       : 5.40
+  total_stopped   : 39.59
+  total_produced  : 1176
+  total_throughput: 1106
+  throughput_pct  : 94.05%
+
+
+  
+
+###################### 8:1 0-100
+(sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 8_Eq_350_81_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 39.14
+  avg_speed      : 5.21
+  stopped        : 24.27
+  produced       : 588
+  throughput     : 549
+  throughput_pct : 93.37%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 16.04
+  avg_speed      : 5.97
+  stopped        : 15.32
+  produced       : 588
+  throughput     : 557
+  throughput_pct : 94.73%
+--- overall ---
+  avg_wait        : 31.82
+  avg_speed       : 5.40
+  total_stopped   : 39.59
+  total_produced  : 1176
+  total_throughput: 1106
+  throughput_pct  : 94.05%
+
+
+###################### 9:1 0-100
+  (sumo_rl) xiaowen@xiaowen:~/sumo-rl/testing/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car$ python 9_Eq_350_91_100-0-100-0-Bus-Car.py 
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+This is local env.py
+This is modified PriorityObservationFunction with car/truck state.
+This is the local ts.py
+----------------loading model-----------------
+----------------Finished loading model-----------------
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+
+=== Episode 1 Results (warm_up=900) ===
+--- car ---
+  avg_wait       : 39.14
+  avg_speed      : 5.21
+  stopped        : 24.27
+  produced       : 588
+  throughput     : 549
+  throughput_pct : 93.37%
+--- truck ---
+  avg_wait       : 0.00
+  avg_speed      : 0.00
+  stopped        : 0.00
+  produced       : 0
+  throughput     : 0
+  throughput_pct : 0.00%
+--- bus ---
+  avg_wait       : 16.04
+  avg_speed      : 5.97
+  stopped        : 15.32
+  produced       : 588
+  throughput     : 557
+  throughput_pct : 94.73%
+--- overall ---
+  avg_wait        : 31.82
+  avg_speed       : 5.40
+  total_stopped   : 39.59
+  total_produced  : 1176
+  total_throughput: 1106
+  throughput_pct  : 94.05%
+
+

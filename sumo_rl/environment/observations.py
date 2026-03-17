@@ -48,6 +48,34 @@ class DefaultObservationFunction(ObservationFunction):
             high=np.ones(self.ts.num_green_phases + 1 + 2 * len(self.ts.lanes), dtype=np.float32),
         )
 
+class QueuePrioObservationFunction(ObservationFunction):
+    """Observation: 分别统计每条进口车道的 car/bus density 和 queue。"""
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+        print("This is QueuePrioObservationFunction with car/bus density and queue.")
+
+    def __call__(self) -> np.ndarray:
+        phase_id = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]  # one-hot
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        car_density, bus_density = self.ts.get_lanes_density_by_type()
+        car_queue, bus_queue = self.ts.get_lanes_queue_by_type()
+        observation = np.array(
+            phase_id + min_green + car_density + bus_density + car_queue + bus_queue,
+            dtype=np.float32
+        )
+        return observation
+
+    def observation_space(self) -> spaces.Box:
+        num_phases = self.ts.num_green_phases
+        num_lanes = len(self.ts.lanes)
+        # phase + min_green + 4*num_lanes (car_density, bus_density, car_queue, bus_queue)
+        dim = num_phases + 1 + 4 * num_lanes
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.ones(dim, dtype=np.float32),
+        )
+    
 class PressLightObservationFunction(ObservationFunction):
     """PressLight observation function for traffic signals."""
 
@@ -89,7 +117,7 @@ class PressLightObservationFunction(ObservationFunction):
         for lane_id in inc_lanes:
             inc_vehicle_count = self.ts.sumo.lane.getLastStepVehicleNumber(lane_id)
             inc_vehicle_counts[lane_id] = inc_vehicle_count
-        
+
         # print(inc_vehicle_counts)
 
         out_vehicle_counts = {}
@@ -100,7 +128,7 @@ class PressLightObservationFunction(ObservationFunction):
         for lane_id in outgoing_lanes:
             out_vehicle_count = self.ts.sumo.lane.getLastStepVehicleNumber(lane_id)
             out_vehicle_counts[lane_id] = out_vehicle_count
-        
+
         # print(out_vehicle_counts)
 
         #将字典转换为list
@@ -108,34 +136,29 @@ class PressLightObservationFunction(ObservationFunction):
         list_out_vehicle_counts = [out_vehicle_counts[key] for key in out_vehicle_counts]
 
         return list_inc_vehicle_counts, list_out_vehicle_counts
-    
-    def _get_outgoing_lanes(self, ts_id):
-        """
-        根据信号灯ID获取所有出口车道
-        假设进入边缘和离开边缘遵循特定的命名约定（例如 n_t 表示北进入，t_n 表示北离开）
-        """
-        # Define the mapping based on your naming convention
-        edge_mapping = {'n_t': 't_n', 'e_t': 't_e', 's_t': 't_s', 'w_t': 't_w'}
-        
-        # Get the controlled lanes and their edges
-        controlled_lanes = self.ts.sumo.trafficlight.getControlledLanes(ts_id)
-        outgoing_lanes = []
 
-        # Iterate through each controlled lane to find corresponding outgoing lanes
-        for lane_id in controlled_lanes:
-            # Extract edge ID from lane ID
-            edge_id = lane_id.split('_')[0] + '_' + lane_id.split('_')[1]
-            # Find the corresponding outgoing edge based on the mapping
-            if edge_id in edge_mapping:
-                outgoing_edge = edge_mapping[edge_id]
-                # Get all lanes for the outgoing edge
-                for lane_index in range(self.ts.sumo.edge.getLaneNumber(outgoing_edge)):
-                    outgoing_lane_id = f"{outgoing_edge}_{lane_index}"
-                    if outgoing_lane_id not in outgoing_lanes:
-                        outgoing_lanes.append(outgoing_lane_id)
-        # print(outgoing_lanes)
-        a= list(outgoing_lanes)
-        return list(outgoing_lanes)  # Return unique outgoing lanes
+
+class PressLightNormObservationFunction(ObservationFunction):
+    """PressLight observation with vehicle counts normalized to [0, 1] by lane capacity.
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1), inc_density (n_in), out_density (n_out)]
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+
+    def __call__(self) -> np.ndarray:
+        phase_id = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        inc_density = self.ts.get_lanes_density()
+        out_density = self.ts.get_out_lanes_density()
+        return np.array(phase_id + min_green + inc_density + out_density, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        dim = self.ts.num_green_phases + 1 + len(self.ts.lanes) + len(self.ts.out_lanes)
+        return spaces.Box(low=np.zeros(dim, dtype=np.float32), high=np.ones(dim, dtype=np.float32))
+    
     
     
 class PriorityObservationFunction(ObservationFunction):

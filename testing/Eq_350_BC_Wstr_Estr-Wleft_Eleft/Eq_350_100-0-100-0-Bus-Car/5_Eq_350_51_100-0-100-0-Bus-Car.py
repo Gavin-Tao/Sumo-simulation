@@ -10,14 +10,12 @@ import math
 import matplotlib.pyplot as plt
 import csv
 
-#########################delete in linux#################################
 
-##############################################################################
 
 ####################change to another one in linux ##############################   
-
-sys.path.insert(0, '/home/jovyan/sumo-rl')  # 替换为实际路径
-###################################################################################
+    
+sys.path.insert(0, '/home/xiaowen/sumo-rl')  # 替换为实际路径
+# sys.path.insert(0, '/home/jovyan/sumo-rl')  # 替换为实际路径
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
@@ -31,16 +29,25 @@ TIMESTAMP = "{0:%Y-%m-%dT%H-%M-%S/}".format(datetime.now())
 # path_checkpoint = "./models/1x1/heavy_low/checkpoint/2024-03-25T15-24-58/ckpt_2024-03-25T16-35-19_2000.pth" # heavy_low model
 # path_checkpoint = "./models/1x1/low_heavy/checkpoint/2024-03-25T17-33-11/ckpt_2024-03-25T18-51-19_2000.pth" # low_heavy model
 ################################ 第一个要改的地方 ####################################################################################
-path_checkpoint = os.path.expanduser("~/sumo-rl/experiments/models/1x1/4_phases/equal_entries_350/Bus_Car/51/100-0-100-0-Wstr_Estr-Wleft_Eleft/2025-08-21T15-40-36/ckpt_2025-08-21T17-44-30_5000.pth")
+# path_checkpoint = os.path.expanduser("/home/xiaowen/sumo-rl/experiments/models/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/21/2025-09-02T21-41-14/ckpt_2025-09-03T01-05-56_5000.pth")
+path_checkpoint = os.path.expanduser("/home/xiaowen/sumo-rl/experiments/models/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/51/ckpt_2025-08-21T17-44-30_5000_51.pth")
 if not os.path.exists(path_checkpoint):
     raise FileNotFoundError(f"Checkpoint path not found: {path_checkpoint}")
-checkpoint = torch.load(path_checkpoint)
 
+# 构建带有时间戳的文件路径
+csv_folder_path = "./test_csv/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/51/" + TIMESTAMP + "/"
+# 确保文件夹存在，如果不存在则创建
+if not os.path.exists(csv_folder_path):
+    os.makedirs(csv_folder_path)
 
 
 #实例化tensorboard的类SummaryWriter
 # tb_writer = SummaryWriter(log_dir = WRITER_PATH)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+checkpoint = torch.load(path_checkpoint,
+                        map_location=device)
+
 episodes = 1
 seed = 0
 torch.manual_seed(seed)
@@ -60,12 +67,8 @@ fieldnames = [
     "overall_total_count","overall_avg_wait","overall_avg_speed","overall_total_stopped","overall_total_produced","overall_total_throughput"
 ]
 
-# 构建带有时间戳的文件路径
-csv_folder_path = "./testing/" + TIMESTAMP + "/"
 
-# 确保文件夹存在，如果不存在则创建
-if not os.path.exists(csv_folder_path):
-    os.makedirs(csv_folder_path)
+
 
 # 拼接文件路径
 csv_file_path = os.path.join(csv_folder_path, "CT_evaluation.csv")
@@ -83,7 +86,7 @@ if __name__ == "__main__":
         dest="route",
         type=str,
         # default="./nets/syc/1x1/Equal_entries_350_bus/equal_entries_350_bus.rou.xml", # CTB
-        default="~/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml", # ##################第二个要改的地方###########################
+        default="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml", # ##################第二个要改的地方###########################
         # default="nets/syc/1x1/Low_heavy/low_heavy.rou.xml", # low_heavy
         # default="nets/syc/1x1/Equal_entries_500/equal_entries_500.rou.xml", # equal 500
         # default="nets/syc/1x1/Equal_entries_140/equal_entries_140.rou.xml", # equal 140
@@ -110,14 +113,14 @@ if __name__ == "__main__":
 
     env = SumoEnvironment(
         # net_file="./nets/syc/1x1/Equal_entries_350_bus/syc_4phases.net.xml",  # CTB
-        net_file="~/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/syc_4phases.net.xml",  ##############################第三个要改的地方##############################
+        net_file="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/syc_4phases.net.xml",  ##############################第三个要改的地方##############################
         # net_file="nets/syc/1x1/Low_heavy/syc_4phases.net.xml", # low_heavy
         # net_file="nets/syc/1x1/Equal_entries_500/syc_4phases.net.xml", # equal 500
         # net_file="nets/syc/1x1/Equal_entries_140/syc_4phases.net.xml", # equal 140
         route_file=args.route,
         out_csv_name=out_csv,
         # cfg_file = "./nets/syc/1x1/Equal_entries_350_bus/syc_4phases_equal_entries_350_bus.sumocfg", # CTB
-        cfg_file = "~/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.sumocfg", ##########################第三个要改的地方###########################
+        cfg_file = "/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.sumocfg", ##########################第三个要改的地方###########################
         # cfg_file = "nets/syc/1x1/Low_heavy/syc_4phases_low_heavy.sumocfg", # low_heavy
         # cfg_file = "nets/syc/1x1/Equal_entries_500/syc_4phases_equal_entries_500.sumocfg", # equal 500
         # cfg_file = "nets/syc/1x1/Equal_entries_140/syc_4phases_equal_entries_140.sumocfg", # equal 140
@@ -161,7 +164,6 @@ if __name__ == "__main__":
         env.evaluation = True
         print("----------------loading model-----------------")
         
-        checkpoint = torch.load(path_checkpoint)  # 加载
 
         dqn_agent.q_net.load_state_dict(checkpoint['policy_state_dict'])  # 加载模型可学习参数
         dqn_agent.target_q_net.load_state_dict(checkpoint['target_state_dict'])

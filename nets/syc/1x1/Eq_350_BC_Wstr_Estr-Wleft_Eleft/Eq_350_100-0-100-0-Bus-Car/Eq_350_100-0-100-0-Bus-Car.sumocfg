@@ -11,8 +11,7 @@
     <output>
 		<tripinfo-output value="output/tripinfo.out.xml"/>
 		<fcd-output value="output/fcd_output.xml"/>
-		
-		<!--<fcd-output.geo value="true"/>>-->
+
 	</output>
 </configuration>
 

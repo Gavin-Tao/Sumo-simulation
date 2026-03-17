@@ -1,0 +1,108 @@
+<routes>
+    <!-- vehicle types -->
+    <vType id="car" color="1,0,0"/>
+    <vType id="bus" color="0,0,1"/>
+
+    <!-- ===== ROUTES: LEFT intersection (t) ===== -->
+    <route id="route_ew_L" edges="e_t t_w"/>
+    <route id="route_we_L" edges="w_t t_e"/>
+    <route id="route_ns_L" edges="n_t t_s"/>
+    <route id="route_sn_L" edges="s_t t_n"/>
+    <route id="route_en_L" edges="e_t t_n"/>
+    <route id="route_es_L" edges="e_t t_s"/>
+    <route id="route_wn_L" edges="w_t t_n"/>
+    <route id="route_ws_L" edges="w_t t_s"/>
+    <route id="route_ne_L" edges="n_t t_e"/>
+    <route id="route_nw_L" edges="n_t t_w"/>
+    <route id="route_se_L" edges="s_t t_e"/>
+    <route id="route_sw_L" edges="s_t t_w"/>
+
+    <!-- LEFT flows: only EW straight are bus -->
+    <flow id="flow_ew_L_bus" route="route_ew_L" begin="0" end="3600" vehsPerHour="350"
+          type="bus" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_we_L_bus" route="route_we_L" begin="0" end="3600" vehsPerHour="350"
+          type="bus" departSpeed="max" departPos="base" departLane="best"/>
+
+    <!-- remaining LEFT movements = car -->
+    <flow id="flow_ns_L_car" route="route_ns_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_sn_L_car" route="route_sn_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_en_L_car" route="route_en_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_es_L_car" route="route_es_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_wn_L_car" route="route_wn_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_ws_L_car" route="route_ws_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_ne_L_car" route="route_ne_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_nw_L_car" route="route_nw_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_se_L_car" route="route_se_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_sw_L_car" route="route_sw_L" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+
+    <!-- ===== ROUTES: CENTER intersection (e) ===== 
+         t_e -> e -> E0 (east-west straight via e)
+         -E0 -> e -> e_t (west-east straight via e)
+    -->
+    <route id="route_ew_C" edges="t_e E0"/>
+    <route id="route_we_C" edges="-E0 e_t"/>
+    <route id="route_ns_C" edges="-E1 E2"/>
+    <route id="route_sn_C" edges="-E2 E1"/>
+    <route id="route_en_C" edges="-E0 E1"/>
+    <route id="route_es_C" edges="-E0 E2"/>
+    <route id="route_wn_C" edges="t_e E1"/>
+    <route id="route_ws_C" edges="t_e E2"/>
+    <route id="route_ne_C" edges="-E1 E0"/>
+    <route id="route_nw_C" edges="-E1 e_t"/>
+    <route id="route_se_C" edges="-E2 E0"/>
+    <route id="route_sw_C" edges="-E2 e_t"/>
+
+    <!-- CENTER flows: only EW straight are bus -->
+    <flow id="flow_ew_C_bus" route="route_ew_C" begin="0" end="3600" vehsPerHour="350"
+          type="bus" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_we_C_bus" route="route_we_C" begin="0" end="3600" vehsPerHour="350"
+          type="bus" departSpeed="max" departPos="base" departLane="best"/>
+
+    <!-- remaining CENTER movements = car -->
+    <flow id="flow_ns_C_car" route="route_ns_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_sn_C_car" route="route_sn_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_en_C_car" route="route_en_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_es_C_car" route="route_es_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_wn_C_car" route="route_wn_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_ws_C_car" route="route_ws_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_ne_C_car" route="route_ne_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_nw_C_car" route="route_nw_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_se_C_car" route="route_se_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_sw_C_car" route="route_sw_C" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+
+    <!-- ===== ROUTES: RIGHT intersection (J0) ===== 
+         E0 -> J0 -> E5 (east-west straight via J0)
+         -E5 -> J0 -> -E0 (west-east straight via J0)
+    -->
+    <route id="route_ew_R" edges="E0 E5"/>
+    <route id="route_we_R" edges="-E5 -E0"/>
+    <route id="route_ns_R" edges="-E3 E4"/>
+    <route id="route_sn_R" edges="-E4 E3"/>
+    <route id="route_en_R" edges="-E5 E3"/>
+    <route id="route_es_R" edges="-E5 E4"/>
+    <route id="route_wn_R" edges="E0 E3"/>
+    <route id="route_ws_R" edges="E0 E4"/>
+    <route id="route_ne_R" edges="-E3 E5"/>
+    <route id="route_nw_R" edges="-E3 -E0"/>
+    <route id="route_se_R" edges="-E4 E5"/>
+    <route id="route_sw_R" edges="-E4 -E0"/>
+
+    <!-- RIGHT flows: only EW straight are bus -->
+    <flow id="flow_ew_R_bus" route="route_ew_R" begin="0" end="3600" vehsPerHour="350"
+          type="bus" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_we_R_bus" route="route_we_R" begin="0" end="3600" vehsPerHour="350"
+          type="bus" departSpeed="max" departPos="base" departLane="best"/>
+
+    <!-- remaining RIGHT movements = car -->
+    <flow id="flow_ns_R_car" route="route_ns_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_sn_R_car" route="route_sn_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_en_R_car" route="route_en_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_es_R_car" route="route_es_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_wn_R_car" route="route_wn_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_ws_R_car" route="route_ws_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_ne_R_car" route="route_ne_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_nw_R_car" route="route_nw_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_se_R_car" route="route_se_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+    <flow id="flow_sw_R_car" route="route_sw_R" begin="0" end="3600" vehsPerHour="350" type="car" departSpeed="max" departPos="base" departLane="best"/>
+
+</routes>

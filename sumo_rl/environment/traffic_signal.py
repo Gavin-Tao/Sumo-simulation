@@ -12,6 +12,7 @@ else:
 import numpy as np
 from gymnasium import spaces
 from collections import OrderedDict
+from .rewards import REWARD_REGISTRY
 
 class TrafficSignal:
     """This class represents a Traffic Signal controlling an intersection.
@@ -87,6 +88,8 @@ class TrafficSignal:
         self.last_reward = None
         self.reward_fn = reward_fn
         self.sumo = sumo
+        self.last_executed_action = 0
+
         
 
         if type(self.reward_fn) is str:
@@ -120,7 +123,7 @@ class TrafficSignal:
         self.observation_space = self.observation_fn.observation_space()
         self.action_space = spaces.Discrete(self.num_green_phases)
         
-        print("This is the local ts.py")
+        print("✅TThis is the local ts.py")
 
     #这个地方-重新建立了相位（把原来的绿灯赋予新的最大时间+重新构建了黄灯相位。）把绿灯相位放在前面，然后加上他们之间互相transit时候的黄灯相位，这里黄灯相位是N*（N-1），N是绿灯相位数量
     # syc的场景构建的有问题
@@ -135,7 +138,7 @@ class TrafficSignal:
         self.yellow_dict = {}
         for phase in phases:
             state = phase.state
-            duration = phase.duration
+            duration = max(phase.duration, 10) #这里我想确保原始的绿灯是大于10s的，避免原始sumo phase文件里设置太小导致跟delta time,min green time潜在的冲突
             if self.use_max_green:
                 if "y" not in state and (state.count("r") + state.count("s") != len(state)):
                     self.green_phases.append(self.sumo.trafficlight.Phase(self.max_green, state))
@@ -205,6 +208,8 @@ class TrafficSignal:
             self.next_action_time = self.env.sim_step + self.delta_time
             a=1
         else:
+            if new_phase ==3:
+                print("🔥 Action 3 selected at TS:", self.id)
             # self.sumo.trafficlight.setPhase(self.id, self.yellow_dict[(self.green_phase, new_phase)])  # turns yellow
             self.sumo.trafficlight.setRedYellowGreenState(
                 self.id, self.all_phases[self.yellow_dict[(self.green_phase, new_phase)]].state
@@ -214,6 +219,8 @@ class TrafficSignal:
             self.is_yellow = True
             self.time_since_last_phase_change = 0
             a=1
+        self.last_executed_action = self.green_phase
+        a=1
 
     def compute_observation(self):
         """Computes the observation of the traffic signal."""
@@ -223,58 +230,6 @@ class TrafficSignal:
         """Computes the reward of the traffic signal."""
         self.last_reward = self.reward_fn(self)
         return self.last_reward
-
-    def _pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_pressure()
-
-    def _priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_priority_pressure()
-
-    def _52_priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_priority_pressure_52()
-    # 我做了修改了  ################## 20250818
-    def _51_priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_priority_pressure_51()
-    def _21_priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_priority_pressure_21()
-
-    def _41_priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_priority_pressure_41()
-
-    def _10_1_priority_pressure_reward(self):
-        return self.get_priority_pressure_10_1()
-
-    def _20_1_priority_pressure_reward(self):
-        return self.get_priority_pressure_20_1()
-
-    def _50_1_priority_pressure_reward(self):
-        return self.get_priority_pressure_50_1()
-
-    def _45_priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_priority_pressure_45()
-    
-    def _CTB_priority_pressure_reward(self):
-        # a=self.get_pressure()
-        return self.get_CTB_priority_pressure()
-    
-    def _average_speed_reward(self):
-        return self.get_average_speed()
-
-    def _queue_reward(self):
-        return -self.get_total_queued()
-
-    def _diff_waiting_time_reward(self):
-        ts_wait = sum(self.get_accumulated_waiting_time_per_lane()) / 100.0
-        reward = self.last_measure - ts_wait
-        self.last_measure = ts_wait
-        return reward
 
     def _observation_fn_default(self):
         phase_id = [1 if self.green_phase == i else 0 for i in range(self.num_green_phases)]  # one-hot encoding
@@ -320,394 +275,6 @@ class TrafficSignal:
             avg_speed += self.sumo.vehicle.getSpeed(v) / self.sumo.vehicle.getAllowedSpeed(v)
         return avg_speed / len(vehs)
 
-    def get_pressure(self):
-        """Returns the pressure (#veh leaving - #veh approaching) of the intersection."""
-        # a=sum(self.sumo.lane.getLastStepVehicleNumber(lane) for lane in self.out_lanes)
-        # b=sum(self.sumo.lane.getLastStepVehicleNumber(lane) for lane in self.lanes)
-        # c = a-b
-        return sum(self.sumo.lane.getLastStepVehicleNumber(lane) for lane in self.out_lanes) - sum(
-            self.sumo.lane.getLastStepVehicleNumber(lane) for lane in self.lanes
-        )
-
-    def get_priority_pressure(self, alpha: float = 1.0, beta: float = 1.25) -> float:
-        """
-        计算按私家车/货车加权后的压力：
-          pressure = α*(#out_car - #in_car) + β*(#out_truck - #in_truck)
-        私家车 weight=α，货车 weight=β。
-        """
-        in_car = in_truck = out_car = out_truck = 0
-
-        # 累计进口车道上的私/货车数
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "truck":
-                    in_truck += 1
-                else:
-                    in_car += 1
-
-        # 累计出口车道上的私/货车数
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "truck":
-                    out_truck += 1
-                else:
-                    out_car += 1
-
-        # 计算加权压力
-        delta_car   = out_car   - in_car
-        delta_truck = out_truck - in_truck
-        priority_pressure = alpha * delta_car + beta * delta_truck
-
-        return priority_pressure
-    
-    def get_priority_pressure_52(self, alpha: float = 1.0, beta: float = 2.50) -> float:
-        """
-        计算按私家车/货车加权后的压力：
-          pressure = α*(#out_car - #in_car) + β*(#out_truck - #in_truck)
-        私家车 weight=α，货车 weight=β。
-        """
-        in_car = in_truck = out_car = out_truck = 0
-
-        # 累计进口车道上的私/货车数
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "truck":
-                    in_truck += 1
-                else:
-                    in_car += 1
-
-        # 累计出口车道上的私/货车数
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "truck":
-                    out_truck += 1
-                else:
-                    out_car += 1
-
-        # 计算加权压力
-        delta_car   = out_car   - in_car
-        delta_truck = out_truck - in_truck
-        priority_pressure = alpha * delta_car + beta * delta_truck
-
-        return priority_pressure
-    
-    #这里我改了############################################## 20250818
-    def get_priority_pressure_51(self, alpha: float = 1.0, beta: float = 5.0) -> float:
-        """
-        计算按私家车/公交车加权后的压力：
-        pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
-        私家车 weight=α，公交车 weight=β。
-        说明：除 type=="car" 外的车辆一律按 bus 计数（即 else 归为 bus）。
-        """
-        in_car = in_bus = out_car = out_bus = 0
-
-        # 累计进口车道上的 car / bus 数
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    in_car += 1
-                else:
-                    in_bus += 1
-
-        # 累计出口车道上的 car / bus 数
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    out_car += 1
-                else:
-                    out_bus += 1
-
-        # 计算加权压力
-        delta_car = out_car - in_car
-        delta_bus = out_bus - in_bus
-        priority_pressure = alpha * delta_car + beta * delta_bus
-
-        return priority_pressure
-
-    def get_priority_pressure_21(self, alpha: float = 1.0, beta: float = 2.0) -> float:
-        """
-        计算按私家车/公交车加权后的压力：
-          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
-        私家车 weight=α，公交车 weight=β。
-        """
-        in_car = in_bus = out_car = out_bus = 0
-
-        # 累计进口车道上的私/公交车数
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    in_car += 1
-                else:
-                    in_bus += 1
-
-        # 累计出口车道上的私/公交车数
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    out_car += 1
-                else:
-                    out_bus += 1
-
-        # 计算加权压力
-        delta_car   = out_car   - in_car
-        delta_bus   = out_bus   - in_bus
-        priority_pressure = alpha * delta_car + beta * delta_bus
-
-        return priority_pressure
-
-
-    def get_priority_pressure_41(self, alpha: float = 1.0, beta: float = 4.0) -> float:
-            """
-            计算按私家车/公交车加权后的压力：
-            pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
-            私家车 weight=α，公交车 weight=β。
-            """
-            in_car = in_bus = out_car = out_bus = 0
-
-            # 累计进口车道上的私/公交车数
-            for lane in self.lanes:
-                vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-                for vid in vids:
-                    if self.sumo.vehicle.getTypeID(vid) == "car":
-                        in_car += 1
-                    else:
-                        in_bus += 1
-
-            # 累计出口车道上的私/公交车数
-            for lane in self.out_lanes:
-                vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-                for vid in vids:
-                    if self.sumo.vehicle.getTypeID(vid) == "car":
-                        out_car += 1
-                    else:
-                        out_bus += 1
-
-            # 计算加权压力
-            delta_car   = out_car   - in_car
-            delta_bus   = out_bus   - in_bus
-            priority_pressure = alpha * delta_car + beta * delta_bus
-
-            return priority_pressure
-
-
-    def get_priority_pressure_10_1(self, alpha: float = 1.0, beta: float = 10.0) -> float:
-        """
-        计算按私家车/公交车加权后的压力 (10:1)：
-          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
-        """
-        in_car = in_bus = out_car = out_bus = 0
-
-        # 累计进口车道上的私/公交车数
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    in_car += 1
-                else:
-                    in_bus += 1
-
-        # 累计出口车道上的私/公交车数
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    out_car += 1
-                else:
-                    out_bus += 1
-
-        delta_car = out_car - in_car
-        delta_bus = out_bus - in_bus
-        priority_pressure = alpha * delta_car + beta * delta_bus
-        return priority_pressure
-
-
-    def get_priority_pressure_20_1(self, alpha: float = 1.0, beta: float = 20.0) -> float:
-        """
-        计算按私家车/公交车加权后的压力 (20:1)：
-          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
-        """
-        in_car = in_bus = out_car = out_bus = 0
-
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    in_car += 1
-                else:
-                    in_bus += 1
-
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    out_car += 1
-                else:
-                    out_bus += 1
-
-        delta_car = out_car - in_car
-        delta_bus = out_bus - in_bus
-        priority_pressure = alpha * delta_car + beta * delta_bus
-        return priority_pressure
-
-
-    def get_priority_pressure_50_1(self, alpha: float = 1.0, beta: float = 50.0) -> float:
-        """
-        计算按私家车/公交车加权后的压力 (50:1)：
-          pressure = α*(#out_car - #in_car) + β*(#out_bus - #in_bus)
-        """
-        in_car = in_bus = out_car = out_bus = 0
-
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    in_car += 1
-                else:
-                    in_bus += 1
-
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "car":
-                    out_car += 1
-                else:
-                    out_bus += 1
-
-        delta_car = out_car - in_car
-        delta_bus = out_bus - in_bus
-        priority_pressure = alpha * delta_car + beta * delta_bus
-        return priority_pressure
-
-
-
-
-    def get_priority_pressure_45(self, alpha: float = 1.25, beta: float = 1.0) -> float:
-        """
-        计算按私家车/货车加权后的压力：
-          pressure = α*(#out_car - #in_car) + β*(#out_truck - #in_truck)
-        私家车 weight=α，货车 weight=β。
-        """
-        in_car = in_truck = out_car = out_truck = 0
-
-        # 累计进口车道上的私/货车数
-        for lane in self.lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "truck":
-                    in_truck += 1
-                else:
-                    in_car += 1
-
-        # 累计出口车道上的私/货车数
-        for lane in self.out_lanes:
-            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            for vid in vids:
-                if self.sumo.vehicle.getTypeID(vid) == "truck":
-                    out_truck += 1
-                else:
-                    out_car += 1
-
-        # 计算加权压力
-        delta_car   = out_car   - in_car
-        delta_truck = out_truck - in_truck
-        priority_pressure = alpha * delta_car + beta * delta_truck
-
-        return priority_pressure
-
-    # 通用算priority pressure，还需要再打磨一下
-    def common_get_priority_pressure(self) -> float:
-        in_weight = 0.0
-        out_weight = 0.0
-        # wdict = self.priority_weights  # e.g. {'car':1.25, 'truck':1.0, ...}
-        wdict ={'car':1.25, 'truck':1.0}
-        # helper：处理某个 lane，sign = +1（出）或 -1（进）
-        def process(lane_id, sign):
-            nonlocal in_weight, out_weight
-            # 直接按类型拿数量
-            by_type = self.sumo.lane.getLastStepVehicleNumberByType(lane_id)
-            # 返回形如 {'car': 5, 'truck':3, ...}
-            total = sum(wdict.get(t,1.0) * cnt for t, cnt in by_type.items())
-            if sign > 0:
-                return total
-            else:
-                return -total
-
-        # 累计进口车道
-        for lane in self.lanes:
-            in_weight += process(lane, -1)
-        # 累计出口车道
-        for lane in self.out_lanes:
-            out_weight += process(lane, +1)
-
-        return out_weight + in_weight
-    
-    # def cc_get_priority_pressure(self) -> float:
-    #     """
-    #     计算按 BNF 配置的优先级权重后的压力：
-    #     pressure = Σ_over_all_lanes[ Σ_over_vids(weight(type(vid))) ]_out
-    #             - Σ_over_all_lanes[ Σ_over_vids(weight(type(vid))) ]_in
-    #     """
-    #     in_weight  = 0.0
-    #     out_weight = 0.0
-
-    #     # 累计进口车道上的加权数
-    #     for lane in self.lanes:
-    #         for vid in self.sumo.lane.getLastStepVehicleIDs(lane):
-    #             vtype  = self.sumo.vehicle.getTypeID(vid)
-    #             # 从字典里取默认权重，没找到就用 1.0
-    #             w = self.priority_weights.get(vtype, 1.0)
-    #             in_weight += w
-
-    #     # 累计出口车道上的加权数
-    #     for lane in self.out_lanes:
-    #         for vid in self.sumo.lane.getLastStepVehicleIDs(lane):
-    #             vtype  = self.sumo.vehicle.getTypeID(vid)
-    #             w = self.priority_weights.get(vtype, 1.0)
-    #             out_weight += w
-
-    #     # 计算优先级压力
-    #     priority_pressure = out_weight - in_weight
-    #     return priority_pressure
-
-
- 
-    def get_CTB_priority_pressure(self,
-                          alpha: float = 1.0,
-                          beta: float = 1.25,
-                          gamma: float = 2.5) -> float:
-        """
-        高性能加权压力计算，支持 car/truck/bus，也兼容只有 car 和 truck 的场景。
-        单次循环遍历所有进/出车道，累加压力值。
-        """
-        sumo = self.sumo
-        get_ids = sumo.lane.getLastStepVehicleIDs
-        get_type = sumo.vehicle.getTypeID
-
-        pressure = 0.0
-
-        # 遍历两组车道：出方向权重为 +1，进方向权重为 -1
-        for sign, lanes in ((1, self.out_lanes), (-1, self.lanes)):
-            for lane in lanes:
-                for vid in get_ids(lane):
-                    vtype = get_type(vid)
-                    if vtype == "truck":
-                        pressure += beta * sign
-                    elif vtype == "bus":
-                        pressure += gamma * sign
-                    else:
-                        pressure += alpha * sign
-
-        return pressure
-
-    
     
     def get_out_lanes_density(self) -> List[float]:
         """Returns the density of the vehicles in the outgoing lanes of the intersection."""
@@ -730,6 +297,22 @@ class TrafficSignal:
         ]
         return [min(1, density) for density in lanes_density]
 
+    def get_lanes_density_by_type(self):
+        """
+        Returns two lists: car_density, bus_density for each incoming lane.
+        density = 该类型车辆数 / 车道可容纳车辆数
+        """
+        car_density = []
+        bus_density = []
+        for lane in self.lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            length = self.lanes_length[lane] / (self.MIN_GAP + self.sumo.lane.getLastStepLength(lane))
+            car_count = sum(1 for vid in vids if self.sumo.vehicle.getTypeID(vid) == "car")
+            bus_count = sum(1 for vid in vids if self.sumo.vehicle.getTypeID(vid) == "bus")
+            car_density.append(min(1, car_count / length if length > 0 else 0))
+            bus_density.append(min(1, bus_count / length if length > 0 else 0))
+        return car_density, bus_density
+
     def get_lanes_queue(self) -> List[float]:
         """Returns the queue [0,1] of the vehicles in the incoming lanes of the intersection.
 
@@ -741,6 +324,22 @@ class TrafficSignal:
             for lane in self.lanes
         ]
         return [min(1, queue) for queue in lanes_queue]
+
+    def get_lanes_queue_by_type(self):
+        """
+        Returns two lists: car_queue, bus_queue for each incoming lane.
+        queue = 该类型且速度<0.1的车辆数 / 车道可容纳车辆数
+        """
+        car_queue = []
+        bus_queue = []
+        for lane in self.lanes:
+            vids = self.sumo.lane.getLastStepVehicleIDs(lane)
+            length = self.lanes_length[lane] / (self.MIN_GAP + self.sumo.lane.getLastStepLength(lane))
+            car_halt = sum(1 for vid in vids if self.sumo.vehicle.getTypeID(vid) == "car" and self.sumo.vehicle.getSpeed(vid) < 0.1)
+            bus_halt = sum(1 for vid in vids if self.sumo.vehicle.getTypeID(vid) == "bus" and self.sumo.vehicle.getSpeed(vid) < 0.1)
+            car_queue.append(min(1, car_halt / length if length > 0 else 0))
+            bus_queue.append(min(1, bus_halt / length if length > 0 else 0))
+        return car_queue, bus_queue
 
     def get_total_queued(self) -> int:
         """Returns the total number of vehicles halting in the intersection."""
@@ -764,19 +363,4 @@ class TrafficSignal:
 
         cls.reward_fns[fn.__name__] = fn
 
-    reward_fns = {
-        "diff-waiting-time": _diff_waiting_time_reward,
-        "average-speed": _average_speed_reward,
-        "queue": _queue_reward,
-        "pressure": _pressure_reward,
-        "priority-pressure": _priority_pressure_reward,
-        "52-priority-pressure":_52_priority_pressure_reward,
-        "51-priority-pressure":_51_priority_pressure_reward,
-        "21-priority-pressure":_21_priority_pressure_reward,
-        "41-priority-pressure":_41_priority_pressure_reward,
-        "10_1-priority-pressure": _10_1_priority_pressure_reward,
-        "20_1-priority-pressure": _20_1_priority_pressure_reward,
-        "50_1-priority-pressure": _50_1_priority_pressure_reward,
-        "45-priority-pressure":_45_priority_pressure_reward,
-        "CTB_priority-pressure":_CTB_priority_pressure_reward
-    }
+    reward_fns = REWARD_REGISTRY

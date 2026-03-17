@@ -6,29 +6,24 @@ import torch
 import random
 import numpy as np
 
-#########################delete in linux#################################
-if "SUMO_HOME" in os.environ:
-    tools = os.path.join(os.environ["SUMO_HOME"], "tools")
-    sys.path.append(tools)
-else:
-    sys.exit("Please declare the environment variable 'SUMO_HOME'")
-##############################################################################
+
 
 ####################change to another one in linux ##############################   
-sys.path.insert(0, 'E:\\txw\\SUMO-RL') #第一优先在这个路径下去寻找包
-# sys.path.insert(0, '/home/jovyan/sumo-rl')  # 替换为实际路径
+# sys.path.insert(0, 'E:\\txw\\SUMO-RL') #第一优先在这个路径下去寻找包
+sys.path.insert(0, '/home/xiaowen/sumo-rl')  # 替换为实际路径
 ###################################################################################
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
-from sumo_rl.environment.observations import CTBPriorityObservationFunction
+from sumo_rl.environment.observations import PriorityObservationFunction
 
 from torch.utils.tensorboard import SummaryWriter
 import math
 TIMESTAMP = "{0:%Y-%m-%dT%H-%M-%S/}".format(datetime.now())
 # 设置 SummaryWriter 的路径
-WRITER_PATH = "./logs/1x1/4_phases/equal_entries_350/CTB/" + TIMESTAMP
-STORE_PATH  = "./models/1x1/4_phases/equal_entries_350/CTB/checkpoint/" + TIMESTAMP
+############################ -1----修改路径----------------------#############################
+WRITER_PATH = "/home/xiaowen/sumo-rl/experiments/logs/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/91/" + TIMESTAMP
+STORE_PATH  = "/home/xiaowen/sumo-rl/experiments/models/1x1/4_phases/equal_entries_350/Bus_Car/Eq350_BC_100-0-100-0/91/" + TIMESTAMP
 
 # 如果目录不存在，则创建
 for path in (WRITER_PATH, STORE_PATH):
@@ -37,7 +32,7 @@ for path in (WRITER_PATH, STORE_PATH):
 #实例化tensorboard的类SummaryWriter
 tb_writer = SummaryWriter(log_dir = WRITER_PATH)
 
-
+############################ -2----修改GPU第几块----------------------#############################
 device = torch.device("cuda:0" if torch.cuda.is_available() else "CPU")
 torch.cuda.set_device(device)
 print(device)
@@ -51,13 +46,13 @@ x = torch.randn(1024, 1024, device=device)
 print("Allocated:", torch.cuda.memory_allocated(device))
 print("Reserved: ", torch.cuda.memory_reserved(device))
 
-episodes = 2000
+episodes = 5000
 checkpoint_interval = 5
 seed = 0
 torch.manual_seed(seed)
 random.seed(seed)
 np.random.seed(seed)
-    
+
 if __name__ == "__main__":
     prs = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="""Q-Learning Single-Intersection"""
@@ -65,8 +60,8 @@ if __name__ == "__main__":
     prs.add_argument(
         "-route",
         dest="route",
-        type=str,
-        default="./nets/syc/1x1/Equal_entries_350_bus/equal_entries_350_bus.rou.xml",
+        type=str,   
+        default="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml", ############################ -3----修改rou文件的路径----------------------#############################
         help="Route definition xml file.\n",
     )
     prs.add_argument("-a", dest="alpha", type=float, default=0.1, required=False, help="Alpha learning rate.\n")
@@ -89,9 +84,9 @@ if __name__ == "__main__":
     out_csv = f"outputs/syc/{experiment_time}_alpha{args.alpha}_gamma{args.gamma}_eps{args.epsilon}_decay{args.decay}"
 
     env = SumoEnvironment(
-        net_file="./nets/syc/1x1/Equal_entries_350_bus/syc_4phases.net.xml",
+        net_file="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/syc_4phases.net.xml", ############################ -4----修改net文件的路径----------------------#############################
         route_file=args.route,
-        cfg_file = "./nets/syc/1x1/Equal_entries_350_bus/syc_4phases_equal_entries_350_bus.sumocfg",
+        cfg_file = "/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.sumocfg", ############################ -5----修改cfg文件的路径----------------------#############################
         out_csv_name=out_csv,
         use_gui=False,
         num_seconds=args.seconds,
@@ -100,11 +95,8 @@ if __name__ == "__main__":
         use_max_green = True,
         sumo_seed = seed, #固定住seed
         #single_agent= True, #设置成True貌似TL会报错。
-        observation_class = CTBPriorityObservationFunction,
-        ctb_alpha=1.2,
-        ctb_beta=1.5,
-        ctb_gamma=3.0,
-        reward_fn = "CTB_priority-pressure",
+        observation_class = PriorityObservationFunction, ############################ -6----修改observation----------------------#############################
+        reward_fn = "91-priority-pressure",   ############################ --7---修改reward函数----------------------#############################
         delta_time = 5,
     )
 

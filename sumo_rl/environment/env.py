@@ -14,23 +14,26 @@ else:
 import gymnasium as gym
 import numpy as np
 import pandas as pd
-LIBSUMO = 0
-if LIBSUMO: 
+LIBSUMO = int(os.environ.get("SUMO_RL_LIBSUMO", "1")) 
+
+if LIBSUMO:
     import libsumo as traci
+    print("✅ Using libsumo (C++ accelerated, faster).")
 else:
     import traci
+    print("⚠️ Using traci (Python client, slower).")
+
 from gymnasium.utils import EzPickle, seeding
 from pettingzoo import AECEnv
 from pettingzoo.utils import agent_selector, wrappers
 from pettingzoo.utils.conversions import parallel_wrapper_fn
 
+from .metrics import CTBMetricsCollector, DirectionalMetricsCollector
+
 from .observations import DefaultObservationFunction, ObservationFunction
 from .traffic_signal import TrafficSignal
 
 from datetime import datetime
-
-
-
 
 
 
@@ -101,7 +104,7 @@ class SumoEnvironment(gym.Env):
         delta_time: int = 5,
         yellow_time: int = 2,
         min_green: int = 5,
-        max_green: int = 50,
+        max_green: int = 60,
         single_agent: bool = False,
         use_max_green: bool = False,
         reward_fn: Union[str, Callable, dict] = "diff-waiting-time",
@@ -210,50 +213,13 @@ class SumoEnvironment(gym.Env):
         self.rewards = {ts: None for ts in self.ts_ids}
         self.sim_step_counter = 0
         self.list_metrics = []
-        self.throughput_per_direction = {"N_S": 0, "W_E": 0}
-        self.throughput_N_S ={}
-        self.throughput_W_E = {}
-        self.total_throughput = 0
-        self.list_average_speed_per_direction = {"N_S": [], "W_E": []}
-        self.list_overall_average_speed = []
-        self.list_average_waiting_time_per_direction = {"N_S": [], "W_E": []}
-        self.list_overall_average_waiting_time = []
-        self.list_sum_waiting_time_per_direction = {"N_S": [], "W_E": []}
-        self.list_sum_overall_waiting_time = []
-        self.list_stopped_times_per_direction = {"N_S": [], "W_E": []}
-        self.list_total_stopped_times = []
-        self.generated_vehicle_ids_N_S = set()  # 用于存储N_S方向生成的车辆ID
-        self.generated_vehicle_ids_W_E = set()  # 用于存储W_E方向生成的车辆ID
-        self.number_produced_vehicles = {"N_S": 0, "W_E": 0}
-        ##########CTB Metrics################
-        self.total_number_produced_vehicles = {"car": 0, "bus": 0, "truck": 0}
-        self.total_generated_vehicle_ids = {"car": set(), "bus": set(), "truck": set()}
-        self.total_throughput_per_type = {"car": set(), "truck": set(), "bus": set()}
-        self.CTB_Metrics = {}
-        self.step_history_CTB = {
-            "per_type": {
-                "car": {
-                    "count": [], "sum_wait": [], "sum_speed": [],
-                    "avg_wait": [], "avg_speed": [],
-                    "stopped": [], "produced": [], "throughput": []
-                },
-                "truck": {
-                    "count": [], "sum_wait": [], "sum_speed": [],
-                    "avg_wait": [], "avg_speed": [],
-                    "stopped": [], "produced": [], "throughput": []
-                },
-                "bus": {
-                    "count": [], "sum_wait": [], "sum_speed": [],
-                    "avg_wait": [], "avg_speed": [],
-                    "stopped": [], "produced": [], "throughput": []
-                },
-            },
-            "overall": {
-                "total_count": [], "avg_wait": [], "avg_speed": [],
-                "total_stopped": [], "total_produced": [], "total_throughput": []
-            }
-        }
-        print("This is local env.py")
+        # Metrics collectors (used when self.evaluation=True)
+        self.directional_metrics_collector = DirectionalMetricsCollector()
+        self.metrics_collector = CTBMetricsCollector()
+        # Backward-compat aliases (kept as empty dicts/dict until first collect_step)
+        self.CTB_Metrics: dict = {}
+        self.step_history_CTB: dict = self.metrics_collector.step_history
+        print("✅This is local env.py")
         
 
     def _start_simulation(self):
@@ -355,7 +321,7 @@ class SumoEnvironment(gym.Env):
         if self.single_agent:
             return self._compute_observations()[self.ts_ids[0]], self._compute_info()
         else:
-            a=self._compute_observations()
+            # a=self._compute_observations()
             return self._compute_observations()
 
     @property
@@ -467,288 +433,20 @@ class SumoEnvironment(gym.Env):
         return self.traffic_signals[ts_id].action_space
 
     def evaluation_metrics(self):
-       
-        N_S_lanes = ["n_t_0", "n_t_1", "n_t_2", 
-            "t_s_0", "t_s_1", "t_s_2", 
-            "s_t_0", "s_t_1", "s_t_2", 
-            "t_n_0", "t_n_1", "t_n_2"]
+        """Collect per-direction (N_S / W_E) metrics for the current step.
 
-        W_E_lanes = ["w_t_0", "w_t_1", "w_t_2",
-                    "t_e_0", "t_e_1", "t_e_2",
-                    "e_t_0", "e_t_1", "e_t_2",
-                    "t_w_0", "t_w_1", "t_w_2"]
+        Results are stored in self.directional_metrics_collector.
+        """
+        self.directional_metrics_collector.collect_step(self.sumo)
 
-        N_S_incoming_lanes = ["n_t_0", "n_t_1", "n_t_2", 
-            "s_t_0", "s_t_1", "s_t_2"]
-        
-        W_E_incoming_lanes = ["w_t_0", "w_t_1", "w_t_2",
-                    "e_t_0", "e_t_1", "e_t_2"]
-        
-        sum_waiting_time_per_direction = {"N_S": 0.0, "W_E": 0.0}
-        sum_speed_per_direction = {"N_S": 0.0, "W_E": 0.0}
-        
-        
-        average_speed_per_direction = {"N_S": 0.0, "W_E": 0.0}
-        average_waiting_time_per_direction = {"N_S": 0.0, "W_E": 0.0}
-        stopped_times_per_direction = {"N_S": 0.0, "W_E": 0.0}
-        veh_count = {"N_S": 0, "W_E": 0}
-        
-        
-    
-        lanes_vehicles_list = []
-        # 这里只考虑了车道上的车，没有考虑交叉口中的
-        #N-S方向
-        for n_s_lane in N_S_lanes:
-            n_s_veh_list = self.sumo.lane.getLastStepVehicleIDs(n_s_lane)
-            veh_count["N_S"] += len(n_s_veh_list)
-            # 计算waiting time, average speed
-            for n_s_veh in n_s_veh_list:
-                #把车加入到车道车辆列表中
-                lanes_vehicles_list.append(n_s_veh)
-                
-                #计算waiting time,函数返回是瞬时的的waiting time
-                n_s_wait_time = self.sumo.vehicle.getWaitingTime(n_s_veh)
-                sum_waiting_time_per_direction["N_S"] += n_s_wait_time
-                
-                #计算speed
-                n_s_speed = self.sumo.vehicle.getSpeed(n_s_veh)
-                sum_speed_per_direction["N_S"] += n_s_speed
-        
-            # 计算stopped times
-            n_s_lane_stopped_times = self.sumo.lane.getLastStepHaltingNumber(n_s_lane)
-            stopped_times_per_direction["N_S"] += n_s_lane_stopped_times
-                    
-            
-        # 计算W-E方向上的累积等待时间
-        for w_e_lane in W_E_lanes:
-            w_e_veh_list = self.sumo.lane.getLastStepVehicleIDs(w_e_lane)
-            veh_count["W_E"] += len(w_e_veh_list)
-            # 计算waiting time, average speed
-            for w_e_veh in w_e_veh_list:
-                
-                lanes_vehicles_list.append(w_e_veh)
-                
-                w_e_wait_time = self.sumo.vehicle.getWaitingTime(w_e_veh)
-                sum_waiting_time_per_direction["W_E"] += w_e_wait_time
-                
-                
-                w_e_speed = self.sumo.vehicle.getSpeed(w_e_veh)
-                sum_speed_per_direction["W_E"] += w_e_speed
-                
-            # 计算stopped times
-            w_e_lane_stopped_times = self.sumo.lane.getLastStepHaltingNumber(w_e_lane)
-            stopped_times_per_direction["W_E"] += w_e_lane_stopped_times
-        
-        # 考虑交叉口中的车,用所有车的ID减去车道上的车
-        all_vehicles_list = self.sumo.vehicle.getIDList()
-        # 获取交叉口中的车辆ID列表
-        intersection_vehicles_list = list(set(all_vehicles_list) - set(lanes_vehicles_list))
-        #更新车辆数量，更新speed list等 + 计算throughput（车辆在交叉口意味着throughput+=1，通过记录在交叉口的车辆ID来计算）
-        #不需要更新waiting time和stopped times，因为交叉口不会等待和停车
-        for intersection_vehicle_id in intersection_vehicles_list:
-            route = self.sumo.vehicle.getRoute(intersection_vehicle_id)
-            
-            if route and len(route) > 0:
-                direction = route[0]
-                if direction in ['n_t', 's_t']:
-                    n_s_intersection_speed = self.sumo.vehicle.getSpeed(intersection_vehicle_id)
-                    sum_speed_per_direction["N_S"] += n_s_intersection_speed
-                    veh_count["N_S"] += 1
-                    self.throughput_N_S[intersection_vehicle_id] = 1
-                    a=1
-                    
-                elif direction in ['w_t', 'e_t']:
-                    w_e_intersection_speed = self.sumo.vehicle.getSpeed(intersection_vehicle_id)
-                    sum_speed_per_direction["W_E"] += w_e_intersection_speed
-                    veh_count["W_E"] += 1
-                    self.throughput_W_E[intersection_vehicle_id]=1
-                    b=1
-        
-        for lane in N_S_incoming_lanes:
-            vehicle_ids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            self.generated_vehicle_ids_N_S.update(vehicle_ids)
-
-        for lane in W_E_incoming_lanes:
-            vehicle_ids = self.sumo.lane.getLastStepVehicleIDs(lane)
-            self.generated_vehicle_ids_W_E.update(vehicle_ids)
-
-        self.number_produced_vehicles["W_E"] = len(self.generated_vehicle_ids_W_E)
-        self.number_produced_vehicles["N_S"] = len(self.generated_vehicle_ids_N_S)
-        
-        self.throughput_per_direction["N_S"] = len(self.throughput_N_S)
-        self.throughput_per_direction["W_E"] = len(self.throughput_W_E)
-        self.total_throughput = self.throughput_per_direction["N_S"] + self.throughput_per_direction["W_E"]
-        
-        average_waiting_time_per_direction = {
-        direction: sum_waiting_time_per_direction[direction] / veh_count[direction] if veh_count[direction] > 0 else 0
-        for direction in ["N_S", "W_E"]
-        }
-        
-        average_speed_per_direction = {
-            direction: sum_speed_per_direction[direction] / veh_count[direction] if veh_count[direction] > 0 else 0
-            for direction in ["N_S", "W_E"]
-        }
-        
-        # Calculate overall average speed
-        total_count = veh_count["N_S"] + veh_count["W_E"]
-        
-        total_stopped_times = stopped_times_per_direction["N_S"] + stopped_times_per_direction["W_E"]
-        overall_average_speed = (sum(sum_speed_per_direction.values()) / total_count) if total_count > 0 else 0
-        
-        sum_overall_waiting_time = sum(sum_waiting_time_per_direction.values())
-       
-        
-        overall_average_waiting_time = (sum(sum_waiting_time_per_direction.values()) / total_count) if total_count > 0 else 0
-       
-        info = self._get_system_info()
-        
-        #把每一个step的平均速度，等待时间存在list中，warm up之后取这个list平均值作为这一个1000step的evaluation的值
-        self.list_average_speed_per_direction["N_S"].append(average_speed_per_direction["N_S"])
-        self.list_average_speed_per_direction["W_E"].append(average_speed_per_direction["W_E"])
-        self.list_overall_average_speed.append(overall_average_speed)
-        
-        self.list_average_waiting_time_per_direction["N_S"].append(average_waiting_time_per_direction["N_S"])
-        self.list_average_waiting_time_per_direction["W_E"].append(average_waiting_time_per_direction["W_E"])
-        self.list_overall_average_waiting_time.append(overall_average_waiting_time)
-        
-        self.list_sum_waiting_time_per_direction["N_S"].append(sum_waiting_time_per_direction["N_S"])
-        self.list_sum_waiting_time_per_direction["W_E"].append(sum_waiting_time_per_direction["W_E"])
-        self.list_sum_overall_waiting_time.append(sum_overall_waiting_time)
-        
-        self.list_stopped_times_per_direction["N_S"].append(stopped_times_per_direction["N_S"])
-        self.list_stopped_times_per_direction["W_E"].append(stopped_times_per_direction["W_E"])
-        self.list_total_stopped_times.append(total_stopped_times)
-        a=1
-    
     def evaluation_metrics_CTB(self):
-        # 定义所有车道（用于统计当前步所有车辆）
-        lanes = [
-        "n_t_0","n_t_1","n_t_2","t_s_0","t_s_1","t_s_2",
-        "s_t_0","s_t_1","s_t_2","t_n_0","t_n_1","t_n_2",
-        "w_t_0","w_t_1","w_t_2","t_e_0","t_e_1","t_e_2",
-        "e_t_0","e_t_1","e_t_2","t_w_0","t_w_1","t_w_2"
-        ]
-        incoming = ["n_t_0","n_t_1","n_t_2","s_t_0","s_t_1","s_t_2",
-                    "w_t_0","w_t_1","w_t_2","e_t_0","e_t_1","e_t_2"]
+        """Collect per-vehicle-type (Car / Truck / Bus) metrics for the current step.
 
-        # 初始化按车型累加器，记录每一步产生的所有车辆的加和信息
-        types_ = ["car","truck","bus"]
-        sum_wait    = {t:0.0 for t in types_}
-        sum_speed   = {t:0.0 for t in types_}
-        count_veh   = {t:0   for t in types_}
-        sum_stopped = {t:0   for t in types_}
-        
-        # ---- 在这里初始化 lane_ids ----
-        lane_ids = set() #用于记录在进出车道上的车辆id，用于后续算交叉口中的车辆id
-
-         # 车道统计：等待、速度、停车
-        for lane in lanes:
-            vehs  = self.sumo.lane.getLastStepVehicleIDs(lane)
-            # 把本车道车辆 ID 加到 lane_ids
-            lane_ids.update(vehs)
-
-            for vid in vehs:
-                t = self.sumo.vehicle.getTypeID(vid)
-                if t not in types_:
-                    continue
-                a= self.sumo.vehicle.getWaitingTime(vid)
-                c=self.sumo.vehicle.getAccumulatedWaitingTime(vid)
-                b= self.sumo.vehicle.getSpeed(vid)
-                sum_wait[t]    += self.sumo.vehicle.getAccumulatedWaitingTime(vid)
-                sum_speed[t]   += self.sumo.vehicle.getSpeed(vid)
-                count_veh[t]   += 1
-                # 停滞判断 直接检测这辆车是不是停着（速度接近 0），如果是就 +1
-                if self.sumo.vehicle.getSpeed(vid) < 0.1:
-                    sum_stopped[t] += 1
-                # 因为车辆肯定从进车道产生，所有我只要遍历过了进车道，就可以记录一共产生过多少车
-                # 如果在入口车道上，则认为“新生成”，加入去重集合
-             
-                self.total_generated_vehicle_ids[t].add(vid)
-
-
-
-        # 交叉口车辆：统计通过量和速度，用所有车辆id-进出车道上的id
-        all_ids  = set(self.sumo.vehicle.getIDList())       
-        inters   = all_ids - lane_ids
-        
-        for vid in inters:
-            t = self.sumo.vehicle.getTypeID(vid)
-            if t not in types_:
-                continue
-            
-            sum_speed[t] += self.sumo.vehicle.getSpeed(vid)
-            count_veh[t] += 1
-            self.total_throughput_per_type[t].add(vid) #把进入过路口的车辆都加入到set里，通过set的长度来判度throughput
-            
-            # 交叉口这里不会出现停车和等待，保险起见还是加了
-            c=self.sumo.vehicle.getAccumulatedWaitingTime(vid)
-            b= self.sumo.vehicle.getSpeed(vid)
-            sum_wait[t] += self.sumo.vehicle.getAccumulatedWaitingTime(vid)
-            # 停滞判断 直接检测这辆车是不是停着（速度接近 0），如果是就 +1
-            if self.sumo.vehicle.getSpeed(vid) < 0.1:
-                sum_stopped[t] += 1
-            self.total_generated_vehicle_ids[t].add(vid)
-
-        # 在统计完所有车道后，更新总计数字 ——  
-        for t in types_:
-            self.total_number_produced_vehicles[t] = len(self.total_generated_vehicle_ids[t])
-            
-        # 汇总整体指标
-        # 6) 计算整体指标
-        total_count      = sum(count_veh.values()) #当前step有多少车
-        total_wait_sum   = sum(sum_wait.values()) #当前step所有车的waiting time求和
-        total_speed_sum  = sum(sum_speed.values()) #当前step所有车的speed求和
-        throughput = {t: len(self.total_throughput_per_type[t]) for t in types_}
-        total_throughput = sum(throughput.values()) #从开始到现在未知的throughput
-        total_stopped    = sum(sum_stopped.values()) #当前step有几个停的车
-        total_produced   = sum(self.total_number_produced_vehicles.values()) #从开始到现在产生了多少个车
-
-        overall = {
-            "total_count"     : total_count,
-            "avg_wait"        : (total_wait_sum  / total_count)     if total_count else 0.0,
-            "avg_speed"       : (total_speed_sum / total_count)     if total_count else 0.0,
-            "total_stopped"   : total_stopped,
-            "total_produced"  : total_produced,
-            "total_throughput": total_throughput,
-        }
-
-        # 7) 构建 per_type 结果
-        per_type = {}
-        for t in types_:
-            c = count_veh[t]
-            per_type[t] = {
-                "count"          : c,
-                "sum_wait"       : sum_wait[t],
-                "sum_speed"      : sum_speed[t],
-                "avg_wait"       : (sum_wait[t]  / c) if c else 0.0,
-                "avg_speed"      : (sum_speed[t] / c) if c else 0.0,
-                "stopped"        : sum_stopped[t],
-                "produced" : self.total_number_produced_vehicles[t],
-                "throughput"     : throughput[t],
-            }
-
-        # 8) 将本步数据 append 到 step_history_CTB
-        for t, stats in per_type.items():
-            buf = self.step_history_CTB["per_type"][t]
-            buf["count"].append(     stats["count"])
-            buf["sum_wait"].append(  stats["sum_wait"])
-            buf["sum_speed"].append( stats["sum_speed"])
-            buf["avg_wait"].append(  stats["avg_wait"])
-            buf["avg_speed"].append( stats["avg_speed"])
-            buf["stopped"].append(   stats["stopped"])
-            buf["produced"].append(  stats["produced"])
-            buf["throughput"].append(stats["throughput"])
-
-        ob = self.step_history_CTB["overall"]
-        ob["total_count"].append(     overall["total_count"])
-        ob["avg_wait"].append(        overall["avg_wait"])
-        ob["avg_speed"].append(       overall["avg_speed"])
-        ob["total_stopped"].append(   overall["total_stopped"])
-        ob["total_produced"].append(  overall["total_produced"])
-        ob["total_throughput"].append(overall["total_throughput"])
-
-        # 9) 最后写回 CTB_Metrics 保持兼容
-        self.CTB_Metrics = {"per_type": per_type, "overall": overall}
+        Results stored in self.metrics_collector.
+        self.CTB_Metrics and self.step_history_CTB are kept in sync.
+        """
+        self.metrics_collector.collect_step(self.sumo)
+        self.CTB_Metrics = self.metrics_collector.CTB_Metrics
         
     def _sumo_step(self):
         if self.evaluation:

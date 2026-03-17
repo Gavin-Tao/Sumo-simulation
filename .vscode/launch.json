@@ -1,12 +1,14 @@
 {
-    "name": "Python: Run with debugpy (3.7)",
-    "type": "python",
-    "request": "launch",
-    "program": "${workspaceFolder}/experiments/dqn_syc_txw_1x1_4phases_evaluation.py",
-    "python": "D:/Anaconda/envs/work_sumo_rl/python.exe",
-    "justMyCode": false,
-    "console": "integratedTerminal",
-    "env": {
-        "PYTHONPATH": "${workspaceFolder}"
-    }
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "SUMO RL Debug (Current File)",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${fileDirname}",
+            "justMyCode": false
+        }
+    ]
 }

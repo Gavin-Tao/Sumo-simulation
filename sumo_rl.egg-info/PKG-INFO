@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: sumo-rl
 Version: 1.4.3
 Summary: RL environments and learning code for traffic signal control in SUMO.
@@ -11,10 +11,21 @@ Project-URL: Bug Report, https://github.com/LucasAlegre/sumo-rl/issues
 Keywords: Reinforcement Learning,Traffic Signal Control,SUMO,RL,PettingZoo,gymnasium
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
-Provides-Extra: rendering
-Provides-Extra: all
-Provides-Extra: testing
 License-File: LICENSE
+Requires-Dist: gymnasium>=0.26
+Requires-Dist: pettingzoo>=1.22.2
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pillow
+Requires-Dist: sumolib>=1.14.0
+Requires-Dist: traci>=1.14.0
+Provides-Extra: rendering
+Requires-Dist: pyvirtualdisplay; extra == "rendering"
+Provides-Extra: all
+Requires-Dist: pyvirtualdisplay; extra == "all"
+Provides-Extra: testing
+Requires-Dist: pytest==7.1.3; extra == "testing"
+Dynamic: license-file
 
 <img src="docs/_static/logo.png" align="right" width="30%"/>
 

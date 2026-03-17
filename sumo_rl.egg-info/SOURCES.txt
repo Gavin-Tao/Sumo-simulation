@@ -9,8 +9,16 @@ sumo_rl.egg-info/dependency_links.txt
 sumo_rl.egg-info/requires.txt
 sumo_rl.egg-info/top_level.txt
 sumo_rl/agents/__init__.py
+sumo_rl/agents/dqn_agent.py
+sumo_rl/agents/dqn_agent_txw.py
+sumo_rl/agents/dqn_agent_txw_2layers.py
+sumo_rl/agents/dqn_agent_txw_3layers.py
+sumo_rl/agents/dqn_agent_txw_dynamic_weight.py
+sumo_rl/agents/dqn_model.py
 sumo_rl/agents/ql_agent.py
+sumo_rl/agents/replay_memory.py
 sumo_rl/environment/__init__.py
+sumo_rl/environment/bnf_parser.py
 sumo_rl/environment/env.py
 sumo_rl/environment/observations.py
 sumo_rl/environment/resco_envs.py

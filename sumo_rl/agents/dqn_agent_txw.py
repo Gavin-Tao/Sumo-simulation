@@ -64,7 +64,7 @@ class DQN:
         
         self.count = 0  # 计数器,记录更新次数
         self.device = device
-        self.loss = 0
+        self.loss = None
         self.start_train = False
 
     def take_action(self, state):  # epsilon-贪婪策略采取动作
