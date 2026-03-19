@@ -1,5 +1,5 @@
-# Experiment: exp20 — PressLight obs, pressure reward, 1x3 grid, delta time 5
-name: "exp24_presslight_1x1_delta_5"
+# Experiment: exp28 — Priority obs, 21-priority-pressure reward, 1x1 grid, delta 5
+name: "exp28_priority_1x1_21_delta_5"
 
 # wandb
 wandb_project: "sumo-rl-1x1"
@@ -10,8 +10,8 @@ route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-
 cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.sumocfg"
 
 # Environment
-observation_class: "PressLight"
-reward_fn:         "pressure"
+observation_class: "Priority"
+reward_fn:         "21-priority-pressure"
 num_seconds:       1000
 delta_time:        5
 yellow_time:       2
@@ -35,7 +35,7 @@ eps_decay:     1000
 
 # Training
 seed:                0
-episodes:            2000
+episodes:            5000
 checkpoint_interval: 5
 runs:                1
 
