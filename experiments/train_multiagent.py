@@ -95,7 +95,10 @@ def train(cfg: dict, timestamp: str):
 
     # ── Seed ──────────────────────────────────────────────────────────────────
     set_seed(cfg.get("seed", 0))
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if args.gpu >= 0 and torch.cuda.is_available():
+        device = torch.device(f"cuda:{args.gpu}")
+    else:
+        device = torch.device("cpu")
 
     # logging_mode: "none" | "basic" | "full"
     #   none  – no wandb logging at all
@@ -258,6 +261,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="SUMO-RL multi-agent DQN trainer")
     parser.add_argument("--config", default="./configs/exp18_presslight.yaml",
                         help="Path to YAML config file")
+    parser.add_argument("--gpu", type=int, default=0,
+                        help="GPU index to use (default: 0); -1 for CPU")
     args = parser.parse_args()
 
     with open(args.config) as f:
