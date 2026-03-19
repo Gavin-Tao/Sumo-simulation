@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-03-19 17:32:28 by Eclipse SUMO GUI Version 1.24.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_40-60-40-60-Bus-Car/syc_4phases.net.xml"/>
+        <route-files value="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_40-60-40-60-Bus-Car/Eq_350_40-60-40-60-Bus-Car.rou.xml"/>
+        <additional-files value="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_40-60-40-60-Bus-Car/1x1_outputs.add.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_40-60-40-60-Bus-Car/output/fcd_output.xml"/>
+        <tripinfo-output value="/home/xiaowen/sumo-rl/nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_40-60-40-60-Bus-Car/output/tripinfo.out.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+    </time>
+
+</sumoConfiguration>
+-->
+
+<tlsSwitches xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tlsswitches_file.xsd">
+   <tlsSwitch id="t" programID="0" fromLane="n_t_0" toLane="t_w_0" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="e_t_0" toLane="t_n_0" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="e_t_1" toLane="t_w_1" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="s_t_0" toLane="t_e_0" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="w_t_0" toLane="t_s_0" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="w_t_1" toLane="t_e_1" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="n_t_0" toLane="t_w_0" begin="38.00" end="71.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="e_t_0" toLane="t_n_0" begin="38.00" end="71.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="e_t_2" toLane="t_s_2" begin="38.00" end="71.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="s_t_0" toLane="t_e_0" begin="38.00" end="71.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="w_t_0" toLane="t_s_0" begin="38.00" end="71.00" duration="33.00"/>
+   <tlsSwitch id="t" programID="0" fromLane="w_t_2" toLane="t_n_2" begin="38.00" end="71.00" duration="33.00"/>
+</tlsSwitches>

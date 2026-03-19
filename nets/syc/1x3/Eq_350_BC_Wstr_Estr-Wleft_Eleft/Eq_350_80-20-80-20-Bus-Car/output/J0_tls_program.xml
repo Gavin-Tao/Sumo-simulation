@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-03-19 17:42:17 by Eclipse SUMO GUI Version 1.24.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_80-20-80-20-Bus-Car/1x3_4phases.net.xml"/>
+        <route-files value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_80-20-80-20-Bus-Car/Eq_350_80-20-80-20-Bus-Car.rou.xml"/>
+        <additional-files value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_80-20-80-20-Bus-Car/1x3_outputs.add.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_80-20-80-20-Bus-Car/output/fcd_output.xml"/>
+        <tripinfo-output value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_80-20-80-20-Bus-Car/output/tripinfo.out.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="5000"/>
+    </time>
+
+</sumoConfiguration>
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <tlLogic id="J0" type="static" programID="0">
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="13.00" state="GrgGrrGrgGrr"/>
+    </tlLogic>
+</additional>

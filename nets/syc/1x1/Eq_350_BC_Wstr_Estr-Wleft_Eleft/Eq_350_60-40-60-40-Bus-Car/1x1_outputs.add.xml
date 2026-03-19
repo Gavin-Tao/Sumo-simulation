@@ -1,0 +1,17 @@
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+
+	<edgeData id="1" file="output/edgedata.out.xml" begin="0" end="1000" freq="10"/>
+	
+	<!-- 每步都输出信号灯状态 (完整逐步 G/Y/R 序列) -->
+    <timedEvent type="SaveTLSStates" source="t" dest="output/tls_states.xml"/>
+
+    <!-- 只在相位切换时输出 (切换时间点) -->
+    <timedEvent type="SaveTLSSwitchTimes" source="t" dest="output/tls_switches.xml"/>
+
+    <!-- 只在相位切换时输出状态字符串 -->
+    <timedEvent type="SaveTLSSwitchStates" source="t" dest="output/tls_switchStates.xml"/>
+
+    <!-- 导出完整的控制程序 (phases + 时长) -->
+    <timedEvent type="SaveTLSProgram" source="t" dest="output/tls_program.xml"/>
+
+</additional>

@@ -37,3 +37,7 @@ seed:                0
 episodes:            5000
 checkpoint_interval: 5
 runs:                1
+
+# Logging
+logging_mode:     "full"
+metrics_interval: 50

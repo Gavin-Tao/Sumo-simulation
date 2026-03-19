@@ -38,6 +38,7 @@ else:
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
+from sumo_rl.environment.metrics import EpisodeMetricsCollector
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -96,15 +97,23 @@ def train(cfg: dict, timestamp: str):
     set_seed(cfg.get("seed", 0))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    # logging_mode: "none" | "basic" | "full"
+    #   none  – no wandb logging at all
+    #   basic – reward / loss / epsilon only  (default)
+    #   full  – basic + EpisodeMetricsCollector every metrics_interval episodes
+    logging_mode     = cfg.get("logging_mode", "basic")
+    metrics_interval = cfg.get("metrics_interval", 50)
+
     # ── wandb ─────────────────────────────────────────────────────────────────
-    wandb.init(
-        project=cfg.get("wandb_project", "sumo-rl"),
-        group=exp_name,
-        name=run_id,
-        config=cfg,
-        dir="./logs/wandb",
-        reinit=True,
-    )
+    if logging_mode != "none":
+        wandb.init(
+            project=cfg.get("wandb_project", "sumo-rl"),
+            group=exp_name,
+            name=run_id,
+            config=cfg,
+            dir="./logs/wandb",
+            reinit=True,
+        )
 
     # ── Environment ───────────────────────────────────────────────────────────
     obs_class = OBS_REGISTRY[cfg["observation_class"]]
@@ -132,6 +141,9 @@ def train(cfg: dict, timestamp: str):
     # ── Training ──────────────────────────────────────────────────────────────
     for run in range(1, cfg.get("runs", 1) + 1):
         initial_states = env.reset(env.sumo_seed)
+
+        # Build lane map once (lane structure is fixed across episodes)
+        ts_lane_map = {ts: env.traffic_signals[ts].lanes for ts in env.ts_ids}
 
         # 每个路口独立的 DQN agent
         agents = {
@@ -162,20 +174,28 @@ def train(cfg: dict, timestamp: str):
                 initial_states = env.reset(env.sumo_seed)
 
             done = {"__all__": False}
+            # Only create the collector on episodes where we will log full metrics
+            do_full = (logging_mode == "full") and (episode % metrics_interval == 0)
+            mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time) if do_full else None
 
             while not done["__all__"]:
+                # ── Collect metrics (only on designated episodes) ─────────────
+                if mc is not None:
+                    mc.collect_step(env.sumo)
+
                 # ── Act ───────────────────────────────────────────────────────
                 actions = {ts: agents[ts].take_action(initial_states[ts]) for ts in env.ts_ids}
                 s, r, done, info = env.step(action=actions)
 
-                # ── Log to wandb ──────────────────────────────────────────────
-                log_dict = {k: v for k, v in info.items()}  # type: ignore[union-attr]
-                for ts_id in env.ts_ids:
-                    if r[ts_id] is not None:  # type: ignore[index]
-                        log_dict["reward_" + ts_id] = r[ts_id]  # type: ignore[index]
-                    if agents[ts_id].loss is not None:
-                        log_dict["loss_" + ts_id] = agents[ts_id].loss
-                wandb.log(log_dict, step=step_counter)
+                # ── Log to wandb per-step (basic & full both log reward/loss) ──
+                if logging_mode != "none":
+                    log_dict = {k: v for k, v in info.items()}  # type: ignore[union-attr]
+                    for ts_id in env.ts_ids:
+                        if r[ts_id] is not None:  # type: ignore[index]
+                            log_dict["reward_" + ts_id] = r[ts_id]  # type: ignore[index]
+                        if agents[ts_id].loss is not None:
+                            log_dict["loss_" + ts_id] = agents[ts_id].loss
+                    wandb.log(log_dict, step=step_counter)
                 step_counter += 1
 
                 # ── Store & update (per agent) ────────────────────────────────
@@ -208,7 +228,12 @@ def train(cfg: dict, timestamp: str):
                 for metric in env.metrics:
                     env.list_metrics.append(metric)
 
-            if any(ag.start_train for ag in agents.values()):
+            # ── Full metrics log (only on designated episodes) ────────────────
+            if mc is not None:
+                mc.finalize(env.sumo)
+                wandb.log(mc.to_flat_dict(prefix="metrics"), step=step_counter)
+
+            if any(ag.start_train for ag in agents.values()) and logging_mode != "none":
                 eps_dict = {f"train/epsilon_{ts}": ag.epsilon for ts, ag in agents.items()}
                 eps_dict["train/episode"] = episode
                 wandb.log(eps_dict, step=step_counter)
@@ -224,7 +249,8 @@ def train(cfg: dict, timestamp: str):
         env.txw_save_csv(out_csv, run)
         env.close()
 
-    wandb.finish()
+    if logging_mode != "none":
+        wandb.finish()
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
