@@ -1,5 +1,7 @@
+
+
 # 切换到 dev 分支（如果还没在上面）
 git checkout dev
-
+git checkout -- nets/
 # 拉取最新代码
 git pull origin dev
