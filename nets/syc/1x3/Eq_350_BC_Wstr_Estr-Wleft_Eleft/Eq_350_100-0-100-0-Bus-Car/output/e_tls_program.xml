@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-03-30 15:45:19 by Eclipse SUMO GUI Version 1.24.0
+<!-- generated on 2026-03-30 17:13:44 by Eclipse SUMO GUI Version 1.24.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_4phases.net.xml"/>
-        <route-files value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml"/>
-        <additional-files value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_outputs.add.xml"/>
+        <net-file value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_4phases.net.xml"/>
+        <route-files value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml"/>
+        <additional-files value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_outputs.add.xml"/>
     </input>
 
     <output>
-        <fcd-output value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/fcd_output.xml"/>
-        <tripinfo-output value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/tripinfo.out.xml"/>
+        <fcd-output value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/fcd_output.xml"/>
+        <tripinfo-output value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/tripinfo.out.xml"/>
     </output>
 
     <time>
@@ -19,14 +19,87 @@
         <end value="1000"/>
     </time>
 
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="1000"/>
+        <max-depart-delay value="-1"/>
+    </processing>
+
+    <traci_server>
+        <remote-port value="35523"/>
+    </traci_server>
+
+    <random_number>
+        <seed value="0"/>
+    </random_number>
+
+    <gui_only>
+        <quit-on-end value="true"/>
+        <start value="true"/>
+    </gui_only>
+
 </sumoConfiguration>
 -->
 
 <additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
-    <tlLogic id="e" type="static" programID="0">
-        <phase duration="33.00" state="GrrGGrGrrGGr"/>
-        <phase duration="3.00"  state="yrryyryrryyr"/>
-        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
-        <phase duration="8.00"  state="GrrGrgGrrGrg"/>
+    <tlLogic id="e" type="static" programID="online">
+        <phase duration="10.00" state="GrrGGrGrrGGr"/>
+        <phase duration="2.00"  state="GrrGyrGrrGyr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="28.00" state="GrrGGrGrrGGr"/>
+        <phase duration="2.00"  state="GrrGyrGrrGyr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="2.00"  state="GryGrrGryGrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
+        <phase duration="2.00"  state="GyrGrrGyrGrr"/>
+        <phase duration="8.00"  state="GrgGrrGrgGrr"/>
+        <phase duration="1.00"  state="GryGrrGryGrr"/>
     </tlLogic>
 </additional>

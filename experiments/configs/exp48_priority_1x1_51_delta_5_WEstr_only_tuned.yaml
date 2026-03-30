@@ -1,0 +1,51 @@
+# Experiment: exp48 — 51-priority-pressure, tuned hyperparams to prevent phase starvation
+# Changes vs exp46:
+#   eps_start:     0.5  -> 0.9   (more initial exploration)
+#   eps_decay:     1000 -> 150000 (explore for ~750 episodes before converging)
+#   capacity:      10000 -> 50000 (larger replay buffer = more diverse experience)
+#   lr:            0.01 -> 0.001  (slower, more stable learning)
+#   target_update: 10   -> 20     (less aggressive target network updates)
+#   episodes:      5000 -> 8000   (5:1 needs more time to converge)
+name: "exp48_priority_1x1_51_delta_5_WEstr_only_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x1"
+
+# SUMO files
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car_WEstr_only/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car_WEstr_only/Eq_350_100-0-100-0-Bus-Car_WEstr_only.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car_WEstr_only/Eq_350_100-0-100-0-Bus-Car_WEstr_only.sumocfg"
+
+# Environment
+observation_class: "Priority"
+reward_fn:         "51-priority-pressure"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters
+hidden_dim:    64
+lr:            0.001    # 0.01 -> 0.001: slower more stable convergence
+gamma:         0.99
+epsilon:       0.1
+target_update: 20       # 10 -> 20: less aggressive target updates
+capacity:      50000    # 10000 -> 50000: more diverse replay experience
+mini_size:     500
+batch_size:    256
+eps_start:     0.9      # 0.5 -> 0.9: more initial exploration
+eps_end:       0.01
+eps_decay:     150000   # 1000 -> 150000: epsilon reaches min ~ep750
+
+# Training
+seed:                0
+episodes:            8000   # 5000 -> 8000: 5:1 needs more time
+checkpoint_interval: 5
+runs:                1
+
+# Logging
+logging_mode:     "full"
+metrics_interval: 50

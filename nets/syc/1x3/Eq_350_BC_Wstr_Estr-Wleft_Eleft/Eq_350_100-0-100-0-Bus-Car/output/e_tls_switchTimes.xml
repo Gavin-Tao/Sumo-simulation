@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-03-30 15:45:19 by Eclipse SUMO GUI Version 1.24.0
+<!-- generated on 2026-03-30 17:13:44 by Eclipse SUMO GUI Version 1.24.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_4phases.net.xml"/>
-        <route-files value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml"/>
-        <additional-files value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_outputs.add.xml"/>
+        <net-file value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_4phases.net.xml"/>
+        <route-files value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/Eq_350_100-0-100-0-Bus-Car.rou.xml"/>
+        <additional-files value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/1x3_outputs.add.xml"/>
     </input>
 
     <output>
-        <fcd-output value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/fcd_output.xml"/>
-        <tripinfo-output value="/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/tripinfo.out.xml"/>
+        <fcd-output value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/fcd_output.xml"/>
+        <tripinfo-output value="../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-Bus-Car/output/tripinfo.out.xml"/>
     </output>
 
     <time>
@@ -19,14 +19,85 @@
         <end value="1000"/>
     </time>
 
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="1000"/>
+        <max-depart-delay value="-1"/>
+    </processing>
+
+    <traci_server>
+        <remote-port value="35523"/>
+    </traci_server>
+
+    <random_number>
+        <seed value="0"/>
+    </random_number>
+
+    <gui_only>
+        <quit-on-end value="true"/>
+        <start value="true"/>
+    </gui_only>
+
 </sumoConfiguration>
 -->
 
 <tlsSwitches xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tlsswitches_file.xsd">
-   <tlsSwitch id="e" programID="0" fromLane="-E1_0" toLane="e_t_0" begin="0.00" end="33.00" duration="33.00"/>
-   <tlsSwitch id="e" programID="0" fromLane="-E0_0" toLane="E1_0" begin="0.00" end="33.00" duration="33.00"/>
-   <tlsSwitch id="e" programID="0" fromLane="-E0_1" toLane="e_t_1" begin="0.00" end="33.00" duration="33.00"/>
-   <tlsSwitch id="e" programID="0" fromLane="-E2_0" toLane="E0_0" begin="0.00" end="33.00" duration="33.00"/>
-   <tlsSwitch id="e" programID="0" fromLane="t_e_0" toLane="E2_0" begin="0.00" end="33.00" duration="33.00"/>
-   <tlsSwitch id="e" programID="0" fromLane="t_e_1" toLane="E0_1" begin="0.00" end="33.00" duration="33.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E0_1" toLane="e_t_1" begin="0.00" end="10.00" duration="10.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="t_e_1" toLane="E0_1" begin="0.00" end="10.00" duration="10.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="12.00" end="20.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="12.00" end="20.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="22.00" end="30.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="22.00" end="30.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="32.00" end="40.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="32.00" end="40.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E0_1" toLane="e_t_1" begin="42.00" end="70.00" duration="28.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="t_e_1" toLane="E0_1" begin="42.00" end="70.00" duration="28.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="72.00" end="80.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="72.00" end="80.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="82.00" end="90.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="82.00" end="90.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="92.00" end="100.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="92.00" end="100.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="102.00" end="110.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="102.00" end="110.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="112.00" end="120.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="112.00" end="120.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="122.00" end="130.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="122.00" end="130.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="132.00" end="140.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="132.00" end="140.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="142.00" end="150.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="142.00" end="150.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="152.00" end="160.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="152.00" end="160.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="162.00" end="170.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="162.00" end="170.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="172.00" end="180.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="172.00" end="180.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="182.00" end="190.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="182.00" end="190.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="192.00" end="200.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="192.00" end="200.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="202.00" end="210.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="202.00" end="210.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="212.00" end="220.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="212.00" end="220.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="222.00" end="230.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="222.00" end="230.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="232.00" end="240.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="232.00" end="240.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="242.00" end="250.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="242.00" end="250.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="252.00" end="260.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="252.00" end="260.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="262.00" end="270.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="262.00" end="270.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="272.00" end="280.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="272.00" end="280.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="282.00" end="290.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="282.00" end="290.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_1" toLane="E2_1" begin="292.00" end="300.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_1" toLane="E1_1" begin="292.00" end="300.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E1_2" toLane="E0_2" begin="302.00" end="310.00" duration="8.00"/>
+   <tlsSwitch id="e" programID="online" fromLane="-E2_2" toLane="e_t_2" begin="302.00" end="310.00" duration="8.00"/>
 </tlsSwitches>
