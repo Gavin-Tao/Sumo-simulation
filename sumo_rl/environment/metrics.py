@@ -427,8 +427,11 @@ class EpisodeMetricsCollector:
         for vid in list(current_ids):
             if vid not in self._active:
                 continue
-            rec   = self._active[vid]
-            speed = sumo.vehicle.getSpeed(vid)
+            rec = self._active[vid]
+            try:
+                speed = sumo.vehicle.getSpeed(vid)
+            except Exception:
+                continue
             vtype = rec["type"]
             cur_ts = veh_ts.get(vid)     # None if not on any ts's approach lanes
 
@@ -551,17 +554,30 @@ class EpisodeMetricsCollector:
             "n_vehicles":    n,
             "throughput":    sum(1 for r in records if r["completed"]),
             "avg_speed":     s[0] / s[1] if s[1] else 0.0,
-            "avg_wait":      sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
-            "n_stop_events": sum(r["stop_count"] for r in records),
+            "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
+            "n_stop_events":   sum(r["stop_count"] for r in records),
+            "avg_stop_events": sum(r["stop_count"] for r in records) / n if n else 0.0,
         }
 
     def _build_system_summary(self) -> dict:
         all_recs = list(self._finalized.values())
         out: dict = {}
+
         out["all"] = self._leaf_metrics("system", all_recs)
+        total_all = sum(self._ts_stopped_sec.get(ts, 0.0) for ts in self.ts_lane_map)
+        n_all = out["all"]["n_vehicles"]
+        out["all"]["stopped_time"]     = total_all
+        out["all"]["avg_stopped_time"] = total_all / n_all if n_all else 0.0
+
         for t in self.vtypes:
             recs = [r for r in all_recs if r["type"] == t]
-            out[t] = self._leaf_metrics(t, recs)
+            leaf = self._leaf_metrics(t, recs)
+            total_t = sum(self._ts_stopped_sec.get(f"{ts}_{t}", 0.0) for ts in self.ts_lane_map)
+            n_t = leaf["n_vehicles"]
+            leaf["stopped_time"]     = total_t
+            leaf["avg_stopped_time"] = total_t / n_t if n_t else 0.0
+            out[t] = leaf
+
         return out
 
     def _build_ts_summary(self, ts_id: str) -> dict:
@@ -570,8 +586,10 @@ class EpisodeMetricsCollector:
         - avg_speed     : time-weighted speed of vehicles on ts's approach lanes
         - avg_wait      : mean per-vehicle total accumulated wait of vehicles
                           that visited this ts (proxy; includes wait at other ts)
-        - n_stop_events : stop transitions occurring on ts's approach lanes
-        - stopped_time  : total vehicle-seconds spent stopped on approach lanes
+        - n_stop_events    : stop transitions occurring on ts's approach lanes
+        - avg_stop_events  : n_stop_events / n_vehicles
+        - stopped_time     : total vehicle-seconds spent stopped on approach lanes
+        - avg_stopped_time : stopped_time / n_vehicles
         - throughput    : unique vehicles that appeared on approach lanes
         """
         all_seen_vids = self._ts_seen[ts_id]
@@ -584,9 +602,11 @@ class EpisodeMetricsCollector:
                 "n_vehicles":    n,
                 "throughput":    len(self._ts_seen[type_key]),
                 "avg_speed":     s[0] / s[1] if s[1] else 0.0,
-                "avg_wait":      sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
-                "n_stop_events": self._ts_stop_evt[type_key],
-                "stopped_time":  self._ts_stopped_sec[type_key],
+                "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
+                "n_stop_events":   self._ts_stop_evt[type_key],
+                "avg_stop_events": self._ts_stop_evt[type_key] / n if n else 0.0,
+                "stopped_time":    self._ts_stopped_sec[type_key],
+                "avg_stopped_time": self._ts_stopped_sec[type_key] / n if n else 0.0,
             }
 
         out: dict = {}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-03-19 17:32:28 by Eclipse SUMO GUI Version 1.24.0
+<!-- generated on 2026-03-30 14:39:55 by Eclipse SUMO GUI Version 1.24.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
@@ -30,6 +30,18 @@
         <phase duration="33.00" state="GrrGrgGrrGrg"/>
         <phase duration="3.00"  state="yrryryyrryry"/>
         <phase duration="2.00"  state="rrrrrrrrrrrr"/>
-        <phase duration="29.00" state="GGrGrrGGrGrr"/>
+        <phase duration="33.00" state="GGrGrrGGrGrr"/>
+        <phase duration="3.00"  state="yyryrryyryrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrgGrrGrgGrr"/>
+        <phase duration="3.00"  state="yryyrryryyrr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGGrGrrGGr"/>
+        <phase duration="3.00"  state="yrryyryrryyr"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="33.00" state="GrrGrgGrrGrg"/>
+        <phase duration="3.00"  state="yrryryyrryry"/>
+        <phase duration="2.00"  state="rrrrrrrrrrrr"/>
+        <phase duration="8.00"  state="GGrGrrGGrGrr"/>
     </tlLogic>
 </additional>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-03-19 17:32:28 by Eclipse SUMO GUI Version 1.24.0
+<!-- generated on 2026-03-30 14:39:55 by Eclipse SUMO GUI Version 1.24.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
@@ -30,4 +30,16 @@
     <tlsState time="71.00" id="t" programID="0" phase="4" state="yrryryyrryry"/>
     <tlsState time="74.00" id="t" programID="0" phase="5" state="rrrrrrrrrrrr"/>
     <tlsState time="76.00" id="t" programID="0" phase="6" state="GGrGrrGGrGrr"/>
+    <tlsState time="109.00" id="t" programID="0" phase="7" state="yyryrryyryrr"/>
+    <tlsState time="112.00" id="t" programID="0" phase="8" state="rrrrrrrrrrrr"/>
+    <tlsState time="114.00" id="t" programID="0" phase="9" state="GrgGrrGrgGrr"/>
+    <tlsState time="147.00" id="t" programID="0" phase="10" state="yryyrryryyrr"/>
+    <tlsState time="150.00" id="t" programID="0" phase="11" state="rrrrrrrrrrrr"/>
+    <tlsState time="152.00" id="t" programID="0" phase="0" state="GrrGGrGrrGGr"/>
+    <tlsState time="185.00" id="t" programID="0" phase="1" state="yrryyryrryyr"/>
+    <tlsState time="188.00" id="t" programID="0" phase="2" state="rrrrrrrrrrrr"/>
+    <tlsState time="190.00" id="t" programID="0" phase="3" state="GrrGrgGrrGrg"/>
+    <tlsState time="223.00" id="t" programID="0" phase="4" state="yrryryyrryry"/>
+    <tlsState time="226.00" id="t" programID="0" phase="5" state="rrrrrrrrrrrr"/>
+    <tlsState time="228.00" id="t" programID="0" phase="6" state="GGrGrrGGrGrr"/>
 </tlsStates>
