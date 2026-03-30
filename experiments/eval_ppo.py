@@ -85,13 +85,7 @@ def run_eval(cfg: dict, ckpt_path: str, n_episodes: int, use_gui: bool,
 
     for episode in range(1, n_episodes + 1):
         seed = base_seed if fixed_seed else base_seed + episode - 1
-        obs, _ = env.reset(seed=seed) if hasattr(env.reset, "__code__") and \
-            env.reset.__code__.co_varnames and "seed" in env.reset.__code__.co_varnames \
-            else (env.reset(seed), None)
-
-        # handle both gym <=0.25 (obs only) and >=0.26 (obs, info)
-        if isinstance(obs, tuple):
-            obs = obs[0]
+        obs, _ = env.reset(seed)
 
         mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time)
         episode_reward = 0.0
@@ -103,16 +97,12 @@ def run_eval(cfg: dict, ckpt_path: str, n_episodes: int, use_gui: bool,
                 mc.collect_step(env.sumo)
 
             action, _ = model.predict(obs, deterministic=True)
-            result = env.step(action)
-            # handle gym API differences
-            if len(result) == 5:
-                obs, reward, terminated, truncated, _ = result
-                done = terminated or truncated
-            else:
-                obs, reward, done, _ = result
+            print(f"  step={steps:3d}  action={int(action)}")
+            obs, reward, terminated, truncated, _ = env.step(int(action))
+            done = terminated or truncated
 
             if steps >= warmup_steps:
-                episode_reward += float(reward)
+                episode_reward += float(reward) if reward is not None else 0.0
             steps += 1
 
         mc.finalize(env.sumo)
