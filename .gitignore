@@ -44,3 +44,4 @@ Thumbs.db
 # Env
 .env
 *.env
+nets/**/output/

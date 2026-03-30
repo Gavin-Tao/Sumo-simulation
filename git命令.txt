@@ -5,3 +5,13 @@ git checkout dev
 git checkout -- nets/
 # 拉取最新代码
 git pull origin dev
+
+
+
+
+
+
+
+#如果还不行用这个
+git reset --hard HEAD
+git pull origin dev
