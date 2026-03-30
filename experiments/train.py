@@ -175,6 +175,7 @@ def train(cfg: dict, timestamp: str):
             # Only create the collector on episodes where we will log full metrics
             do_full = (logging_mode == "full") and (episode % metrics_interval == 0)
             mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time) if do_full else None
+            phase_counts = {ts_id: {} for ts_id in env.ts_ids}
 
             while not done["__all__"]:
                 # ── Collect metrics (only on designated episodes) ─────────────
@@ -195,6 +196,11 @@ def train(cfg: dict, timestamp: str):
                             log_dict["loss_" + ts_id] = agent.loss
                     wandb.log(log_dict, step=step_counter)
                 step_counter += 1
+
+                # ── Track phase selection ─────────────────────────────────────
+                for ts_id in env.ts_ids:
+                    p = env.traffic_signals[ts_id].green_phase
+                    phase_counts[ts_id][p] = phase_counts[ts_id].get(p, 0) + 1
 
                 # ── Store experience ──────────────────────────────────────────
                 for ts in env.ts_ids:
@@ -233,8 +239,13 @@ def train(cfg: dict, timestamp: str):
                 wandb.log(mc.to_flat_dict(prefix="metrics"), step=step_counter)
 
             if agent.start_train and logging_mode != "none":
-                print(f"[{exp_name}] ep={episode:5d}  epsilon={agent.epsilon:.4f}")
-                wandb.log({"train/episode": episode, "train/epsilon": agent.epsilon},
+                phase_log = {}
+                for ts_id, counts in phase_counts.items():
+                    total = sum(counts.values()) or 1
+                    for p, c in counts.items():
+                        phase_log[f"phase/{ts_id}/phase{p}_ratio"] = c / total
+                print(f"[{exp_name}] ep={episode:5d}  epsilon={agent.epsilon:.4f}  phases={phase_counts}")
+                wandb.log({"train/episode": episode, "train/epsilon": agent.epsilon, **phase_log},
                           step=step_counter)
 
                 if episode % checkpoint_interval == 0:
