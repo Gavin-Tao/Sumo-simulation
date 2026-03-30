@@ -12,7 +12,7 @@ cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-100-0-
 # Environment
 observation_class: "Priority"
 reward_fn:         "51-priority-pressure"
-num_seconds:       10000
+num_seconds:       1000
 delta_time:        5
 yellow_time:       2
 min_green:         5
