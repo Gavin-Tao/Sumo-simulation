@@ -1,0 +1,5 @@
+# 切换到 dev 分支（如果还没在上面）
+git checkout dev
+
+# 拉取最新代码
+git pull origin dev
