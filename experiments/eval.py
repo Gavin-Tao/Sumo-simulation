@@ -83,7 +83,8 @@ def load_agent(ckpt_path: str, cfg: dict, state_space: int, action_space: int, d
 
 
 def run_eval(cfg: dict, ckpt_path: str, n_episodes: int, use_gui: bool,
-             device, wandb_log: bool = False, warmup_steps: int = 20, fixed_seed: bool = False):
+             device, wandb_log: bool = False, warmup_steps: int = 20, fixed_seed: bool = False,
+             debug: bool = False):
     obs_class = OBS_REGISTRY[cfg["observation_class"]]
     env = SumoEnvironment(
         net_file=cfg["net_file"],
@@ -135,7 +136,34 @@ def run_eval(cfg: dict, ckpt_path: str, n_episodes: int, use_gui: bool,
             if steps >= warmup_steps:
                 mc.collect_step(env.sumo)
             actions = {ts: agent.take_action(initial_states[ts]) for ts in env.ts_ids}
+
+            if debug:
+                for ts in env.ts_ids:
+                    ts_obj = env.traffic_signals[ts]
+                    car_q, bus_q = ts_obj.get_lanes_queue_by_type()
+                    raw_car = sum(1 for lane in ts_obj.lanes
+                                  for vid in env.sumo.lane.getLastStepVehicleIDs(lane)
+                                  if env.sumo.vehicle.getSpeed(vid) < 0.1
+                                  and env.sumo.vehicle.getTypeID(vid) == "car")
+                    raw_bus = sum(1 for lane in ts_obj.lanes
+                                  for vid in env.sumo.lane.getLastStepVehicleIDs(lane)
+                                  if env.sumo.vehicle.getSpeed(vid) < 0.1
+                                  and env.sumo.vehicle.getTypeID(vid) != "car")
+                    # Use the same reward fn as the config so pre_r and actual_r are comparable.
+                    # Note: only safe for stateless reward fns (pressure/queue); avoid diff-waiting-time.
+                    pre_reward = ts_obj.reward_fn(ts_obj)
+                    print(f"  step={steps:3d} | phase={ts_obj.green_phase} | "
+                          f"action={actions[ts]} | "
+                          f"stopped car={raw_car:3d} bus={raw_bus:2d} | "
+                          f"pre_r={pre_reward:7.1f} | "
+                          f"car_q={[f'{v:.2f}' for v in car_q]} bus_q={[f'{v:.2f}' for v in bus_q]}")
+
             s, r, done, _ = env.step(action=actions)
+
+            if debug:
+                for ts in env.ts_ids:
+                    print(f"           actual_r={r[ts]:.1f}")
+
             if steps >= warmup_steps:
                 episode_reward += sum(v for v in r.values() if v is not None)
             initial_states = s
@@ -204,6 +232,8 @@ if __name__ == "__main__":
                         help="Steps to skip before collecting metrics (default: 20 = 100s)")
     parser.add_argument("--fixed-seed", action="store_true",
                         help="Use the same seed as training (config seed) for all episodes")
+    parser.add_argument("--debug", action="store_true",
+                        help="Print per-step action, queue, and reward for analysis")
     args = parser.parse_args()
 
     if args.gpu >= 0 and torch.cuda.is_available():
@@ -215,4 +245,5 @@ if __name__ == "__main__":
         cfg = yaml.safe_load(f)
 
     run_eval(cfg, args.ckpt, args.episodes, args.gui, device,
-             wandb_log=args.wandb, warmup_steps=args.warmup, fixed_seed=args.fixed_seed)
+             wandb_log=args.wandb, warmup_steps=args.warmup, fixed_seed=args.fixed_seed,
+             debug=args.debug)

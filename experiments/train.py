@@ -133,6 +133,7 @@ def train(cfg: dict, timestamp: str):
         reward_fn=cfg["reward_fn"],
         observation_class=obs_class,
         sumo_seed=cfg.get("seed", 0),
+        sumo_warnings=True,
     )
 
     episodes            = cfg.get("episodes", 5000)
@@ -177,56 +178,68 @@ def train(cfg: dict, timestamp: str):
             mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time) if do_full else None
             phase_counts = {ts_id: {} for ts_id in env.ts_ids}
 
-            while not done["__all__"]:
-                # ── Collect metrics (only on designated episodes) ─────────────
-                if mc is not None:
-                    mc.collect_step(env.sumo)
+            try:
+                while not done["__all__"]:
+                    # ── Collect metrics (only on designated episodes) ─────────────
+                    if mc is not None:
+                        mc.collect_step(env.sumo)
 
-                # ── Act ───────────────────────────────────────────────────────
-                actions = {ts: agent.take_action(initial_states[ts]) for ts in env.ts_ids}
-                s, r, done, info = env.step(action=actions)
+                    # ── Act ───────────────────────────────────────────────────────
+                    actions = {ts: agent.take_action(initial_states[ts]) for ts in env.ts_ids}
+                    s, r, done, info = env.step(action=actions)
 
-                # ── Log to wandb per-step (basic & full both log reward/loss) ──
-                if logging_mode != "none":
-                    log_dict = {k: v for k, v in info.items()}  # type: ignore[union-attr]
+                    # ── Log to wandb per-step (basic & full both log reward/loss) ──
+                    if logging_mode != "none":
+                        log_dict = {k: v for k, v in info.items()}  # type: ignore[union-attr]
+                        for ts_id in env.ts_ids:
+                            if r[ts_id] is not None:  # type: ignore[index]
+                                log_dict["reward_" + ts_id] = r[ts_id]  # type: ignore[index]
+                            if agent.loss is not None:
+                                log_dict["loss_" + ts_id] = agent.loss
+                        wandb.log(log_dict, step=step_counter)
+                    step_counter += 1
+
+                    # ── Track phase selection ─────────────────────────────────────
                     for ts_id in env.ts_ids:
-                        if r[ts_id] is not None:  # type: ignore[index]
-                            log_dict["reward_" + ts_id] = r[ts_id]  # type: ignore[index]
-                        if agent.loss is not None:
-                            log_dict["loss_" + ts_id] = agent.loss
-                    wandb.log(log_dict, step=step_counter)
-                step_counter += 1
+                        p = env.traffic_signals[ts_id].green_phase
+                        phase_counts[ts_id][p] = phase_counts[ts_id].get(p, 0) + 1
 
-                # ── Track phase selection ─────────────────────────────────────
-                for ts_id in env.ts_ids:
-                    p = env.traffic_signals[ts_id].green_phase
-                    phase_counts[ts_id][p] = phase_counts[ts_id].get(p, 0) + 1
+                    # ── Store experience ──────────────────────────────────────────
+                    for ts in env.ts_ids:
+                        actual_action = env.traffic_signals[ts].last_executed_action
+                        ts_reward = r[ts]  # type: ignore[index]
+                        ts_next_state = tuple(s[ts])  # type: ignore[index]
+                        ts_done = done[ts]  # type: ignore[index]
+                        agent.replay_buffer.add(
+                            initial_states[ts], actual_action,
+                            ts_reward, ts_next_state, ts_done,
+                        )
 
-                # ── Store experience ──────────────────────────────────────────
-                for ts in env.ts_ids:
-                    actual_action = env.traffic_signals[ts].last_executed_action
-                    ts_reward = r[ts]  # type: ignore[index]
-                    ts_next_state = tuple(s[ts])  # type: ignore[index]
-                    ts_done = done[ts]  # type: ignore[index]
-                    agent.replay_buffer.add(
-                        initial_states[ts], actual_action,
-                        ts_reward, ts_next_state, ts_done,
-                    )
+                    initial_states = s
 
-                initial_states = s
-
-                # ── Update ────────────────────────────────────────────────────
-                if agent.replay_buffer.size() > agent.mini_size:
-                    b_s, b_a, b_r, b_ns, b_d = agent.replay_buffer.sample(agent.batch_size)
-                    agent.epsilon = (
-                        agent.eps_end
-                        + (agent.eps_start - agent.eps_end)
-                        * math.exp(-1.0 * agent.count / agent.eps_decay)
-                    )
-                    agent.update({
-                        "states": b_s, "actions": b_a,
-                        "next_states": b_ns, "rewards": b_r, "dones": b_d,
-                    })
+                    # ── Update ────────────────────────────────────────────────────
+                    if agent.replay_buffer.size() > agent.mini_size:
+                        b_s, b_a, b_r, b_ns, b_d = agent.replay_buffer.sample(agent.batch_size)
+                        agent.epsilon = (
+                            agent.eps_end
+                            + (agent.eps_start - agent.eps_end)
+                            * math.exp(-1.0 * agent.count / agent.eps_decay)
+                        )
+                        agent.update({
+                            "states": b_s, "actions": b_a,
+                            "next_states": b_ns, "rewards": b_r, "dones": b_d,
+                        })
+            except Exception as e:
+                import traceback
+                print(f"\n[ERROR] SUMO error at episode {episode}, step {step_counter}:")
+                traceback.print_exc()
+                print(f"[ERROR] Resetting environment and continuing from episode {episode + 1}...\n")
+                try:
+                    initial_states = env.reset(env.sumo_seed)
+                except Exception as reset_err:
+                    print(f"[ERROR] Reset also failed: {reset_err}")
+                    raise
+                continue
 
             # ── End of episode ────────────────────────────────────────────────
             if env.metrics is not None:

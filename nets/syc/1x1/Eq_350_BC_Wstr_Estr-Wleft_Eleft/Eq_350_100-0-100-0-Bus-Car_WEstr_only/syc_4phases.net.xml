@@ -118,13 +118,13 @@
         <phase duration="33" state="GrrGGrGrrGGr"/>
         <phase duration="3"  state="yrryyryrryyr"/>
         <phase duration="2"  state="rrrrrrrrrrrr"/>
-        <phase duration="33" state="GrrGrgGrrGrg"/>
+        <phase duration="33" state="GrrGrGGrrGrr"/>
         <phase duration="3"  state="yrryryyrryry"/>
         <phase duration="2"  state="rrrrrrrrrrrr"/>
         <phase duration="33" state="GGrGrrGGrGrr"/>
         <phase duration="3"  state="yyryrryyryrr"/>
         <phase duration="2"  state="rrrrrrrrrrrr"/>
-        <phase duration="33" state="GrgGrrGrgGrr"/>
+        <phase duration="33" state="GrGGrrGrGGrr"/>
         <phase duration="3"  state="yryyrryryyrr"/>
         <phase duration="2"  state="rrrrrrrrrrrr"/>
     </tlLogic>
