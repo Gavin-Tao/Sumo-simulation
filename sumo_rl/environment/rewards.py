@@ -183,6 +183,32 @@ def get_priority_queue_21(ts: "TrafficSignal") -> float:
     return -(1.0 * car_q + 2.0 * bus_q)
 
 
+def get_priority_queue_31(ts: "TrafficSignal") -> float:
+    """-(1*car_queue + 3*bus_queue)"""
+    car_q = bus_q = 0
+    for lane in ts.lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            if ts.sumo.vehicle.getSpeed(vid) < 0.1:
+                if ts.sumo.vehicle.getTypeID(vid) == "car":
+                    car_q += 1
+                else:
+                    bus_q += 1
+    return -(1.0 * car_q + 3.0 * bus_q)
+
+
+def get_priority_queue_41(ts: "TrafficSignal") -> float:
+    """-(1*car_queue + 4*bus_queue)"""
+    car_q = bus_q = 0
+    for lane in ts.lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            if ts.sumo.vehicle.getSpeed(vid) < 0.1:
+                if ts.sumo.vehicle.getTypeID(vid) == "car":
+                    car_q += 1
+                else:
+                    bus_q += 1
+    return -(1.0 * car_q + 4.0 * bus_q)
+
+
 # ---------------------------------------------------------------------------
 # Reward functions (called as reward_fn(ts))
 # ---------------------------------------------------------------------------
@@ -274,6 +300,14 @@ def _51_priority_queue_reward(ts: "TrafficSignal") -> float:
     return get_priority_queue_51(ts)
 
 
+def _41_priority_queue_reward(ts: "TrafficSignal") -> float:
+    return get_priority_queue_41(ts)
+
+
+def _31_priority_queue_reward(ts: "TrafficSignal") -> float:
+    return get_priority_queue_31(ts)
+
+
 def _21_priority_queue_reward(ts: "TrafficSignal") -> float:
     return get_priority_queue_21(ts)
 
@@ -304,5 +338,7 @@ REWARD_REGISTRY = {
     "45-priority-pressure":    _45_priority_pressure_reward,
     "CTB_priority-pressure":   CTB_priority_pressure_reward,
     "51-priority-queue":       _51_priority_queue_reward,
+    "41-priority-queue":       _41_priority_queue_reward,
+    "31-priority-queue":       _31_priority_queue_reward,
     "21-priority-queue":       _21_priority_queue_reward,
 }
