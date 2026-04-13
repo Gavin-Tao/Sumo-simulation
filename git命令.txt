@@ -12,6 +12,7 @@ git pull origin dev
 
 
 
-#如果还不行用这个
-git reset --hard HEAD
-git pull origin dev
+#上传代码
+git add .
+git commit -m "fix 1x3 route no lane changing and G green files"
+git push origin dev

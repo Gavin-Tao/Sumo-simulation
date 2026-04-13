@@ -1,0 +1,31 @@
+1. 创建新的对话
+tmux new -s mysession
+
+2. 分离
+Ctrl+b 然后 d
+
+3. 检查一下是否创建成功
+tmux ls
+
+4. 重新连接到指定会话：
+tmux attach -t mysession
+
+
+5. 杀死指定对话：
+tmux kill-session -t mysession
+
+6. 杀死全部对话：
+tmux kill-server
+
+
+export SUMO_HOME=/home/jovyan/torch_gpu_sumo_rl_no/share/sumo
+
+
+如果找不到sumo home的时候
+
+
+
+conda create -p /home/tao/myenvs/rl_env python=3.10
+
+
+python train.py --config ./configs/exp45_priority_1x1_41_delta_5_WEstr_only.yaml | tee output.txt

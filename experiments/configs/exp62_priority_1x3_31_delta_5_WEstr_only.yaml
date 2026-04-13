@@ -1,6 +1,5 @@
-# Experiment: exp60 — PressLight, pressure reward, 1x3, WEstr_only (100:0 bus:car on E-W straight)
-# Baseline: standard PressLight without priority weighting
-name: "exp62_priority_1x3_31_delta_5_WEstr_only"
+# Experiment: exp62 — Priority obs, 31-priority-pressure reward, 1x3, WEstr_only (100:0 bus:car on E-W straight)
+name: "exp62_priority_1x3_31_delta_5_WEstr_only_0.01"
 
 # wandb
 wandb_project: "sumo-rl-1x3"
@@ -23,7 +22,7 @@ max_green:         50
 
 # DQN hyperparameters
 hidden_dim:    64
-lr:            0.001
+lr:            0.01
 gamma:         0.99
 epsilon:       0.1
 target_update: 10
