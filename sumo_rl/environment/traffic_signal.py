@@ -168,14 +168,18 @@ class TrafficSignal:
         logic.phases = self.all_phases #替换原始net文件中定义的相位,下一步传给sumo,此时minDur和maxDur都是-1,代表不适用或者没有设定-->ToDo 可变duration????
         # print(logic.phases)
         #将构建的相位传给sumo并设定第一个相位是初始相位。
+        print(f"\n[_build_phases] TS={self.id} — green phases sent to SUMO:")
+        for i, p in enumerate(self.green_phases):
+            print(f"  green_phase[{i}]: {p.state}")
         self.sumo.trafficlight.setProgramLogic(self.id, logic) #传给sumo
-        # c=self.sumo.trafficlight.getAllProgramLogics(self.id)
-        # print("c:", c)
         #这一行setRedYellowGreenState执行完后，这里不知道为什么会有两个logics，第一个是设定的，第二个是online，貌似是sumo自己生成的.设定第一个相位是初始相位。
         self.sumo.trafficlight.setRedYellowGreenState(self.id, self.all_phases[0].state)
-        # b=self.sumo.trafficlight.getAllProgramLogics(self.id)
-        # print("b", b)
         tl_logic = self.sumo.trafficlight.getCompleteRedYellowGreenDefinition(self.id)
+        print(f"[_build_phases] TS={self.id} — SUMO runtime phases (after setProgramLogic):")
+        for logic_entry in tl_logic:
+            for i, p in enumerate(logic_entry.phases):
+                if "y" not in p.state and p.state.count("r") + p.state.count("s") != len(p.state):
+                    print(f"  runtime green phase[{i}]: {p.state}")
         # a=1
 
     @property

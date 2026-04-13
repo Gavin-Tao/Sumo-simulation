@@ -3,18 +3,28 @@
     <vType id="car" color="1,0,0"/>
     <vType id="bus" color="0,0,1"/>
 
-    <!-- ===== E-W CORRIDOR: 80% bus (280/h) + 20% car (70/h) ===== -->
+    <!--
+        1x3 Network topology:
+          w -> [t/LEFT] <-t_e/e_t-> [e/CENTER] <-E0/-E0-> [J0/RIGHT] -> J5(east)
+                  |N/S                   |J1(N),J2(S)              |J3(N),J4(S)
+
+        External boundary edges:
+          LEFT  : w_t(W in), t_w(W out), n_t(N in), t_n(N out), s_t(S in), t_s(S out)
+          CENTER: -E1(N in), E1(N out),  -E2(S in), E2(S out)
+          RIGHT : -E3(N in), E3(N out),  -E4(S in), E4(S out), -E5(E in), E5(E out)
+        Internal (no flow generation):
+          t_e, e_t (LEFT<->CENTER),  E0, -E0 (CENTER<->RIGHT)
+    -->
+
+    <!-- ===== E-W CORRIDOR (through all 3 intersections) ===== -->
+    <!-- 100% bus -->
     <route id="route_ew" edges="w_t t_e E0 E5"/>
     <route id="route_we" edges="-E5 -E0 e_t t_w"/>
 
-    <flow id="flow_ew_bus" route="route_ew" begin="0" end="3600" vehsPerHour="280"
+    <flow id="flow_ew_bus" route="route_ew" begin="0" end="3600" vehsPerHour="350"
           type="bus" departSpeed="max" departPos="base" departLane="1"/>
-    <flow id="flow_ew_car" route="route_ew" begin="0" end="3600" vehsPerHour="70"
-          type="car" departSpeed="max" departPos="base" departLane="1"/>
-    <flow id="flow_we_bus" route="route_we" begin="0" end="3600" vehsPerHour="280"
+    <flow id="flow_we_bus" route="route_we" begin="0" end="3600" vehsPerHour="350"
           type="bus" departSpeed="max" departPos="base" departLane="1"/>
-    <flow id="flow_we_car" route="route_we" begin="0" end="3600" vehsPerHour="70"
-          type="car" departSpeed="max" departPos="base" departLane="1"/>
 
     <!-- ===== N-S STRAIGHT at each intersection (car) ===== -->
     <route id="route_ns_L" edges="n_t t_s"/>
