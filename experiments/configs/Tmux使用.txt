@@ -1,3 +1,17 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+
+
+
 1. 创建新的对话
 tmux new -s mysession
 
@@ -28,4 +42,15 @@ export SUMO_HOME=/home/jovyan/torch_gpu_sumo_rl_no/share/sumo
 conda create -p /home/tao/myenvs/rl_env python=3.10
 
 
-python train.py --config ./configs/exp45_priority_1x1_41_delta_5_WEstr_only.yaml | tee tmux/output.txt
+python train.py --config ./configs/exp45_priority_1x1_41_delta_5_WEstr_only.yaml 2>&1 | tee -a tmux/exp45_output_$(date +%Y%m%d_%H%M%S).txt
+
+CLAUDE_CODE_AUTO_COMPACT_WINDOW=200
+
+
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
+跑代码一定要关掉vscode,否则内存泄漏！！！！
