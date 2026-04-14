@@ -48,16 +48,22 @@ from sumo_rl.environment.observations import (
     QueuePrioObservationFunction,
     CTBPriorityObservationFunction,
     PriorityObservationFunction,
+    PriorityNormObservationFunction,
+    DiffWaitingObservationFunction,
+    PriorityDiffWaitingObservationFunction,
 )
 
 # ── Registries ────────────────────────────────────────────────────────────────
 OBS_REGISTRY = {
-    "Default":         DefaultObservationFunction,
-    "PressLight":      PressLightObservationFunction,
-    "PressLightNorm":  PressLightNormObservationFunction,
-    "QueuePrio":       QueuePrioObservationFunction,
-    "CTBPriority":     CTBPriorityObservationFunction,
-    "Priority":        PriorityObservationFunction,
+    "Default":             DefaultObservationFunction,
+    "PressLight":          PressLightObservationFunction,
+    "PressLightNorm":      PressLightNormObservationFunction,
+    "QueuePrio":           QueuePrioObservationFunction,
+    "CTBPriority":         CTBPriorityObservationFunction,
+    "Priority":            PriorityObservationFunction,
+    "PriorityNorm":        PriorityNormObservationFunction,
+    "DiffWaiting":         DiffWaitingObservationFunction,
+    "PriorityDiffWaiting": PriorityDiffWaitingObservationFunction,
 }
 
 

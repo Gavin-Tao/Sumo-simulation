@@ -1,0 +1,24 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/xiaowen/.netrc.
+wandb: Currently logged in as: taoxw19 (taoxw19-) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run nwpojl46
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in logs/wandb/wandb/run-20260414_173527-nwpojl46
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp75_dqn_1x1_diffwaiting_WEstr_only_2026-04-14T17-35-26
+wandb: ⭐️ View project at https://wandb.ai/taoxw19-/sumo-rl-1x1
+wandb: 🚀 View run at https://wandb.ai/taoxw19-/sumo-rl-1x1/runs/nwpojl46
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Traceback (most recent call last):
+  File "/home/xiaowen/sumo-rl/experiments/train.py", line 297, in <module>
+    train(cfg, timestamp)
+  File "/home/xiaowen/sumo-rl/experiments/train.py", line 119, in train
+    obs_class = OBS_REGISTRY[cfg["observation_class"]]
+KeyError: 'DiffWaiting'
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mexp75_dqn_1x1_diffwaiting_WEstr_only_2026-04-14T17-35-26[0m at: [34mhttps://wandb.ai/taoxw19-/sumo-rl-1x1/runs/nwpojl46[0m

@@ -288,6 +288,87 @@ class PriorityNormObservationFunction(ObservationFunction):
         return car_d, truck_d
 
 
+class DiffWaitingObservationFunction(ObservationFunction):
+    """Observation aligned with diff-waiting-time reward.
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1), wait_per_lane (n_in)]
+
+    wait_per_lane: sum of getAccumulatedWaitingTime for all vehicles on each
+    incoming lane, scaled by /100. Unbounded; use norm_obs=true (VecNormalize)
+    when training with PPO, or rely on DQN's replay buffer for implicit scaling.
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+
+    def __call__(self) -> np.ndarray:
+        phase_id  = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        wait      = [self._lane_wait(lane) / 100.0 for lane in self.ts.lanes]
+        return np.array(phase_id + min_green + wait, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        n_phases = self.ts.num_green_phases
+        n_in     = len(self.ts.lanes)
+        low  = np.zeros(n_phases + 1 + n_in, dtype=np.float32)
+        high = np.concatenate([
+            np.ones(n_phases + 1, dtype=np.float32),          # phase + min_green bounded [0,1]
+            np.full(n_in, np.inf, dtype=np.float32),           # wait: unbounded
+        ])
+        return spaces.Box(low=low, high=high)
+
+    def _lane_wait(self, lane: str) -> float:
+        return sum(
+            self.ts.sumo.vehicle.getAccumulatedWaitingTime(v)
+            for v in self.ts.sumo.lane.getLastStepVehicleIDs(lane)
+        )
+
+
+class PriorityDiffWaitingObservationFunction(ObservationFunction):
+    """Observation aligned with 51-diff-waiting-time reward (car/bus split).
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1), car_wait_per_lane (n_in), bus_wait_per_lane (n_in)]
+
+    Each value is sum of getAccumulatedWaitingTime for that vehicle type on the lane,
+    scaled by /100. Unbounded; use norm_obs=true (VecNormalize) for PPO.
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+
+    def __call__(self) -> np.ndarray:
+        phase_id  = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        car_wait, bus_wait = [], []
+        for lane in self.ts.lanes:
+            car_w, bus_w = self._lane_wait_by_type(lane)
+            car_wait.append(car_w / 100.0)
+            bus_wait.append(bus_w / 100.0)
+        return np.array(phase_id + min_green + car_wait + bus_wait, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        n_phases = self.ts.num_green_phases
+        n_in     = len(self.ts.lanes)
+        low  = np.zeros(n_phases + 1 + 2 * n_in, dtype=np.float32)
+        high = np.concatenate([
+            np.ones(n_phases + 1, dtype=np.float32),           # phase + min_green bounded [0,1]
+            np.full(2 * n_in, np.inf, dtype=np.float32),       # car/bus wait: unbounded
+        ])
+        return spaces.Box(low=low, high=high)
+
+    def _lane_wait_by_type(self, lane: str):
+        car_w = bus_w = 0.0
+        for v in self.ts.sumo.lane.getLastStepVehicleIDs(lane):
+            acc = self.ts.sumo.vehicle.getAccumulatedWaitingTime(v)
+            if self.ts.sumo.vehicle.getTypeID(v) == "car":
+                car_w += acc
+            else:
+                bus_w += acc
+        return car_w, bus_w
+
+
 class CTBPriorityObservationFunction(ObservationFunction):
     """Priority observation with optimized vehicle-type counting for performance."""
 

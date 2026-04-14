@@ -264,6 +264,54 @@ def diff_waiting_time_reward(ts: "TrafficSignal") -> float:
     return reward
 
 
+def _get_weighted_waiting_time(ts: "TrafficSignal", alpha: float, beta: float) -> float:
+    """Weighted accumulated waiting time: alpha*car_wait + beta*bus_wait across all incoming lanes.
+
+    Uses ts.env.vehicles for cross-lane correction (same as get_accumulated_waiting_time_per_lane),
+    so a vehicle that switched lanes only contributes its wait on the current lane.
+    """
+    total = 0.0
+    for lane in ts.lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            veh_lane = ts.sumo.vehicle.getLaneID(vid)
+            acc      = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if vid not in ts.env.vehicles:
+                ts.env.vehicles[vid] = {veh_lane: acc}
+            else:
+                ts.env.vehicles[vid][veh_lane] = acc - sum(
+                    ts.env.vehicles[vid][l]
+                    for l in ts.env.vehicles[vid] if l != veh_lane
+                )
+            lane_wait = ts.env.vehicles[vid][veh_lane]
+            if ts.sumo.vehicle.getTypeID(vid) == "car":
+                total += alpha * lane_wait
+            else:
+                total += beta * lane_wait
+    return total / 100.0
+
+
+def _make_diff_waiting_bc(alpha: float, beta: float):
+    """Factory: weighted diff-waiting-time reward with car/bus weights."""
+    def fn(ts: "TrafficSignal") -> float:
+        ts_wait = _get_weighted_waiting_time(ts, alpha, beta)
+        reward  = getattr(ts, "_last_weighted_wait", 0.0) - ts_wait
+        ts._last_weighted_wait = ts_wait  # type: ignore[attr-defined]
+        return reward
+    return fn
+
+
+_51_diff_waiting_fn = _make_diff_waiting_bc(1.0, 5.0)
+_41_diff_waiting_fn = _make_diff_waiting_bc(1.0, 4.0)
+
+
+def _51_diff_waiting_reward(ts: "TrafficSignal") -> float:
+    return _51_diff_waiting_fn(ts)
+
+
+def _41_diff_waiting_reward(ts: "TrafficSignal") -> float:
+    return _41_diff_waiting_fn(ts)
+
+
 def average_speed_reward(ts: "TrafficSignal") -> float:
     return get_average_speed(ts)
 
@@ -370,6 +418,8 @@ def _21_priority_queue_reward(ts: "TrafficSignal") -> float:
 
 REWARD_REGISTRY = {
     "diff-waiting-time":       diff_waiting_time_reward,
+    "51-diff-waiting-time":    _51_diff_waiting_reward,
+    "41-diff-waiting-time":    _41_diff_waiting_reward,
     "average-speed":           average_speed_reward,
     "queue":                   queue_reward,
     "pressure":                pressure_reward,
