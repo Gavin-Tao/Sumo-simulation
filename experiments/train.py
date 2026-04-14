@@ -248,6 +248,7 @@ def train(cfg: dict, timestamp: str):
 
             # ── Full metrics log (only on designated episodes) ────────────────
             if mc is not None:
+                mc.collect_step(env.sumo)   # ← 补采终止步
                 mc.finalize(env.sumo)
                 wandb.log(mc.to_flat_dict(prefix="metrics"), step=step_counter)
 

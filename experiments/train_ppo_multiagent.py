@@ -50,6 +50,7 @@ from sumo_rl.environment.observations import (
     QueuePrioObservationFunction,
     CTBPriorityObservationFunction,
     PriorityObservationFunction,
+    PriorityNormObservationFunction,
 )
 
 OBS_REGISTRY = {
@@ -59,6 +60,7 @@ OBS_REGISTRY = {
     "QueuePrio":      QueuePrioObservationFunction,
     "CTBPriority":    CTBPriorityObservationFunction,
     "Priority":       PriorityObservationFunction,
+    "PriorityNorm":   PriorityNormObservationFunction,
 }
 
 

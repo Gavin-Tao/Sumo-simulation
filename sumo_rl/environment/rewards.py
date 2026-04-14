@@ -136,6 +136,50 @@ def get_priority_pressure_45(ts: "TrafficSignal") -> float:
     return 1.25 * (out_car - in_car) + 1.0 * (out_truck - in_truck)
 
 
+def _make_priority_pressure_bc_norm(alpha: float, beta: float):
+    """Factory: bus/car priority-pressure with per-lane density normalisation.
+
+    Same weights as the raw-count variant but each lane contributes a value
+    in [0, 1] (vehicles / capacity) instead of a raw integer count.
+    This keeps the reward magnitude in a stable range regardless of lane length
+    or the number of lanes, making it easier for PPO's value function to learn.
+    """
+    def fn(ts: "TrafficSignal") -> float:
+        MIN_GAP  = ts.MIN_GAP
+        get_ids  = ts.sumo.lane.getLastStepVehicleIDs
+        get_len  = ts.sumo.lane.getLastStepLength
+        get_type = ts.sumo.vehicle.getTypeID
+
+        in_car_d = in_bus_d = out_car_d = out_bus_d = 0.0
+
+        for lane in ts.lanes:
+            vids = get_ids(lane)
+            cap  = ts.lanes_length[lane] / (MIN_GAP + get_len(lane))
+            if cap <= 0:
+                continue
+            cars = sum(1 for v in vids if get_type(v) == "car")
+            buses = len(vids) - cars
+            in_car_d += min(1.0, cars  / cap)
+            in_bus_d += min(1.0, buses / cap)
+
+        for lane in ts.out_lanes:
+            vids = get_ids(lane)
+            cap  = ts.lanes_length[lane] / (MIN_GAP + get_len(lane))
+            if cap <= 0:
+                continue
+            cars = sum(1 for v in vids if get_type(v) == "car")
+            buses = len(vids) - cars
+            out_car_d += min(1.0, cars  / cap)
+            out_bus_d += min(1.0, buses / cap)
+
+        return alpha * (out_car_d - in_car_d) + beta * (out_bus_d - in_bus_d)
+    return fn
+
+
+get_priority_pressure_41_norm = _make_priority_pressure_bc_norm(1.0, 4.0)
+get_priority_pressure_51_norm = _make_priority_pressure_bc_norm(1.0, 5.0)
+
+
 def get_CTB_priority_pressure(ts: "TrafficSignal",
                                alpha: float = 1.0,
                                beta: float = 1.25,
@@ -292,6 +336,14 @@ def _45_priority_pressure_reward(ts: "TrafficSignal") -> float:
     return get_priority_pressure_45(ts)
 
 
+def _41_priority_pressure_norm_reward(ts: "TrafficSignal") -> float:
+    return get_priority_pressure_41_norm(ts)
+
+
+def _51_priority_pressure_norm_reward(ts: "TrafficSignal") -> float:
+    return get_priority_pressure_51_norm(ts)
+
+
 def CTB_priority_pressure_reward(ts: "TrafficSignal") -> float:
     return get_CTB_priority_pressure(ts)
 
@@ -336,6 +388,8 @@ REWARD_REGISTRY = {
     "20_1-priority-pressure":  _20_1_priority_pressure_reward,
     "50_1-priority-pressure":  _50_1_priority_pressure_reward,
     "45-priority-pressure":    _45_priority_pressure_reward,
+    "41-priority-pressure-norm": _41_priority_pressure_norm_reward,
+    "51-priority-pressure-norm": _51_priority_pressure_norm_reward,
     "CTB_priority-pressure":   CTB_priority_pressure_reward,
     "51-priority-queue":       _51_priority_queue_reward,
     "41-priority-queue":       _41_priority_queue_reward,

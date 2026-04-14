@@ -227,6 +227,67 @@ class PriorityObservationFunction(ObservationFunction):
             return inc_car, inc_truck, out_car, out_truck
 
 
+class PriorityNormObservationFunction(ObservationFunction):
+    """Priority observation function with car/truck density normalised to [0, 1].
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1),
+         inc_car_density (n_in), out_car_density (n_out),
+         inc_truck_density (n_in), out_truck_density (n_out)]
+
+    Each vehicle-count feature is divided by the lane's maximum vehicle capacity
+    (= lane_length / (MIN_GAP + avg_vehicle_length)), then clipped to [0, 1].
+    This mirrors the normalisation used by get_lanes_density_by_type() for
+    incoming lanes, extended here to outgoing lanes and the car/truck split.
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+        print("This is PriorityNormObservationFunction with normalised car/truck density.")
+
+    def __call__(self) -> np.ndarray:
+        phase_id  = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+
+        inc_car_d, inc_truck_d = self._density_by_type(self.ts.lanes)
+        out_car_d, out_truck_d = self._density_by_type(self.ts.out_lanes)
+
+        return np.array(
+            phase_id + min_green
+            + inc_car_d + out_car_d
+            + inc_truck_d + out_truck_d,
+            dtype=np.float32,
+        )
+
+    def observation_space(self) -> spaces.Box:
+        num_phases = self.ts.num_green_phases
+        n_in       = len(self.ts.lanes)
+        n_out      = len(self.ts.out_lanes)
+        dim        = num_phases + 1 + 2 * n_in + 2 * n_out
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.ones(dim, dtype=np.float32),
+        )
+
+    def _density_by_type(self, lanes):
+        """Return (car_density, truck_density) lists for the given lanes, each in [0, 1]."""
+        car_d, truck_d = [], []
+        for lane in lanes:
+            vids     = self.ts.sumo.lane.getLastStepVehicleIDs(lane)
+            capacity = self.ts.lanes_length[lane] / (
+                self.ts.MIN_GAP + self.ts.sumo.lane.getLastStepLength(lane)
+            )
+            if capacity <= 0:
+                car_d.append(0.0)
+                truck_d.append(0.0)
+                continue
+            cars   = sum(1 for v in vids if self.ts.sumo.vehicle.getTypeID(v) == "car")
+            trucks = len(vids) - cars
+            car_d.append(min(1.0, cars   / capacity))
+            truck_d.append(min(1.0, trucks / capacity))
+        return car_d, truck_d
+
+
 class CTBPriorityObservationFunction(ObservationFunction):
     """Priority observation with optimized vehicle-type counting for performance."""
 

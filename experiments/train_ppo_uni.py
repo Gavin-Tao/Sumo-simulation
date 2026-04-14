@@ -53,6 +53,7 @@ from sumo_rl.environment.observations import (
     QueuePrioObservationFunction,
     CTBPriorityObservationFunction,
     PriorityObservationFunction,
+    PriorityNormObservationFunction,
 )
 
 OBS_REGISTRY = {
@@ -62,6 +63,7 @@ OBS_REGISTRY = {
     "QueuePrio":      QueuePrioObservationFunction,
     "CTBPriority":    CTBPriorityObservationFunction,
     "Priority":       PriorityObservationFunction,
+    "PriorityNorm":   PriorityNormObservationFunction,
 }
 
 
@@ -179,7 +181,8 @@ class SumoMetricsCallback(BaseCallback):
 
     def _on_training_start(self) -> None:
         self.ts_lane_map = {ts: self.sumo_env.traffic_signals[ts].lanes for ts in self.ts_ids}
-        self.base_env.pre_reset_hooks.append(self._finalize_terminal_metrics)
+        if self._finalize_terminal_metrics not in self.base_env.pre_reset_hooks:
+            self.base_env.pre_reset_hooks.append(self._finalize_terminal_metrics)
         self._reset_episode()
         self._patch_rollout_buffer()
 
@@ -194,6 +197,9 @@ class SumoMetricsCallback(BaseCallback):
         import torch as th
         from stable_baselines3 import PPO as _PPO
         ppo: _PPO = self.model  # type: ignore[assignment]
+        # Guard against double-patching if model.learn() is called more than once
+        if getattr(ppo.rollout_buffer.add, "_sumo_patched", False):
+            return
         original_add = ppo.rollout_buffer.add
         callback = self
 
@@ -206,9 +212,10 @@ class SumoMetricsCallback(BaseCallback):
                     act_t = th.as_tensor(actual, dtype=th.long, device=_ppo.device)
                     _, new_log_probs, _ = _ppo.policy.evaluate_actions(obs_t, act_t)  # type: ignore[union-attr]
                 actions   = actual.reshape(actions.shape).astype(actions.dtype)
-                log_probs = new_log_probs.cpu().numpy().reshape(log_probs.shape)
+                log_probs = new_log_probs.reshape(log_probs.shape)  # keep as tensor; SB3 calls .clone() internally
             return original_add(obs, actions, rewards, episode_starts, values, log_probs)
 
+        patched_add._sumo_patched = True  # type: ignore[attr-defined]
         ppo.rollout_buffer.add = patched_add  # type: ignore[method-assign]
 
     def _reset_episode(self):
@@ -217,8 +224,9 @@ class SumoMetricsCallback(BaseCallback):
         self.mc = EpisodeMetricsCollector(
             self.ts_lane_map, delta_time=self.sumo_env.delta_time
         ) if do_full else None
-        self.phase_counts   = {ts_id: {} for ts_id in self.ts_ids}
-        self._ep_raw_reward = 0.0
+        self.phase_counts        = {ts_id: {} for ts_id in self.ts_ids}
+        self._ep_raw_reward      = 0.0
+        self._ep_raw_rews_per_ts = np.zeros(len(self.ts_ids), dtype=np.float32)
 
     # ── Pre-reset hook — SUMO still in terminal state ──────────────────────────
 
@@ -237,7 +245,8 @@ class SumoMetricsCallback(BaseCallback):
     def _on_step(self) -> bool:
         dones = self.locals.get("dones", np.zeros(self.base_env.num_envs, dtype=bool))
 
-        # Accumulate raw (un-normalised) reward — mean across intersections per step
+        # Accumulate raw (un-normalised) reward per intersection and overall mean
+        self._ep_raw_rews_per_ts += self.base_env.last_raw_rews
         self._ep_raw_reward += float(self.base_env.last_raw_rews.mean())
 
         # Collect intermediate steps only; terminal step handled by pre-reset hook
@@ -264,6 +273,12 @@ class SumoMetricsCallback(BaseCallback):
         return True
 
     def _on_rollout_end(self) -> None:
+        # NOTE: _on_rollout_end is called by SB3 INSIDE collect_rollouts(), BEFORE
+        # train() is invoked. model.logger.name_to_value therefore holds stats from
+        # the *previous* policy update, not the one about to happen.
+        # To get the current update's stats we flush the logger after train() via
+        # _on_training_end — but SB3 has no per-update hook, so we log here with
+        # the understood one-rollout lag (first rollout: stats dict is empty → skipped).
         if self.logging_mode == "none":
             return
         stats = self.model.logger.name_to_value
@@ -296,9 +311,14 @@ class SumoMetricsCallback(BaseCallback):
               f"timesteps={self.num_timesteps}  phases={self.phase_counts}", flush=True)
 
         if self.logging_mode != "none":
+            per_ts_reward_log = {
+                f"train/ep_raw_reward_{ts_id}": float(self._ep_raw_rews_per_ts[i])
+                for i, ts_id in enumerate(self.ts_ids)
+            }
             wandb.log({
                 "train/episode":          self.episode,
-                "train/ep_raw_reward":    self._ep_raw_reward,   # true objective, not normalised
+                "train/ep_raw_reward":    self._ep_raw_reward,   # mean across intersections
+                **per_ts_reward_log,
                 **phase_log,
             }, step=self.num_timesteps)
 
@@ -364,7 +384,10 @@ def train(cfg: dict, timestamp: str, gpu: int):
     )
 
     steps_per_episode = cfg.get("num_seconds", 1000) // cfg.get("delta_time", 5)
-    total_timesteps   = cfg.get("episodes", 5000) * steps_per_episode
+    # SB3 increments num_timesteps by n_envs per SUMO step, so multiply by n_envs
+    # to ensure the correct number of episodes are trained regardless of intersection count.
+    # 1x1: n_envs=1 → no change; 1x3: n_envs=3 → 3× to compensate.
+    total_timesteps   = cfg.get("episodes", 5000) * steps_per_episode * base_env.num_envs
 
     metrics_cb = SumoMetricsCallback(
         base_env=base_env,
