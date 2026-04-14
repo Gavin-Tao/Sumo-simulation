@@ -5,13 +5,13 @@ See the migration guide at https://gymnasium.farama.org/introduction/migration_g
 wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/xiaowen/.netrc.
 wandb: Currently logged in as: taoxw19 (taoxw19-) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
 wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
-wandb: setting up run 81jizjbc
+wandb: setting up run wkq5oqr0
 wandb: Tracking run with wandb version 0.25.0
-wandb: Run data is saved locally in logs/wandb/wandb/run-20260414_154421-81jizjbc
+wandb: Run data is saved locally in logs/wandb/wandb/run-20260414_160031-wkq5oqr0
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run exp70_ppo_1x3_51_WEstr_only_norm_2026-04-14T15-44-21
+wandb: Syncing run exp70_ppo_1x3_51_WEstr_only_norm_2026-04-14T16-00-31
 wandb: ⭐️ View project at https://wandb.ai/taoxw19-/sumo-rl-1x3
-wandb: 🚀 View run at https://wandb.ai/taoxw19-/sumo-rl-1x3/runs/81jizjbc
+wandb: 🚀 View run at https://wandb.ai/taoxw19-/sumo-rl-1x3/runs/wkq5oqr0
 ✅ Using libsumo (C++ accelerated, faster).
 This is PriorityNormObservationFunction with normalised car/truck density.
 
@@ -98,43 +98,7 @@ This is PriorityNormObservationFunction with normalised car/truck density.
   runtime green phase[3]: GrGGrrGrGGrr
   runtime green phase[0]: GrrGGrGrrGGr
 ✅TThis is the local ts.py
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
@@ -142,90 +106,48 @@ This is PriorityNormObservationFunction with normalised car/truck density.
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    1  raw_reward=-427.0  timesteps=600  phases={'J0': {0: 51, 1: 45, 2: 45, 3: 58}, 'e': {0: 50, 1: 50, 2: 54, 3: 45}, 't': {0: 54, 3: 46, 1: 48, 2: 51}}
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
@@ -235,34 +157,11 @@ This is PriorityNormObservationFunction with normalised car/truck density.
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
@@ -309,124 +208,58 @@ This is PriorityNormObservationFunction with normalised car/truck density.
   runtime green phase[3]: GrGGrrGrGGrr
   runtime green phase[0]: GrrGGrGrrGGr
 ✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    2  raw_reward=-521.1  timesteps=1200  phases={'J0': {0: 41, 3: 57, 2: 52, 1: 49}, 'e': {0: 54, 1: 64, 3: 37, 2: 44}, 't': {0: 58, 2: 59, 3: 45, 1: 37}}
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
+[exp70_ppo_1x3_51_WEstr_only_norm] ep=    1  raw_reward=-486.3  timesteps=600  phases={'J0': {0: 51, 2: 48, 3: 58, 1: 42}, 'e': {0: 59, 3: 43, 1: 43, 2: 54}, 't': {0: 53, 3: 50, 1: 49, 2: 47}}
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    3  raw_reward=-544.8  timesteps=1800  phases={'J0': {0: 47, 2: 60, 3: 41, 1: 51}, 'e': {0: 42, 2: 50, 1: 52, 3: 55}, 't': {0: 46, 2: 47, 3: 53, 1: 53}}
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
@@ -435,155 +268,10 @@ This is PriorityNormObservationFunction with normalised car/truck density.
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    4  raw_reward=-535.8  timesteps=2400  phases={'J0': {0: 54, 3: 45, 2: 57, 1: 43}, 'e': {0: 49, 1: 41, 2: 58, 3: 51}, 't': {0: 52, 3: 64, 1: 46, 2: 37}}
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
@@ -630,503 +318,73 @@ This is PriorityNormObservationFunction with normalised car/truck density.
   runtime green phase[3]: GrGGrrGrGGrr
   runtime green phase[0]: GrrGGrGrrGGr
 ✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    5  raw_reward=-581.6  timesteps=3000  phases={'J0': {0: 56, 2: 43, 1: 56, 3: 44}, 'e': {0: 48, 3: 40, 1: 60, 2: 51}, 't': {0: 56, 2: 54, 3: 45, 1: 44}}
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    6  raw_reward=-475.4  timesteps=3600  phases={'J0': {0: 47, 1: 50, 2: 51, 3: 51}, 'e': {0: 38, 1: 46, 3: 52, 2: 63}, 't': {0: 57, 3: 39, 2: 46, 1: 57}}
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    7  raw_reward=-430.9  timesteps=4200  phases={'J0': {0: 58, 3: 42, 1: 43, 2: 56}, 'e': {0: 51, 1: 49, 3: 42, 2: 57}, 't': {0: 65, 3: 46, 2: 43, 1: 45}}
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
+[exp70_ppo_1x3_51_WEstr_only_norm] ep=    2  raw_reward=-624.3  timesteps=1200  phases={'J0': {0: 52, 2: 47, 1: 56, 3: 44}, 'e': {0: 36, 1: 44, 3: 64, 2: 55}, 't': {0: 70, 2: 48, 3: 40, 1: 41}}
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    8  raw_reward=-653.8  timesteps=4800  phases={'J0': {0: 46, 1: 46, 3: 46, 2: 61}, 'e': {0: 48, 1: 61, 2: 39, 3: 51}, 't': {0: 39, 2: 42, 1: 57, 3: 61}}
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=J0 — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=e — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-This is PriorityNormObservationFunction with normalised car/truck density.
-
-[_build_phases] TS=t — green phases sent to SUMO:
-  green_phase[0]: GrrGGrGrrGGr
-  green_phase[1]: GrrGrGGrrGrG
-  green_phase[2]: GGrGrrGGrGrr
-  green_phase[3]: GrGGrrGrGGrr
-[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
-  runtime green phase[0]: GrrGGrGrrGGr
-  runtime green phase[1]: GrrGrGGrrGrG
-  runtime green phase[2]: GGrGrrGGrGrr
-  runtime green phase[3]: GrGGrrGrGGrr
-  runtime green phase[0]: GrrGGrGrrGGr
-✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=    9  raw_reward=-506.3  timesteps=5400  phases={'J0': {0: 48, 2: 52, 1: 43, 3: 56}, 'e': {0: 56, 2: 52, 1: 45, 3: 46}, 't': {0: 61, 3: 47, 2: 34, 1: 57}}
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: t
-🔥 Action 3 selected at TS: J0
-🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
@@ -1172,34 +430,314 @@ This is PriorityNormObservationFunction with normalised car/truck density.
   runtime green phase[3]: GrGGrrGrGGrr
   runtime green phase[0]: GrrGGrGrrGGr
 ✅TThis is the local ts.py
-[exp70_ppo_1x3_51_WEstr_only_norm] ep=   10  raw_reward=-600.6  timesteps=6000  phases={'J0': {0: 37, 1: 41, 2: 64, 3: 57}, 'e': {0: 40, 2: 58, 3: 59, 1: 42}, 't': {0: 45, 3: 53, 1: 49, 2: 52}}
-Traceback (most recent call last):
-  File "/home/xiaowen/sumo-rl/experiments/train_ppo_uni.py", line 453, in <module>
-    train(cfg, timestamp, args.gpu)
-  File "/home/xiaowen/sumo-rl/experiments/train_ppo_uni.py", line 421, in train
-    model.learn(total_timesteps=total_timesteps, callback=[metrics_cb], progress_bar=True)
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/ppo/ppo.py", line 315, in learn
-    return super().learn(
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 300, in learn
-    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 243, in collect_rollouts
-    callback.on_rollout_end()
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/callbacks.py", line 123, in on_rollout_end
-    self._on_rollout_end()
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_rollout_end
-    callback.on_rollout_end()
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/callbacks.py", line 123, in on_rollout_end
-    self._on_rollout_end()
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/callbacks.py", line 224, in _on_rollout_end
-    callback.on_rollout_end()
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/callbacks.py", line 123, in on_rollout_end
-    self._on_rollout_end()
-  File "/home/xiaowen/sumo-rl/experiments/train_ppo_uni.py", line 291, in _on_rollout_end
-    log["train/reward_rms_mean"] = float(self.norm_env.reward_rms.mean)
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 420, in __getattr__
-    return self.getattr_recursive(name)
-  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 445, in getattr_recursive
-    attr = getattr(self.venv, name)
-AttributeError: 'SumoVecEnv' object has no attribute 'reward_rms'
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33mexp70_ppo_1x3_51_WEstr_only_norm_2026-04-14T15-44-21[0m at: [34mhttps://wandb.ai/taoxw19-/sumo-rl-1x3/runs/81jizjbc[0m
+[exp70_ppo_1x3_51_WEstr_only_norm] ep=    3  raw_reward=-613.7  timesteps=1800  phases={'J0': {0: 53, 2: 39, 3: 50, 1: 57}, 'e': {0: 50, 2: 49, 1: 53, 3: 47}, 't': {0: 45, 1: 66, 3: 50, 2: 38}}
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+[exp70_ppo_1x3_51_WEstr_only_norm] ep=    4  raw_reward=-515.9  timesteps=2400  phases={'J0': {0: 52, 2: 48, 3: 48, 1: 51}, 'e': {0: 49, 2: 52, 1: 60, 3: 38}, 't': {0: 47, 2: 46, 3: 54, 1: 52}}
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+[exp70_ppo_1x3_51_WEstr_only_norm] ep=    5  raw_reward=-536.7  timesteps=3000  phases={'J0': {0: 57, 1: 49, 3: 45, 2: 48}, 'e': {0: 58, 2: 47, 1: 53, 3: 41}, 't': {0: 51, 3: 42, 1: 63, 2: 43}}
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is PriorityNormObservationFunction with normalised car/truck density.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+[exp70_ppo_1x3_51_WEstr_only_norm] ep=    6  raw_reward=-592.0  timesteps=3600  phases={'J0': {0: 56, 2: 42, 1: 52, 3: 49}, 'e': {0: 52, 3: 58, 1: 46, 2: 43}, 't': {0: 47, 3: 52, 2: 46, 1: 54}}

@@ -288,8 +288,10 @@ class SumoMetricsCallback(BaseCallback):
             "train/clip_fraction", "train/explained_variance",
         ) if k in stats}
         if self.norm_env is not None:
-            log["train/reward_rms_mean"] = float(self.norm_env.reward_rms.mean)
-            log["train/reward_rms_var"]  = float(self.norm_env.reward_rms.var)
+            rms = getattr(self.norm_env, "ret_rms", None) or getattr(self.norm_env, "reward_rms", None)
+            if rms is not None:
+                log["train/reward_rms_mean"] = float(rms.mean)
+                log["train/reward_rms_var"]  = float(rms.var)
         if log:
             wandb.log(log, step=self.num_timesteps)
 
