@@ -1,0 +1,34 @@
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/xiaowen/.netrc.
+wandb: W&B API key is configured. Use `wandb login --relogin` to force relogin
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Traceback (most recent call last):
+  File "/home/xiaowen/sumo-rl/experiments/traincolight.py", line 309, in <module>
+    train(cfg, timestamp)
+  File "/home/xiaowen/sumo-rl/experiments/traincolight.py", line 126, in train
+    wandb.init(
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/wandb_init.py", line 1595, in init
+    get_sentry().reraise(e)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/analytics/sentry.py", line 190, in reraise
+    raise exc.with_traceback(tb)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/wandb_init.py", line 1578, in init
+    run = wi.init(run_settings, run_config, run_printer)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/wandb_init.py", line 894, in init
+    service = self._wl.ensure_service()
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/wandb_setup.py", line 387, in ensure_service
+    self._connection = service_connection.connect_to_service(
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/lib/service/service_connection.py", line 51, in connect_to_service
+    return _start_and_connect_service(asyncer, settings)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/lib/service/service_connection.py", line 64, in _start_and_connect_service
+    proc = service_process.start(settings)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/lib/service/service_process.py", line 35, in start
+    get_sentry().reraise(e)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/analytics/sentry.py", line 190, in reraise
+    raise exc.with_traceback(tb)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/lib/service/service_process.py", line 33, in start
+    return _launch_server(settings)
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/lib/service/service_process.py", line 105, in _launch_server
+    token = service_port_file.poll_for_token(
+  File "/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/wandb/sdk/lib/service/service_port_file.py", line 63, in poll_for_token
+    raise ServicePollForTokenError(
+wandb.sdk.lib.service.service_port_file.ServicePollForTokenError: Failed to read port info after 30.0 seconds.
