@@ -145,6 +145,8 @@ def train(cfg: dict, timestamp: str):
     episodes            = cfg.get("episodes", 5000)
     checkpoint_interval = cfg.get("checkpoint_interval", 5)
     metrics_interval    = cfg.get("metrics_interval", 50)  # collect full metrics every N episodes
+    eval_interval       = cfg.get("eval_interval", 0)      # 0 = disabled
+    eval_seed           = cfg.get("eval_seed", 42)         # different from training seed (0) by default
 
     # ── Training ──────────────────────────────────────────────────────────────
     for run in range(1, cfg.get("runs", 1) + 1):
@@ -274,6 +276,28 @@ def train(cfg: dict, timestamp: str):
                     ckpt_path = save_checkpoint(agent, episode, model_dir)
                     print(f"  → ckpt saved: {ckpt_path}")
                     wandb.save(ckpt_path, base_path=".")
+
+            # ── Evaluation episode ────────────────────────────────────────────
+            if eval_interval > 0 and episode % eval_interval == 0 and logging_mode != "none":
+                eps_backup    = agent.epsilon
+                agent.epsilon = 0.0                  # greedy policy
+
+                eval_obs  = env.reset(int(eval_seed))
+                eval_done: dict = {"__all__": False}
+                eval_mc = EpisodeMetricsCollector(
+                    ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green
+                )
+                while not eval_done["__all__"]:
+                    eval_mc.collect_step(env.sumo)
+                    eval_actions = {ts: agent.take_action(eval_obs[ts]) for ts in env.ts_ids}
+                    eval_obs, _, eval_done, _ = env.step(action=eval_actions)
+
+                eval_mc.collect_step(env.sumo)       # capture final step
+                eval_mc.finalize(env.sumo)
+                wandb.log(eval_mc.to_flat_dict(prefix="eval"), step=step_counter)
+                print(f"  → eval ep={episode}")
+
+                agent.epsilon = eps_backup           # restore training epsilon
 
         env.txw_save_csv(out_csv, run)
         env.close()

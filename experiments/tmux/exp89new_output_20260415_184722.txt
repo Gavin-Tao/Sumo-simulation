@@ -28884,3 +28884,2311 @@ This is modified PriorityObservationFunction with car/truck state.
 🔥 Action 3 selected at TS: e
 🔥 Action 3 selected at TS: J0
 🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  263  epsilon=0.0100  β=[0.500,0.500,0.417,0.404]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  264  epsilon=0.0100  β=[0.500,0.500,0.418,0.405]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  265  epsilon=0.0100  β=[0.500,0.500,0.420,0.406]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  266  epsilon=0.0100  β=[0.500,0.500,0.422,0.408]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  267  epsilon=0.0100  β=[0.500,0.500,0.422,0.406]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  268  epsilon=0.0100  β=[0.500,0.500,0.424,0.408]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  269  epsilon=0.0100  β=[0.500,0.500,0.425,0.408]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  270  epsilon=0.0100  β=[0.500,0.500,0.425,0.408]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  271  epsilon=0.0100  β=[0.500,0.500,0.427,0.410]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  272  epsilon=0.0100  β=[0.500,0.500,0.426,0.412]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  273  epsilon=0.0100  β=[0.500,0.500,0.426,0.414]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  274  epsilon=0.0100  β=[0.500,0.500,0.427,0.416]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  275  epsilon=0.0100  β=[0.500,0.500,0.428,0.418]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  276  epsilon=0.0100  β=[0.500,0.500,0.428,0.417]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  277  epsilon=0.0100  β=[0.500,0.500,0.426,0.420]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  278  epsilon=0.0100  β=[0.500,0.500,0.426,0.421]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  279  epsilon=0.0100  β=[0.500,0.500,0.424,0.422]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  280  epsilon=0.0100  β=[0.500,0.500,0.423,0.423]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  281  epsilon=0.0100  β=[0.500,0.500,0.421,0.426]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  282  epsilon=0.0100  β=[0.500,0.500,0.422,0.430]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  283  epsilon=0.0100  β=[0.500,0.500,0.420,0.430]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: e
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: J0
+🔥 Action 3 selected at TS: t
+[exp89_coeff_1x3_priority_51_WEstr_only_tuned] ep=  284  epsilon=0.0100  β=[0.500,0.500,0.420,0.430]
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=J0 — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=J0 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=e — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=e — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+✅TThis is the local ts.py
+This is modified PriorityObservationFunction with car/truck state.
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
