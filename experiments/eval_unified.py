@@ -129,8 +129,9 @@ def load_agent(agent_type, ckpt_path, cfg, obs_dim, action_space, device, n_head
         if "beta" in ckpt:
             agent.beta.data = ckpt["beta"]
         agent.q_net.eval()
+        bv = torch.sigmoid(agent.beta).tolist()
         print(f"[coeff] Loaded {ckpt_path}  ep={ckpt.get('episode', '?')}"
-              f"  β={torch.sigmoid(agent.beta).item():.4f}")
+              f"  β=[{bv[0]:.4f},{bv[1]:.4f},{bv[2]:.4f},{bv[3]:.4f}]")
 
     elif agent_type == "colight":
         agent = CoLightDQN(

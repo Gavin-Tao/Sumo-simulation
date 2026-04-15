@@ -1,6 +1,6 @@
 # Experiment: exp85 — CoeffDQN, Priority obs, 51-priority-pressure, 1x3, WEstr_only
-# Cooperative reward: r_eff = r_local + sigmoid(β) * mean(neighbor_rewards)
-# β is a learnable nn.Parameter jointly optimised with Q-network.
+# Cooperative reward: r_eff = r_local + sum(sigmoid(β_i) * r_nb_i)
+# β is a 4-dim nn.Parameter [up, down, left, right], jointly optimised with Q-network.
 name: "exp85_coeff_1x3_priority_51_WEstr_only"
 
 # wandb
@@ -51,3 +51,7 @@ runs:                1
 # Logging
 logging_mode:     "full"
 metrics_interval: 50
+
+# Evaluation during training (set eval_interval: 0 to disable)
+eval_interval: 50    # run one greedy eval episode every N episodes
+eval_seed:     0     # same seed as training for consistent comparison

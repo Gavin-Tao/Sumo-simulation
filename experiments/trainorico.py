@@ -48,6 +48,7 @@ else:
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.colight_orig import CoLightOrigDQN
+from sumo_rl.agents.noisy_linear import NoisyLinear
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
@@ -91,6 +92,15 @@ def get_nb_obs(ts_id: str, states: dict, neighbor_map: dict, obs_dim: int) -> np
         if nb_id is not None and nb_id in states:
             nb_obs[i] = np.array(states[nb_id], dtype=np.float32)
     return nb_obs
+
+
+def get_noisy_sigma_stats(model: torch.nn.Module) -> dict:
+    """Return mean |weight_sigma| for each NoisyLinear layer (for wandb logging)."""
+    stats = {}
+    for name, m in model.named_modules():
+        if isinstance(m, NoisyLinear):
+            stats[f"noisy/{name}_sigma"] = m.weight_sigma.abs().mean().item()
+    return stats
 
 
 def save_checkpoint(agent: CoLightOrigDQN, episode: int, model_dir: str) -> str:
@@ -157,6 +167,8 @@ def train(cfg: dict, timestamp: str):
     episodes            = cfg.get("episodes", 5000)
     checkpoint_interval = cfg.get("checkpoint_interval", 5)
     metrics_interval    = cfg.get("metrics_interval", 50)
+    eval_interval       = cfg.get("eval_interval", 0)      # 0 = disabled
+    eval_seed           = cfg.get("eval_seed", 0)
 
     for run in range(1, cfg.get("runs", 1) + 1):
         initial_states = env.reset(env.sumo_seed)
@@ -181,6 +193,7 @@ def train(cfg: dict, timestamp: str):
             eps_end=cfg.get("eps_end", 0.01),
             eps_decay=cfg.get("eps_decay", 1000),
             device=device,
+            use_noisy=cfg.get("use_noisy", False),
         )
 
         step_counter = 0
@@ -277,14 +290,43 @@ def train(cfg: dict, timestamp: str):
                     total = sum(counts.values()) or 1
                     for p, c in counts.items():
                         phase_log[f"phase/{ts_id}/phase{p}_ratio"] = c / total
+                noisy_stats = get_noisy_sigma_stats(agent.q_net) if agent.use_noisy else {}
                 print(f"[{exp_name}] ep={episode:5d}  epsilon={agent.epsilon:.4f}  phases={phase_counts}")
-                wandb.log({"train/episode": episode, "train/epsilon": agent.epsilon, **phase_log},
+                wandb.log({"train/episode": episode, "train/epsilon": agent.epsilon,
+                           **phase_log, **noisy_stats},
                           step=step_counter)
 
                 if episode % checkpoint_interval == 0:
                     ckpt_path = save_checkpoint(agent, episode, model_dir)
                     print(f"  → ckpt saved: {ckpt_path}")
                     wandb.save(ckpt_path, base_path=".")
+
+            # ── Evaluation episode ────────────────────────────────────────────
+            if eval_interval > 0 and episode % eval_interval == 0 and logging_mode != "none":
+                eps_backup = agent.epsilon
+                agent.epsilon = 0.0
+                agent.q_net.eval()                           # disable noise if use_noisy
+
+                eval_obs = env.reset(int(eval_seed))
+                eval_done: dict = {"__all__": False}
+                eval_mc = EpisodeMetricsCollector(
+                    ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green
+                )
+                while not eval_done["__all__"]:
+                    eval_mc.collect_step(env.sumo)
+                    eval_actions = {}
+                    for ts in env.ts_ids:
+                        nb_obs = get_nb_obs(ts, eval_obs, neighbor_map, obs_dim)  # type: ignore[arg-type]
+                        eval_actions[ts] = agent.take_action(eval_obs[ts], nb_obs)  # type: ignore[index]
+                    eval_obs, _, eval_done, _ = env.step(action=eval_actions)  # type: ignore[misc]
+
+                eval_mc.collect_step(env.sumo)               # capture final step (matches training pattern)
+                eval_mc.finalize(env.sumo)
+                wandb.log(eval_mc.to_flat_dict(prefix="eval"), step=step_counter)
+                print(f"  → eval ep={episode}")
+
+                agent.epsilon = eps_backup
+                agent.q_net.train()                          # re-enable noise if use_noisy
 
         env.txw_save_csv(out_csv, run)
         env.close()

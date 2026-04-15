@@ -20,6 +20,7 @@ import torch.nn.functional as F
 
 # Reuse identical replay buffer from colight/
 from sumo_rl.agents.colight.replay_buffer import CoLightReplayBuffer
+from sumo_rl.agents.noisy_linear import NoisyLinear
 
 
 # ── GAT building blocks ───────────────────────────────────────────────────────
@@ -31,10 +32,11 @@ class GATLayer(nn.Module):
     a  : attention scoring vector                  [2*out_dim → 1]
     """
 
-    def __init__(self, in_dim: int, out_dim: int, leaky_slope: float = 0.2):
+    def __init__(self, in_dim: int, out_dim: int, leaky_slope: float = 0.2,
+                 use_noisy: bool = False):
         super().__init__()
-        self.W          = nn.Linear(in_dim, out_dim, bias=False)
-        self.a          = nn.Linear(2 * out_dim, 1, bias=False)
+        self.W          = NoisyLinear(in_dim, out_dim) if use_noisy else nn.Linear(in_dim, out_dim, bias=False)
+        self.a          = nn.Linear(2 * out_dim, 1, bias=False)   # attention stays deterministic
         self.leaky_relu = nn.LeakyReLU(leaky_slope)
 
     def forward(self, own: torch.Tensor, neighbors: torch.Tensor,
@@ -77,14 +79,20 @@ class CoLightOrigQNet(nn.Module):
     """
 
     def __init__(self, obs_dim: int, hidden_dim: int, action_dim: int,
-                 n_heads: int = 2, leaky_slope: float = 0.2):
+                 n_heads: int = 2, leaky_slope: float = 0.2, use_noisy: bool = False):
         super().__init__()
         self.n_heads = n_heads
         self.heads   = nn.ModuleList([
-            GATLayer(obs_dim, hidden_dim, leaky_slope) for _ in range(n_heads)
+            GATLayer(obs_dim, hidden_dim, leaky_slope, use_noisy) for _ in range(n_heads)
         ])
-        self.own_enc = nn.Linear(obs_dim, hidden_dim)
-        self.q_head  = nn.Linear(hidden_dim * (n_heads + 1), action_dim)
+        linear = NoisyLinear if use_noisy else nn.Linear
+        self.own_enc = linear(obs_dim, hidden_dim)
+        self.q_head  = linear(hidden_dim * (n_heads + 1), action_dim)
+
+    def reset_noise(self):
+        for m in self.modules():
+            if isinstance(m, NoisyLinear):
+                m.reset_noise()
 
     def forward(self, own: torch.Tensor, neighbors: torch.Tensor) -> torch.Tensor:
         """
@@ -116,16 +124,18 @@ class CoLightOrigDQN:
     def __init__(self, obs_dim, hidden_dim, action_dim, n_heads,
                  learning_rate, gamma, epsilon,
                  target_update, capacity, mini_size, batch_size,
-                 eps_start, eps_end, eps_decay, device):
+                 eps_start, eps_end, eps_decay, device,
+                 use_noisy: bool = False):
         self.obs_dim       = obs_dim
         self.action_dim    = action_dim
         self.gamma         = gamma
-        self.epsilon       = epsilon
+        self.use_noisy     = use_noisy
+        self.epsilon       = 0.0 if use_noisy else epsilon
         self.target_update = target_update
         self.mini_size     = mini_size
         self.batch_size    = batch_size
-        self.eps_start     = eps_start
-        self.eps_end       = eps_end
+        self.eps_start     = 0.0 if use_noisy else eps_start
+        self.eps_end       = 0.0 if use_noisy else eps_end
         self.eps_decay     = eps_decay
         self.device        = device
         self.count         = 0
@@ -133,10 +143,10 @@ class CoLightOrigDQN:
         self.start_train   = False
 
         self.q_net = CoLightOrigQNet(
-            obs_dim, hidden_dim, action_dim, n_heads
+            obs_dim, hidden_dim, action_dim, n_heads, use_noisy=use_noisy
         ).to(device)
         self.target_q_net = CoLightOrigQNet(
-            obs_dim, hidden_dim, action_dim, n_heads
+            obs_dim, hidden_dim, action_dim, n_heads, use_noisy=use_noisy
         ).to(device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())
 
@@ -180,3 +190,7 @@ class CoLightOrigDQN:
         if self.count % self.target_update == 0:
             self.target_q_net.load_state_dict(self.q_net.state_dict())
         self.count += 1
+
+        if self.use_noisy:
+            self.q_net.reset_noise()
+            self.target_q_net.reset_noise()

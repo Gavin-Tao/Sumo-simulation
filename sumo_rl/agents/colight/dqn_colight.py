@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from .replay_buffer import CoLightReplayBuffer
+from sumo_rl.agents.noisy_linear import NoisyLinear
 
 
 class CoLightQNet(nn.Module):
@@ -19,12 +20,19 @@ class CoLightQNet(nn.Module):
       6. Q-values: Linear(cat(own_feat, agg))  [B, action_dim]
     """
 
-    def __init__(self, own_dim: int, nb_dim: int, hidden_dim: int, action_dim: int):
+    def __init__(self, own_dim: int, nb_dim: int, hidden_dim: int, action_dim: int,
+                 use_noisy: bool = False):
         super().__init__()
-        self.own_encoder = nn.Linear(own_dim, hidden_dim)
-        self.nb_encoder  = nn.Linear(nb_dim,  hidden_dim)
-        self.attn_score  = nn.Linear(hidden_dim * 2, 1)
-        self.q_head      = nn.Linear(hidden_dim * 2, action_dim)
+        linear = NoisyLinear if use_noisy else nn.Linear
+        self.own_encoder = linear(own_dim, hidden_dim)
+        self.nb_encoder  = linear(nb_dim,  hidden_dim)
+        self.attn_score  = nn.Linear(hidden_dim * 2, 1)   # attention stays deterministic
+        self.q_head      = linear(hidden_dim * 2, action_dim)
+
+    def reset_noise(self):
+        for m in self.modules():
+            if isinstance(m, NoisyLinear):
+                m.reset_noise()
 
     def forward(self, own: torch.Tensor, neighbors: torch.Tensor) -> torch.Tensor:
         """
@@ -55,25 +63,27 @@ class CoLightDQN:
     def __init__(self, own_dim, nb_dim, hidden_dim, action_dim,
                  learning_rate, gamma, epsilon,
                  target_update, capacity, mini_size, batch_size,
-                 eps_start, eps_end, eps_decay, device):
+                 eps_start, eps_end, eps_decay, device,
+                 use_noisy: bool = False):
         self.own_dim       = own_dim
         self.nb_dim        = nb_dim
         self.action_dim    = action_dim
         self.gamma         = gamma
-        self.epsilon       = epsilon
+        self.use_noisy     = use_noisy
+        self.epsilon       = 0.0 if use_noisy else epsilon
         self.target_update = target_update
         self.mini_size     = mini_size
         self.batch_size    = batch_size
-        self.eps_start     = eps_start
-        self.eps_end       = eps_end
+        self.eps_start     = 0.0 if use_noisy else eps_start
+        self.eps_end       = 0.0 if use_noisy else eps_end
         self.eps_decay     = eps_decay
         self.device        = device
         self.count         = 0
         self.loss          = None
         self.start_train   = False
 
-        self.q_net        = CoLightQNet(own_dim, nb_dim, hidden_dim, action_dim).to(device)
-        self.target_q_net = CoLightQNet(own_dim, nb_dim, hidden_dim, action_dim).to(device)
+        self.q_net        = CoLightQNet(own_dim, nb_dim, hidden_dim, action_dim, use_noisy).to(device)
+        self.target_q_net = CoLightQNet(own_dim, nb_dim, hidden_dim, action_dim, use_noisy).to(device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())
 
         self.optimizer     = torch.optim.Adam(self.q_net.parameters(), lr=learning_rate)
@@ -115,3 +125,7 @@ class CoLightDQN:
         if self.count % self.target_update == 0:
             self.target_q_net.load_state_dict(self.q_net.state_dict())
         self.count += 1
+
+        if self.use_noisy:
+            self.q_net.reset_noise()
+            self.target_q_net.reset_noise()

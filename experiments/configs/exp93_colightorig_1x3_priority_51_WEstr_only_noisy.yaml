@@ -1,7 +1,8 @@
-# Experiment: exp86 — CoLightDQN, Priority obs, 51-priority-pressure, 1x3, WEstr_only
-# Cooperation via graph attention over neighbor observations.
-# Own obs + neighbor obs [4, obs_dim] fed through GAT layer before Q-head.
-name: "exp86_colight_1x3_priority_51_WEstr_only"
+# Experiment: exp93 — Original CoLight DQN + NoisyNetworks (Wei et al., KDD 2019)
+# Based on exp90 (tuned); epsilon-greedy replaced by NoisyLinear parameter-space exploration
+# NoisyLinear applied to GAT projection W, own_enc, and q_head
+# eps_start/end/decay are ignored when use_noisy=true
+name: "exp93_colightorig_1x3_priority_51_WEstr_only_noisy"
 
 # wandb
 wandb_project: "sumo-rl-1x3"
@@ -30,17 +31,15 @@ use_max_green:     true
 max_green:         50
 
 # DQN hyperparameters
-hidden_dim:    64
-lr:            0.01
+hidden_dim:    128
+n_heads:       2
+lr:            0.001
 gamma:         0.99
-epsilon:       0.1
-eps_start:     0.5
-eps_end:       0.01
-eps_decay:     1000
-target_update: 10
-capacity:      10000
-mini_size:     500
+target_update: 20
+capacity:      50000
+mini_size:     1000
 batch_size:    256
+use_noisy:     true    # NoisyLinear on GAT.W, own_enc, q_head; epsilon-greedy disabled
 
 # Training
 seed:                0

@@ -385,6 +385,16 @@ class EpisodeMetricsCollector:
             for t in vtypes:
                 self._ts_seen[f"{ts}_{t}"] = set()
 
+        # ── per-ts cleared (vehicles that actually passed through the intersection)
+        # A vehicle is "cleared" when it was previously on a ts's approach lanes
+        # but is no longer there — meaning it moved through the intersection.
+        # This is the correct throughput denominator (vs _ts_seen which includes
+        # vehicles still queuing at episode end).
+        self._ts_cleared: dict = {ts: set() for ts in ts_lane_map}
+        for ts in ts_lane_map:
+            for t in vtypes:
+                self._ts_cleared[f"{ts}_{t}"] = set()
+
     # ── internal helpers ─────────────────────────────────────────────────────
 
     def _zero_speed_accum(self) -> dict:
@@ -530,6 +540,21 @@ class EpisodeMetricsCollector:
             rec["prev_speed"]    = speed
             rec["last_acc_wait"] = sumo.vehicle.getAccumulatedWaitingTime(vid)
 
+        # ── Track intersection clearance ──────────────────────────────────────
+        # A vehicle "clears" a ts when it was previously on its approach lanes
+        # but is no longer there this step (moved through or departed the network).
+        # Vehicles departing this step are still in _active (finalized below).
+        for ts_id in self.ts_lane_map:
+            new_cleared = self._ts_seen[ts_id] - ts_vehs[ts_id] - self._ts_cleared[ts_id]
+            for vid in new_cleared:
+                rec_lookup = self._active.get(vid) or self._finalized.get(vid)
+                if rec_lookup is None:
+                    continue
+                self._ts_cleared[ts_id].add(vid)
+                vtype = rec_lookup["type"]
+                if vtype in self.vtypes:
+                    self._ts_cleared[f"{ts_id}_{vtype}"].add(vid)
+
         # Finalize vehicles that left the network this step
         for vid in set(self._active) - current_ids:
             rec = self._active.pop(vid)
@@ -593,16 +618,20 @@ class EpisodeMetricsCollector:
     # ── internal summary builders ─────────────────────────────────────────────
 
     def _leaf_metrics_spd(self, spd_table: dict, spd_key: str, records: list) -> dict:
-        """Build the leaf metrics dict for a given scope, using an explicit speed table."""
+        """Build the leaf metrics dict for a given scope, using an explicit speed table.
+
+        Note: throughput is NOT included here — system-level throughput (mean of per-ts
+        cleared counts) and completed_trips are added by _build_system_summary directly.
+        """
         s = spd_table[spd_key]
         n = len(records)
+        stop_total = sum(r["stop_count"] for r in records)
         return {
             "n_vehicles":      n,
-            "throughput":      sum(1 for r in records if r["completed"]),
             "avg_speed":       s[0] / s[1] if s[1] else 0.0,
             "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
-            "n_stop_events":   sum(r["stop_count"] for r in records),
-            "avg_stop_events": sum(r["stop_count"] for r in records) / n if n else 0.0,
+            "n_stop_events":   stop_total,
+            "avg_stop_events": stop_total / n if n else 0.0,
         }
 
     def _build_system_summary(self) -> dict:
@@ -618,11 +647,25 @@ class EpisodeMetricsCollector:
             spd_table = self._spd
         out: dict = {}
 
+        n_ts = len(self.ts_lane_map)
+
         out["all"] = self._leaf_metrics_spd(spd_table, "system", all_recs)
         total_all = sum(self._ts_stopped_sec.get(ts, 0.0) for ts in self.ts_lane_map)
         n_all = out["all"]["n_vehicles"]
         out["all"]["stopped_time"]     = total_all
         out["all"]["avg_stopped_time"] = total_all / n_all if n_all else 0.0
+        # System throughput: sum and mean of per-ts cleared counts
+        ts_cleared_counts = [len(self._ts_cleared[ts]) for ts in self.ts_lane_map]
+        out["all"]["throughput"]      = sum(ts_cleared_counts)
+        out["all"]["mean_throughput"] = sum(ts_cleared_counts) / n_ts if n_ts else 0.0
+        # Completed trips = vehicles that finished their entire route and left the network
+        out["all"]["completed_trips"]  = sum(1 for r in all_recs if r["completed"])
+        out["all"]["completion_rate"]  = out["all"]["completed_trips"] / n_all if n_all else 0.0
+        # Stop events normalised by total intersection visits (removes route-length bias)
+        total_visits_all = sum(len(self._ts_seen[ts]) for ts in self.ts_lane_map)
+        out["all"]["avg_stop_events_per_all_visit"] = (
+            out["all"]["n_stop_events"] / total_visits_all if total_visits_all else 0.0
+        )
 
         for t in self.vtypes:
             recs = [r for r in all_recs if r["type"] == t]
@@ -631,6 +674,15 @@ class EpisodeMetricsCollector:
             n_t = leaf["n_vehicles"]
             leaf["stopped_time"]     = total_t
             leaf["avg_stopped_time"] = total_t / n_t if n_t else 0.0
+            ts_cleared_t = [len(self._ts_cleared[f"{ts}_{t}"]) for ts in self.ts_lane_map]
+            leaf["throughput"]      = sum(ts_cleared_t)
+            leaf["mean_throughput"] = sum(ts_cleared_t) / n_ts if n_ts else 0.0
+            leaf["completed_trips"] = sum(1 for r in recs if r["completed"])
+            leaf["completion_rate"] = leaf["completed_trips"] / n_t if n_t else 0.0
+            total_visits_t = sum(len(self._ts_seen[f"{ts}_{t}"]) for ts in self.ts_lane_map)
+            leaf["avg_stop_events_per_all_visit"] = (
+                leaf["n_stop_events"] / total_visits_t if total_visits_t else 0.0
+            )
             out[t] = leaf
 
         return out
@@ -645,7 +697,7 @@ class EpisodeMetricsCollector:
         - avg_stop_events  : n_stop_events / n_vehicles
         - stopped_time     : total vehicle-seconds spent stopped on approach lanes
         - avg_stopped_time : stopped_time / n_vehicles
-        - throughput    : unique vehicles that appeared on approach lanes
+        - throughput    : vehicles that cleared the intersection (moved past approach lanes)
         """
         all_seen_vids = self._ts_seen[ts_id]
         all_recs = [self._finalized[v] for v in all_seen_vids if v in self._finalized]
@@ -655,7 +707,7 @@ class EpisodeMetricsCollector:
             n = len(records)
             return {
                 "n_vehicles":    n,
-                "throughput":    len(self._ts_seen[type_key]),
+                "throughput":    len(self._ts_cleared[type_key]),
                 "avg_speed":     s[0] / s[1] if s[1] else 0.0,
                 "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
                 "n_stop_events":   self._ts_stop_evt[type_key],

@@ -1,7 +1,8 @@
-# Experiment: exp87 — Original CoLight DQN (Wei et al., KDD 2019)
-# Multi-head GAT: LeakyReLU attention + ELU output, n_heads=2
-# Priority obs, 51-priority-pressure reward, 1x3, WEstr_only
-name: "exp87_colightorig_1x3_priority_51_WEstr_only"
+# Experiment: exp89 — CoeffDQN tuned, Priority obs, 51-priority-pressure, 1x3, WEstr_only
+# Tuned from exp85: lower lr, larger network, slower epsilon decay, bigger replay buffer
+# Note: beta_up/beta_down will remain at sigmoid(0)=0.5 (no up/down neighbors in 1x3)
+# Note: phase starvation at t/phase3 is a known limitation of reward-level cooperation
+name: "exp89_coeff_1x3_priority_51_WEstr_only_tuned"
 
 # wandb
 wandb_project: "sumo-rl-1x3"
@@ -30,17 +31,16 @@ use_max_green:     true
 max_green:         50
 
 # DQN hyperparameters
-hidden_dim:    64
-n_heads:       2        # number of GAT attention heads
-lr:            0.01
+hidden_dim:    256     # 64→256: fc1(265→256) less bottlenecked than 265→128; CoLight uses 53→128
+lr:            0.001   # 0.01→0.001: shared by Q-net and β, 0.01 too aggressive for both
 gamma:         0.99
 epsilon:       0.1
-eps_start:     0.5
-eps_end:       0.01
-eps_decay:     1000
-target_update: 10
-capacity:      10000
-mini_size:     500
+eps_start:     0.9     # 0.5→0.9: more early exploration to avoid premature phase starvation
+eps_end:       0.01    # same as others for fair comparison; starvation is a known architectural limitation
+eps_decay:     5000    # 1000→5000: converges ~ep250 instead of ep5
+target_update: 20      # 10→20: more stable target Q for cooperative reward signal
+capacity:      50000   # 10000→50000: larger buffer, 265-dim obs needs more diverse samples
+mini_size:     1000    # 500→1000: wait for more samples before β starts learning
 batch_size:    256
 
 # Training

@@ -1,7 +1,8 @@
-# Experiment: exp86 — CoLightDQN, Priority obs, 51-priority-pressure, 1x3, WEstr_only
-# Cooperation via graph attention over neighbor observations.
-# Own obs + neighbor obs [4, obs_dim] fed through GAT layer before Q-head.
-name: "exp86_colight_1x3_priority_51_WEstr_only"
+# Experiment: exp90 — Original CoLight DQN tuned (Wei et al., KDD 2019)
+# Multi-head GAT: LeakyReLU attention + ELU output, n_heads=2
+# Tuned from exp87: lower lr, larger network, slower epsilon decay, bigger replay buffer
+# Architecture: Q-head input = hidden_dim * (n_heads + 1) = 128 * 3 = 384 dims
+name: "exp90_colightorig_1x3_priority_51_WEstr_only_tuned"
 
 # wandb
 wandb_project: "sumo-rl-1x3"
@@ -30,16 +31,17 @@ use_max_green:     true
 max_green:         50
 
 # DQN hyperparameters
-hidden_dim:    64
-lr:            0.01
+hidden_dim:    128     # 64→128: more capacity for multi-head GAT (Q-head sees 128*3=384 dims)
+n_heads:       2       # original CoLight paper setting; 1x3 chain has max 2 neighbors
+lr:            0.001   # same as CoLight; Adam normalises gradients, 1.6× more params is not a concern
 gamma:         0.99
 epsilon:       0.1
-eps_start:     0.5
+eps_start:     0.9     # 0.5→0.9: multi-head attention needs more exploration to learn patterns
 eps_end:       0.01
-eps_decay:     1000
-target_update: 10
-capacity:      10000
-mini_size:     500
+eps_decay:     5000    # 1000→5000: converges ~ep250 instead of ep5
+target_update: 20      # 10→20: more stable target for larger network
+capacity:      50000   # 10000→50000: larger buffer for diverse experience
+mini_size:     1000    # 500→1000: wait for more samples before training starts
 batch_size:    256
 
 # Training
@@ -53,5 +55,5 @@ logging_mode:     "full"
 metrics_interval: 50
 
 # Evaluation during training (set eval_interval: 0 to disable)
-eval_interval: 50
-eval_seed:     0
+eval_interval: 50    # run one greedy eval episode every N episodes
+eval_seed:     0     # same seed as training for consistent comparison
