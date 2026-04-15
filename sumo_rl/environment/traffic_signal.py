@@ -122,8 +122,43 @@ class TrafficSignal:
 
         self.observation_space = self.observation_fn.observation_space()
         self.action_space = spaces.Discrete(self.num_green_phases)
-        
+
+        # Precompute which incoming lanes are signal-controlled (ever get red).
+        # Lanes that are G/g in ALL green phases are always-green (e.g. free right turns).
+        self.signal_controlled_lanes: list = self._compute_signal_controlled_lanes()
+        self.always_green_lanes: list = [
+            l for l in self.lanes if l not in self.signal_controlled_lanes
+        ]
+
         print("✅TThis is the local ts.py")
+
+    def _compute_signal_controlled_lanes(self) -> list:
+        """Return lanes that receive red in at least one green phase.
+
+        A lane whose position is G or g in every green phase is permanently
+        green (free right turn) and is excluded from the returned list.
+        Lanes controlled by fixed_ts mode are all considered signal-controlled.
+
+        Uses the raw (possibly duplicated) controlled-lanes list for phase-string
+        indexing, because self.lanes is deduplicated whereas phase.state length
+        equals len(getControlledLanes()) which may be larger.
+        """
+        if self.env.fixed_ts or not self.green_phases:
+            return list(self.lanes)
+
+        # Raw lane list (with possible duplicates) — indices match phase.state chars.
+        raw_lanes = self.sumo.trafficlight.getControlledLanes(self.id)
+        controlled_set: set = set()
+        for i, lane in enumerate(raw_lanes):
+            ever_red = any(
+                phase.state[i] in ('r', 's')
+                for phase in self.green_phases
+            )
+            if ever_red:
+                controlled_set.add(lane)
+
+        # Return in self.lanes order (deduplicated), preserving original ordering.
+        return [lane for lane in self.lanes if lane in controlled_set]
 
     #这个地方-重新建立了相位（把原来的绿灯赋予新的最大时间+重新构建了黄灯相位。）把绿灯相位放在前面，然后加上他们之间互相transit时候的黄灯相位，这里黄灯相位是N*（N-1），N是绿灯相位数量
     # syc的场景构建的有问题

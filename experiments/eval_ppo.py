@@ -79,7 +79,8 @@ def run_eval(cfg: dict, ckpt_path: str, n_episodes: int, use_gui: bool,
     model = PPO.load(ckpt_path, env=env)
     print(f"Loaded checkpoint: {ckpt_path}")
 
-    ts_lane_map = {ts: env.traffic_signals[ts].lanes for ts in env.ts_ids}
+    ts_lane_map  = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
+    always_green = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
     base_seed = cfg.get("seed", 0)
     all_episode_metrics: list[dict] = []
 
@@ -87,7 +88,8 @@ def run_eval(cfg: dict, ckpt_path: str, n_episodes: int, use_gui: bool,
         seed = base_seed if fixed_seed else base_seed + episode - 1
         obs, _ = env.reset(seed)
 
-        mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time)
+        mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time,
+                                     excluded_lanes=always_green)
         episode_reward = 0.0
         steps = 0
         done = False

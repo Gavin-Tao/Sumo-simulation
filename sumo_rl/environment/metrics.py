@@ -325,18 +325,26 @@ class EpisodeMetricsCollector:
         ts_lane_map: dict,
         vtypes: tuple = ("car", "truck", "bus"),
         delta_time: int = 5,
+        excluded_lanes: set = None,
     ):
         """
         Args:
-            ts_lane_map : {ts_id: [incoming_lane_id, ...]}
-                          Typically built as:
-                              {ts: env.traffic_signals[ts].lanes for ts in env.ts_ids}
-            vtypes      : vehicle types to report separately
-            delta_time  : seconds per simulation step (for stopped-time calc)
+            ts_lane_map    : {ts_id: [incoming_lane_id, ...]}
+                             Should contain only signal-controlled lanes (lanes that
+                             ever get red). Build as:
+                                 {ts: env.traffic_signals[ts].signal_controlled_lanes
+                                  for ts in env.ts_ids}
+            vtypes         : vehicle types to report separately
+            delta_time     : seconds per simulation step (for stopped-time calc)
+            excluded_lanes : set of lane IDs that are always green (free right turns).
+                             Vehicles seen exclusively on these lanes are excluded from
+                             system-level wait/stop metrics so they don't bias averages.
+                             If None, no exclusion is applied.
         """
-        self.ts_lane_map = ts_lane_map
-        self.vtypes      = vtypes
-        self.delta_time  = delta_time
+        self.ts_lane_map    = ts_lane_map
+        self.vtypes         = vtypes
+        self.delta_time     = delta_time
+        self._excluded_lanes: set = set(excluded_lanes) if excluded_lanes else set()
 
         # lane_id -> ts_id  (fast lookup)
         self._lane_to_ts: dict = {
@@ -352,6 +360,11 @@ class EpisodeMetricsCollector:
         # ── time-weighted speed accumulators ──────────────────────────────────
         # keyed by scope string: "system", vtype, ts_id, f"{ts_id}_{vtype}"
         self._spd: dict = self._zero_speed_accum()
+
+        # Parallel accumulator used only when excluded_lanes is active:
+        # counts speed/steps only for vehicles observed on signal-controlled lanes,
+        # so system avg_speed stays consistent with the filtered n_vehicles.
+        self._spd_ctrl: dict = self._zero_speed_accum() if self._excluded_lanes else {}
 
         # ── per-ts stopped-time (seconds) accumulator ─────────────────────────
         # Only counts time vehicles spent stopped on that ts's approach lanes
@@ -385,11 +398,12 @@ class EpisodeMetricsCollector:
 
     def _new_record(self, vtype: str) -> dict:
         return {
-            "type":       vtype if vtype in self.vtypes else "other",
-            "prev_speed": None,   # for system-level stop detection
-            "stop_count": 0,      # system-level moving->stopped transitions
-            "last_acc_wait": 0.0, # accumulated waiting time (last observed)
-            "completed":  False,  # True if vehicle arrived at destination
+            "type":              vtype if vtype in self.vtypes else "other",
+            "prev_speed":        None,   # for system-level stop detection
+            "stop_count":        0,      # system-level moving->stopped transitions
+            "last_acc_wait":     0.0,    # accumulated waiting time (last observed)
+            "completed":         False,  # True if vehicle arrived at destination
+            "ever_on_controlled": False, # True once seen on a signal-controlled lane
             # per-ts (updated only when on a ts's approach lanes)
             "ts_prev_speed": {},  # ts_id -> prev speed (for ts-level stop detection)
         }
@@ -435,21 +449,28 @@ class EpisodeMetricsCollector:
             vtype = rec["type"]
             cur_ts = veh_ts.get(vid)     # None if not on any ts's approach lanes
 
-            # ── time-weighted speed (system + per-type) ───────────────────────
+            # ── time-weighted speed (system + per-type, all vehicles) ────────────
+            # Used by _build_system_summary when excluded_lanes is not set.
+            # When excluded_lanes IS set, _spd_ctrl (populated below) is used instead.
             self._spd["system"][0] += speed
             self._spd["system"][1] += 1
             if vtype in self.vtypes:
                 self._spd[vtype][0] += speed
                 self._spd[vtype][1] += 1
 
-            # ── system-level stop transition ──────────────────────────────────
-            if rec["prev_speed"] is not None:
-                if rec["prev_speed"] >= self.STOP_THRESHOLD > speed:
-                    rec["stop_count"] += 1
-            rec["prev_speed"] = speed
-
             # ── per-ts metrics (only when on approach lanes) ──────────────────
             if cur_ts is not None:
+                # Vehicle reached a signal-controlled lane — count it in system metrics
+                rec["ever_on_controlled"] = True
+
+                # system-level stop transition — counted only on signal-controlled
+                # approach lanes so that system n_stop_events is consistent with
+                # per-ts n_stop_events and excludes spillback stops on road segments.
+                # prev_speed is still updated every step (below) so the transition
+                # detector stays continuous across in/out of approach lanes.
+                if rec["prev_speed"] is not None:
+                    if rec["prev_speed"] >= self.STOP_THRESHOLD > speed:
+                        rec["stop_count"] += 1
                 # Mark as seen at this ts (for throughput counting)
                 self._ts_seen[cur_ts].add(vid)
                 if vtype in self.vtypes:
@@ -462,22 +483,51 @@ class EpisodeMetricsCollector:
                     self._spd[f"{cur_ts}_{vtype}"][0] += speed
                     self._spd[f"{cur_ts}_{vtype}"][1] += 1
 
+                # Controlled-only speed accumulator (for consistent avg_speed when
+                # right-turn vehicles are excluded from system summary).
+                if self._excluded_lanes:
+                    self._spd_ctrl["system"][0] += speed
+                    self._spd_ctrl["system"][1] += 1
+                    if vtype in self.vtypes:
+                        self._spd_ctrl[vtype][0] += speed
+                        self._spd_ctrl[vtype][1] += 1
+
                 # Stopped time on this ts's approach lanes
                 if speed < self.STOP_THRESHOLD:
                     self._ts_stopped_sec[cur_ts] += self.delta_time
                     if vtype in self.vtypes:
                         self._ts_stopped_sec[f"{cur_ts}_{vtype}"] += self.delta_time
 
-                # Stop transition on this ts's approach lanes
+                # Stop transition on this ts's approach lanes.
+                # Two cases:
+                #   1. Normal: vehicle was already on this ts's lane last step
+                #      → use ts_prev_speed for the transition check.
+                #   2. First entry: vehicle just arrived on this lane this step
+                #      → ts_prev_speed is None, but global prev_speed carries
+                #        the speed from the previous step (possibly off-lane).
+                #        Use it so "entered lane already stopped" is counted.
                 prev_ts_spd = rec["ts_prev_speed"].get(cur_ts)
-                if prev_ts_spd is not None:
+                is_first_entry = prev_ts_spd is None
+                if is_first_entry:
+                    # Compensate for the "arrived already stopped" case using
+                    # global prev_speed, keeping per-ts consistent with system.
+                    if rec["prev_speed"] is not None:
+                        if rec["prev_speed"] >= self.STOP_THRESHOLD > speed:
+                            self._ts_stop_evt[cur_ts] += 1
+                            if vtype in self.vtypes:
+                                self._ts_stop_evt[f"{cur_ts}_{vtype}"] += 1
+                else:
                     if prev_ts_spd >= self.STOP_THRESHOLD > speed:
                         self._ts_stop_evt[cur_ts] += 1
                         if vtype in self.vtypes:
                             self._ts_stop_evt[f"{cur_ts}_{vtype}"] += 1
                 rec["ts_prev_speed"][cur_ts] = speed
 
-            # ── update last known accumulated waiting time ────────────────────
+            # ── always update prev_speed and last_acc_wait (every vehicle, every step)
+            # prev_speed must be updated unconditionally so the stop-transition detector
+            # in the cur_ts block above has a valid previous speed even after the vehicle
+            # has been off a controlled lane for several steps.
+            rec["prev_speed"]    = speed
             rec["last_acc_wait"] = sumo.vehicle.getAccumulatedWaitingTime(vid)
 
         # Finalize vehicles that left the network this step
@@ -542,28 +592,33 @@ class EpisodeMetricsCollector:
 
     # ── internal summary builders ─────────────────────────────────────────────
 
-    def _leaf_metrics(
-        self,
-        spd_key: str,
-        records: list,
-    ) -> dict:
-        """Build the leaf metrics dict for a given scope."""
-        s = self._spd[spd_key]
+    def _leaf_metrics_spd(self, spd_table: dict, spd_key: str, records: list) -> dict:
+        """Build the leaf metrics dict for a given scope, using an explicit speed table."""
+        s = spd_table[spd_key]
         n = len(records)
         return {
-            "n_vehicles":    n,
-            "throughput":    sum(1 for r in records if r["completed"]),
-            "avg_speed":     s[0] / s[1] if s[1] else 0.0,
+            "n_vehicles":      n,
+            "throughput":      sum(1 for r in records if r["completed"]),
+            "avg_speed":       s[0] / s[1] if s[1] else 0.0,
             "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
             "n_stop_events":   sum(r["stop_count"] for r in records),
             "avg_stop_events": sum(r["stop_count"] for r in records) / n if n else 0.0,
         }
 
     def _build_system_summary(self) -> dict:
-        all_recs = list(self._finalized.values())
+        # When excluded_lanes is active, filter to vehicles that reached at least
+        # one signal-controlled lane (right-turn-only vehicles are excluded so they
+        # don't bias avg_wait / stop metrics for cars vs buses).
+        # avg_speed uses _spd_ctrl so its denominator is consistent with n_vehicles.
+        if self._excluded_lanes:
+            all_recs  = [r for r in self._finalized.values() if r["ever_on_controlled"]]
+            spd_table = self._spd_ctrl
+        else:
+            all_recs  = list(self._finalized.values())
+            spd_table = self._spd
         out: dict = {}
 
-        out["all"] = self._leaf_metrics("system", all_recs)
+        out["all"] = self._leaf_metrics_spd(spd_table, "system", all_recs)
         total_all = sum(self._ts_stopped_sec.get(ts, 0.0) for ts in self.ts_lane_map)
         n_all = out["all"]["n_vehicles"]
         out["all"]["stopped_time"]     = total_all
@@ -571,7 +626,7 @@ class EpisodeMetricsCollector:
 
         for t in self.vtypes:
             recs = [r for r in all_recs if r["type"] == t]
-            leaf = self._leaf_metrics(t, recs)
+            leaf = self._leaf_metrics_spd(spd_table, t, recs)
             total_t = sum(self._ts_stopped_sec.get(f"{ts}_{t}", 0.0) for ts in self.ts_lane_map)
             n_t = leaf["n_vehicles"]
             leaf["stopped_time"]     = total_t

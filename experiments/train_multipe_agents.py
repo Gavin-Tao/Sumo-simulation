@@ -146,7 +146,8 @@ def train(cfg: dict, timestamp: str):
         initial_states = env.reset(env.sumo_seed)
 
         # Build lane map once (lane structure is fixed across episodes)
-        ts_lane_map = {ts: env.traffic_signals[ts].lanes for ts in env.ts_ids}
+        ts_lane_map  = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
+        always_green = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
 
         # 每个路口独立的 DQN agent
         agents = {
@@ -179,7 +180,8 @@ def train(cfg: dict, timestamp: str):
             done = {"__all__": False}
             # Only create the collector on episodes where we will log full metrics
             do_full = (logging_mode == "full") and (episode % metrics_interval == 0)
-            mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time) if do_full else None
+            mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time,
+                                         excluded_lanes=always_green) if do_full else None
 
             while not done["__all__"]:
                 # ── Collect metrics (only on designated episodes) ─────────────

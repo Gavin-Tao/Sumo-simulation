@@ -178,7 +178,8 @@ def train(cfg: dict, timestamp: str):
         obs_dim     = env.observation_space.shape[0]
         aug_obs_dim = obs_dim * 5              # own + 4 neighbors
 
-        ts_lane_map = {ts: env.traffic_signals[ts].lanes for ts in env.ts_ids}
+        ts_lane_map  = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
+        always_green = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
 
         agent = CoeffDQN(
             aug_state_dim=aug_obs_dim,
@@ -205,7 +206,8 @@ def train(cfg: dict, timestamp: str):
 
             done = {"__all__": False}
             do_full = (logging_mode == "full") and (episode % metrics_interval == 0)
-            mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time) if do_full else None
+            mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time,
+                                         excluded_lanes=always_green) if do_full else None
             phase_counts = {ts_id: {} for ts_id in env.ts_ids}
 
             try:

@@ -184,7 +184,8 @@ class SumoMetricsCallback(BaseCallback):
         self._ep_raw_reward    = 0.0    # cumulative raw reward for current episode
 
     def _on_training_start(self) -> None:
-        self.ts_lane_map = {ts: self.sumo_env.traffic_signals[ts].lanes for ts in self.ts_ids}
+        self.ts_lane_map  = {ts: self.sumo_env.traffic_signals[ts].signal_controlled_lanes for ts in self.ts_ids}
+        self.always_green = set().union(*(self.sumo_env.traffic_signals[ts].always_green_lanes for ts in self.ts_ids))
         if self._finalize_terminal_metrics not in self.base_env.pre_reset_hooks:
             self.base_env.pre_reset_hooks.append(self._finalize_terminal_metrics)
         self._reset_episode()
@@ -226,7 +227,8 @@ class SumoMetricsCallback(BaseCallback):
         self.episode += 1
         do_full = (self.logging_mode == "full") and (self.episode % self.metrics_interval == 0)
         self.mc = EpisodeMetricsCollector(
-            self.ts_lane_map, delta_time=self.sumo_env.delta_time
+            self.ts_lane_map, delta_time=self.sumo_env.delta_time,
+            excluded_lanes=self.always_green,
         ) if do_full else None
         self.phase_counts        = {ts_id: {} for ts_id in self.ts_ids}
         self._ep_raw_reward      = 0.0

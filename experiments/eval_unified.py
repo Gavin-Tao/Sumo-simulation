@@ -206,7 +206,8 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
 
     initial_states = env.reset(env.sumo_seed)
     obs_dim        = env.observation_space.shape[0]
-    ts_lane_map    = {ts: env.traffic_signals[ts].lanes for ts in env.ts_ids}
+    ts_lane_map    = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
+    always_green   = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
 
     agent = load_agent(agent_type, ckpt_path, cfg, obs_dim,
                        env.action_space.n, device, n_heads)
@@ -219,7 +220,8 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
         initial_states = env.reset(seed)
 
         done           = {"__all__": False}
-        mc             = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time)
+        mc             = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time,
+                                                excluded_lanes=always_green)
         episode_reward = 0.0
         steps          = 0
 
