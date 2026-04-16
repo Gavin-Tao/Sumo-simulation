@@ -51,5 +51,5 @@ logging_mode:     "full"
 metrics_interval: 50
 
 # Evaluation during training (set eval_interval: 0 to disable)
-eval_interval: 50
+eval_interval: 5 
 eval_seed:     0
