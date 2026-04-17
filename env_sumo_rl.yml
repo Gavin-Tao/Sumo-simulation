@@ -1,0 +1,42 @@
+name: sumo_rl
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch=2.5.1
+  - torchaudio=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=12.4      # ← 替换 cudatoolkit=11.8
+  - cython
+  - gym
+  - lxml
+  - matplotlib
+  - numpy
+  - pandas
+  - pip
+  - scikit-image
+  - scipy
+  - seaborn
+  - setuptools
+  - sqlite
+  - stable-baselines3
+  - wheel
+  - tmux
+  - libglu
+  - freeglut
+  - mesalib
+  - pip:
+    - eclipse-sumo==1.21.0
+    - libsumo==1.21.0
+    - traci==1.21.0
+    - sumolib==1.21.0
+    - tensorflow==2.19.0
+    - ray==2.7.2
+    - wandb==0.25.1
+    - pettingzoo==1.22.3
+    - tensorboard==2.19.0
+    - tqdm==4.67.1
+    # 按需添加其他 pip 包

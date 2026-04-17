@@ -16,3 +16,7 @@ git pull origin dev
 git add .
 git commit -m "fix 1x3 route no lane changing and G green files"
 git push origin dev
+
+
+#拉取最新的
+git pull origin dev
