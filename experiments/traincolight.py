@@ -310,17 +310,22 @@ def train(cfg: dict, timestamp: str):
                 eval_mc = EpisodeMetricsCollector(
                     ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green
                 )
+                eval_ts_reward: dict = {ts: 0.0 for ts in env.ts_ids}
                 while not eval_done["__all__"]:
                     eval_mc.collect_step(env.sumo)
                     eval_actions = {}
                     for ts in env.ts_ids:
                         nb_obs = get_nb_obs(ts, eval_obs, neighbor_map, obs_dim)  # type: ignore[arg-type]
                         eval_actions[ts] = agent.take_action(eval_obs[ts], nb_obs)  # type: ignore[index]
-                    eval_obs, _, eval_done, _ = env.step(action=eval_actions)  # type: ignore[misc]
+                    eval_obs, eval_rew, eval_done, _ = env.step(action=eval_actions)  # type: ignore[misc]
+                    for ts in env.ts_ids:
+                        eval_ts_reward[ts] += eval_rew.get(ts, 0.0)
 
                 eval_mc.collect_step(env.sumo)               # capture final step (matches training pattern)
                 eval_mc.finalize(env.sumo)
-                wandb.log(eval_mc.to_flat_dict(prefix="eval"), step=step_counter)
+                eval_reward_log = {f"eval/reward/{ts}": eval_ts_reward[ts] for ts in env.ts_ids}
+                eval_reward_log["eval/reward/mean"] = sum(eval_ts_reward.values()) / len(env.ts_ids)
+                wandb.log({**eval_mc.to_flat_dict(prefix="eval"), **eval_reward_log}, step=step_counter)
                 print(f"  → eval ep={episode}")
 
                 agent.epsilon = eps_backup
