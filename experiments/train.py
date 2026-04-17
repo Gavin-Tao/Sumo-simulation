@@ -96,13 +96,17 @@ def train(cfg: dict, timestamp: str):
     model_dir = os.path.join("./models",  exp_name, timestamp)
     out_csv   = os.path.join("./outputs", exp_name, timestamp, "metrics")
     os.makedirs(os.path.join("./outputs", exp_name, timestamp), exist_ok=True)
+    os.makedirs("./tmux", exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(cfg["cfg_file"]), "output"), exist_ok=True)
 
     # ── Seed ──────────────────────────────────────────────────────────────────
     set_seed(cfg.get("seed", 0))
     if args.gpu >= 0 and torch.cuda.is_available():
         device = torch.device(f"cuda:{args.gpu}")
+        print(f"✅ Using GPU: {torch.cuda.get_device_name(args.gpu)}")
     else:
         device = torch.device("cpu")
+        print("⚠️  Using CPU (no CUDA GPU available)")
 
     # logging_mode: "none" | "basic" | "full"
     #   none  – no wandb logging at all
