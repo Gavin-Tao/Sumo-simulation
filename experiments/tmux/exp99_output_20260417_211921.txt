@@ -1,0 +1,6 @@
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+Traceback (most recent call last):
+  File "/home/xiaowen/sumo-rl/experiments/traincoeff.py", line 390, in <module>
+    with open(args.config) as f:
+FileNotFoundError: [Errno 2] No such file or directory: './configs/exp99_coeff_1x3_priority_51_WEstr_only_noisy_tuned.yaml'

@@ -103,7 +103,7 @@ def get_noisy_sigma_stats(model: torch.nn.Module) -> dict:
     return stats
 
 
-def save_checkpoint(agent: CoLightOrigDQN, episode: int, model_dir: str) -> str:
+def save_checkpoint(agent: CoLightOrigDQN, episode: int, model_dir: str, filename: str = None) -> str:
     os.makedirs(model_dir, exist_ok=True)
     checkpoint = {
         "policy_state_dict":    agent.q_net.state_dict(),
@@ -111,7 +111,7 @@ def save_checkpoint(agent: CoLightOrigDQN, episode: int, model_dir: str) -> str:
         "optimizer_state_dict": agent.optimizer.state_dict(),
         "episode":              episode,
     }
-    path = os.path.join(model_dir, f"ckpt_ep{episode:05d}.pth")
+    path = os.path.join(model_dir, filename or f"ckpt_ep{episode:05d}.pth")
     torch.save(checkpoint, path)
     return path
 
@@ -122,9 +122,7 @@ def train(cfg: dict, timestamp: str):
     exp_name = cfg["name"]
     run_id   = f"{exp_name}_{timestamp}"
 
-    model_dir = os.path.join("./models",  exp_name, timestamp)
-    out_csv   = os.path.join("./outputs", exp_name, timestamp, "metrics")
-    os.makedirs(os.path.join("./outputs", exp_name, timestamp), exist_ok=True)
+    model_dir = os.path.join("./models", exp_name, timestamp)
     os.makedirs("./tmux", exist_ok=True)
     os.makedirs(os.path.join(os.path.dirname(cfg["cfg_file"]), "output"), exist_ok=True)
 
@@ -156,7 +154,7 @@ def train(cfg: dict, timestamp: str):
         net_file=cfg["net_file"],
         route_file=cfg["route_file"],
         cfg_file=cfg["cfg_file"],
-        out_csv_name=out_csv,
+        out_csv_name=None,
         use_gui=cfg.get("use_gui", False),
         num_seconds=cfg.get("num_seconds", 1000),
         min_green=cfg.get("min_green", 5),
@@ -173,11 +171,10 @@ def train(cfg: dict, timestamp: str):
 
     episodes            = cfg.get("episodes", 5000)
     checkpoint_interval = cfg.get("checkpoint_interval", 5)
-    metrics_interval    = cfg.get("metrics_interval", 50)
     eval_interval       = cfg.get("eval_interval", 0)      # 0 = disabled
-    eval_seed           = cfg.get("eval_seed", 0)
+    eval_seed           = cfg.get("eval_seed", 42)
 
-    for run in range(1, cfg.get("runs", 1) + 1):
+    for _ in range(1, cfg.get("runs", 1) + 1):
         initial_states = env.reset(env.sumo_seed)
         obs_dim = env.observation_space.shape[0]   # own obs dimension = nb_dim
 
@@ -204,22 +201,18 @@ def train(cfg: dict, timestamp: str):
         )
 
         step_counter = 0
+        best_eval_reward = -float("inf")
 
         for episode in range(1, episodes + 1):
             if episode != 1:
                 initial_states = env.reset(env.sumo_seed)
 
             done = {"__all__": False}
-            do_full = (logging_mode == "full") and (episode % metrics_interval == 0)
-            mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time,
-                                         excluded_lanes=always_green) if do_full else None
             phase_counts = {ts_id: {} for ts_id in env.ts_ids}
+            ep_losses: list = []
 
             try:
                 while not done["__all__"]:
-                    if mc is not None:
-                        mc.collect_step(env.sumo)
-
                     # ── Act ───────────────────────────────────────────────────
                     actions = {}
                     for ts in env.ts_ids:
@@ -228,15 +221,8 @@ def train(cfg: dict, timestamp: str):
 
                     s, r, done, info = env.step(action=actions)
 
-                    # ── Log ───────────────────────────────────────────────────
-                    if logging_mode != "none":
-                        log_dict = {k: v for k, v in info.items()}
-                        for ts_id in env.ts_ids:
-                            if r[ts_id] is not None:
-                                log_dict["reward_" + ts_id] = r[ts_id]
-                            if agent.loss is not None:
-                                log_dict["loss_" + ts_id] = agent.loss
-                        wandb.log(log_dict, step=step_counter)
+                    if agent.loss is not None:
+                        ep_losses.append(agent.loss)
                     step_counter += 1
 
                     for ts_id in env.ts_ids:
@@ -282,26 +268,29 @@ def train(cfg: dict, timestamp: str):
                     raise
                 continue
 
-            if env.metrics is not None:
-                for metric in env.metrics:
-                    env.list_metrics.append(metric)
-
-            if mc is not None:
-                mc.collect_step(env.sumo)
-                mc.finalize(env.sumo)
-                wandb.log(mc.to_flat_dict(prefix="metrics"), step=step_counter)
-
             if agent.start_train and logging_mode != "none":
-                phase_log = {}
-                for ts_id, counts in phase_counts.items():
-                    total = sum(counts.values()) or 1
-                    for p, c in counts.items():
-                        phase_log[f"phase/{ts_id}/phase{p}_ratio"] = c / total
-                noisy_stats = get_noisy_sigma_stats(agent.q_net) if agent.use_noisy else {}
                 print(f"[{exp_name}] ep={episode:5d}  epsilon={agent.epsilon:.4f}  phases={phase_counts}")
-                wandb.log({"train/episode": episode, "train/epsilon": agent.epsilon,
-                           **phase_log, **noisy_stats},
-                          step=step_counter)
+                if logging_mode == "simple":
+                    ep_log: dict = {}
+                    if ep_losses:
+                        ep_log["train/loss"] = sum(ep_losses) / len(ep_losses)
+                else:  # basic / full
+                    phase_log = {}
+                    for ts_id, counts in phase_counts.items():
+                        total = sum(counts.values()) or 1
+                        for p, c in counts.items():
+                            phase_log[f"phase/{ts_id}/phase{p}_ratio"] = c / total
+                    noisy_stats = get_noisy_sigma_stats(agent.q_net) if agent.use_noisy else {}
+                    ep_log = {
+                        "train/episode": episode,
+                        "train/epsilon": agent.epsilon,
+                        **phase_log,
+                        **noisy_stats,
+                    }
+                    if ep_losses:
+                        ep_log["train/loss"] = sum(ep_losses) / len(ep_losses)
+                if ep_log:
+                    wandb.log(ep_log, step=step_counter)
 
                 if episode % checkpoint_interval == 0:
                     ckpt_path = save_checkpoint(agent, episode, model_dir)
@@ -309,7 +298,7 @@ def train(cfg: dict, timestamp: str):
                     wandb.save(ckpt_path, base_path=".")
 
             # ── Evaluation episode ────────────────────────────────────────────
-            if eval_interval > 0 and episode % eval_interval == 0 and logging_mode != "none":
+            if eval_interval > 0 and episode % eval_interval == 0:
                 eps_backup = agent.epsilon
                 agent.epsilon = 0.0
                 agent.q_net.eval()                           # disable noise if use_noisy
@@ -332,15 +321,35 @@ def train(cfg: dict, timestamp: str):
 
                 eval_mc.collect_step(env.sumo)               # capture final step (matches training pattern)
                 eval_mc.finalize(env.sumo)
-                eval_reward_log = {f"eval/reward/{ts}": eval_ts_reward[ts] for ts in env.ts_ids}
-                eval_reward_log["eval/reward/mean"] = sum(eval_ts_reward.values()) / len(env.ts_ids)
-                wandb.log({**eval_mc.to_flat_dict(prefix="eval"), **eval_reward_log}, step=step_counter)
+                eval_mean = sum(eval_ts_reward.values()) / len(env.ts_ids)
+                if eval_mean > best_eval_reward:
+                    best_eval_reward = eval_mean
+                    save_checkpoint(agent, episode, model_dir, filename="best.pth")
+                    print(f"  → best ckpt updated (reward={best_eval_reward:.4f})")
+                if logging_mode != "none":
+                    _BASIC = {"avg_stopped_time", "avg_stop_events", "avg_speed"}
+                    _BASIC_SYS = _BASIC | {"completion_rate"}
+                    all_mc = {k.replace("eval/", "eval_", 1): v
+                              for k, v in eval_mc.to_flat_dict(prefix="eval").items()}
+                    if logging_mode == "full":
+                        mc_log = all_mc
+                    elif logging_mode == "basic":
+                        mc_log = {
+                            k: v for k, v in all_mc.items()
+                            if (k.startswith("eval_system/") and k.split("/")[-1] in _BASIC_SYS)
+                            or (not k.startswith("eval_system/") and k.split("/")[-1] in _BASIC)
+                        }
+                    else:  # simple
+                        mc_log = {}
+                    eval_reward_log = {f"eval_{ts}/reward": eval_ts_reward[ts] for ts in env.ts_ids}
+                    eval_reward_log["eval_system/mean_reward"] = eval_mean
+                    eval_reward_log["eval_system/best_reward"] = best_eval_reward
+                    wandb.log({**mc_log, **eval_reward_log}, step=step_counter)
                 print(f"  → eval ep={episode}")
 
                 agent.epsilon = eps_backup
                 agent.q_net.train()                          # re-enable noise if use_noisy
 
-        env.txw_save_csv(out_csv, run)
         env.close()
 
     if logging_mode != "none":

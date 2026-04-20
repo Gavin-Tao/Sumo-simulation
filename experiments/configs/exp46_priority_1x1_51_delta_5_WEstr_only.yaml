@@ -39,6 +39,9 @@ episodes:            5000
 checkpoint_interval: 5
 runs:                1
 
+# Evaluation during training
+eval_interval: 5
+eval_seed:     42    # different from training seed (0)
+
 # Logging
 logging_mode:     "full"
-metrics_interval: 50
