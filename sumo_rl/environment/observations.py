@@ -227,6 +227,67 @@ class PriorityObservationFunction(ObservationFunction):
             return inc_car, inc_truck, out_car, out_truck
 
 
+class PriorityCtrlObservationFunction(ObservationFunction):
+    """Priority observation using only signal_controlled_lanes (excludes always-green right-turn lanes).
+
+    Both incoming and outgoing lanes are filtered: only lanes connected to/from
+    signal_controlled_lanes are included.
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1),
+         inc_car (n_ctrl), out_car (n_ctrl_out),
+         inc_truck (n_ctrl), out_truck (n_ctrl_out)]
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+        ctrl_set = set(ts.signal_controlled_lanes)
+        ctrl_out_ordered = {}
+        for link_group in ts.sumo.trafficlight.getControlledLinks(ts.id):
+            if link_group:
+                from_lane, to_lane, _ = link_group[0]
+                if from_lane in ctrl_set:
+                    ctrl_out_ordered[to_lane] = None
+        self._ctrl_out_lanes = list(ctrl_out_ordered.keys())
+        print(
+            f"PriorityCtrlObservationFunction: "
+            f"{len(ts.signal_controlled_lanes)} ctrl inc lanes, "
+            f"{len(self._ctrl_out_lanes)} ctrl out lanes "
+            f"(vs {len(ts.lanes)} / {len(ts.out_lanes)} total).\n"
+            f"  ctrl inc:      {ts.signal_controlled_lanes}\n"
+            f"  always-green:  {ts.always_green_lanes}\n"
+            f"  ctrl out:      {self._ctrl_out_lanes}"
+        )
+
+    def __call__(self) -> np.ndarray:
+        phase_id = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        inc_car, inc_truck, out_car, out_truck = self._get_vehicle_count_by_type_ctrl()
+        return np.array(phase_id + min_green + inc_car + out_car + inc_truck + out_truck, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        num_phases = self.ts.num_green_phases
+        num_ctrl = len(self.ts.signal_controlled_lanes)
+        num_ctrl_out = len(self._ctrl_out_lanes)
+        dim = num_phases + 1 + 2 * num_ctrl + 2 * num_ctrl_out
+        return spaces.Box(low=np.zeros(dim, dtype=np.float32), high=np.ones(dim, dtype=np.float32))
+
+    def _get_vehicle_count_by_type_ctrl(self):
+        inc_car, inc_truck = [], []
+        for lane in self.ts.signal_controlled_lanes:
+            vids = self.ts.sumo.lane.getLastStepVehicleIDs(lane)
+            cars = sum(1 for v in vids if self.ts.sumo.vehicle.getTypeID(v) == "car")
+            inc_car.append(cars)
+            inc_truck.append(len(vids) - cars)
+        out_car, out_truck = [], []
+        for lane in self._ctrl_out_lanes:
+            vids = self.ts.sumo.lane.getLastStepVehicleIDs(lane)
+            cars = sum(1 for v in vids if self.ts.sumo.vehicle.getTypeID(v) == "car")
+            out_car.append(cars)
+            out_truck.append(len(vids) - cars)
+        return inc_car, inc_truck, out_car, out_truck
+
+
 class PriorityNormObservationFunction(ObservationFunction):
     """Priority observation function with car/truck density normalised to [0, 1].
 

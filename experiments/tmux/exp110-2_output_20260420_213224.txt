@@ -1,0 +1,203 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/xiaowen/.netrc.
+wandb: Currently logged in as: taoxw19 (taoxw19-) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run e8yj5p58
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in logs/wandb/wandb/run-20260420_213228-e8yj5p58
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp110_priorityctrl_1x1_51_avg_waiting_ctrl_WEstr_only_tuned_2026-04-20T21-32-28
+wandb: ⭐️ View project at https://wandb.ai/taoxw19-/sumo-rl-1x1
+wandb: 🚀 View run at https://wandb.ai/taoxw19-/sumo-rl-1x1/runs/e8yj5p58
+/home/xiaowen/sumo-rl/sumo_rl/agents/dqn_agent_txw.py:77: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  state = torch.tensor([state], dtype=torch.float).to(self.device)
+✅ Using libsumo (C++ accelerated, faster).
+This is the local eps.py
+✅ Using GPU: NVIDIA GeForce RTX 3060 Ti
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+✅This is local env.py
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+  → best ckpt updated (reward=-4523.3299)
+  → eval ep=5
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr
+PriorityCtrlObservationFunction: 8 ctrl inc lanes, 8 ctrl out lanes (vs 12 / 12 total).
+  ctrl inc:      ['n_t_1', 'n_t_2', 'e_t_1', 'e_t_2', 's_t_1', 's_t_2', 'w_t_1', 'w_t_2']
+  always-green:  ['n_t_0', 'e_t_0', 's_t_0', 'w_t_0']
+  ctrl out:      ['t_s_1', 't_e_2', 't_w_1', 't_s_2', 't_n_1', 't_w_2', 't_e_1', 't_n_2']
+✅TThis is the local ts.py
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+🔥 Action 3 selected at TS: t
+[exp110_priorityctrl_1x1_51_avg_waiting_ctrl_WEstr_only_tuned] ep=    6  epsilon=0.8653  phases={'t': {0: 52, 2: 53, 1: 49, 3: 46}}
+
+[_build_phases] TS=t — green phases sent to SUMO:
+  green_phase[0]: GrrGGrGrrGGr
+  green_phase[1]: GrrGrGGrrGrG
+  green_phase[2]: GGrGrrGGrGrr
+  green_phase[3]: GrGGrrGrGGrr
+[_build_phases] TS=t — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrGGrGrrGGr
+  runtime green phase[1]: GrrGrGGrrGrG
+  runtime green phase[2]: GGrGrrGGrGrr
+  runtime green phase[3]: GrGGrrGrGGrr
+  runtime green phase[0]: GrrGGrGrrGGr

@@ -351,6 +351,60 @@ def _51_avg_diff_waiting_reward(ts: "TrafficSignal") -> float:
     return _51_avg_diff_waiting_fn(ts)
 
 
+def _get_weighted_avg_waiting_time_ctrl(ts: "TrafficSignal", alpha: float, beta: float) -> float:
+    """Same as _get_weighted_avg_waiting_time but only over signal_controlled_lanes."""
+    car_total = bus_total = 0.0
+    car_count = bus_count = 0
+    for lane in ts.signal_controlled_lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            veh_lane = ts.sumo.vehicle.getLaneID(vid)
+            acc = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if vid not in ts.env.vehicles:
+                ts.env.vehicles[vid] = {veh_lane: acc}
+            else:
+                ts.env.vehicles[vid][veh_lane] = acc - sum(
+                    ts.env.vehicles[vid][l]
+                    for l in ts.env.vehicles[vid] if l != veh_lane
+                )
+            lane_wait = ts.env.vehicles[vid][veh_lane]
+            if ts.sumo.vehicle.getTypeID(vid) == "car":
+                car_total += lane_wait
+                car_count += 1
+            else:
+                bus_total += lane_wait
+                bus_count += 1
+    car_avg = (car_total / car_count) if car_count > 0 else 0.0
+    bus_avg = (bus_total / bus_count) if bus_count > 0 else 0.0
+    return (alpha * car_avg + beta * bus_avg) / 100.0
+
+
+def _make_avg_waiting_bc_ctrl(alpha: float, beta: float):
+    def fn(ts: "TrafficSignal") -> float:
+        return -_get_weighted_avg_waiting_time_ctrl(ts, alpha, beta)
+    return fn
+
+
+def _make_avg_diff_waiting_bc_ctrl(alpha: float, beta: float):
+    def fn(ts: "TrafficSignal") -> float:
+        curr = _get_weighted_avg_waiting_time_ctrl(ts, alpha, beta)
+        reward = getattr(ts, "_last_weighted_avg_wait_ctrl", 0.0) - curr
+        ts._last_weighted_avg_wait_ctrl = curr  # type: ignore[attr-defined]
+        return reward
+    return fn
+
+
+_51_avg_waiting_ctrl_fn      = _make_avg_waiting_bc_ctrl(1.0, 5.0)
+_51_avg_diff_waiting_ctrl_fn = _make_avg_diff_waiting_bc_ctrl(1.0, 5.0)
+
+
+def _51_avg_waiting_ctrl_reward(ts: "TrafficSignal") -> float:
+    return _51_avg_waiting_ctrl_fn(ts)
+
+
+def _51_avg_diff_waiting_ctrl_reward(ts: "TrafficSignal") -> float:
+    return _51_avg_diff_waiting_ctrl_fn(ts)
+
+
 def _make_diff_waiting_bc(alpha: float, beta: float):
     """Factory: weighted diff-waiting-time reward with car/bus weights."""
     def fn(ts: "TrafficSignal") -> float:
@@ -483,6 +537,8 @@ REWARD_REGISTRY = {
     "41-diff-waiting-time":         _41_diff_waiting_reward,
     "51-avg-waiting-time":          _51_avg_waiting_reward,
     "51-avg-diff-waiting-time":     _51_avg_diff_waiting_reward,
+    "51-avg-waiting-time-ctrl":     _51_avg_waiting_ctrl_reward,
+    "51-avg-diff-waiting-time-ctrl": _51_avg_diff_waiting_ctrl_reward,
     "average-speed":           average_speed_reward,
     "queue":                   queue_reward,
     "pressure":                pressure_reward,

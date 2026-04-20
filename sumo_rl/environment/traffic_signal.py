@@ -98,8 +98,6 @@ class TrafficSignal:
             else:
                 raise NotImplementedError(f"Reward function {self.reward_fn} not implemented")
 
-        self.observation_fn = self.env.observation_class(self)
-
         self._build_phases()
 
         #lanes是指incoming lanes
@@ -113,22 +111,24 @@ class TrafficSignal:
         e=d[0][1]
         a = [link[0][1] for link in self.sumo.trafficlight.getControlledLinks(self.id) if link]
         b = set(self.out_lanes)
-        
+
         #这里set会把顺序打乱
         # self.out_lanes = list(set(self.out_lanes))
         #如果想不打乱顺序，可以这样，但是目前还没有必要保留顺序：
         self.out_lanes = list(OrderedDict.fromkeys(self.out_lanes))
         self.lanes_length = {lane: self.sumo.lane.getLength(lane) for lane in self.lanes + self.out_lanes}
 
-        self.observation_space = self.observation_fn.observation_space()
-        self.action_space = spaces.Discrete(self.num_green_phases)
-
         # Precompute which incoming lanes are signal-controlled (ever get red).
         # Lanes that are G/g in ALL green phases are always-green (e.g. free right turns).
+        # Must be set before observation_fn is initialized so obs classes can use it.
         self.signal_controlled_lanes: list = self._compute_signal_controlled_lanes()
         self.always_green_lanes: list = [
             l for l in self.lanes if l not in self.signal_controlled_lanes
         ]
+
+        self.observation_fn = self.env.observation_class(self)
+        self.observation_space = self.observation_fn.observation_space()
+        self.action_space = spaces.Discrete(self.num_green_phases)
 
         print("✅TThis is the local ts.py")
 
