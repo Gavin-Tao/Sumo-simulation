@@ -227,6 +227,122 @@ class PriorityObservationFunction(ObservationFunction):
             return inc_car, inc_truck, out_car, out_truck
 
 
+class PriorityBCAObservationFunction(ObservationFunction):
+    """Priority observation with car/bus/ambulance 3-class counts over all lanes.
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1),
+         inc_car (n_in), out_car (n_out),
+         inc_bus (n_in), out_bus (n_out),
+         inc_amb (n_in), out_amb (n_out)]
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+
+    def __call__(self) -> np.ndarray:
+        phase_id  = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        inc_car, inc_bus, inc_amb = self._count_by_type(self.ts.lanes)
+        out_car, out_bus, out_amb = self._count_by_type(self.ts.out_lanes)
+        return np.array(
+            phase_id + min_green
+            + inc_car + out_car
+            + inc_bus + out_bus
+            + inc_amb + out_amb,
+            dtype=np.float32,
+        )
+
+    def observation_space(self) -> spaces.Box:
+        num_phases = self.ts.num_green_phases
+        n_in       = len(self.ts.lanes)
+        n_out      = len(self.ts.out_lanes)
+        dim        = num_phases + 1 + 3 * (n_in + n_out)
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.full(dim, np.inf, dtype=np.float32),
+        )
+
+    def _count_by_type(self, lanes):
+        car_l, bus_l, amb_l = [], [], []
+        for lane in lanes:
+            c = b = a = 0
+            for v in self.ts.sumo.lane.getLastStepVehicleIDs(lane):
+                vtype = self.ts.sumo.vehicle.getTypeID(v)
+                if vtype == "ambulance":
+                    a += 1
+                elif vtype == "bus":
+                    b += 1
+                else:
+                    c += 1
+            car_l.append(c)
+            bus_l.append(b)
+            amb_l.append(a)
+        return car_l, bus_l, amb_l
+
+
+class PriorityCtrlBCAObservationFunction(ObservationFunction):
+    """Priority observation with car/bus/ambulance 3-class counts on signal_controlled_lanes only.
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1),
+         inc_car (n_ctrl), out_car (n_ctrl_out),
+         inc_bus (n_ctrl), out_bus (n_ctrl_out),
+         inc_amb (n_ctrl), out_amb (n_ctrl_out)]
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+        ctrl_set = set(ts.signal_controlled_lanes)
+        ordered: dict = {}
+        for link_group in ts.sumo.trafficlight.getControlledLinks(ts.id):
+            if link_group:
+                from_lane, to_lane, _ = link_group[0]
+                if from_lane in ctrl_set:
+                    ordered[to_lane] = None
+        self._ctrl_out_lanes = list(ordered.keys())
+
+    def __call__(self) -> np.ndarray:
+        phase_id  = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        inc_car, inc_bus, inc_amb = self._count_by_type(self.ts.signal_controlled_lanes)
+        out_car, out_bus, out_amb = self._count_by_type(self._ctrl_out_lanes)
+        return np.array(
+            phase_id + min_green
+            + inc_car + out_car
+            + inc_bus + out_bus
+            + inc_amb + out_amb,
+            dtype=np.float32,
+        )
+
+    def observation_space(self) -> spaces.Box:
+        num_phases = self.ts.num_green_phases
+        n_ctrl     = len(self.ts.signal_controlled_lanes)
+        n_ctrl_out = len(self._ctrl_out_lanes)
+        dim        = num_phases + 1 + 3 * (n_ctrl + n_ctrl_out)
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.full(dim, np.inf, dtype=np.float32),
+        )
+
+    def _count_by_type(self, lanes):
+        car_l, bus_l, amb_l = [], [], []
+        for lane in lanes:
+            c = b = a = 0
+            for v in self.ts.sumo.lane.getLastStepVehicleIDs(lane):
+                vtype = self.ts.sumo.vehicle.getTypeID(v)
+                if vtype == "ambulance":
+                    a += 1
+                elif vtype == "bus":
+                    b += 1
+                else:
+                    c += 1
+            car_l.append(c)
+            bus_l.append(b)
+            amb_l.append(a)
+        return car_l, bus_l, amb_l
+
+
 class PriorityCtrlObservationFunction(ObservationFunction):
     """Priority observation using only signal_controlled_lanes (excludes always-green right-turn lanes).
 
@@ -428,6 +544,57 @@ class PriorityDiffWaitingObservationFunction(ObservationFunction):
             else:
                 bus_w += acc
         return car_w, bus_w
+
+
+class PriorityWaitingBCAObservationFunction(ObservationFunction):
+    """Observation aligned with bus/car/ambulance avg-waiting-time reward.
+
+    Uses all incoming lanes (ts.lanes), including always-green right-turn lanes.
+
+    Observation vector:
+        [phase_one_hot (n), min_green (1),
+         car_wait_per_lane (n_in), bus_wait_per_lane (n_in), amb_wait_per_lane (n_in)]
+
+    Each value is sum of getAccumulatedWaitingTime for that vehicle type on the lane,
+    scaled by /100. Unbounded; use norm_obs=true (VecNormalize) for PPO.
+    """
+
+    def __init__(self, ts: TrafficSignal):
+        super().__init__(ts)
+
+    def __call__(self) -> np.ndarray:
+        phase_id  = [1 if self.ts.green_phase == i else 0 for i in range(self.ts.num_green_phases)]
+        min_green = [0 if self.ts.time_since_last_phase_change < self.ts.min_green + self.ts.yellow_time else 1]
+        car_wait, bus_wait, amb_wait = [], [], []
+        for lane in self.ts.lanes:
+            c, b, a = self._lane_wait_by_type(lane)
+            car_wait.append(c / 100.0)
+            bus_wait.append(b / 100.0)
+            amb_wait.append(a / 100.0)
+        return np.array(phase_id + min_green + car_wait + bus_wait + amb_wait, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        n_phases = self.ts.num_green_phases
+        n_in     = len(self.ts.lanes)
+        low  = np.zeros(n_phases + 1 + 3 * n_in, dtype=np.float32)
+        high = np.concatenate([
+            np.ones(n_phases + 1, dtype=np.float32),
+            np.full(3 * n_in, np.inf, dtype=np.float32),
+        ])
+        return spaces.Box(low=low, high=high)
+
+    def _lane_wait_by_type(self, lane: str):
+        car_w = bus_w = amb_w = 0.0
+        for v in self.ts.sumo.lane.getLastStepVehicleIDs(lane):
+            acc = self.ts.sumo.vehicle.getAccumulatedWaitingTime(v)
+            vtype = self.ts.sumo.vehicle.getTypeID(v)
+            if vtype == "ambulance":
+                amb_w += acc
+            elif vtype == "bus":
+                bus_w += acc
+            else:
+                car_w += acc
+        return car_w, bus_w, amb_w
 
 
 class CTBPriorityObservationFunction(ObservationFunction):

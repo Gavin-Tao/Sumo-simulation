@@ -165,7 +165,7 @@ class CTBMetricsCollector:
         "w_t_0", "w_t_1", "w_t_2", "t_e_0", "t_e_1", "t_e_2",
         "e_t_0", "e_t_1", "e_t_2", "t_w_0", "t_w_1", "t_w_2",
     ]
-    TYPES = ("car", "truck", "bus")
+    TYPES = ("car", "truck", "bus", "ambulance")
 
     def __init__(self):
         self.total_generated_vehicle_ids: dict[str, set] = {t: set() for t in self.TYPES}
@@ -323,7 +323,7 @@ class EpisodeMetricsCollector:
     def __init__(
         self,
         ts_lane_map: dict,
-        vtypes: tuple = ("car", "truck", "bus"),
+        vtypes: tuple = ("car", "truck", "bus", "ambulance"),
         delta_time: int = 5,
         excluded_lanes: set = None,
     ):

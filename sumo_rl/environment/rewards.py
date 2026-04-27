@@ -118,6 +118,88 @@ get_priority_pressure_20_1 = _make_priority_pressure_bc(1.0, 20.0)
 get_priority_pressure_50_1 = _make_priority_pressure_bc(1.0, 50.0)
 
 
+def _get_signal_controlled_out_lanes(ts: "TrafficSignal") -> list:
+    """Lazily compute & cache out lanes connected from signal_controlled_lanes."""
+    if not hasattr(ts, "_signal_controlled_out_lanes"):
+        ctrl_set = set(ts.signal_controlled_lanes)
+        ordered: dict = {}
+        for link_group in ts.sumo.trafficlight.getControlledLinks(ts.id):
+            if link_group:
+                from_lane, to_lane, _ = link_group[0]
+                if from_lane in ctrl_set:
+                    ordered[to_lane] = None
+        ts._signal_controlled_out_lanes = list(ordered.keys())  # type: ignore[attr-defined]
+    return ts._signal_controlled_out_lanes  # type: ignore[attr-defined]
+
+
+def _make_priority_pressure_bcA(alpha: float, beta: float, gamma: float):
+    """Factory: car/bus/ambulance priority pressure (3-type) over all lanes/out_lanes."""
+    def fn(ts: "TrafficSignal") -> float:
+        in_car = in_bus = in_amb = out_car = out_bus = out_amb = 0
+        for lane in ts.lanes:
+            for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+                vtype = ts.sumo.vehicle.getTypeID(vid)
+                if vtype == "ambulance":
+                    in_amb += 1
+                elif vtype == "bus":
+                    in_bus += 1
+                else:
+                    in_car += 1
+        for lane in ts.out_lanes:
+            for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+                vtype = ts.sumo.vehicle.getTypeID(vid)
+                if vtype == "ambulance":
+                    out_amb += 1
+                elif vtype == "bus":
+                    out_bus += 1
+                else:
+                    out_car += 1
+        return (alpha * (out_car - in_car)
+                + beta  * (out_bus - in_bus)
+                + gamma * (out_amb - in_amb))
+    return fn
+
+
+def _make_priority_pressure_bcA_ctrl(alpha: float, beta: float, gamma: float):
+    """Factory: car/bus/ambulance priority pressure (3-type) on signal_controlled_lanes only."""
+    def fn(ts: "TrafficSignal") -> float:
+        in_car = in_bus = in_amb = out_car = out_bus = out_amb = 0
+        for lane in ts.signal_controlled_lanes:
+            for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+                vtype = ts.sumo.vehicle.getTypeID(vid)
+                if vtype == "ambulance":
+                    in_amb += 1
+                elif vtype == "bus":
+                    in_bus += 1
+                else:
+                    in_car += 1
+        for lane in _get_signal_controlled_out_lanes(ts):
+            for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+                vtype = ts.sumo.vehicle.getTypeID(vid)
+                if vtype == "ambulance":
+                    out_amb += 1
+                elif vtype == "bus":
+                    out_bus += 1
+                else:
+                    out_car += 1
+        return (alpha * (out_car - in_car)
+                + beta  * (out_bus - in_bus)
+                + gamma * (out_amb - in_amb))
+    return fn
+
+
+_521_priority_pressure_fn      = _make_priority_pressure_bcA(1.0, 2.0, 5.0)
+_521_priority_pressure_ctrl_fn = _make_priority_pressure_bcA_ctrl(1.0, 2.0, 5.0)
+
+
+def _521_priority_pressure_reward(ts: "TrafficSignal") -> float:
+    return _521_priority_pressure_fn(ts)
+
+
+def _521_priority_pressure_ctrl_reward(ts: "TrafficSignal") -> float:
+    return _521_priority_pressure_ctrl_fn(ts)
+
+
 def get_priority_pressure_45(ts: "TrafficSignal") -> float:
     """α*(#out_car-#in_car) + β*(#out_truck-#in_truck), car weight=1.25"""
     in_car = in_truck = out_car = out_truck = 0
@@ -351,6 +433,61 @@ def _51_avg_diff_waiting_reward(ts: "TrafficSignal") -> float:
     return _51_avg_diff_waiting_fn(ts)
 
 
+def _get_weighted_avg_waiting_time_bcA(
+    ts: "TrafficSignal",
+    alpha: float,
+    beta: float,
+    gamma: float,
+) -> float:
+    """Per-vehicle weighted average waiting time over all incoming lanes (ts.lanes),
+    split by 3 types: car / bus / ambulance.
+
+    Returns alpha*avg_car + beta*avg_bus + gamma*avg_amb. Cross-lane wait correction
+    identical to _get_weighted_avg_waiting_time.
+    """
+    car_total = bus_total = amb_total = 0.0
+    car_count = bus_count = amb_count = 0
+    for lane in ts.lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            veh_lane = ts.sumo.vehicle.getLaneID(vid)
+            acc = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if vid not in ts.env.vehicles:
+                ts.env.vehicles[vid] = {veh_lane: acc}
+            else:
+                ts.env.vehicles[vid][veh_lane] = acc - sum(
+                    ts.env.vehicles[vid][l]
+                    for l in ts.env.vehicles[vid] if l != veh_lane
+                )
+            lane_wait = ts.env.vehicles[vid][veh_lane]
+            vtype = ts.sumo.vehicle.getTypeID(vid)
+            if vtype == "ambulance":
+                amb_total += lane_wait
+                amb_count += 1
+            elif vtype == "bus":
+                bus_total += lane_wait
+                bus_count += 1
+            else:
+                car_total += lane_wait
+                car_count += 1
+    car_avg = (car_total / car_count) if car_count > 0 else 0.0
+    bus_avg = (bus_total / bus_count) if bus_count > 0 else 0.0
+    amb_avg = (amb_total / amb_count) if amb_count > 0 else 0.0
+    return (alpha * car_avg + beta * bus_avg + gamma * amb_avg) / 100.0
+
+
+def _make_avg_waiting_bcA(alpha: float, beta: float, gamma: float):
+    def fn(ts: "TrafficSignal") -> float:
+        return -_get_weighted_avg_waiting_time_bcA(ts, alpha, beta, gamma)
+    return fn
+
+
+_521_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 2.0, 5.0)
+
+
+def _521_avg_waiting_reward(ts: "TrafficSignal") -> float:
+    return _521_avg_waiting_fn(ts)
+
+
 def _get_weighted_avg_waiting_time_ctrl(ts: "TrafficSignal", alpha: float, beta: float) -> float:
     """Same as _get_weighted_avg_waiting_time but only over signal_controlled_lanes."""
     car_total = bus_total = 0.0
@@ -403,6 +540,63 @@ def _51_avg_waiting_ctrl_reward(ts: "TrafficSignal") -> float:
 
 def _51_avg_diff_waiting_ctrl_reward(ts: "TrafficSignal") -> float:
     return _51_avg_diff_waiting_ctrl_fn(ts)
+
+
+def _get_weighted_avg_waiting_time_ctrl_bcA(
+    ts: "TrafficSignal",
+    alpha: float,
+    beta: float,
+    gamma: float,
+) -> float:
+    """Per-vehicle weighted average waiting time over signal_controlled_lanes,
+    split by 3 types: car / bus / ambulance.
+
+    Returns alpha*avg_car + beta*avg_bus + gamma*avg_amb.
+    Per-type avg uses only vehicles of that type currently in signal_controlled_lanes;
+    types with zero count contribute 0. Cross-lane wait correction identical to
+    _get_weighted_avg_waiting_time_ctrl.
+    """
+    car_total = bus_total = amb_total = 0.0
+    car_count = bus_count = amb_count = 0
+    for lane in ts.signal_controlled_lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            veh_lane = ts.sumo.vehicle.getLaneID(vid)
+            acc = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if vid not in ts.env.vehicles:
+                ts.env.vehicles[vid] = {veh_lane: acc}
+            else:
+                ts.env.vehicles[vid][veh_lane] = acc - sum(
+                    ts.env.vehicles[vid][l]
+                    for l in ts.env.vehicles[vid] if l != veh_lane
+                )
+            lane_wait = ts.env.vehicles[vid][veh_lane]
+            vtype = ts.sumo.vehicle.getTypeID(vid)
+            if vtype == "ambulance":
+                amb_total += lane_wait
+                amb_count += 1
+            elif vtype == "bus":
+                bus_total += lane_wait
+                bus_count += 1
+            else:
+                car_total += lane_wait
+                car_count += 1
+    car_avg = (car_total / car_count) if car_count > 0 else 0.0
+    bus_avg = (bus_total / bus_count) if bus_count > 0 else 0.0
+    amb_avg = (amb_total / amb_count) if amb_count > 0 else 0.0
+    return (alpha * car_avg + beta * bus_avg + gamma * amb_avg) / 100.0
+
+
+def _make_avg_waiting_bcA_ctrl(alpha: float, beta: float, gamma: float):
+    def fn(ts: "TrafficSignal") -> float:
+        return -_get_weighted_avg_waiting_time_ctrl_bcA(ts, alpha, beta, gamma)
+    return fn
+
+
+_521_avg_waiting_ctrl_fn = _make_avg_waiting_bcA_ctrl(1.0, 2.0, 5.0)
+
+
+def _521_avg_waiting_ctrl_reward(ts: "TrafficSignal") -> float:
+    return _521_avg_waiting_ctrl_fn(ts)
 
 
 def _make_diff_waiting_bc(alpha: float, beta: float):
@@ -539,6 +733,10 @@ REWARD_REGISTRY = {
     "51-avg-diff-waiting-time":     _51_avg_diff_waiting_reward,
     "51-avg-waiting-time-ctrl":     _51_avg_waiting_ctrl_reward,
     "51-avg-diff-waiting-time-ctrl": _51_avg_diff_waiting_ctrl_reward,
+    "5-2-1-avg-waiting-time":       _521_avg_waiting_reward,
+    "5-2-1-avg-waiting-time-ctrl":  _521_avg_waiting_ctrl_reward,
+    "5-2-1-priority-pressure":      _521_priority_pressure_reward,
+    "5-2-1-priority-pressure-ctrl": _521_priority_pressure_ctrl_reward,
     "average-speed":           average_speed_reward,
     "queue":                   queue_reward,
     "pressure":                pressure_reward,

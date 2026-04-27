@@ -1,0 +1,50 @@
+# Experiment: exp112 — PriorityBCA obs, 5-2-1-priority-pressure-ctrl reward, 1x1
+# 1% ambulance on NS straight (NSamb scenario). Weights: car=1, bus=2, ambulance=5
+# Reward restricted to signal_controlled_lanes (excludes always-green right-turn lanes)
+# Tuned DQN params from exp110
+name: "exp112_1x1_521_priority_pressure_ctrl_NSamb_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x1"
+
+# SUMO files (NS straight has 1% ambulance, Poisson arrivals)
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-priority-pressure-ctrl"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (tuned, from exp110)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            5000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     42
+
+# Logging
+logging_mode: "full"

@@ -59,6 +59,9 @@ from sumo_rl.environment.observations import (
     PriorityNormObservationFunction,
     DiffWaitingObservationFunction,
     PriorityDiffWaitingObservationFunction,
+    PriorityBCAObservationFunction,
+    PriorityCtrlBCAObservationFunction,
+    PriorityWaitingBCAObservationFunction,
 )
 
 OBS_REGISTRY = {
@@ -72,6 +75,9 @@ OBS_REGISTRY = {
     "PriorityNorm":        PriorityNormObservationFunction,
     "DiffWaiting":         DiffWaitingObservationFunction,
     "PriorityDiffWaiting": PriorityDiffWaitingObservationFunction,
+    "PriorityBCA":            PriorityBCAObservationFunction,
+    "PriorityCtrlBCA":        PriorityCtrlBCAObservationFunction,
+    "PriorityWaitingBCA":     PriorityWaitingBCAObservationFunction,
 }
 
 
