@@ -54,15 +54,29 @@ from sumo_rl.environment.observations import (
     QueuePrioObservationFunction,
     CTBPriorityObservationFunction,
     PriorityObservationFunction,
+    PriorityCtrlObservationFunction,
+    PriorityNormObservationFunction,
+    DiffWaitingObservationFunction,
+    PriorityDiffWaitingObservationFunction,
+    PriorityBCAObservationFunction,
+    PriorityCtrlBCAObservationFunction,
+    PriorityWaitingBCAObservationFunction,
 )
 
 OBS_REGISTRY = {
-    "Default":        DefaultObservationFunction,
-    "PressLight":     PressLightObservationFunction,
-    "PressLightNorm": PressLightNormObservationFunction,
-    "QueuePrio":      QueuePrioObservationFunction,
-    "CTBPriority":    CTBPriorityObservationFunction,
-    "Priority":       PriorityObservationFunction,
+    "Default":             DefaultObservationFunction,
+    "PressLight":          PressLightObservationFunction,
+    "PressLightNorm":      PressLightNormObservationFunction,
+    "QueuePrio":           QueuePrioObservationFunction,
+    "CTBPriority":         CTBPriorityObservationFunction,
+    "Priority":            PriorityObservationFunction,
+    "PriorityCtrl":        PriorityCtrlObservationFunction,
+    "PriorityNorm":        PriorityNormObservationFunction,
+    "DiffWaiting":         DiffWaitingObservationFunction,
+    "PriorityDiffWaiting": PriorityDiffWaitingObservationFunction,
+    "PriorityBCA":            PriorityBCAObservationFunction,
+    "PriorityCtrlBCA":        PriorityCtrlBCAObservationFunction,
+    "PriorityWaitingBCA":     PriorityWaitingBCAObservationFunction,
 }
 
 AGENT_TYPES = ("dqn", "coeff", "colight", "orico")

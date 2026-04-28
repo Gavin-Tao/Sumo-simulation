@@ -1,0 +1,59 @@
+# Experiment: exp121 — CoLightOrig (multi-head GAT) + PriorityCtrlBCA + 5-2-1-avg-waiting-time-ctrl, 1x3
+# CoLight counterpart of exp118 (DQN). 1% ambulance on WE through-corridor (WEamb).
+# Multi-head GAT: LeakyReLU attention + ELU output, n_heads=2; Q-head input = hidden_dim*(n_heads+1) = 384
+# Weights: car=1, bus=2, ambulance=5. Both obs and reward restricted to signal_controlled_lanes.
+name: "exp121_colightorig_1x3_521_avg_waiting_ctrl_WEamb_priorityctrlbca_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files (NS straight = bus, WE straight = 99% car + 1% ambulance)
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/Eq_350_NSbus_WE99-1-Car-Amb.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/Eq_350_NSbus_WE99-1-Car-Amb.sumocfg"
+
+# Neighbor map: [up, down, left, right], null = no neighbor
+# Layout (left → right): t — e — J0
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment
+observation_class: "PriorityCtrlBCA"
+reward_fn:         "5-2-1-avg-waiting-time-ctrl"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters
+hidden_dim:    128     # 64→128: more capacity for multi-head GAT (Q-head sees 128*3=384 dims)
+n_heads:       2       # original CoLight paper setting; 1x3 chain has max 2 neighbors
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            10000
+checkpoint_interval: 50
+runs:                1
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# Evaluation during training (set eval_interval: 0 to disable)
+eval_interval: 5
+eval_seed:     42
