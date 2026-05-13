@@ -482,10 +482,57 @@ def _make_avg_waiting_bcA(alpha: float, beta: float, gamma: float):
 
 
 _521_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 2.0, 5.0)
+_531_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 3.0, 5.0)  # stronger bus weight variant
+_541_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 4.0, 5.0)  # even stronger bus weight variant
 
 
 def _521_avg_waiting_reward(ts: "TrafficSignal") -> float:
     return _521_avg_waiting_fn(ts)
+
+
+def _531_avg_waiting_reward(ts: "TrafficSignal") -> float:
+    return _531_avg_waiting_fn(ts)
+
+
+def _541_avg_waiting_reward(ts: "TrafficSignal") -> float:
+    return _541_avg_waiting_fn(ts)
+
+
+# ---------------------------------------------------------------------------
+# Plain (vehicle-type-agnostic) avg waiting reward — "no priority" baseline.
+# Each vehicle counted as 1 unit regardless of type. Cross-lane wait correction
+# identical to _get_weighted_avg_waiting_time. Used as ablation against the
+# 5-2-1 weighted variant to prove that priority behavior comes from weights,
+# not from RL training or observation encoding alone.
+# ---------------------------------------------------------------------------
+
+def _get_plain_avg_waiting_time(ts: "TrafficSignal") -> float:
+    """Plain per-vehicle average waiting time across all incoming lanes.
+
+    No per-type splitting / weighting: every vehicle contributes its
+    accumulated wait once, divided by total vehicle count on ts.lanes.
+    """
+    total = 0.0
+    count = 0
+    for lane in ts.lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            veh_lane = ts.sumo.vehicle.getLaneID(vid)
+            acc = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if vid not in ts.env.vehicles:
+                ts.env.vehicles[vid] = {veh_lane: acc}
+            else:
+                ts.env.vehicles[vid][veh_lane] = acc - sum(
+                    ts.env.vehicles[vid][l]
+                    for l in ts.env.vehicles[vid] if l != veh_lane
+                )
+            total += ts.env.vehicles[vid][veh_lane]
+            count += 1
+    return (total / count) / 100.0 if count > 0 else 0.0
+
+
+def _avg_waiting_reward(ts: "TrafficSignal") -> float:
+    """Vehicle-type-agnostic avg waiting time reward (no priority bias)."""
+    return -_get_plain_avg_waiting_time(ts)
 
 
 def _get_weighted_avg_waiting_time_ctrl(ts: "TrafficSignal", alpha: float, beta: float) -> float:
@@ -734,7 +781,11 @@ REWARD_REGISTRY = {
     "51-avg-waiting-time-ctrl":     _51_avg_waiting_ctrl_reward,
     "51-avg-diff-waiting-time-ctrl": _51_avg_diff_waiting_ctrl_reward,
     "5-2-1-avg-waiting-time":       _521_avg_waiting_reward,
+    "5-3-1-avg-waiting-time":       _531_avg_waiting_reward,
+    "5-4-1-avg-waiting-time":       _541_avg_waiting_reward,
     "5-2-1-avg-waiting-time-ctrl":  _521_avg_waiting_ctrl_reward,
+    "avg-waiting-time":             _avg_waiting_reward,
+
     "5-2-1-priority-pressure":      _521_priority_pressure_reward,
     "5-2-1-priority-pressure-ctrl": _521_priority_pressure_ctrl_reward,
     "average-speed":           average_speed_reward,

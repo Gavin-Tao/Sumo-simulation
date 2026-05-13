@@ -17,6 +17,7 @@ Usage:
 """
 
 import argparse
+import json
 import math
 import os
 import sys
@@ -331,9 +332,28 @@ def train(cfg: dict, timestamp: str):
                 if eval_mean > best_eval_reward:
                     best_eval_reward = eval_mean
                     save_checkpoint(agent, episode, model_dir, filename="best.pth")
+                    # Snapshot the best ckpt's full eval metrics (all scopes x vTypes x all metric fields)
+                    # for offline analysis / thesis tables. Overwrites each new-best event.
+                    best_metrics = {
+                        "_meta": {
+                            "episode":          episode,
+                            "eval_mean_reward": float(best_eval_reward),
+                            "timestamp":        timestamp,
+                            "ckpt_filename":    "best.pth",
+                        },
+                        "metrics": eval_mc.summary(),
+                    }
+                    with open(os.path.join(model_dir, "best_metrics.json"), "w") as _f:
+                        json.dump(best_metrics, _f, indent=2, default=float)
                     print(f"  → best ckpt updated (reward={best_eval_reward:.4f})")
                 if logging_mode != "none":
-                    _BASIC = {"avg_stopped_time", "avg_stop_events", "avg_speed"}
+                    _BASIC = {
+                        "avg_stopped_time", "avg_stop_events", "avg_speed",
+                        # Metric A: per-vehicle normalized average (each vehicle 1 vote, k_v skip-empty)
+                        "avg_stopped_time_per_visit", "avg_stop_events_per_visit",
+                        # Metric B: cross-ts mean (each intersection 1 vote, skip ts where n_vehicles==0)
+                        "xts_avg_stopped_time", "xts_avg_stop_events", "xts_avg_speed",
+                    }
                     _BASIC_SYS = _BASIC | {"completion_rate"}
                     all_mc = {k.replace("eval/", "eval_", 1): v
                               for k, v in eval_mc.to_flat_dict(prefix="eval").items()}

@@ -415,7 +415,10 @@ class EpisodeMetricsCollector:
             "completed":         False,  # True if vehicle arrived at destination
             "ever_on_controlled": False, # True once seen on a signal-controlled lane
             # per-ts (updated only when on a ts's approach lanes)
-            "ts_prev_speed": {},  # ts_id -> prev speed (for ts-level stop detection)
+            "ts_prev_speed":      {},  # ts_id -> prev speed (for ts-level stop detection)
+            "ts_visited":         set(),  # set of ts_ids this vehicle has been on (k_v for Metric A)
+            "per_ts_stopped_sec": {},  # ts_id -> seconds this vehicle was stopped on ts's approach lanes (Metric A)
+            "per_ts_stop_events": {},  # ts_id -> stop-event count this vehicle had on ts's approach lanes (Metric A)
         }
 
     # ── main API ─────────────────────────────────────────────────────────────
@@ -472,6 +475,10 @@ class EpisodeMetricsCollector:
             if cur_ts is not None:
                 # Vehicle reached a signal-controlled lane — count it in system metrics
                 rec["ever_on_controlled"] = True
+                # Record that this vehicle visited this ts (k_v for Metric A,
+                # independent of whether it stopped — stopped vehicles AND moving
+                # vehicles both count as "visited 1 intersection here").
+                rec["ts_visited"].add(cur_ts)
 
                 # system-level stop transition — counted only on signal-controlled
                 # approach lanes so that system n_stop_events is consistent with
@@ -507,6 +514,10 @@ class EpisodeMetricsCollector:
                     self._ts_stopped_sec[cur_ts] += self.delta_time
                     if vtype in self.vtypes:
                         self._ts_stopped_sec[f"{cur_ts}_{vtype}"] += self.delta_time
+                    # per-vehicle aggregation (for Metric A: per-vehicle normalized avg)
+                    rec["per_ts_stopped_sec"][cur_ts] = (
+                        rec["per_ts_stopped_sec"].get(cur_ts, 0.0) + self.delta_time
+                    )
 
                 # Stop transition on this ts's approach lanes.
                 # Two cases:
@@ -526,11 +537,19 @@ class EpisodeMetricsCollector:
                             self._ts_stop_evt[cur_ts] += 1
                             if vtype in self.vtypes:
                                 self._ts_stop_evt[f"{cur_ts}_{vtype}"] += 1
+                            # per-vehicle aggregation (for Metric A)
+                            rec["per_ts_stop_events"][cur_ts] = (
+                                rec["per_ts_stop_events"].get(cur_ts, 0) + 1
+                            )
                 else:
                     if prev_ts_spd >= self.STOP_THRESHOLD > speed:
                         self._ts_stop_evt[cur_ts] += 1
                         if vtype in self.vtypes:
                             self._ts_stop_evt[f"{cur_ts}_{vtype}"] += 1
+                        # per-vehicle aggregation (for Metric A)
+                        rec["per_ts_stop_events"][cur_ts] = (
+                            rec["per_ts_stop_events"].get(cur_ts, 0) + 1
+                        )
                 rec["ts_prev_speed"][cur_ts] = speed
 
             # ── always update prev_speed and last_acc_wait (every vehicle, every step)
@@ -634,6 +653,68 @@ class EpisodeMetricsCollector:
             "avg_stop_events": stop_total / n if n else 0.0,
         }
 
+    def _per_visit_mean(self, records: list, field: str) -> float:
+        """Metric A: per-vehicle normalized average across visited intersections.
+
+        For each vehicle: (sum of metric across visited ts) / (# ts visited).
+        Then averaged across vehicles. Each vehicle gets equal weight regardless
+        of route length — complements the existing avg_stop_events_per_all_visit
+        which is a global ratio weighted by route length.
+
+        IMPORTANT: k_v is the number of intersections the vehicle was **observed
+        on** (via `ts_visited`), not the number where it stopped. A vehicle that
+        drove through 1 intersection without stopping has k_v=1, s_v=0, so it
+        contributes 0 to the average — which keeps the denominator honest and
+        avoids the bias of "averaging only over vehicles that stopped".
+
+        Vehicles that never reached any approach lane (k_v=0) are skipped,
+        consistent with the existing system-level filtering.
+
+        Args:
+            records: finalized vehicle records of the target vType.
+            field:   record key holding {ts_id: value}, one of
+                     "per_ts_stopped_sec" or "per_ts_stop_events".
+        """
+        vals = []
+        for r in records:
+            k_v = len(r.get("ts_visited", set()))
+            if k_v == 0:
+                continue
+            s_v = sum(r.get(field, {}).values())
+            vals.append(s_v / k_v)
+        return sum(vals) / len(vals) if vals else 0.0
+
+    def _xts_mean(self, vtype: str, metric_name: str) -> float:
+        """Metric B: cross-intersection mean, skipping ts where vtype is absent.
+
+        Averages the per-ts metric values across all intersections where
+        n_vehicles_of_vtype > 0 (skip-empty to avoid 0-bias).
+
+        Each intersection gets equal weight — complements Metric A's
+        per-vehicle view.
+
+        Args:
+            vtype:       "all" or one of self.vtypes.
+            metric_name: one of "avg_stopped_time", "avg_stop_events", "avg_speed".
+        """
+        vals = []
+        for ts_id in self.ts_lane_map:
+            key = ts_id if vtype == "all" else f"{ts_id}_{vtype}"
+            n = len(self._ts_seen[key])
+            if n == 0:
+                continue
+            if metric_name == "avg_stopped_time":
+                v = self._ts_stopped_sec[key] / n
+            elif metric_name == "avg_stop_events":
+                v = self._ts_stop_evt[key] / n
+            elif metric_name == "avg_speed":
+                s = self._spd[key]
+                v = s[0] / s[1] if s[1] else 0.0
+            else:
+                raise ValueError(f"Unknown metric_name for xts_mean: {metric_name}")
+            vals.append(v)
+        return sum(vals) / len(vals) if vals else 0.0
+
     def _build_system_summary(self) -> dict:
         # When excluded_lanes is active, filter to vehicles that reached at least
         # one signal-controlled lane (right-turn-only vehicles are excluded so they
@@ -666,6 +747,13 @@ class EpisodeMetricsCollector:
         out["all"]["avg_stop_events_per_all_visit"] = (
             out["all"]["n_stop_events"] / total_visits_all if total_visits_all else 0.0
         )
+        # Metric A — per-vehicle normalized averages (each vehicle 1 vote, skip k_v=0)
+        out["all"]["avg_stopped_time_per_visit"] = self._per_visit_mean(all_recs, "per_ts_stopped_sec")
+        out["all"]["avg_stop_events_per_visit"]  = self._per_visit_mean(all_recs, "per_ts_stop_events")
+        # Metric B — cross-ts mean (each intersection 1 vote, skip ts where n_vehicles==0)
+        out["all"]["xts_avg_stopped_time"] = self._xts_mean("all", "avg_stopped_time")
+        out["all"]["xts_avg_stop_events"]  = self._xts_mean("all", "avg_stop_events")
+        out["all"]["xts_avg_speed"]        = self._xts_mean("all", "avg_speed")
 
         for t in self.vtypes:
             recs = [r for r in all_recs if r["type"] == t]
@@ -683,6 +771,13 @@ class EpisodeMetricsCollector:
             leaf["avg_stop_events_per_all_visit"] = (
                 leaf["n_stop_events"] / total_visits_t if total_visits_t else 0.0
             )
+            # Metric A — per-vehicle normalized averages (each vehicle 1 vote, skip k_v=0)
+            leaf["avg_stopped_time_per_visit"] = self._per_visit_mean(recs, "per_ts_stopped_sec")
+            leaf["avg_stop_events_per_visit"]  = self._per_visit_mean(recs, "per_ts_stop_events")
+            # Metric B — cross-ts mean (each intersection 1 vote, skip ts where n_vehicles==0)
+            leaf["xts_avg_stopped_time"] = self._xts_mean(t, "avg_stopped_time")
+            leaf["xts_avg_stop_events"]  = self._xts_mean(t, "avg_stop_events")
+            leaf["xts_avg_speed"]        = self._xts_mean(t, "avg_speed")
             out[t] = leaf
 
         return out

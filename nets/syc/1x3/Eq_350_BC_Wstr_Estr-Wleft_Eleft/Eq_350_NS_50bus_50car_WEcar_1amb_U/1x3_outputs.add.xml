@@ -1,0 +1,70 @@
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+
+    <!-- ================= Edge-level statistics ================= -->
+    <edgeData id="edge_stats"
+              file="output/edgedata.out.xml"
+              begin="0"
+              end="1000"
+              freq="10"/>
+
+    <!-- ========================================================= -->
+    <!-- =============== TLS: Junction J0 ======================== -->
+    <!-- ========================================================= -->
+    <timedEvent type="SaveTLSStates"
+                source="J0"
+                dest="output/J0_tls_states.xml"/>
+
+    <timedEvent type="SaveTLSSwitchTimes"
+                source="J0"
+                dest="output/J0_tls_switchTimes.xml"/>
+
+    <timedEvent type="SaveTLSSwitchStates"
+                source="J0"
+                dest="output/J0_tls_switchStates.xml"/>
+
+    <timedEvent type="SaveTLSProgram"
+                source="J0"
+                dest="output/J0_tls_program.xml"/>
+
+
+    <!-- ========================================================= -->
+    <!-- ================== TLS: Junction e ====================== -->
+    <!-- ========================================================= -->
+    <timedEvent type="SaveTLSStates"
+                source="e"
+                dest="output/e_tls_states.xml"/>
+
+    <timedEvent type="SaveTLSSwitchTimes"
+                source="e"
+                dest="output/e_tls_switchTimes.xml"/>
+
+    <timedEvent type="SaveTLSSwitchStates"
+                source="e"
+                dest="output/e_tls_switchStates.xml"/>
+
+    <timedEvent type="SaveTLSProgram"
+                source="e"
+                dest="output/e_tls_program.xml"/>
+
+
+    <!-- ========================================================= -->
+    <!-- ================== TLS: Junction t ====================== -->
+    <!-- ========================================================= -->
+    <timedEvent type="SaveTLSStates"
+                source="t"
+                dest="output/t_tls_states.xml"/>
+
+    <timedEvent type="SaveTLSSwitchTimes"
+                source="t"
+                dest="output/t_tls_switchTimes.xml"/>
+
+    <timedEvent type="SaveTLSSwitchStates"
+                source="t"
+                dest="output/t_tls_switchStates.xml"/>
+
+    <timedEvent type="SaveTLSProgram"
+                source="t"
+                dest="output/t_tls_program.xml"/>
+
+</additional>

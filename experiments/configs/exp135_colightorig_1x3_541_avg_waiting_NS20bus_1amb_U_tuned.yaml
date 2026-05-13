@@ -1,0 +1,63 @@
+# Experiment: exp135 - CoLightOrig (multi-head GAT) + PriorityBCA + 5-4-1-avg-waiting-time, 1x3
+# OFAT variant on the "priority weight" axis at NS=20% bus + 80% car (the most car-dominated scenario).
+# Reward weights: car=1, bus=4, ambulance=5 (stronger bus weight than exp128's 5-2-1).
+#   - N at LEFT  -> N at RIGHT   (left turn at t, straight through e, left turn at J0)
+#   - S at RIGHT -> S at LEFT    (180-deg mirror; left turn at J0, straight, left turn at t)
+# Compare against exp128 (5-2-1) to test how priority weight magnitude affects amb / bus / car tradeoffs.
+# Multi-head GAT: LeakyReLU attention + ELU output, n_heads=2; Q-head input = hidden_dim*(n_heads+1) = 384
+# Weights: car=1, bus=4, ambulance=5. Both obs and reward over all lanes (matched, no ctrl).
+name: "exp135_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files (NS bus, WE pure car, Amb on diagonal 2-left-turn routes)
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map: [up, down, left, right], null = no neighbor
+# Layout (left -> right): t - e - J0
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters
+hidden_dim:    128     # 64->128: more capacity for multi-head GAT (Q-head sees 128*3=384 dims)
+n_heads:       2       # original CoLight paper setting; 1x3 chain has max 2 neighbors
+lr:            0.001   # same as CoLight; Adam normalises gradients
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9     # multi-head attention needs more exploration to learn patterns
+eps_end:       0.01
+eps_decay:     5000    # converges ~ep250 instead of ep5
+target_update: 20      # more stable target for larger network
+capacity:      50000   # larger buffer for diverse experience
+mini_size:     1000    # wait for more samples before training starts
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# Evaluation during training (set eval_interval: 0 to disable)
+eval_interval: 5     # run one greedy eval episode every N episodes
+eval_seed:     123    # different from training seed

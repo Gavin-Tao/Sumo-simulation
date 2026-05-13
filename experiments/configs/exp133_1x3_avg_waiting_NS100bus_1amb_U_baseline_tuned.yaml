@@ -1,0 +1,54 @@
+# Experiment: exp133 — PressLight (vType-agnostic obs) + PLAIN avg-waiting-time reward, 1x3
+# === HEADLINE ABLATION BASELINE for exp123: priority info removed from BOTH obs and reward ===
+# DQN counterpart of exp132. Pair against exp123 (priority condition).
+#   - Obs: PressLight → counts of vehicles per lane (NOT split by car/bus/amb); agent has no vType signal.
+#   - Reward: avg-waiting-time → mean per-vehicle waiting time across all vehicles (NOT split by type).
+# Independent per-intersection DQN — no inter-ts cooperation (no GAT, no neighbor_map).
+# Scenario unchanged from exp123: ambulance on U-shaped 2-left-turn route, 1% of n_t lane 2.
+# Tuned DQN params reused from exp116 / exp123 for clean cross-config comparison.
+name: "exp133_1x3_avg_waiting_NS100bus_1amb_U_baseline_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files (NS bus, WE pure car, Amb on diagonal 2-left-turn route(s))
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_100bus_0car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_100bus_0car_WEcar_1amb_U/Eq_350_NS_100bus_0car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_100bus_0car_WEcar_1amb_U/Eq_350_NS_100bus_0car_WEcar_1amb_U.sumocfg"
+
+# Environment
+observation_class: "PressLight"
+reward_fn:         "avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (tuned, same as exp116 for clean OFAT comparison)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            500
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
