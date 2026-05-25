@@ -46,9 +46,9 @@ BUS_PCT_MAP: dict = {
     # NS 5% bus (exp130 / exp131) intentionally excluded — not in current run.
 }
 
-# Priority weight sensitivity (NS 10% bus scenario)
+# Priority weight sensitivity (NS 20% bus scenario — 5-3-1 / 5-4-1 only trained at 20%)
 WEIGHT_MAP: dict = {
-    "5-2-1": ("exp128", "exp129"),
+    "5-2-1": ("exp126", "exp127"),
     "5-3-1": ("exp134", "exp136"),
     "5-4-1": ("exp135", "exp137"),
 }
@@ -61,18 +61,24 @@ BASELINE_EXP = "exp133"  # DQN + PressLight + plain avg-waiting-time, NS 100% bu
 METRICS = [
     "avg_speed",                  # base 1
     "avg_stopped_time",           # base 2
-    "avg_wait",                   # base 3
+    "avg_wait",                   # base 3  (whole-trip wait — downstream-contaminated at per-ts)
+    "avg_waiting_inc",            # base 4  (local Δ-acc-wait — clean per-ts, no downstream)
     "avg_stopped_time_per_visit", # Metric A
     "xts_avg_stopped_time",       # Metric B (stopped)
     "xts_avg_speed",              # Metric B (speed)
+    "xts_avg_waiting_inc",        # Metric B (local wait)
 ]
 VTYPES = ["car", "bus", "ambulance"]
 
 
 # ── Loading ───────────────────────────────────────────────────────────────────
+# Set by main() to control which best_metrics file variant is read.
+_METRICS_SUFFIX = ""
+
+
 def load_best_metrics(exp_prefix: str) -> Optional[dict]:
-    """Find latest timestamp dir for this exp and load best_metrics.json. None if missing."""
-    pattern = f"./models/{exp_prefix}_*/*/best_metrics.json"
+    """Find latest timestamp dir for this exp and load best_metrics{suffix}.json."""
+    pattern = f"./models/{exp_prefix}_*/*/best_metrics{_METRICS_SUFFIX}.json"
     matches = glob.glob(pattern)
     if not matches:
         return None
@@ -192,10 +198,15 @@ def plot_sensitivity(
 
 
 def main():
+    global _METRICS_SUFFIX
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out-dir", default="figures",
+    parser.add_argument("--out-dir", default="figures/best",
                         help="where to save PNG figures (relative to experiments/)")
+    parser.add_argument("--suffix", default="",
+                        help="metrics filename suffix, e.g. '_warmup20' to read "
+                             "best_metrics_warmup20.json")
     args = parser.parse_args()
+    _METRICS_SUFFIX = args.suffix
 
     # Scopes to plot. For each axis we emit one figure per scope so user can
     # see system-level vs each individual intersection's behavior.

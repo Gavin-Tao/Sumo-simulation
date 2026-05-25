@@ -373,6 +373,16 @@ class EpisodeMetricsCollector:
             for t in vtypes:
                 self._ts_stopped_sec[f"{ts}_{t}"] = 0.0
 
+        # ── per-ts local accumulated-waiting-time (seconds) accumulator ───────
+        # Increments of sumo.vehicle.getAccumulatedWaitingTime are attributed to
+        # whichever ts approach lane the vehicle is on at that step. Unlike
+        # `last_acc_wait` (whole-trip wait), this lets per-ts.avg_wait reflect
+        # *only* wait that happened on that ts (no downstream contamination).
+        self._ts_local_wait_sec: dict = {ts: 0.0 for ts in ts_lane_map}
+        for ts in ts_lane_map:
+            for t in vtypes:
+                self._ts_local_wait_sec[f"{ts}_{t}"] = 0.0
+
         # ── per-ts stop-event counter ─────────────────────────────────────────
         self._ts_stop_evt: dict = {ts: 0 for ts in ts_lane_map}
         for ts in ts_lane_map:
@@ -419,6 +429,7 @@ class EpisodeMetricsCollector:
             "ts_visited":         set(),  # set of ts_ids this vehicle has been on (k_v for Metric A)
             "per_ts_stopped_sec": {},  # ts_id -> seconds this vehicle was stopped on ts's approach lanes (Metric A)
             "per_ts_stop_events": {},  # ts_id -> stop-event count this vehicle had on ts's approach lanes (Metric A)
+            "per_ts_local_wait_sec": {},  # ts_id -> seconds of local accumulated wait increment on ts's approach lanes
         }
 
     # ── main API ─────────────────────────────────────────────────────────────
@@ -456,11 +467,22 @@ class EpisodeMetricsCollector:
                 continue
             rec = self._active[vid]
             try:
-                speed = sumo.vehicle.getSpeed(vid)
+                speed            = sumo.vehicle.getSpeed(vid)
+                current_acc_wait = sumo.vehicle.getAccumulatedWaitingTime(vid)
             except Exception:
                 continue
             vtype = rec["type"]
             cur_ts = veh_ts.get(vid)     # None if not on any ts's approach lanes
+
+            # Δ accumulated-waiting in the last delta_time, attributed to cur_ts.
+            # Clamped to [0, delta_time]:
+            #   - negative means SUMO's 100s memory window dropped old wait (rare here)
+            #   - >delta_time shouldn't happen, but cap as a safety net.
+            delta_wait = current_acc_wait - rec["last_acc_wait"]
+            if delta_wait < 0.0:
+                delta_wait = 0.0
+            elif delta_wait > self.delta_time:
+                delta_wait = float(self.delta_time)
 
             # ── time-weighted speed (system + per-type, all vehicles) ────────────
             # Used by _build_system_summary when excluded_lanes is not set.
@@ -519,6 +541,20 @@ class EpisodeMetricsCollector:
                         rec["per_ts_stopped_sec"].get(cur_ts, 0.0) + self.delta_time
                     )
 
+                # Local accumulated-waiting-time increment on this ts's approach lanes.
+                # Δ of SUMO's getAccumulatedWaitingTime since last observed step is
+                # attributed entirely to cur_ts (the ts the vehicle is on right now).
+                # This gives a per-ts wait metric that EXCLUDES wait incurred at
+                # other intersections / downstream lanes — solves the "avg_wait gets
+                # contaminated by downstream queues" problem of `last_acc_wait`.
+                if delta_wait > 0.0:
+                    self._ts_local_wait_sec[cur_ts] += delta_wait
+                    if vtype in self.vtypes:
+                        self._ts_local_wait_sec[f"{cur_ts}_{vtype}"] += delta_wait
+                    rec["per_ts_local_wait_sec"][cur_ts] = (
+                        rec["per_ts_local_wait_sec"].get(cur_ts, 0.0) + delta_wait
+                    )
+
                 # Stop transition on this ts's approach lanes.
                 # Two cases:
                 #   1. Normal: vehicle was already on this ts's lane last step
@@ -557,7 +593,7 @@ class EpisodeMetricsCollector:
             # in the cur_ts block above has a valid previous speed even after the vehicle
             # has been off a controlled lane for several steps.
             rec["prev_speed"]    = speed
-            rec["last_acc_wait"] = sumo.vehicle.getAccumulatedWaitingTime(vid)
+            rec["last_acc_wait"] = current_acc_wait
 
         # ── Track intersection clearance ──────────────────────────────────────
         # A vehicle "clears" a ts when it was previously on its approach lanes
@@ -642,13 +678,19 @@ class EpisodeMetricsCollector:
         Note: throughput is NOT included here — system-level throughput (mean of per-ts
         cleared counts) and completed_trips are added by _build_system_summary directly.
         """
+        import numpy as _np
         s = spd_table[spd_key]
         n = len(records)
         stop_total = sum(r["stop_count"] for r in records)
+        waits = [r["last_acc_wait"] for r in records]
         return {
             "n_vehicles":      n,
             "avg_speed":       s[0] / s[1] if s[1] else 0.0,
-            "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
+            "avg_wait":        sum(waits) / n if n else 0.0,
+            # Robust wait distribution (avg_wait is sensitive to single stuck vehicles)
+            "median_wait":     float(_np.median(waits)) if waits else 0.0,
+            "p95_wait":        float(_np.percentile(waits, 95)) if waits else 0.0,
+            "max_wait":        float(max(waits)) if waits else 0.0,
             "n_stop_events":   stop_total,
             "avg_stop_events": stop_total / n if n else 0.0,
         }
@@ -673,7 +715,8 @@ class EpisodeMetricsCollector:
         Args:
             records: finalized vehicle records of the target vType.
             field:   record key holding {ts_id: value}, one of
-                     "per_ts_stopped_sec" or "per_ts_stop_events".
+                     "per_ts_stopped_sec", "per_ts_stop_events", or
+                     "per_ts_local_wait_sec".
         """
         vals = []
         for r in records:
@@ -695,7 +738,8 @@ class EpisodeMetricsCollector:
 
         Args:
             vtype:       "all" or one of self.vtypes.
-            metric_name: one of "avg_stopped_time", "avg_stop_events", "avg_speed".
+            metric_name: one of "avg_stopped_time", "avg_stop_events",
+                         "avg_speed", "avg_waiting_inc".
         """
         vals = []
         for ts_id in self.ts_lane_map:
@@ -710,6 +754,8 @@ class EpisodeMetricsCollector:
             elif metric_name == "avg_speed":
                 s = self._spd[key]
                 v = s[0] / s[1] if s[1] else 0.0
+            elif metric_name == "avg_waiting_inc":
+                v = self._ts_local_wait_sec[key] / n
             else:
                 raise ValueError(f"Unknown metric_name for xts_mean: {metric_name}")
             vals.append(v)
@@ -732,9 +778,13 @@ class EpisodeMetricsCollector:
 
         out["all"] = self._leaf_metrics_spd(spd_table, "system", all_recs)
         total_all = sum(self._ts_stopped_sec.get(ts, 0.0) for ts in self.ts_lane_map)
+        total_local_wait_all = sum(self._ts_local_wait_sec.get(ts, 0.0) for ts in self.ts_lane_map)
         n_all = out["all"]["n_vehicles"]
         out["all"]["stopped_time"]     = total_all
         out["all"]["avg_stopped_time"] = total_all / n_all if n_all else 0.0
+        # Local accumulated-waiting-time aggregates (approach-lane only, no downstream contamination)
+        out["all"]["waiting_inc"]      = total_local_wait_all
+        out["all"]["avg_waiting_inc"]  = total_local_wait_all / n_all if n_all else 0.0
         # System throughput: sum and mean of per-ts cleared counts
         ts_cleared_counts = [len(self._ts_cleared[ts]) for ts in self.ts_lane_map]
         out["all"]["throughput"]      = sum(ts_cleared_counts)
@@ -750,18 +800,23 @@ class EpisodeMetricsCollector:
         # Metric A — per-vehicle normalized averages (each vehicle 1 vote, skip k_v=0)
         out["all"]["avg_stopped_time_per_visit"] = self._per_visit_mean(all_recs, "per_ts_stopped_sec")
         out["all"]["avg_stop_events_per_visit"]  = self._per_visit_mean(all_recs, "per_ts_stop_events")
+        out["all"]["avg_waiting_inc_per_visit"]  = self._per_visit_mean(all_recs, "per_ts_local_wait_sec")
         # Metric B — cross-ts mean (each intersection 1 vote, skip ts where n_vehicles==0)
         out["all"]["xts_avg_stopped_time"] = self._xts_mean("all", "avg_stopped_time")
         out["all"]["xts_avg_stop_events"]  = self._xts_mean("all", "avg_stop_events")
         out["all"]["xts_avg_speed"]        = self._xts_mean("all", "avg_speed")
+        out["all"]["xts_avg_waiting_inc"]  = self._xts_mean("all", "avg_waiting_inc")
 
         for t in self.vtypes:
             recs = [r for r in all_recs if r["type"] == t]
             leaf = self._leaf_metrics_spd(spd_table, t, recs)
-            total_t = sum(self._ts_stopped_sec.get(f"{ts}_{t}", 0.0) for ts in self.ts_lane_map)
+            total_t            = sum(self._ts_stopped_sec.get(f"{ts}_{t}", 0.0) for ts in self.ts_lane_map)
+            total_local_wait_t = sum(self._ts_local_wait_sec.get(f"{ts}_{t}", 0.0) for ts in self.ts_lane_map)
             n_t = leaf["n_vehicles"]
             leaf["stopped_time"]     = total_t
             leaf["avg_stopped_time"] = total_t / n_t if n_t else 0.0
+            leaf["waiting_inc"]      = total_local_wait_t
+            leaf["avg_waiting_inc"]  = total_local_wait_t / n_t if n_t else 0.0
             ts_cleared_t = [len(self._ts_cleared[f"{ts}_{t}"]) for ts in self.ts_lane_map]
             leaf["throughput"]      = sum(ts_cleared_t)
             leaf["mean_throughput"] = sum(ts_cleared_t) / n_ts if n_ts else 0.0
@@ -774,10 +829,12 @@ class EpisodeMetricsCollector:
             # Metric A — per-vehicle normalized averages (each vehicle 1 vote, skip k_v=0)
             leaf["avg_stopped_time_per_visit"] = self._per_visit_mean(recs, "per_ts_stopped_sec")
             leaf["avg_stop_events_per_visit"]  = self._per_visit_mean(recs, "per_ts_stop_events")
+            leaf["avg_waiting_inc_per_visit"]  = self._per_visit_mean(recs, "per_ts_local_wait_sec")
             # Metric B — cross-ts mean (each intersection 1 vote, skip ts where n_vehicles==0)
             leaf["xts_avg_stopped_time"] = self._xts_mean(t, "avg_stopped_time")
             leaf["xts_avg_stop_events"]  = self._xts_mean(t, "avg_stop_events")
             leaf["xts_avg_speed"]        = self._xts_mean(t, "avg_speed")
+            leaf["xts_avg_waiting_inc"]  = self._xts_mean(t, "avg_waiting_inc")
             out[t] = leaf
 
         return out
@@ -788,6 +845,9 @@ class EpisodeMetricsCollector:
         - avg_speed     : time-weighted speed of vehicles on ts's approach lanes
         - avg_wait      : mean per-vehicle total accumulated wait of vehicles
                           that visited this ts (proxy; includes wait at other ts)
+        - avg_waiting_inc: mean per-vehicle local wait (Δ getAccumulatedWaitingTime
+                          attributed only to this ts's approach lanes; no downstream
+                          contamination — preferred over avg_wait for fair per-ts comparison)
         - n_stop_events    : stop transitions occurring on ts's approach lanes
         - avg_stop_events  : n_stop_events / n_vehicles
         - stopped_time     : total vehicle-seconds spent stopped on approach lanes
@@ -798,17 +858,26 @@ class EpisodeMetricsCollector:
         all_recs = [self._finalized[v] for v in all_seen_vids if v in self._finalized]
 
         def ts_leaf(spd_key: str, records: list, type_key: str) -> dict:
+            import numpy as _np
             s = self._spd[spd_key]
             n = len(records)
+            waits = [r["last_acc_wait"] for r in records]
             return {
                 "n_vehicles":    n,
                 "throughput":    len(self._ts_cleared[type_key]),
                 "avg_speed":     s[0] / s[1] if s[1] else 0.0,
-                "avg_wait":        sum(r["last_acc_wait"] for r in records) / n if n else 0.0,
+                "avg_wait":        sum(waits) / n if n else 0.0,
+                # Robust wait distribution
+                "median_wait":     float(_np.median(waits)) if waits else 0.0,
+                "p95_wait":        float(_np.percentile(waits, 95)) if waits else 0.0,
+                "max_wait":        float(max(waits)) if waits else 0.0,
                 "n_stop_events":   self._ts_stop_evt[type_key],
                 "avg_stop_events": self._ts_stop_evt[type_key] / n if n else 0.0,
                 "stopped_time":    self._ts_stopped_sec[type_key],
                 "avg_stopped_time": self._ts_stopped_sec[type_key] / n if n else 0.0,
+                # Local-only wait (approach lanes of this ts ONLY; no downstream contamination)
+                "waiting_inc":     self._ts_local_wait_sec[type_key],
+                "avg_waiting_inc": self._ts_local_wait_sec[type_key] / n if n else 0.0,
             }
 
         out: dict = {}

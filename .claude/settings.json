@@ -38,7 +38,38 @@
       "Bash(pkill -9 -f \"configs/exp1\")",
       "Bash(pkill -9 -f \"wandb\")",
       "Bash(timeout 30 python eval_unified.py --agent dqn --config configs/exp123_1x3_521_avg_waiting_1amb_U_tuned.yaml --ckpt models/exp123_1x3_521_avg_waiting_1amb_U_tuned/2026-05-13T17-51-16/best.pth --episodes 1 --gpu -1)",
-      "Bash(timeout 15 python eval_unified.py --agent dqn --config configs/exp123_1x3_521_avg_waiting_1amb_U_tuned.yaml --ckpt models/exp123_1x3_521_avg_waiting_1amb_U_tuned/2026-05-13T17-51-16/best.pth --episodes 1 --gpu -1)"
+      "Bash(timeout 15 python eval_unified.py --agent dqn --config configs/exp123_1x3_521_avg_waiting_1amb_U_tuned.yaml --ckpt models/exp123_1x3_521_avg_waiting_1amb_U_tuned/2026-05-13T17-51-16/best.pth --episodes 1 --gpu -1)",
+      "Bash(python experiments/generate_last_metrics.py exp126)",
+      "Bash(python experiments/generate_last_metrics.py)",
+      "Bash(python experiments/plot_last_metrics.py)",
+      "Bash(python -c ' *)",
+      "Bash(mkdir -p experiments/figures/best experiments/figures/last experiments/figures/long_eval_best)",
+      "Bash(mv experiments/figures/01_bus_pct_*.png experiments/figures/02_weight_*.png /tmp/)",
+      "Bash(python experiments/plot_best_metrics.py)",
+      "Bash(chmod +x experiments/run_long_evals.sh)",
+      "Bash(./experiments/run_long_evals.sh > /tmp/long_evals.log 2>&1)",
+      "Bash(python experiments/generate_last_metrics.py --kind best --warmup 20)",
+      "Bash(python experiments/generate_last_metrics.py --kind last --warmup 20)",
+      "Bash(python experiments/plot_best_metrics.py --out-dir figures/best_warmup20 --suffix _warmup20)",
+      "Bash(python experiments/plot_last_metrics.py --out-dir figures/last_warmup20 --suffix _warmup20)",
+      "Bash(python experiments/generate_long_metrics.py exp126 exp127 exp134 exp135 exp136 exp137)",
+      "Bash(python experiments/plot_long_metrics.py)",
+      "Bash(python experiments/generate_last_metrics.py --kind last --overwrite exp126)",
+      "Bash(python experiments/generate_last_metrics.py --kind best --overwrite)",
+      "Bash(python diagnose_amb_wait.py --agent orico --config configs/evaluation/eval_exp135_NS20bus_1amb_U.yaml --ckpt models/exp135_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_tuned/2026-05-14T05-49-06/best.pth)",
+      "Bash(python generate_seed_sweep.py)",
+      "Bash(python experiments/plot_seed_sweep.py)",
+      "Bash(python experiments/eval_ckpt_trajectory.py)",
+      "Bash(python plot_seed_sweep.py)",
+      "Bash(python plot_ckpt_trajectory.py)",
+      "Bash(python plot_ckpt_trajectory_per_visit.py)",
+      "Bash(python plot_best_metrics.py)",
+      "Bash(python wandb_trailing_window.py --window 50)",
+      "Bash(python plot_wandb_coVScoless.py)",
+      "Bash(python plot_wandb_weight_sweep.py --window 50)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }

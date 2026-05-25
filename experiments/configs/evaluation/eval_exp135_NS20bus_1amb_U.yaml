@@ -1,0 +1,46 @@
+# Post-hoc evaluation of exp135 (CoLight + 5-4-1) on NS20bus_1amb_U scenario.
+#
+# Usage:
+#   python experiments/eval_unified.py \
+#       --agent colight \
+#       --config experiments/configs/evaluation/eval_exp135_NS20bus_1amb_U.yaml \
+#       --ckpt   experiments/models/exp135_*/<TS>/best.pth \
+#       --episodes 1
+name: "eval_exp135_NS20bus_1amb_U"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       21600
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+hidden_dim:    128
+n_heads:       2
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+seed: 123
+runs: 1
