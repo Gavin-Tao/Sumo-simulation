@@ -1,0 +1,571 @@
+================================================================================
+GENERIC TRAFFIC SIGNAL AGENT — STATE / ACTION 设计思路
+================================================================================
+
+目标场景: Dublin 数百个真实路口
+要求:
+  - 单一共享 policy 适配所有路口
+  - 拓扑可变: 3-way (T) / 4-way / merge (2-way), 最多 4 个进口方向
+  - lane 数可变: 单进口 1-3 lane, 总 lane 数约 3-12
+  - 相位数可变: 每路口 3-8 个 SUMO phase
+  - BNF 优先级映射规则可变 (不同场景用不同 BNF)
+  - 训练后 zero-shot 部署到未见过的路口
+
+固定的约束 (重要):
+  - 优先级取值空间 = {1, 2, 3, 4, 5} 整数, 不存在 0.1 这种连续值
+  - 但某个 BNF / 场景不一定用满 5 级:
+      可能只用 {1, 3, 4}, 可能只用 {1, 2, 4}, 可能全用 {1,2,3,4,5}
+  - 权重 = 优先级序号本身 (priority 5 在 reward 里就是 ×5), 固定不变
+  - 路口最多 4-way, 没有 5-way / 6-way
+
+
+================================================================================
+零、核心设计哲学
+================================================================================
+
+把 generic 拆成 3 个独立维度, 各用最成熟的技术解决:
+
+  拓扑通用   → Lane-as-Token + Transformer encoder       (NLP / ViT 同源)
+  相位通用   → FRAP-style Phase Scorer                    (Wei KDD 2019)
+  BNF 通用   → 5 个固定 priority 槽位嵌入 lane token       (本设计核心 contribution)
+
+外加多路口协调:
+  邻居协调   → CoLight Multi-head GAT                     (Wei KDD 2019)
+
+不发明新框架, 每个组件都有先验论文背书, 只是组合方式服务于 BNF 设计。
+
+为什么仍需要 set-based 架构 (即便最多 4-way):
+  - 即便方向数 ≤ 4, lane 数仍变 (D2 是 (1,2,1)=4, D4 是 (2,1,2,1)=6)
+  - bus 专用道需要跟私家车道分开表示
+  - 相位数仍变 (3-8)
+  - 几何角度仍变 (D4 是 NE/NW/SE/SW 偏 45°, 不是正 N/E/S/W)
+  → 这些都需要 lane-as-token, 4-way 约束只是缩小了规模, 不改变架构需求
+
+
+================================================================================
+一、为什么 lane-as-token 而不是 12-slot 模板
+================================================================================
+
+12-slot N/E/S/W × L/T/R 模板的根本问题:
+  1. D4 已经是 NE/NW/SE/SW 偏 45°, 强行映射到正 N/E/S/W 语义错乱
+  2. 同方向多 lane 被聚合掉, bus 专用道和私家车道的差异丢失
+     (D2 的 N 进口 lane0=私家车 / lane1=bus 必须分开)
+  3. flatten + MLP 的权重位置绑定, lane / phase 数变即报错
+  4. 跨路口 "slot 7" 语义不一致, 参数共享无意义
+
+lane-as-token 的优势:
+  1. 每条 lane 一个 token, 数量随路口变 (3-12)
+  2. 角度作为连续特征 (而非离散 N/E/S/W), 偏角路口也能编码
+  3. 同方向 2 lane → 2 个独立 token, bus 道信息保留
+  4. Transformer/DeepSets 的参数 per-token, 不依赖 token 数
+
+
+================================================================================
+二、Lane Token 完整 Feature Schema (30 维)
+================================================================================
+
+每条进口 lane 一个 token, 30 维向量, 三个 block:
+
+----------------------------------------
+A. 静态几何特征 (7 维, 路口加载时一次性算好缓存)
+----------------------------------------
+  lane_length         : float   该 lane 进口段长度 (m)
+  approach_angle      : float   进入方向方位角 (弧度, 相对路口几何中心)
+  capacity            : float   lane 容量 = length / (5m + 2.5m MIN_GAP)
+  allow_left          : binary  是否允许左转
+  allow_through       : binary  是否允许直行
+  allow_right         : binary  是否允许右转
+  is_always_green     : binary  自由右转 (无信号控制) = 1, 受控 = 0
+
+----------------------------------------
+B. BNF priority 动态特征 (20 维, 固定 5 个槽位 × 4 字段)
+----------------------------------------
+
+priority 取值空间是固定的 {1,2,3,4,5}, 用 5 个固定槽位表示。
+但某个 BNF / 场景不一定用满 5 级 (可能只用 {1,3,4} 等子集)。
+
+对每个 priority 槽位 p ∈ {1, 2, 3, 4, 5}:
+
+  p_active            : binary  当前 BNF 是否定义了第 p 级
+                                (1 = 这个 BNF 会把某些车归到 p 级)
+                                (0 = 这个 BNF 根本不用 p 级)
+  p_count             : int     该 lane 上该级车辆数
+  p_mean_awt          : float   该级车辆的累计等待时间均值 (秒)
+  p_max_awt           : float   该级最长等待时间 (秒)
+
+为什么需要 p_active (关键):
+  要区分两种情况, 它们对 agent 含义不同:
+    (a) "这个 BNF 没定义 priority 2"   → p2 永远不会有车, agent 可彻底忽略
+    (b) "priority 2 定义了但现在没车"   → 临时空, agent 应继续监视
+  没有 active flag 时, 两者都是 count=0, agent 区分不开。
+  有了 active flag, agent 拿到新 BNF 立刻知道它的优先级结构, 帮助 zero-shot 迁移。
+
+为什么不需要 weight 字段:
+  - 权重 = 优先级序号本身 (priority 5 就是 ×5), 固定不变
+  - 由 slot 位置隐含: priority-5 的 slot 永远在固定位置,
+    模型从训练中学到 "这个位置的车最重要", 不需要显式 weight 数值
+  - max_awt 单独保留, 给稀疏高优先车用 (单辆救护车不被均值稀释)
+
+layout (按 priority 顺序排, 每级 4 字段):
+  [p1_active, p1_count, p1_mean_awt, p1_max_awt,
+   p2_active, p2_count, p2_mean_awt, p2_max_awt,
+   p3_active, p3_count, p3_mean_awt, p3_max_awt,
+   p4_active, p4_count, p4_mean_awt, p4_max_awt,
+   p5_active, p5_count, p5_mean_awt, p5_max_awt]
+
+----------------------------------------
+C. 相位状态特征 (3 维)
+----------------------------------------
+  is_green_now              : binary  当前这条 lane 是否在绿灯
+  seconds_since_last_green  : float   距上次绿灯过去多少秒
+  time_until_min_green_end  : float   距 MIN_GREEN 约束解除多少秒 (≤0 表示已解除)
+
+----------------------------------------
+合计: 7 + 20 + 3 = 30 维 / lane token
+----------------------------------------
+
+
+================================================================================
+三、BNF 通用化: 优先级映射规则可变, 但取值空间和权重固定
+================================================================================
+
+BNF 在本设计里固定输出 {1,2,3,4,5} 整数优先级 (某场景可能只用子集)。
+可变的是 "映射规则" 和 "用了哪几级", 不是权重值。
+
+BNF Evaluator 的职责:
+  输入: 车辆属性 (type, clinical_status, bus_route, ...) + 上下文 (距医院, 时段)
+  输出: priority ∈ {1, 2, 3, 4, 5}  (该 BNF 实际使用的级别集合)
+
+----------------------------------------
+什么会变 (BNF 配置切换)
+----------------------------------------
+  - 用了哪几级 (BNF-A 用 {1,2,3,4,5}, BNF-B 只用 {1,3,4})
+  - 哪些车归到哪一级 (映射规则)
+    例: BNF-A "Echo 救护车 → 5", BNF-B "所有救护车 → 5"
+  - 加新的上下文规则
+    例: 加 "距 Coombe 医院 < 500m 的 Charlie → 升到 5"
+  - 不同路口用不同 BNF (城东医院区 vs 城西商业区规则不同)
+
+----------------------------------------
+什么不变 (固定)
+----------------------------------------
+  - 优先级取值空间: 永远从 {1,2,3,4,5} 取
+  - 权重: priority 5 在 reward 里就是 ×5, priority 1 就是 ×1
+  - reward 公式形状
+
+----------------------------------------
+为什么 agent 对 BNF 规则变化天然 zero-shot
+----------------------------------------
+  关键: agent 的 obs 是 "priority 桶里的统计量" (active / count / awt),
+        不是 "什么规则把车归到这个桶"。
+
+  agent 永远看 "priority-5 槽是否 active, 有几辆车, 等了多久",
+  从不看 "这辆车为什么是 priority 5"。
+
+  → BNF 规则改变 → priority 桶的 active 状态和分布变
+    → agent 看到不同的 active flag + 不同统计量
+    → agent 用同一套策略 (active 的高优先桶有车就重视) 自然应对
+
+  这是 "对 BNF 规则不变性 (invariance)": agent 在 BNF 输出 (priority 桶)
+  上操作, 不在 BNF 规则上操作。换规则 = 换 active 集合 + 换桶分布,
+  agent 处理任意 active 子集 + 任意桶分布。
+
+----------------------------------------
+论文 contribution 表述
+----------------------------------------
+  "BNF as runtime mapping interface": 车辆→优先级的映射由 BNF DSL 在运行时
+  定义而非硬编码。Agent 操作于映射输出 (固定取值空间 {1..5} 的 priority 桶,
+  以及 active 状态), 因此对任意 BNF 映射规则 / 任意激活子集保持不变性,
+  无需重训即可应用新规则。
+
+
+================================================================================
+四、State 整体形状
+================================================================================
+
+  state = (n_lanes, 30)
+
+  n_lanes 随路口变 (最多 4-way 约束下大致 3-12):
+    D1 (T-way, 3 个 1-lane 进口):     3 个 token
+    D2 (T-way, (1,2,1)):              4 个 token
+    D3 (T-way, (1,1,2)):              4 个 token
+    D4 (4-way, (2,1,2,1)):            6 个 token
+    D5 (4-way, (1,1,1,1)):            4 个 token
+    D6 (merge 2-way, (1,2)):          3 个 token
+    Dublin 中型 4-way:                8-12 个 token
+
+  feature_dim = 30 (固定):
+    静态 7 + BNF 20 + 相位 3
+
+
+================================================================================
+五、Transformer 编码: 把变长输入压成固定向量
+================================================================================
+
+数据流 (D4 为例, 6 lane):
+
+  6 个 lane tokens
+       ↓
+  prepend [CLS] token (30 维可学习参数)
+       ↓
+  7 个 tokens, 形状 (7, 30)
+       ↓
+  Transformer encoder (2-3 层, multi-head self-attention)
+       ↓
+  7 个 tokens, 形状 (7, 128)
+       ↓
+  取 CLS 输出
+       ↓
+  h_intersection: (128,) ← 固定 128 维, 跟 n_lanes 无关
+
+[CLS] token 是关键:
+  - 它是可学习的向量参数, 不来自任何输入
+  - 通过 self-attention 从所有 lane token 拉信息
+  - 训练后学到 "对任何路口都通用的信息汇总策略"
+  - 类似 BERT 处理变长句子、ViT 处理变长 patch
+
+为什么不用 mean pooling:
+  - mean 把救护车信号被空 lane 稀释
+  - max 丢失关联性 (不知道队列和救护车是否在同一 lane)
+  - CLS attention 学习数据驱动的加权
+
+为什么 Transformer 而非 DeepSets:
+  - DeepSets: 每个 token 独立 MLP, 求和后 MLP
+              简单稳定, 但 token 之间无 pairwise 交互
+              学不到 "对向左转 vs 直行冲突" 这种关系
+  - Transformer: self-attention 让 token 互相 attend
+                 表达力强, 但训练稳定性稍差
+  - 主选 Transformer, 训不稳退到 DeepSets
+
+
+================================================================================
+六、Action 设计: FRAP-style Phase Scorer
+================================================================================
+
+不用固定 8 action + valid_mask, 改用 phase-as-query:
+
+----------------------------------------
+Phase 候选生成 (路口加载时缓存)
+----------------------------------------
+从 SUMO net.xml 的 <tlLogic> 自动解析:
+  对每个 green phase k:
+    served_lanes_k = { 该 phase 给绿灯的 (lane, movement) 集合 }
+    blocked_lanes_k = { 该 phase 给红灯的 lane 集合 }
+
+----------------------------------------
+Phase Token 构造
+----------------------------------------
+Phase_k_token = concat(
+    pool({ h_lane for lane in served_lanes_k }),    ← 该 phase 服务的 lane 池化
+    pool({ h_lane for lane in blocked_lanes_k }),   ← 该 phase 阻塞的 lane 池化
+    phase_meta_features                              ← 元数据
+)
+
+phase_meta_features:
+  - n_lanes_served      : int
+  - n_lanes_blocked     : int
+  - is_current_phase    : binary  是否当前正在跑的 phase
+  - seconds_in_current  : float   当前 phase 已绿秒数
+
+----------------------------------------
+Q-value 计算
+----------------------------------------
+对每个 phase k:
+  Q(s, phase_k) = Phase_Scorer_MLP(concat(h_intersection', Phase_k_token))
+                                     ↑ 含邻居信息的路口表示
+                                                    ↑ phase 描述
+                  → scalar
+
+选 action:
+  action = argmax over k  Q(s, phase_k)
+
+加 mask 处理 MIN_GREEN / MAX_GREEN 约束:
+  if current_phase 已绿 < MIN_GREEN:
+    强制 action = current_phase
+  elif current_phase 已绿 >= MAX_GREEN:
+    禁止 action = current_phase
+
+----------------------------------------
+跨路口共享
+----------------------------------------
+不同路口 n_phases 不同 (D6 merge 可能 2-3 个, D5 4-way 单车道有 8 个):
+  → Phase_Scorer_MLP 跑几次就行, 输出维度永远是 1
+  → 参数完全共享
+
+不同路口 phase 语义不同:
+  → 不要紧, 因为 phase 用 "服务/阻塞的 lane 集合" 表示, 不是 phase ID
+
+
+================================================================================
+七、多路口协调: CoLight Multi-head GAT
+================================================================================
+
+每个路口先算自己的 h_intersection, 然后:
+
+  邻接图: 从 SUMO 路网自动推导 (路口 A 跟 B 有 edge 相连 = 邻居)
+       ↓
+  GAT 层: h_intersection_i 跟邻居 h_j 做 multi-head attention
+       ↓
+  h_intersection_i' = 含邻居上下文的路口表示
+
+为什么需要协调:
+  - 救护车跨路口绿波: 上游路口提前感知下游救护车来车
+  - 拥堵传播: 邻居路口的溢出影响本路口决策
+
+为什么不要手写 neighbor_map:
+  - 100 路口手工标不现实
+  - 路网邻接关系直接从 net.xml edge 连接读出
+
+
+================================================================================
+八、Reward 函数 (保留 BNF 优先级加权设计)
+================================================================================
+
+r = - [  Σ_{p ∈ active, p≠max}  p × mean_awt_p
+       +  p_max × max_awt_{p_max}
+      ] - β × switched
+
+其中:
+  - 权重就是优先级序号本身 (1,2,3,4,5), 固定不变
+  - 只对当前 BNF active 的 priority 级求和 (未用的级别 count=0 自然不贡献)
+  - 普通优先级用 mean (跨车辆均值)
+  - 当前 active 集合里的最高级 (p_max) 用 max (避免稀疏高优先车被均值稀释)
+    例: BNF 用 {1,3,4} 时 p_max=4; BNF 用 {1,2,3,4,5} 时 p_max=5
+  - β ≈ 1.0, 防止频繁切换 phase
+
+注意: 权重固定 = 优先级序号, BNF 只决定 "哪些车算 priority 几 / 用哪几级"。
+
+
+================================================================================
+九、跨路口参数共享机制
+================================================================================
+
+下列模块参数 100% 共享, 任何路口都用同一组权重:
+
+  1. Lane Token Encoder    (φ: 30 → 128)
+     每条 lane 用同样的 MLP 编码
+
+  2. [CLS] token            (可学习 30 维参数)
+     同一个 CLS 用在所有路口
+
+  3. Transformer encoder    (W_Q, W_K, W_V, FF 等)
+     参数 per-token, 不依赖路口大小
+
+  4. 不用 Lane Position Encoding
+     完全靠 approach_angle 连续特征区分 lane 位置
+     (避免位置嵌入跟 slot 模板一样的问题)
+
+  5. CoLight GAT            (attention 头参数)
+     邻居数量随路口变, 参数不变
+
+  6. Phase Scorer MLP       (输入 h_intersection + phase_token → Q)
+     phase 数量随路口变, 参数不变
+
+  7. BNF Feature 处理       (token 内 5 槽位 × 4 字段固定 20 维)
+     BNF 映射规则 / active 子集变化不影响参数 (agent 看桶统计不看规则)
+
+唯一 "随路口变" 的是:
+  - n_lanes (输入序列长度)
+  - n_phases (输出 Q 值数量)
+  - 邻接图
+
+这两个维度都被 attention/scoring 机制自然处理, 不需要参数适配。
+
+
+================================================================================
+十、具体例子: D2 vs D4 同架构跑通 (都是真实 4-way 以内路口)
+================================================================================
+
+D2: T-way, NS(2)+S(1)+E(1) = 4 lane, 假设 4 phase
+  state.shape = (4, 30)
+  prepend CLS → (5, 30)
+  Transformer → (5, 128), 取 CLS → (128,)
+  4 个候选 phase, 调 Phase_Scorer 4 次, 得 4 个 Q 值, argmax 选 action
+
+D4: 4-way, (2,1,2,1) = 6 lane, 假设 6 phase
+  state.shape = (6, 30)
+  prepend CLS → (7, 30)
+  Transformer → (7, 128), 取 CLS → (128,)
+  6 个候选 phase, 调 Phase_Scorer 6 次, 得 6 个 Q 值, argmax 选 action
+
+两路口共享同一组参数, 唯一变的是输入序列长度和 Q 输出数量。
+
+
+----------------------------------------
+D5 (Coombe 4-way) 的 lane token 具体数值示例
+----------------------------------------
+D5 = 4-way 单车道 (1,1,1,1), Coombe 医院 400m, BNF 救护车 demo
+假设这个 BNF 用了 {2,3,4,5} 四级 (priority 1 没用):
+
+某进口 (SW, 朝 Coombe) lane 上有:
+  1 辆 Echo 救护车 (BNF → priority 5), 刚到 awt=0
+  1 辆 route 56A bus (peak, BNF → priority 4), 等 5s
+  1 辆普通 bus (BNF → priority 3), 等 12s
+  4 辆私家车 (BNF → priority 2), mean awt 20s, max 30s
+
+该 lane token (30 维):
+  静态 7 维:
+    [length=45, angle=-2.36(SW), capacity=9, L=1, T=1, R=0, always_green=0]
+  BNF 20 维 (5 槽位 × [active, count, mean_awt, max_awt]):
+    p1: active=0, count=0, mean_awt=0,  max_awt=0    ← 这个 BNF 没用 P1
+    p2: active=1, count=4, mean_awt=20, max_awt=30   ← 私家车
+    p3: active=1, count=1, mean_awt=12, max_awt=12   ← 普通 bus
+    p4: active=1, count=1, mean_awt=5,  max_awt=5    ← peak bus
+    p5: active=1, count=1, mean_awt=0,  max_awt=0    ← Echo 救护车
+  相位 3 维:
+    [is_green_now=0, sec_since_green=20, until_min_green=0]
+
+如果换个 BNF (例: 只用 {1,3,4}, 把所有车压成 3 级):
+  → p2_active=0, p5_active=0, p1_active=1
+  → agent 看到不同的 active 模式 + 桶分布, 自然调整, 不需要重训
+
+
+================================================================================
+十一、与 6 路口 (12-slot) 设计的本质差别
+================================================================================
+
+                          6 路口设计                  本设计 (100+ 路口)
+                          --------------------------- ------------------------
+  State shape             (12, 5, 2) = 120 固定        (n_lanes, 30) 变长
+  几何编码                 N/E/S/W × LTR 离散 slot      angle 连续值
+  Action shape            8 + valid_mask              n_phases 个 Q 值
+  Phase 表示              固定 8 种, 手工映射          从 net.xml 自动解析
+  Lane 细粒度             slot 级聚合 (lane 信息丢失)  每 lane 独立 token
+  BNF 集成                priority 进 slot 维度        5 槽位 + active 嵌 lane token
+  BNF 规则变              需重新训练                    zero-shot (看桶不看规则)
+  哪几级 priority 在用     固定                          active flag 标注子集
+  跨路口参数共享          做不到                        完全共享
+  邻居协调                手写 neighbor_map            从路网自动推导
+
+  priority 取值 {1..5}    ✓                           ✓ (5 固定槽位 + active)
+  权重 = 优先级序号       ✓                           ✓
+  reward 公式            -Σ(p × mean_awt) - β·switch  ✓ + max for 最高 active 级
+
+
+================================================================================
+十二、训练范式: 三阶段 curriculum
+================================================================================
+
+Stage 1: 合成路网预训练 (2-3 周)
+  目的: 建立架构归纳偏置, 学到 "看 lane / 看 phase / 看邻居" 通用能力
+  数据:
+    - SUMO netgenerate 产 1×1 ~ 4×4 grid
+    - T (3-way) / merge (2-way) / 4-way 各种几何 (不超 4-way)
+    - lane 数 1-3 随机
+    - phase 数随 SUMO 默认或加手工 left turn
+    - 随机 BNF 映射: 从 {1..5} 随机选 active 子集, 随机给车辆类型分配 priority
+    - 流量低/中/高/饱和 随机
+  规模: ~50k episodes
+  验证: hold-out 合成网络上 zero-shot 比 fixed-time 强
+
+Stage 2: Dublin sub-network 主训练 (3-4 周)
+  起点: Stage 1 checkpoint
+  数据:
+    - Week 1: D1-D6 单独训
+    - Week 2-3: 6 路口 + 周围 5-10 个真路口 sub-network
+    - Week 4: 30-50 路口
+  demand: GTFS bus + DFB ambulance + 估算 private car
+  BNF: 真实 Dublin BNF 映射
+  并行: 每 sub-network 一个 worker, replay buffer 共享
+
+Stage 3: 全图 + BNF 迁移评估 (2-3 周)
+  实验 1: 跨拓扑泛化 (训练见过的 vs 没见过的路口, 不 fine-tune)
+  实验 2: BNF 映射切换 (BNF-A 训, BNF-B/C 测; zero-shot + few-shot)
+          例: BNF-A 用 {1,2,3,4,5}, BNF-B 只用 {1,3,4}, BNF-C 加 hospital bonus
+  实验 3: 全图部署 (100-300 路口, 整体指标)
+
+
+================================================================================
+十三、实施 checklist
+================================================================================
+
+[基础设施]
+  □ BNF parser (Lark/PEG), 输入 BNF + 车辆属性 → priority ∈ {1..5}
+    + 报告该 BNF 的 active 级别集合
+  □ SUMO net.xml → phase candidate 自动解析器
+  □ Per-lane 车辆桶聚合 (每步 O(N_vehicles), 按 5 级 priority 分桶)
+  □ 邻接图自动从 net.xml 构造
+
+[模型]
+  □ Lane token encoder (φ: 30 → 128)
+  □ [CLS] token 参数
+  □ Transformer encoder (2 层, 4 head, FF=256)
+  □ CoLight GAT (2 head)
+  □ Phase scorer MLP
+
+[训练]
+  □ 合成路网生成器 (netgenerate + 拓扑 ≤4-way + BNF active 子集随机化)
+  □ DQN + Double + Dueling + PER
+  □ 分布式 rollout (多 SUMO 实例)
+  □ Stage 1 → 2 → 3 课程化训练脚本
+
+[评估]
+  □ baseline: fixed-time, IndependentDQN, CoLight, MaxPressure
+  □ zero-shot BNF 映射迁移协议 (含 active 子集变化)
+  □ 全图 throughput / amb avg wait / bus avg delay 报表
+
+
+================================================================================
+十四、已知风险和 fallback
+================================================================================
+
+风险                                  概率   Fallback
+-------------------------------------- ------ ---------------------------------
+Transformer 训练不稳定                 中     退到 DeepSets (φ → sum → ρ)
+合成路网预训练不收敛                   中     跳过 Stage 1 直接 Stage 2
+                                              (牺牲泛化, 但能出结果)
+FRAP phase scorer 学不出来             低     退到固定 8 action + mask
+                                              (退化为 6 路口设计的多路口版)
+CoLight 邻居 attention 没用            中     用 Independent DQN
+                                              (参数共享但无显式协调)
+BNF 映射 zero-shot 迁移性能差          中     论文调整为 few-shot fine-tune
+Dublin 全图 SUMO 跑不动                 中     切 4-6 个区域分别跑
+
+关键原则: 每个 Stage 都要有可独立成文的结果。
+        最坏情况 Stage 2 完成即可写论文 (小规模 generic),
+        Stage 3 是 contribution 上限, 不是必须。
+
+
+================================================================================
+十五、论文 narrative
+================================================================================
+
+Main contribution:
+  "BNF as runtime mapping interface for generic traffic signal control"
+
+Supporting architecture:
+  Lane Transformer Encoder + CoLight Neighbor GAT + FRAP Phase Scorer
+
+Differentiation:
+  - 先验工作把 vehicle 权重硬编码进 reward → 改映射要重训
+  - 本工作让 BNF 映射 (vehicle → priority {1..5}, 可只用子集) 运行时定义,
+    agent 操作于映射输出 (priority 桶 + active 状态), 对任意映射规则保持不变性
+  - 先验 generic agent (PressLight, MetaLight) 不处理优先级语义
+  - 本工作证明架构能扩到 100+ Dublin 路口
+
+Experimental claims:
+  1. 架构跨拓扑迁移 (D 系列 + Dublin 未见路口) 性能下降 <20%
+  2. BNF 映射规则 / active 子集切换可 zero-shot 应用 (架构创新)
+  3. few-shot fine-tune (1k-5k steps) 对新 BNF 恢复性能
+  4. 协调 (CoLight GAT) 实现救护车绿波
+
+
+================================================================================
+一句话总结
+================================================================================
+
+State = 变长 lane token 集合 (每 lane 30 维: 静态7 + BNF20 + 相位3)
+        BNF block = 5 个固定 priority 槽位 × [active, count, mean_awt, max_awt]
+        priority 取值空间固定 {1..5}, 但 BNF 可只用子集 (active flag 标注)
+        权重 = 优先级序号 (由 slot 位置隐含, 无需 weight 字段)
+Action = FRAP-style 对每个候选 phase 独立打 Q 值, argmax 选最佳
+Encoder = Transformer + [CLS], 把变长输入压成 128 维固定向量
+协调 = CoLight GAT (邻居 attention, 邻接图自动从路网读)
+共享 = 所有参数 per-token / per-edge, 完全跨路口共享
+拓扑 = 最多 4-way (T / 4-way / merge), lane 数 / phase 数仍变
+训练 = 合成预训练 → Dublin sub-network → 全图 + BNF 迁移
+
+核心 contribution: BNF 映射规则 / active 子集运行时可变,
+                 agent 操作于固定取值空间 {1..5} 的 priority 桶,
+                 对映射规则保持不变性 → 跨 BNF zero-shot
+================================================================================

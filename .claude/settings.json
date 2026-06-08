@@ -66,7 +66,17 @@
       "Bash(python plot_best_metrics.py)",
       "Bash(python wandb_trailing_window.py --window 50)",
       "Bash(python plot_wandb_coVScoless.py)",
-      "Bash(python plot_wandb_weight_sweep.py --window 50)"
+      "Bash(python plot_wandb_weight_sweep.py --window 50)",
+      "WebSearch",
+      "WebFetch(domain:ceur-ws.org)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:bonaldli.github.io)",
+      "WebFetch(domain:ar5iv.org)",
+      "WebFetch(domain:ar5iv.labs.arxiv.org)",
+      "WebFetch(domain:github.com)",
+      "Bash(python3 -c \"import pptx; print\\('python-pptx', pptx.__version__\\)\")",
+      "Bash(python3 -c \"import pptx; print\\('OK', pptx.__version__\\)\")",
+      "Bash(python3 /tmp/make_ppt.py)"
     ],
     "additionalDirectories": [
       "/tmp"
