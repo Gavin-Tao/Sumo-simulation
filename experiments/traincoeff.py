@@ -228,6 +228,13 @@ def train(cfg: dict, timestamp: str):
             eps_decay=cfg.get("eps_decay", 1000),
             device=device,
             use_noisy=cfg.get("use_noisy", False),
+            use_double=cfg.get("use_double", False),
+            use_per=cfg.get("use_per", False),
+            per_alpha=cfg.get("per_alpha", 0.6),
+            per_beta_start=cfg.get("per_beta_start", 0.4),
+            per_beta_end=cfg.get("per_beta_end", 1.0),
+            per_beta_steps=cfg.get("per_beta_steps", 100_000),
+            per_eps=cfg.get("per_eps", 1e-6),
         )
 
         step_counter = 0
@@ -276,17 +283,27 @@ def train(cfg: dict, timestamp: str):
 
                     # ── Update ────────────────────────────────────────────────
                     if agent.replay_buffer.size() > agent.mini_size:
-                        b_s, b_a, b_r, b_ns, b_d, b_nb_r = agent.replay_buffer.sample(agent.batch_size)
                         agent.epsilon = (
                             agent.eps_end
                             + (agent.eps_start - agent.eps_end)
                             * math.exp(-1.0 * agent.count / agent.eps_decay)
                         )
-                        agent.update({
-                            "states": b_s, "actions": b_a,
-                            "next_states": b_ns, "rewards": b_r, "dones": b_d,
-                            "nb_rewards": b_nb_r,
-                        })
+                        if agent.use_per:
+                            b_s, b_a, b_r, b_ns, b_d, b_nb_r, b_w, b_idx = \
+                                agent.replay_buffer.sample(agent.batch_size, beta=agent.current_beta)  # type: ignore[call-arg]
+                            agent.update({
+                                "states": b_s, "actions": b_a,
+                                "next_states": b_ns, "rewards": b_r, "dones": b_d,
+                                "nb_rewards": b_nb_r,
+                                "weights": b_w, "indices": b_idx,
+                            })
+                        else:
+                            b_s, b_a, b_r, b_ns, b_d, b_nb_r = agent.replay_buffer.sample(agent.batch_size)  # type: ignore[call-arg]
+                            agent.update({
+                                "states": b_s, "actions": b_a,
+                                "next_states": b_ns, "rewards": b_r, "dones": b_d,
+                                "nb_rewards": b_nb_r,
+                            })
 
             except Exception as e:
                 import traceback
@@ -327,6 +344,9 @@ def train(cfg: dict, timestamp: str):
                     }
                     if ep_losses:
                         ep_log["train/loss"] = sum(ep_losses) / len(ep_losses)
+                # Log PER β annealing (only meaningful when PER on; else it's a constant 1.0)
+                if agent.use_per:
+                    ep_log["train/per_beta"] = agent.current_beta
                 if ep_log:
                     wandb.log(ep_log, step=step_counter)
 
@@ -419,10 +439,24 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="CoeffDQN cooperative trainer")
     parser.add_argument("--config", required=True, help="Path to YAML config file")
     parser.add_argument("--gpu", type=int, default=0)
+    parser.add_argument("--use_double", action="store_true", default=None,
+                        help="Enable Double DQN (overrides YAML if set)")
+    parser.add_argument("--use_per", action="store_true", default=None,
+                        help="Enable Prioritized Experience Replay (overrides YAML if set)")
     args = parser.parse_args()
 
     with open(args.config) as f:
         cfg = yaml.safe_load(f)
+
+    # CLI > YAML > default(False); write resolved value back into cfg so wandb logs it
+    cfg["use_double"] = (
+        args.use_double if args.use_double is not None
+        else cfg.get("use_double", False)
+    )
+    cfg["use_per"] = (
+        args.use_per if args.use_per is not None
+        else cfg.get("use_per", False)
+    )
 
     timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 

@@ -47,11 +47,19 @@ class CoeffDQN:
                  learning_rate, gamma, epsilon,
                  target_update, capacity, mini_size, batch_size,
                  eps_start, eps_end, eps_decay, device,
-                 use_noisy: bool = False):
+                 use_noisy: bool = False,
+                 use_double: bool = False,
+                 use_per: bool = False,
+                 per_alpha: float = 0.6,
+                 per_beta_start: float = 0.4,
+                 per_beta_end: float = 1.0,
+                 per_beta_steps: int = 100_000,
+                 per_eps: float = 1e-6):
         self.aug_state_dim = aug_state_dim
         self.action_dim    = action_dim
         self.gamma         = gamma
         self.use_noisy     = use_noisy
+        self.use_double    = use_double  # 默认 False = vanilla DQN
         self.epsilon       = 0.0 if use_noisy else epsilon
         self.target_update = target_update
         self.mini_size     = mini_size
@@ -77,7 +85,30 @@ class CoeffDQN:
             list(self.q_net.parameters()) + [self.beta],
             lr=learning_rate,
         )
-        self.replay_buffer = CoeffReplayBuffer(capacity)
+
+        # ── PER 开关 + 超参 (默认 False = vanilla 行为) ──
+        self.use_per        = use_per
+        self.per_alpha      = per_alpha
+        self.per_beta_start = per_beta_start
+        self.per_beta_end   = per_beta_end
+        self.per_beta_steps = per_beta_steps
+        self.per_eps        = per_eps
+
+        if use_per:
+            from sumo_rl.agents.prioritized_replay_buffer import PrioritizedReplayBuffer
+            self.replay_buffer = PrioritizedReplayBuffer(capacity, alpha=per_alpha, eps=per_eps)
+        else:
+            self.replay_buffer = CoeffReplayBuffer(capacity)
+
+    @property
+    def current_beta(self) -> float:
+        """PER 模式下的 importance-sampling β,从 per_beta_start 线性退火到 per_beta_end。"""
+        if not self.use_per:
+            return 1.0
+        if self.count >= self.per_beta_steps:
+            return self.per_beta_end
+        frac = self.count / max(self.per_beta_steps, 1)
+        return self.per_beta_start + frac * (self.per_beta_end - self.per_beta_start)
 
     @property
     def beta_value(self) -> list:
@@ -112,11 +143,27 @@ class CoeffDQN:
         # Detach only the target-network part so target_q_net params are not
         # updated, while eff_rewards stays in the graph so β receives gradients.
         with torch.no_grad():
-            max_next_q = self.target_q_net(next_states).max(1)[0].view(-1, 1)
+            if self.use_double:
+                # Double DQN: online net 选动作, target net 给值
+                next_actions = self.q_net(next_states).argmax(1, keepdim=True)
+                max_next_q   = self.target_q_net(next_states).gather(1, next_actions)
+            else:
+                max_next_q = self.target_q_net(next_states).max(1)[0].view(-1, 1)
 
         q_targets = eff_rewards + self.gamma * max_next_q * (1 - dones)
 
-        loss = F.mse_loss(q_values, q_targets)
+        # ── Loss: PER 用 IS 权重加权, 否则原 MSE ──
+        # 注意: q_targets 含 eff_rewards → β 的梯度通过此项流回,
+        #       weighted_loss 不能 detach q_targets,否则 β 不会被训练。
+        if 'weights' in transition_dict:
+            weights = torch.tensor(transition_dict['weights'],
+                                   dtype=torch.float32).view(-1, 1).to(self.device)
+            td_errors_for_per = (q_targets - q_values).detach()
+            elementwise_sq    = (q_values - q_targets) ** 2
+            loss              = (weights * elementwise_sq).mean()
+        else:
+            loss = F.mse_loss(q_values, q_targets)
+
         self.loss = loss.item()
         self.optimizer.zero_grad()
         loss.backward()
@@ -129,3 +176,9 @@ class CoeffDQN:
         if self.use_noisy:
             self.q_net.reset_noise()
             self.target_q_net.reset_noise()
+
+        # ── PER: 用刚算的 TD-error 更新对应样本的优先级 ──
+        if 'weights' in transition_dict and 'indices' in transition_dict:
+            td_np = td_errors_for_per.squeeze(-1).cpu().numpy()
+            self.replay_buffer.update_priorities(  # type: ignore[attr-defined]
+                transition_dict['indices'], td_np)

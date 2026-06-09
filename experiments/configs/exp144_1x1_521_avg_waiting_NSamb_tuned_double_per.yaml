@@ -1,0 +1,59 @@
+# Experiment: exp144 — exp113 + Double DQN + PER
+# 与 exp113 完全一致,启用 use_double + use_per 两者组合
+# 用途: 评估 Double + PER 联合效果(组合通常优于单独 Double 或 PER,Rainbow 中两者正交)
+name: "exp144_1x1_521_avg_waiting_NSamb_tuned_double_per"
+
+# wandb
+wandb_project: "sumo-rl-1x1"
+
+# SUMO files
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (与 exp113 完全一致)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            5000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     42
+
+# Logging
+logging_mode: "full"
+
+# ─── DQN extensions (vs exp113) ────────────────────────────────────────────
+use_double: true        # ← Double DQN
+use_per:    true        # ← PER
+# PER 超参 (与 exp143 一致):
+per_alpha:      0.6
+per_beta_start: 0.4
+per_beta_end:   1.0
+per_beta_steps: 1000000 # β 跨整段训练(≈ 1M updates)平滑退火, 见 exp143 注释
+per_eps:        1.0e-6

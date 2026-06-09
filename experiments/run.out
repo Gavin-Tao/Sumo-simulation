@@ -1,0 +1,46 @@
+nohup: ignoring input
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 08日 星期一 18:41:07 IST] 并行 ablation: 3 个实验
+  GPU       : 0
+  启动间隔  : 15s(避免 wandb/SUMO 初始化并发抢资源)
+  脚本日志  : ./logs/run_parallel_20260608_184107
+  实时监控  : tail -f ./logs/run_parallel_20260608_184107/*.log
+════════════════════════════════════════════════════════════════════════════
+
+[2026年 06月 08日 星期一 18:41:07 IST] ▶ LAUNCH  exp142_1x1_521_avg_waiting_NSamb_tuned_double
+  cmd: python3 train.py --config configs/exp142_1x1_521_avg_waiting_NSamb_tuned_double.yaml --gpu 0
+  log: ./logs/run_parallel_20260608_184107/exp142_1x1_521_avg_waiting_NSamb_tuned_double.log
+  PID: 9468
+
+[2026年 06月 08日 星期一 18:41:07 IST] stagger 15s 再启下一个...
+
+[2026年 06月 08日 星期一 18:41:22 IST] ▶ LAUNCH  exp143_1x1_521_avg_waiting_NSamb_tuned_per
+  cmd: python3 train.py --config configs/exp143_1x1_521_avg_waiting_NSamb_tuned_per.yaml --gpu 0
+  log: ./logs/run_parallel_20260608_184107/exp143_1x1_521_avg_waiting_NSamb_tuned_per.log
+  PID: 9530
+
+[2026年 06月 08日 星期一 18:41:22 IST] stagger 15s 再启下一个...
+
+[2026年 06月 08日 星期一 18:41:37 IST] ▶ LAUNCH  exp144_1x1_521_avg_waiting_NSamb_tuned_double_per
+  cmd: python3 train.py --config configs/exp144_1x1_521_avg_waiting_NSamb_tuned_double_per.yaml --gpu 0
+  log: ./logs/run_parallel_20260608_184107/exp144_1x1_521_avg_waiting_NSamb_tuned_double_per.log
+  PID: 9589
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 08日 星期一 18:41:37 IST] 全部 3 个已在后台跑,等它们结束...
+  PIDs : 9468 9530 9589
+  实时看: tail -f ./logs/run_parallel_20260608_184107/*.log
+  单看 1 个: tail -f ./logs/run_parallel_20260608_184107/exp142_1x1_521_avg_waiting_NSamb_tuned_double.log
+════════════════════════════════════════════════════════════════════════════
+
+[2026年 06月 08日 星期一 21:04:42 IST] ✓ exp142_1x1_521_avg_waiting_NSamb_tuned_double 结束 (exit 0, 总耗时 8585s)
+[2026年 06月 08日 星期一 21:42:03 IST] ✓ exp143_1x1_521_avg_waiting_NSamb_tuned_per 结束 (exit 0, 总耗时 10826s)
+[2026年 06月 08日 星期一 21:42:06 IST] ✓ exp144_1x1_521_avg_waiting_NSamb_tuned_double_per 结束 (exit 0, 总耗时 10829s)
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 08日 星期一 21:42:06 IST] 全部完成,总挂钟时间 10829s。总览:
+  ✓  exp142_1x1_521_avg_waiting_NSamb_tuned_double  (exit 0)
+  ✓  exp143_1x1_521_avg_waiting_NSamb_tuned_per  (exit 0)
+  ✓  exp144_1x1_521_avg_waiting_NSamb_tuned_double_per  (exit 0)
+  log 目录: ./logs/run_parallel_20260608_184107
+════════════════════════════════════════════════════════════════════════════

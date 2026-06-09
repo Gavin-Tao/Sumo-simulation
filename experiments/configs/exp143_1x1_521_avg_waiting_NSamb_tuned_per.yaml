@@ -1,0 +1,60 @@
+# Experiment: exp143 — exp113 + PER (Prioritized Experience Replay)
+# 与 exp113 完全一致,只增加 use_per=true
+# 用途: 单独评估 PER 对稀疏救护车 transition 的样本效率影响
+name: "exp143_1x1_521_avg_waiting_NSamb_tuned_per"
+
+# wandb
+wandb_project: "sumo-rl-1x1"
+
+# SUMO files
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (与 exp113 完全一致)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            5000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     42
+
+# Logging
+logging_mode: "full"
+
+# ─── DQN extensions (vs exp113) ────────────────────────────────────────────
+use_double: false
+use_per:    true        # ← PER 启用: 按 |TD-error|^alpha 优先采样,IS 权重纠偏
+# PER 超参:
+per_alpha:      0.6     # 优先级指数; 0=均匀, 1=完全成比例 (PER 论文默认)
+per_beta_start: 0.4     # IS 权重起始
+per_beta_end:   1.0     # IS 权重终值(全纠偏求无偏)
+per_beta_steps: 1000000 # β 退火步数 — 设为 ≈ 训练总 update 数,β 跨整段平滑退火
+                        # 计算: 5000 ep × (1000/5 = 200 env_step/ep) ≈ 1M updates
+per_eps:        1.0e-6  # 防 priority=0 保底
