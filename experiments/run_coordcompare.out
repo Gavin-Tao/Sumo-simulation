@@ -1,0 +1,27 @@
+nohup: ignoring input
+总览: PHASE 1 (2) → PHASE 2 (4)  共 6 runs
+  GPU: 0, STAGGER: 15s, LOG_DIR: ./logs/run_coordcompare_20260609_212931
+  PHASE 1 RAM: 2 × ~2GB ≈ 4GB (优先, 5-4-1 关键 ablation)
+  PHASE 2 RAM: 4 × ~2GB ≈ 8GB (Phase 1 完成后启)
+  ⚠ 注意 Phase 2 会跟当前在跑的 exp157/159/160 共存, 监控内存
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 21:29:31 IST] ▶▶▶ PHASE 1 (5-4-1: exp163 GAT vs exp166 Fixed) 启动 (2 并行)
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 21:29:31 IST] ▶ LAUNCH  exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (用 traincoeff_gat.py)
+  log: ./logs/run_coordcompare_20260609_212931/exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 15127
+
+[2026年 06月 09日 星期二 21:29:31 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 21:29:46 IST] ▶ LAUNCH  exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (用 traincoeff_fixed.py)
+  log: ./logs/run_coordcompare_20260609_212931/exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 15177
+
+[2026年 06月 09日 星期二 21:29:46 IST] PHASE 1 (5-4-1: exp163 GAT vs exp166 Fixed) 全部启动, 等结束 ...
+  实时看: tail -f ./logs/run_coordcompare_20260609_212931/*.log
+
+
+[2026年 06月 09日 星期二 21:47:38 IST] 收到中断, 杀掉所有子进程...
+  killed PID 15127
+  killed PID 15177

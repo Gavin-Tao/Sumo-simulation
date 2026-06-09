@@ -1,0 +1,66 @@
+# Experiment: exp167 — CoeffDQN + PriorityBCA + **5-4-1 with amb MAX waiting** (not avg), 1x3 NS20bus_1amb_U.
+# Direct pair with exp147 (same agent, same scenario, same hyperparams) — ONLY reward公式不同.
+#
+# Reward 公式:
+#   exp147: r = -(1·avg_car + 4·avg_bus + 5·avg_amb) / 100        ← amb 用 平均
+#   exp167: r = -(1·avg_car + 4·avg_bus + 5·max_amb) / 100        ← amb 用 MAX ⭐
+#
+# 动机:
+#   救护车 n=1-2/ep, 真实 safety 关心的是 worst-case latency 不是 avg.
+#   max() reward 让 agent 学到"不让任何 amb 卡死",而 avg() 可能允许"1 个 amb 卡 10s, 另 1 个 0s"
+#   (反正平均 5s).
+#
+# 控制变量: HYPERPARAMS 跟 exp147 完全一致, 只换 reward_fn 名字.
+# Δ (exp167 - exp147) 直接 = "amb max vs amb avg reward 在协同场景下的差异".
+name: "exp167_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_ambmax_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files — identical to exp147
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map: same as exp147
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time-ambmax"     # ★ NEW: 跟 exp147 唯一差异
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp147 (controlled)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123      # matched to exp147 for fair comparison
+
+logging_mode:     "basic"
+metrics_interval: 50
+
+# use_double / use_per intentionally NOT set → default False

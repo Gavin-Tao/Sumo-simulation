@@ -504,6 +504,73 @@ def _641_avg_waiting_reward(ts: "TrafficSignal") -> float:
 
 
 # ---------------------------------------------------------------------------
+# Mixed: car/bus use AVG waiting time, ambulance uses MAX waiting time.
+# Rationale: ambulance is safety-critical (only 1-2 per episode);
+#  what matters is WORST-CASE latency, not average.
+# Same per-lane wait correction as _get_weighted_avg_waiting_time_bcA.
+# ---------------------------------------------------------------------------
+
+def _get_weighted_mixed_waiting_time_bcA(
+    ts: "TrafficSignal",
+    alpha: float,  # car weight
+    beta:  float,  # bus weight
+    gamma: float,  # ambulance weight
+) -> float:
+    """car/bus → avg waiting; ambulance → max waiting. Returns alpha*avg_car + beta*avg_bus + gamma*max_amb (/100)."""
+    car_total = bus_total = 0.0
+    car_count = bus_count = 0
+    amb_max   = 0.0  # max wait across all amb on lanes (0 if none)
+    for lane in ts.lanes:
+        for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+            veh_lane = ts.sumo.vehicle.getLaneID(vid)
+            acc = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if vid not in ts.env.vehicles:
+                ts.env.vehicles[vid] = {veh_lane: acc}
+            else:
+                ts.env.vehicles[vid][veh_lane] = acc - sum(
+                    ts.env.vehicles[vid][l]
+                    for l in ts.env.vehicles[vid] if l != veh_lane
+                )
+            lane_wait = ts.env.vehicles[vid][veh_lane]
+            vtype = ts.sumo.vehicle.getTypeID(vid)
+            if vtype == "ambulance":
+                if lane_wait > amb_max:
+                    amb_max = lane_wait      # ← MAX, not avg
+            elif vtype == "bus":
+                bus_total += lane_wait
+                bus_count += 1
+            else:
+                car_total += lane_wait
+                car_count += 1
+    car_avg = (car_total / car_count) if car_count > 0 else 0.0
+    bus_avg = (bus_total / bus_count) if bus_count > 0 else 0.0
+    return (alpha * car_avg + beta * bus_avg + gamma * amb_max) / 100.0
+
+
+def _make_mixed_waiting_bcA(alpha: float, beta: float, gamma: float):
+    def fn(ts: "TrafficSignal") -> float:
+        return -_get_weighted_mixed_waiting_time_bcA(ts, alpha, beta, gamma)
+    return fn
+
+
+_541_mixed_waiting_fn = _make_mixed_waiting_bcA(1.0, 4.0, 5.0)  # car/bus avg + amb max, weights 5-4-1
+_531_mixed_waiting_fn = _make_mixed_waiting_bcA(1.0, 3.0, 5.0)  # car/bus avg + amb max, weights 5-3-1
+_521_mixed_waiting_fn = _make_mixed_waiting_bcA(1.0, 2.0, 5.0)  # car/bus avg + amb max, weights 5-2-1
+
+
+def _541_mixed_waiting_reward(ts: "TrafficSignal") -> float:
+    return _541_mixed_waiting_fn(ts)
+
+
+def _531_mixed_waiting_reward(ts: "TrafficSignal") -> float:
+    return _531_mixed_waiting_fn(ts)
+
+
+def _521_mixed_waiting_reward(ts: "TrafficSignal") -> float:
+    return _521_mixed_waiting_fn(ts)
+
+
+# ---------------------------------------------------------------------------
 # Plain (vehicle-type-agnostic) avg waiting reward — "no priority" baseline.
 # Each vehicle counted as 1 unit regardless of type. Cross-lane wait correction
 # identical to _get_weighted_avg_waiting_time. Used as ablation against the
@@ -789,6 +856,9 @@ REWARD_REGISTRY = {
     "5-3-1-avg-waiting-time":       _531_avg_waiting_reward,
     "5-4-1-avg-waiting-time":       _541_avg_waiting_reward,
     "6-4-1-avg-waiting-time":       _641_avg_waiting_reward,
+    "5-4-1-avg-waiting-time-ambmax": _541_mixed_waiting_reward,   # car/bus avg + amb MAX
+    "5-3-1-avg-waiting-time-ambmax": _531_mixed_waiting_reward,
+    "5-2-1-avg-waiting-time-ambmax": _521_mixed_waiting_reward,
     "5-2-1-avg-waiting-time-ctrl":  _521_avg_waiting_ctrl_reward,
     "avg-waiting-time":             _avg_waiting_reward,
 

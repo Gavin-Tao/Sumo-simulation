@@ -1,0 +1,76 @@
+# Experiment: exp161 — GATCoeffDQN (state-conditional GAT-style reward coord) + 5-2-1, 1x3 NS20bus_1amb_U.
+# Pair with exp145 (plain CoeffDQN, static β → 0 failed) and exp126 (CoLightOrig, GAT state-layer).
+#
+# ARCHITECTURE (new, key thesis novelty):
+#   - State input: aug_state = concat(own_obs, 4×nb_obs) — same as CoeffDQN
+#   - Q-net:       standard MLP on aug_state
+#   - Reward公式:  eff_r = α · own_r + (1-α) · Σ_d β_d(state) · nb_r_d
+#                  α = 0.5 fixed (own protected, NEVER drowned)
+#                  β = softmax over GAT-style per-neighbor attention scores (DYNAMIC)
+#
+# Differences from CoeffDQN (exp145):
+#   - β is dynamic, state-conditional via GAT-style W, a, softmax (跟 CoLight GAT 同结构)
+#   - Convex combo (α=0.5) prevents own from being drowned (CoeffDQN β can reach sum=4)
+#   - softmax-normalized → β cannot degenerate to all 0 (CoeffDQN β实测 → 0 failed)
+#
+# Position in design space:
+#                  State 层协同              Reward 层协同
+#   static         concat (Q-net input)     TPAMI α / CoeffDQN β (失效)
+#   dynamic        GAT (CoLight)            ★ this agent (filled gap)
+#
+# HYPERPARAMS: identical DQN params to exp145 (controlled comparison).
+# gat_hidden_dim=64 (GAT 内部 hidden, 不影响 Q-net 容量).
+name: "exp161_gatcoeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp145 (controlled)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# GATCoeffDQN-specific
+gat_hidden_dim: 64        # GAT 内部 hidden dim (跟 CoLight 同型,但小一档够用)
+alpha:          0.5       # 固定 own 权重,凸组合: eff_r = 0.5·own_r + 0.5·Σ β·nb_r
+                          # α=0.5 保证 own 永远占 50%,数学上不可能被淹没
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123       # matched to exp145/126 for fair comparison
+
+logging_mode:     "basic"
+metrics_interval: 50
+
+# use_double / use_per intentionally NOT set → default False → plain GATCoeffDQN

@@ -1,0 +1,65 @@
+# Experiment: exp168 — CoeffDQN + PriorityBCA + **5-4-1 with amb MAX waiting**, 1x1 NSamb.
+# 1x1 版本(单路口),用同 reward 公式做"无协同"baseline 测试 amb max 本身有没有效.
+#
+# Reward 公式:  r = -(1·avg_car + 4·avg_bus + 5·max_amb) / 100   ← amb 用 MAX
+#
+# 1x1 + CoeffDQN 说明:
+#   1x1 只 1 个路口, CoeffDQN 的 concat state 邻居都填 0, β 学不到东西
+#   → 等价于 vanilla DQN with same reward, 但用 CoeffDQN agent 保持跟 1x3 (exp167) 同框架
+#   → 干净对比 reward 公式本身, 排除协同噪音
+#
+# 主要对比:
+#   exp168 (1x1, 5-4-1 ambmax) vs exp113 (1x1, 5-2-1 avg, vanilla DQN)
+#     - 不严格 controlled (weight 和 reward 都不同), 仅做趋势观察
+#   exp167 (1x3, 5-4-1 ambmax) vs exp168 (1x1, 5-4-1 ambmax)
+#     - 同 reward, 看协同 (1x3) vs 无协同 (1x1) 在 amb-max reward 下的差异
+name: "exp168_coeff_1x1_541_avg_waiting_NSamb_ambmax_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x1"
+
+# SUMO files (1x1 NSamb — 跟 exp143 同 scenario, 但 reward weight 不同)
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Neighbor map: 1x1 只有 "t" 单路口, 4 个方向都 null (CoeffDQN 自动 mask)
+neighbor_map:
+  "t": [null, null, null, null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time-ambmax"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to 1x3 controlled (exp147) for cross-scenario comparability
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123
+
+logging_mode:     "basic"
+metrics_interval: 50
+
+# use_double / use_per intentionally NOT set → default False = plain CoeffDQN

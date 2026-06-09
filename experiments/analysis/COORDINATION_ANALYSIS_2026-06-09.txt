@@ -1,0 +1,669 @@
+================================================================================
+  Coordination Methods Analysis — 文献概览 + 当前 setup 诊断 + 问题清单
+
+  作者:  Xiaowen Tao (TCD)
+  日期:  2026-06-09
+  目的:  系统说明 TSC 协同设计的 4 大流派 + 我当前 CoeffDQN 的实际状态 +
+         5-4-1 priority 颠倒的根本原因 + 解决方案路线图
+================================================================================
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Part 1: TSC 文献的 4 大协同流派                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+按"协同发生在哪一层"分类:
+
+─────────────────────────────────────────────────────────────────────────────
+  1.1 State 层协同 (Decision Time)
+─────────────────────────────────────────────────────────────────────────────
+
+机制:邻居 state 在 agent 决策时被融合进 Q-net 输入
+
+  Paper / 方法          融合方式             动态/静态
+  ────────────────      ─────────────        ─────────────
+  CoLight (KDD 2019)    多头 GAT attention   动态 (attention = f(state))
+  CityLight (2024)      Neighbor Encoder     动态
+  GESA (2024)           自动结构映射 + attn  动态
+  我的 CoeffDQN         **concat 拼接**       **静态** (无学习权重)
+
+→ State 层协同的"动态"代表是 CoLight 的 GAT
+→ State 层协同的"静态"代表是 concat-state (CoeffDQN state 输入部分)
+
+─────────────────────────────────────────────────────────────────────────────
+  1.2 Reward 层协同 (Training Target)
+─────────────────────────────────────────────────────────────────────────────
+
+机制:邻居 reward 加权进自己的 TD target
+
+  Paper / 方法              公式                                动态/静态
+  ────────────────          ──────────────────────────          ─────────
+  PressLight (KDD 2019)     reward = pressure (in-out)          静态 (固定形式)
+  你们组 TPAMI (Shi 2024)   R' = α·R_i + (1-α)·avg(R_nb)        静态 (α 人手调)
+  我的 CoeffDQN             eff_r = own_r + Σ sig(β_d)·nb_r_d  **静态可学**
+                                                                 (β 训练后固定)
+  动态版本 (state-cond β)   eff_r = own_r + Σ β_d(state)·nb_r  **文献空白!**
+
+→ 主流 reward 层协同都是静态(或人手调)
+→ State-conditional reward weight 几乎没人做过 → thesis novelty 空间
+
+─────────────────────────────────────────────────────────────────────────────
+  1.3 CTDE 协同 (Centralized Critic, Decentralized Actor)
+─────────────────────────────────────────────────────────────────────────────
+
+  方法                  机制
+  ────────────────      ───────────────────────────
+  MAPPO 系              共享 critic 看全局 state, actor 各自决策
+  QMIX / VDN            value decomposition: Q_total = mix(Q_i)
+  COMA                  counterfactual baseline
+
+→ 协同发生在 critic / value function 层, reward 仍局部
+→ 你们组 TPAMI 用的就是 MAPPO + α-reward, 双重协同
+
+─────────────────────────────────────────────────────────────────────────────
+  1.4 显式 Communication (Message Passing)
+─────────────────────────────────────────────────────────────────────────────
+
+  方法                  机制
+  ────────────────      ───────────────────────────
+  CommNet 系            agent 间显式传 message
+  TarMAC / DIAL         learnable message + target
+  HiLight (IJCAI 2021)  hierarchical manager → worker
+
+→ 比 state 聚合更强,但训练复杂
+
+
+─────────────────────────────────────────────────────────────────────────────
+  1.5 文献总览矩阵
+─────────────────────────────────────────────────────────────────────────────
+
+                  | 静态                  | 动态 (state-conditional)
+  ────────────────┼──────────────────────┼─────────────────────────────
+  State 层       | concat (我的)         | GAT (CoLight) ⭐, Transformer
+  Reward 层      | TPAMI α, PressLight   | **空白!** (动态 β = 候选 novelty)
+                 | 我的 β (实测 → 0)     |
+  Critic 层      | shared (CTDE)         | QMIX 类
+  Communication  | 固定 topology         | learnable (TarMAC)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Part 2: 我的 CoeffDQN 实际架构 (准确描述)                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  2.1 State 输入(决策时)
+─────────────────────────────────────────────────────────────────────────────
+
+aug_state = concat(own_obs, nb_obs_up, nb_obs_down, nb_obs_left, nb_obs_right)
+shape: [own_dim × 5] (1x3 chain: own_dim + 4 × own_dim,缺邻居用 0 填)
+
+→ Q-net 决策时**已经看见**邻居 obs (state 层 concat 协同)
+→ 这是静态的, 不像 GAT 那样动态加权
+
+─────────────────────────────────────────────────────────────────────────────
+  2.2 Reward 协同(训练时)
+─────────────────────────────────────────────────────────────────────────────
+
+self.beta = nn.Parameter(torch.zeros(4))   # 4 个可学参数, per-direction
+                                            # 单 agent 共享给所有 3 个 TS
+
+每个训练 step:
+  eff_reward = own_r + Σ_d sigmoid(β_d) · nb_reward_d
+               ↑                            ↑
+               own (永远权重 1)            sigmoid(β_d) ∈ (0, 1)
+
+  TD target  = eff_reward + γ · max Q'(s')
+
+  → β 梯度从这条路径流回,跟 Q-net 一起优化
+
+特点:
+  - β 是 4 个 scalar, **跟 state 无关**(静态)
+  - sigmoid 后 ∈ (0, 1), 4 个加起来 sum ∈ (0, 4)
+  - **不归一化**(跟 TPAMI 的 α + (1-α) = 1 不一样)
+  - 训练完后, β 固定, 不论邻居 state 如何都用同一套
+
+─────────────────────────────────────────────────────────────────────────────
+  2.3 实测 β 收敛值 (末 20 evals, exp145/146/147)
+─────────────────────────────────────────────────────────────────────────────
+
+  weight   β_up sigmoid  β_down sigmoid  β_left sigmoid  β_right sigmoid
+  ──────   ────────────  ──────────────  ──────────────  ───────────────
+  5-2-1    0.50          0.50            **0.00**        **0.00**
+  5-3-1    0.50          0.50            **0.00**        **0.00**
+  5-4-1    0.50          0.50            **0.00**        **0.00**
+
+解读:
+  - up/down: 1x3 chain 永远没活邻居 (nb_reward = 0) → 无梯度信号 → β 留在初值 0.5
+            (sigmoid 0.5 × 0 = 0, 没实际贡献,装饰)
+  - left/right: 有活邻居 → agent 主动学到"完全不听邻居 reward"(β → -∞, sigmoid → 0)
+
+→ **实际 eff_reward = own_r + 0 = own_r**
+→ **CoeffDQN 的 reward 协同没起作用!**
+
+─────────────────────────────────────────────────────────────────────────────
+  2.4 那 CoeffDQN 为啥还能比 vanilla 好?
+─────────────────────────────────────────────────────────────────────────────
+
+因为 state 输入不一样:
+  vanilla:   state = own_obs                    (单路口 obs)
+  CoeffDQN:  state = concat(own, 4×nb_obs)      (5x 宽)
+  CoLight:   state = GAT(own, nb_obs)            (动态聚合)
+
+CoeffDQN 比 vanilla 好的部分,**全部来自 concat state 让 agent 看见邻居 obs**,
+跟 β 几乎无关 (β=0 时 reward path 是 dead code)。
+
+→ 当前 CoeffDQN 的真实身份: **"concat-state DQN" + 失效的 β reward path**
+   不是当初设计的 "reward-layer coordination"
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Part 3: 当前主要问题清单                                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  问题 1: CoeffDQN 的 β reward 协同实际没启动
+─────────────────────────────────────────────────────────────────────────────
+
+  实测: β_left/right sigmoid 学到 0.00, 永远没听邻居 reward
+  影响: thesis narrative 不准确 (不是 reward 层协同, 是 concat-state 协同)
+  解决: 见 Part 4 选项
+
+─────────────────────────────────────────────────────────────────────────────
+  问题 2: β 是静态的, 不是动态 (state-conditional)
+─────────────────────────────────────────────────────────────────────────────
+
+  现状: β = nn.Parameter(torch.zeros(4))   ← 4 个固定数字, 不随 state 变
+  对比: CoLight 的 GAT attention = f(state), 动态变化
+
+  含义:
+    - β 无法"看见 amb 来了就提高神听邻居"
+    - 训练后所有决策都用同一套权重, 没有上下文敏感性
+    - 这是相比 CoLight 的根本性弱点
+
+─────────────────────────────────────────────────────────────────────────────
+  问题 3: β 是 4 个 scalar, 共享给所有 3 个 TS
+─────────────────────────────────────────────────────────────────────────────
+
+  现状: agent = CoeffDQN(...) 一个 agent 共享给 t/e/J0
+  wandb log: train/beta_up/down/left/right 是单套值, 不分路口
+  含义:
+    - 无法看到 per-TS coordination 行为
+    - 假设所有路口的协同需求一样 (实际可能不一样)
+
+  改成 per-TS: 中等代码改 (~100 行)
+
+─────────────────────────────────────────────────────────────────────────────
+  问题 4: β 没归一化, eff_reward scale 可达 5× own_r
+─────────────────────────────────────────────────────────────────────────────
+
+  现状: eff_r = own_r + Σ sig(β_d) · nb_r_d,  sum of 4 weights ∈ (0, 4)
+  对比: TPAMI 凸组合 α + (1-α) = 1, eff_r scale 恒 = own_r 量级
+
+  scale 影响 (1x3 chain, 端点路口 1 邻居, 中间路口 2 邻居):
+    - 训练初期 β=0 → sigmoid=0.5
+    - 中间路口 e: 活邻居 left + right → 有效权重 = 0.5 + 0.5 = 1.0
+      eff_r = own_r + 1.0 · avg(nb_r) ≈ **2× own_r** (假设 nb_r 量级类似)
+    - 端点路口 t / J0: 1 个活邻居 → 有效权重 = 0.5
+      eff_r ≈ **1.5× own_r**
+    - 最坏情况 (grid 4 邻居全 β=1): eff_r 可达 **5× own_r**, 但 1x3 用不到
+
+  实际:因为 β 学到 0, 有效权重 → 0, scale 问题被规避了 (运气好, 不是设计)
+
+─────────────────────────────────────────────────────────────────────────────
+  问题 5: 5-4-1 时 priority 颠倒 (bus < amb, 跟设计意图相反)
+─────────────────────────────────────────────────────────────────────────────
+
+  实测 (last 20 evals, MAD k=3.5):
+                  bus avg_stopped   amb avg_stopped   priority
+    ──────────    ───────────────   ───────────────   ──────────
+    vanilla       5.13              4.25              amb 好 ✓ 正常
+    CoLight       2.35              4.54              bus 好 ✗ 颠倒!
+    CoeffDQN      2.34              3.25              bus 好 ✗ 颠倒
+
+  根本原因 (诊断, 基于 spawn rate × weight 量级估算):
+    spawn rate (从 route 文件实测):
+      car  ~2021/ep × weight 1 = 2021 (相对量级)
+      bus  ~117/ep  × weight 4 = 468
+      amb  ~2/ep    × weight 5 = 10
+
+    reward 信号占比 (各类的相对贡献):
+      car ~80%, bus ~19%, amb ~0.4%
+
+    1. amb 即使 weight 5, 因 spawn 频率极低, 在 reward 信号里只占 ~0.4%
+    2. bus 跟 car 加起来贡献 ~99% reward signal
+    3. 协同方法 (CoLight GAT / CoeffDQN concat state) 学到的"协同模式"
+       几乎全来自 car/bus pattern, amb 信号被淹没
+    4. agent 的策略偏向 "优化 car/bus 流动" → 当 bus weight 涨到 4 时,
+       bus 比 car 单位权重高 4x, 相对优化空间大 → bus 大幅改善
+       (从 vanilla bus=5.13 → CoLight/CoeffDQN bus=2.35/2.34, 改善 ~54%)
+    5. amb 仍然被忽视 (协同 attention/state 找不到 amb pattern, weight 5 不够),
+       甚至比 vanilla 还差 (CoLight amb 4.54 > vanilla 4.25)
+
+  → 不是 β 的问题 (β 已经 = 0 没参与)
+  → 是 state 协同 (concat / GAT) 在 bus 主导下"过度优化 bus"导致
+
+─────────────────────────────────────────────────────────────────────────────
+  问题 6: vanilla DQN 在 1x3 反而保留了 priority (有意思的对照)
+─────────────────────────────────────────────────────────────────────────────
+
+  vanilla 没颠倒因为:
+    - 没邻居 state → agent 只能看自己 lane
+    - amb 上自己 lane → own_r 立刻被 amb 主导 (weight 5)
+    - 没有"邻居 bus pattern"分心 → 决策聚焦本路口
+    - amb 立刻被让绿
+
+  → 这恰好说明:**state 协同对 amb 是双刃剑**
+     好处: agent 能预判邻居动态
+     坏处: 在 bus 主导信号下, amb 信号被稀释
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Part 4: 解决方案路线图 + 当前正在跑的实验                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  4.1 正在跑的实验 (验证不同 hypothesis)
+─────────────────────────────────────────────────────────────────────────────
+
+  exp153  CoeffDQN + PER 5-4-1 (mini_size=2000)
+          验证: PER 是否让 β 学到非 0?
+          预期: amb 改善 (-58% 类比 1x1), 但 β 可能仍 ≈ 0
+          (因为 PER 影响 Q-net training, 但 β 的更新逻辑没变)
+
+  exp156  CoeffDQN + PER + Double 5-4-1
+          基于 1x1 实测 PER+Double 抵消, 预期不会更好
+          作为消融对照
+
+  exp157  CoeffDQN + 6-4-1 (无 PER)
+          验证: 单纯调高 amb weight (5→6) 能否纠正 priority 颠倒
+          预期: amb reward 贡献从 ~0.4% → ~0.5%, 仍不够, 颠倒可能仍存在
+
+  exp159  CoLightOrig + PER 5-4-1
+          验证: PER 能否让 GAT 在 amb 上学得更好?
+          + GAT attention 已加 wandb log (train/gat_attn_*)
+          能直接观察 GAT 是否真"听邻居"
+
+  exp160  CoLightOrig + PER + Double 5-4-1
+          消融对照 (预期 cancel)
+
+─────────────────────────────────────────────────────────────────────────────
+  4.2 中期方案 (跑完上述实验后考虑)
+─────────────────────────────────────────────────────────────────────────────
+
+  方案 A: **保持现状 + 改 narrative (诚实)**
+          β=0 是 agent 自学的结果, 说明"reward 层协同在这场景下不工作"
+          论文写成: "We found concat-state coordination dominates, β coord
+          fails to activate without supervisory pressure (PER)."
+
+  方案 B: **写死 α=0.5 (TPAMI 同款)**, ~5 行代码
+          强制 reward 协同生效, 不让 β 退化
+          引用 TPAMI 论文佐证
+          缺点: 失去"learnable cooperation"卖点
+
+  方案 C: **改成单 α 可学 + 凸组合归一化**
+          eff_r = α·own + (1-α)·avg(nb)
+          α 可学, 但归一化, 不会爆 scale, 不会退化为 0
+          中等代码改
+
+  方案 D: **per-class β** (β_car, β_bus, β_amb 分开学)
+          12 维 β = 4 dir × 3 class
+          理论好: amb 信号不被 bus 信号淹没
+          风险: β_amb 仍稀疏, 可能学不动 (除非配合 PER)
+          需要拆 nb_reward 成 per-class 字段
+
+  方案 E: **动态 β = state-conditional MLP** ⭐ THESIS NOVELTY
+          β = mlp_β(state) 不再是固定数字
+          可以学到"邻居有 amb 时听邻居更多"
+          填补"reward 层 + 动态"文献空白
+          风险: 训练更难, 仍依赖足够的 amb signal
+
+─────────────────────────────────────────────────────────────────────────────
+  4.3 推荐优先级
+─────────────────────────────────────────────────────────────────────────────
+
+  P0 (现在跑): exp153/156/159/160 等结果
+  P1 (一周内): 看 β 是否被 PER 救活 (是否 learn 到非 0)
+              看 GAT attention 是否真聚焦 (entropy 趋势)
+  P2 (1-2 周): 实现"动态 β" (方案 E), 跟 CoLight GAT 比 ablation
+              这是 thesis 真正的 architectural contribution
+  P3 (可选):   方案 B (固定 α=0.5) 作为"reward 协同强制开启"对照
+              方案 D (per-class β) 作为"细粒度协同"扩展
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║              Part 5: CoeffDQN vs CoLightOrig 详细对比 (实测)                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  5.1 架构差异 (一图概览)
+─────────────────────────────────────────────────────────────────────────────
+
+                  CoLightOrig                  CoeffDQN
+  ─────────────  ────────────────────────────  ──────────────────────────────
+  state 输入     own_obs + nb_obs (分别传)     concat(own, 4×nb_obs)
+                                                (5x own_dim 静态拼接)
+  state 处理     多头 GAT attention            普通 MLP
+                 alpha = softmax(e(W·h_i,W·h_j))
+                 head_agg = sum(alpha · W·h_j)
+                 (动态, attention = f(state))   (静态, 无 attention)
+  Q-net          concat(own_feat, head_aggs)   MLP(aug_state)
+                 → q_head                       → q_head
+  Reward         own_r (局部)                  eff_r = own_r + Σ sig(β_d)·nb_r_d
+                                                (但实测 β → 0, 退化为 own_r)
+  learnable      Q-net + GAT W/a (n_heads×2)   Q-net + β (4 个 scalar)
+  动态性         ✓ attention 随 state 变化      ✗ β 固定, 跟 state 无关
+
+─────────────────────────────────────────────────────────────────────────────
+  5.2 实测对比 (system avg_stopped_time_per_visit, last 20 + MAD k=3.5)
+─────────────────────────────────────────────────────────────────────────────
+
+  ─── 5-2-1 (car=1, bus=2, amb=5) ─────────────────────────────────────
+                  vanilla   CoLight   CoeffDQN   差异
+  all             24.66     23.28     22.03      CoeffDQN < CoLight (-1.25)
+  car             26.07     24.87     23.43      CoeffDQN < CoLight (-1.44)
+  bus              7.92      4.48      5.43      CoLight < CoeffDQN  (-0.95)
+  ambulance        2.94      2.46      1.58      CoeffDQN < CoLight (-0.88)
+  → CoeffDQN 赢 3/4 (all, car, amb), CoLight 赢 1/4 (bus)
+
+  ─── 5-3-1 (car=1, bus=3, amb=5) ─────────────────────────────────────
+                  vanilla   CoLight   CoeffDQN   差异
+  all             26.90     22.87     22.73      CoeffDQN < CoLight (-0.14, 边缘)
+  car             28.67     24.48     24.08      CoeffDQN < CoLight (-0.40, 接近)
+  bus              6.01      3.60      4.05      CoLight < CoeffDQN  (-0.45)
+  ambulance        2.94      2.96      2.24      CoeffDQN < CoLight (-0.72)
+  → CoeffDQN 赢 3/4 (all/car 微弱, amb 明显), CoLight 赢 1/4 (bus)
+
+  ─── 5-4-1 (car=1, bus=4, amb=5) ─────────────────────────────────────
+                  vanilla   CoLight   CoeffDQN   差异
+  all             28.27     24.35     24.68      CoLight < CoeffDQN (-0.33, 边缘)
+  car             30.73     26.18     26.49      CoLight < CoeffDQN (-0.31, 边缘)
+  bus              5.13      2.35      2.34      几乎平 (差 0.01)
+  ambulance        4.25      4.54      3.25      CoeffDQN < CoLight (-1.29, 明显)
+  → CoLight 反超 all/car (但很微弱), CoeffDQN 仍稳赢 amb
+
+─────────────────────────────────────────────────────────────────────────────
+  5.3 跨 3 个 weight 一致性总结
+─────────────────────────────────────────────────────────────────────────────
+
+  vehicle    CoeffDQN 一致优势       CoLight 一致优势       weight 敏感
+  ────────   ────────────────────   ────────────────────   ────────────
+  all/car    5-2-1, 5-3-1 都赢       5-4-1 反超 (边缘)      ⚠ weight 4 翻盘
+  bus        无                      全 3 个 weight 都赢 ✓  ✓ 稳定差异
+  ambulance  全 3 个 weight 都赢 ✓  无                      ✓ 稳定差异
+
+  → 真正稳定的对比关系:
+     • bus 上 CoLight 一致赢 (差距 1-2 秒, 1x3 chain)
+     • amb 上 CoeffDQN 一致赢 (差距 0.7-1.3 秒)
+
+─────────────────────────────────────────────────────────────────────────────
+  5.4 为什么 CoLight 在 bus 上一致更好? (机制 hypothesis)
+─────────────────────────────────────────────────────────────────────────────
+
+  GAT 动态 attention 的特点:
+    - 每次决策时, 根据当前 state 算 alpha = softmax(e(W·h_i, W·h_j))
+    - bus 在 NS 方向频繁出现 → alpha 学到稳定 pattern (bus → 邻居 → 注意)
+    - 训练充分后, GAT 能"识别"邻居有 bus 的 state, 提前协调
+
+  concat 静态拼接的特点:
+    - own 和 4×nb_obs 平铺给 MLP
+    - MLP 第一层权重学到"哪个特征 dim 重要", 但没有"动态选邻居"
+    - 对 bus 这种"频繁、可预测"的 pattern, 不如 GAT 高效
+
+  → bus 是 CoLight 的舒适区:频繁出现, 模式稳定, GAT 能学
+
+─────────────────────────────────────────────────────────────────────────────
+  5.5 为什么 CoeffDQN 在 amb 上一致更好? (机制 hypothesis)
+─────────────────────────────────────────────────────────────────────────────
+
+  GAT 的"smoothing"副作用:
+    - alpha 是 softmax 归一, 在 1x3 chain 上 left + right alpha 和 = 1
+    - GAT 把 4 个邻居 state (Wh_j) 加权混合成 1 个聚合表示 h
+    - own 的 amb 信号 "Wh_i" 跟邻居的"Wh_j" 一起被 ELU + concat
+    - 如果邻居 state 大部分是 bus/car, GAT 聚合时把 amb 信号"平均化"
+
+  concat 的"保留原样"特点:
+    - own_obs 和 4×nb_obs 是独立的特征 dim (相邻但不混合)
+    - MLP 第一层有独立权重去处理 own 部分
+    - own 的 amb 信号在 input 中"占据明确的 dim", 不被聚合稀释
+    - agent 看到自己 lane 上的 amb → 直接响应
+
+  → amb 是 CoeffDQN 的舒适区:稀疏但 own_obs 信号清晰, concat 不稀释
+
+─────────────────────────────────────────────────────────────────────────────
+  5.6 5-4-1 时 CoLight 反超 all/car 的解读
+─────────────────────────────────────────────────────────────────────────────
+
+  bus weight 涨到 4 → bus 在 reward 信号里份额更大
+   → agent 更激进优化 bus
+   → CoLight 的 GAT 这时"全力学 bus pattern", bus 砸到 2.35 (极低)
+   → bus 改善带动整体 all/car 也下降一点
+   → 但代价是 amb 更差 (4.54 > 4.25 vanilla, **比 vanilla 还差**!)
+
+  CoeffDQN 的 concat 没那么极致:
+   → bus 也压到 2.34 (跟 CoLight 几乎一样)
+   → 但 amb 没崩 (3.25 < CoLight 4.54)
+   → all/car 比 CoLight 略高一点 (因为没把 amb 牺牲到极致)
+
+  → 这印证了 CoLight 在高 bus weight 下"为 bus 牺牲 amb 更彻底"
+     CoeffDQN 牺牲得不那么狠 → all 数字略差, 但 amb 保得住
+
+─────────────────────────────────────────────────────────────────────────────
+  5.7 全 cell 胜负统计 + 为什么 CoeffDQN 整体赢
+─────────────────────────────────────────────────────────────────────────────
+
+  12 个 cell (3 weights × 4 vehicle 类) 的完整胜负 (差异 < 0.05 算 tied):
+
+    cell                   CoLight   CoeffDQN  差异      谁赢
+    ──────                 ───────   ────────  ──────    ──────
+    5-2-1 / all            23.28     22.03     -1.25     CoeffDQN
+    5-2-1 / car            24.87     23.43     -1.44     CoeffDQN
+    5-2-1 / bus             4.48      5.43     +0.95     CoLight
+    5-2-1 / ambulance       2.46      1.58     -0.87     CoeffDQN
+    5-3-1 / all            22.87     22.73     -0.14     CoeffDQN (边缘)
+    5-3-1 / car            24.48     24.08     -0.40     CoeffDQN
+    5-3-1 / bus             3.60      4.05     +0.44     CoLight
+    5-3-1 / ambulance       2.96      2.24     -0.72     CoeffDQN
+    5-4-1 / all            24.35     24.68     +0.32     CoLight
+    5-4-1 / car            26.18     26.49     +0.30     CoLight
+    5-4-1 / bus             2.35      2.34     -0.01     tied
+    5-4-1 / ambulance       4.54      3.25     -1.29     CoeffDQN
+
+    总胜: CoeffDQN 7 次, CoLight 4 次, tied 1 次
+
+  胜负分布的模式:
+    - CoeffDQN 一致赢: ambulance (3/3 weight, 0.7-1.3 秒差距)
+    - CoLight 一致赢: bus (2/3 weight + 1 tied, 0.4-1.0 秒差距)
+    - all/car 翻盘:5-2-1/5-3-1 时 CoeffDQN 赢, 5-4-1 时 CoLight 反超
+
+─────────────────────────────────────────────────────────────────────────────
+  5.7.1 为什么 CoeffDQN 在 5-2-1 和 5-3-1 整体赢 CoLight (机制分析)
+─────────────────────────────────────────────────────────────────────────────
+
+  CoeffDQN 在 7/12 cell 赢 CoLight, 主要发生在 5-2-1 和 5-3-1.
+  几个互相不排斥的 hypothesis (基于架构差异 + 数据观察):
+
+  Hypothesis 1: **GAT 的 softmax 强制了不必要的协同**
+    - GAT 的 alpha = softmax(e) → 4 个邻居 alpha 总和 = 1 (sum-to-one 约束)
+    - 在 1x3 chain (2 个活邻居), alpha_left + alpha_right = 1
+    - 即使邻居 state 对自己决策没用, agent 也"必须"分配 attention
+    - → GAT 强迫把邻居信号融入决策, 即使是噪声
+    - concat 没有这个约束, MLP 可以学到"邻居特征 dim 权重 ≈ 0"
+    - 实测 β = 0 印证: CoeffDQN 的 agent 真的选择了"不听邻居"
+    - 在 5-2-1/5-3-1 这种 amb 还相对突出的 weight 下, "不听邻居"反而更好
+
+  Hypothesis 2: **GAT 把 own 信号跟邻居信号"混合", 稀释 own 上的关键事件**
+    - GAT 内部: agg = sum(alpha · W·h_j) for j in neighbors, 然后 concat own_feat
+    - own_feat 经过独立 own_enc, 但跟 head_aggs (邻居聚合) 一起进 Q-head
+    - amb 在 own_obs 里是稀疏 spike → Q-head 看到的是 "own + 混合邻居"
+    - concat 把 own_obs 和 4×nb_obs 平铺, MLP 第一层可以独立处理 own 部分
+    - **own 上的 amb spike 在 concat 路径里更突出, 不被邻居数据"平均化"**
+
+  Hypothesis 3: **CoLight 多头 GAT 参数多, 1x3 chain 邻居少, 参数利用率低**
+    - CoLight: 2 heads × (W: obs_dim × hidden_dim + a: 2·hidden_dim) ≈ 14k 额外参数
+    - 1x3 chain 只有 2 个活邻居 → 多头 attention 没多少"选择空间"
+    - 参数多但场景小 → 容易过拟合到某些 pattern (例: bus 模式)
+    - CoeffDQN 的 MLP 处理 5x obs_dim 输入: ~150k 参数, 但是 universal MLP, 不强加结构
+
+  Hypothesis 4: **5-4-1 反超的真相**
+    - 5-4-1 时 bus weight 涨到 4, bus 在 reward 里份额变大
+    - CoLight 的 GAT 这时候才"对症":bus 频繁、有跨路口 pattern, GAT 攻克 bus
+    - bus 优化得太狠 → all/car 也跟着压下来 (因为 bus 占 NS 总量 20%)
+    - 但代价是 amb 被牺牲 (CoLight amb=4.54 > vanilla 4.25)
+    - CoeffDQN 在 5-4-1 没有"为 bus 砸 amb"那么极端, 所以 all/car 略高一点
+
+  → CoeffDQN 整体赢 7/12 的核心原因:
+     在 amb 上 (3 次) + 在 bus 不主导 weight 下 (5-2-1/5-3-1 的 all/car 共 4 次).
+     5-4-1 让 CoLight 找回主场.
+
+─────────────────────────────────────────────────────────────────────────────
+  5.7.2 哪个方法更"适合 thesis"  (诚实评估)
+─────────────────────────────────────────────────────────────────────────────
+
+  如果 thesis 主线 = "priority handling" (amb 是 first-class citizen):
+    → **CoeffDQN 更适合** (amb 一致更好, 跨 3 个 weight 稳赢)
+    → CoLight 在 5-4-1 时 amb 实测比 vanilla 还差, 这是负面 finding
+
+  如果 thesis 主线 = "通用 TSC 性能" (all 是主指标):
+    → **取决于 weight regime**
+    → 5-2-1/5-3-1 用 CoeffDQN, 5-4-1 用 CoLight
+    → 不优雅, 不像一个简单 architectural claim
+
+  如果 thesis 主线 = "可解释的协同机制":
+    → **CoLight 有 GAT attention 可视化 (我们已加 wandb log)**
+    → CoeffDQN 的 β=0 是个"协同失效"故事, 比"GAT attention 学到什么"弱
+
+  我的建议: **CoeffDQN 走 priority-handling 主线, narrative 强**
+            CoLight 作为 state-coordination baseline 比较, 不是主推
+
+─────────────────────────────────────────────────────────────────────────────
+  5.8 关键 takeaway
+─────────────────────────────────────────────────────────────────────────────
+
+  1. CoLight 和 CoeffDQN 各有所长, 不是"谁全面好":
+     - bus 优化: CoLight 稳赢 (GAT 适合频繁模式)
+     - amb 优化: CoeffDQN 稳赢 (concat 不稀释稀疏信号)
+
+  2. 5-4-1 的"priority 颠倒"两个方法都有, 但 CoLight 更严重:
+     - CoLight amb=4.54 (比 vanilla 4.25 还差)  ← 协同把 amb 搞砸了
+     - CoeffDQN amb=3.25 (比 vanilla 4.25 好)    ← 没搞砸, 但 bus 仍超过 amb
+
+  3. CoeffDQN 的"reward 协同"本应区别于 CoLight, 但 β→0 让它退化:
+     - 实际起作用的是 concat state, 不是 β
+     - CoeffDQN ≠ "reward 层协同" (设计意图)
+     - CoeffDQN ≈ "concat-state DQN with dead β" (实际形态)
+
+  4. thesis narrative 应该说:
+     "我们对比 GAT-state (CoLight) 和 concat-state+β-reward (CoeffDQN).
+      实测 β 退化为 0, 实际对比的是两种 state 聚合策略: GAT (动态) vs
+      concat (静态). GAT 在频繁车型 (bus) 上更高效, concat 在稀疏关键车
+      型 (amb) 上更保护信号. 5-4-1 时 GAT 把 amb 牺牲得更狠."
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Part 6: thesis 写作建议 (基于以上诊断)                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  5.1 诚实的 narrative (基于实际跑出的数据)
+─────────────────────────────────────────────────────────────────────────────
+
+  CoeffDQN 章节:
+    - 不要再说"reward 层协同优于 state 层"
+    - 要说:"我们发现 plain CoeffDQN 的 β 自学到 0, 实际工作的是 concat
+            state. PER 部分恢复了 β 学习能力, 但 5-4-1 极端 weight 下仍
+            出现 priority 颠倒 (bus reward 主导稀释了 amb signal)."
+
+  CoLight 章节:
+    - 说明 GAT 动态 attention 在 1x3 chain 上的局限 (邻居少, attention 没
+      多少选择空间)
+    - GAT attention log 可视化 (entropy 是否下降, 是否聚焦 amb-bearing 邻居)
+
+  实验设计:
+    - 主对比: vanilla / CoLight / CoeffDQN, 3 weights, 1 seed (motivation)
+    - PER 消融: 各 +PER 看是否救 amb (我们正在跑)
+    - β 学习曲线分析 (wandb 已 log) 作为关键 finding 的支撑
+
+─────────────────────────────────────────────────────────────────────────────
+  5.2 真正的 thesis novelty (architectural contribution)
+─────────────────────────────────────────────────────────────────────────────
+
+  "Dynamic β = state-conditional reward-layer coordination" 是文献空白:
+    - CoLight: state-conditional STATE aggregation (decision time)
+    - 你的动态 β: state-conditional REWARD weighting (training target)
+    - 两者操作不同层, 可正交叠加
+
+  实现:
+    self.beta_net = nn.Sequential(
+        nn.Linear(aug_state_dim, 64), nn.ReLU(),
+        nn.Linear(64, 4),   # 4 个 β 输出
+    )
+    β = torch.sigmoid(self.beta_net(state))
+    eff_r = own_r + (β * nb_rewards).sum()
+
+  风险:
+    - 训练更难, 需要 PER 配合
+    - β 仍可能学到全 0 (需要 L2 reg 或归一化)
+    - 但这是有 contribution 的 architecture, 值得一试
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                Part 7: 关键数据快查表                                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  各 weight 下 system avg_stopped_time_per_visit (last 20 + MAD k=3.5)
+─────────────────────────────────────────────────────────────────────────────
+
+  weight 5-2-1 (car=1, bus=2, amb=5):
+                  vanilla       CoLight       CoeffDQN
+    all           24.66         23.28         22.03 ✓
+    car           26.07         24.87         23.43 ✓
+    bus            7.92          4.48 ✓        5.43
+    ambulance      2.94          2.46          1.58 ✓
+    priority      amb 好 ✓     amb 好 ✓      amb 好 ✓     (全正常)
+
+  weight 5-3-1 (car=1, bus=3, amb=5):
+                  vanilla       CoLight       CoeffDQN
+    all           26.90         22.87         22.73 ✓
+    car           28.67         24.48         24.08 ✓
+    bus            6.01          3.60 ✓        4.05
+    ambulance      2.94          2.96          2.24 ✓
+    priority      amb 好 ✓     amb 平         amb 好 ✓     (CoLight 边缘)
+
+  weight 5-4-1 (car=1, bus=4, amb=5):
+                  vanilla       CoLight       CoeffDQN
+    all           28.27         24.35 ✓       24.68
+    car           30.73         26.18 ✓       26.49
+    bus            5.13          2.35 ✓        2.34         ← bus 砸到 2 左右
+    ambulance      4.25 ✓        4.54 ✗        3.25 ✓        ← amb 没跟着改善
+    priority      amb 好 ✓     bus 好 ✗      bus 好 ✗       ← 颠倒!
+
+─────────────────────────────────────────────────────────────────────────────
+  β 实测值 (CoeffDQN 末 20 evals)
+─────────────────────────────────────────────────────────────────────────────
+
+                  β_up    β_down  β_left  β_right   实际邻居贡献
+                  ──────  ──────  ──────  ───────   ─────────────
+  5-2-1 / 5-3-1 / 5-4-1 都是:
+                  0.50    0.50    0.00    0.00      = 0 (β reward 协同失效)
+
+  → β 协同对 5-4-1 priority 颠倒 没有"加重"也没有"缓解" (因为没参与)
+  → 颠倒的根源是 concat state 让 agent 学到 bus 主导策略
+
+
+─────────────────────────────────────────────────────────────────────────────
+  一句话总结
+─────────────────────────────────────────────────────────────────────────────
+
+  TSC 协同有 4 大流派 (state层/reward层/CTDE/通讯), 主流都是静态.
+  我的 CoeffDQN 设计是"concat state + 可学 β reward", 实测 β → 0 失效,
+  实际工作的是 concat state. 5-4-1 priority 颠倒来自 concat state 在 bus
+  主导信号下过度优化 bus, 跟 β 无关. 当前在跑 PER 实验测能否救 amb signal,
+  以及 GAT attention log 看 CoLight 是否真"动态聽邻居". 中期方向是实现
+  "state-conditional 动态 β" 填补文献空白 (reward 层 + 动态).
+
+
+================================================================================
+  END OF NOTES — 2026-06-09
+================================================================================

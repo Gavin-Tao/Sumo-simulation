@@ -247,8 +247,8 @@ class TrafficSignal:
             self.next_action_time = self.env.sim_step + self.delta_time
             a=1
         else:
-            if new_phase ==3:
-                print("🔥 Action 3 selected at TS:", self.id)
+            # NOTE: 之前这里有 print("🔥 Action 3 selected at TS:", self.id) - 删掉,
+            # 因为每 step 打印 → 单 run 几万行 → wandb capture stdout 把上传队列压垮
             # self.sumo.trafficlight.setPhase(self.id, self.yellow_dict[(self.green_phase, new_phase)])  # turns yellow
             self.sumo.trafficlight.setRedYellowGreenState(
                 self.id, self.all_phases[self.yellow_dict[(self.green_phase, new_phase)]].state

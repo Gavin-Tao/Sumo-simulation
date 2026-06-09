@@ -1,0 +1,20 @@
+nohup: ignoring input
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 21:51:28 IST] 启动 2 个并行 5-4-1 实验
+  GPU: 0, STAGGER: 15s, LOG_DIR: ./logs/run_coord541_20260609_215128
+  RAM 估算: 2 × ~2GB ≈ 4GB
+════════════════════════════════════════════════════════════════════════════
+
+[2026年 06月 09日 星期二 21:51:28 IST] ▶ LAUNCH  exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (用 traincoeff_gat.py)
+  log: ./logs/run_coord541_20260609_215128/exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 17466
+
+[2026年 06月 09日 星期二 21:51:28 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 21:51:43 IST] ▶ LAUNCH  exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (用 traincoeff_fixed.py)
+  log: ./logs/run_coord541_20260609_215128/exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 17526
+
+[2026年 06月 09日 星期二 21:51:43 IST] 全部启动, 等结束 ...
+  实时看: tail -f ./logs/run_coord541_20260609_215128/*.log
+

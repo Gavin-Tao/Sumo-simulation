@@ -1,0 +1,59 @@
+# Experiment: exp166 — FixedCoeffDQN (TPAMI-style α=0.5 uniform mean) + 5-4-1, 1x3 NS20bus_1amb_U.
+# Pair with exp147 (CoeffDQN), exp163 (GATCoeffDQN).  ⭐ KEY 5-4-1 BASELINE
+#
+# 5-4-1 上的 ablation 三件套(reward 协同):
+#   exp147 = CoeffDQN     static additive β (实测 β→0 失效)
+#   exp166 = FixedCoeffDQN α=0.5 + uniform mean  ← THIS (TPAMI baseline,强制静态协同)
+#   exp163 = GATCoeffDQN  α=0.5 + dynamic GAT softmax (proposed novelty)
+#
+# 关键对比 Δ (exp163 - exp166) = "dynamic β 相对 static mean 的边际收益".
+name: "exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp147 (controlled)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# FixedCoeffDQN-specific
+alpha:          0.5
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123
+
+logging_mode:     "basic"
+metrics_interval: 50

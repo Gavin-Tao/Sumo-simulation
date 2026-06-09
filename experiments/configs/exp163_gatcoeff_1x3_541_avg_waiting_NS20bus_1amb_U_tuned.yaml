@@ -1,0 +1,61 @@
+# Experiment: exp163 — GATCoeffDQN + 5-4-1, 1x3 NS20bus_1amb_U.  ⭐ MOST IMPORTANT CELL
+# Pair with exp147 (plain CoeffDQN, β→0) and exp135 (CoLightOrig amb=4.54 > vanilla amb=4.25).
+#
+# Architecture: see exp161 header.
+#
+# Why this is the most important cell for GATCoeffDQN:
+#   5-4-1 是协同失效最严重的场景 (priority 颠倒: bus < amb both in CoLight and CoeffDQN).
+#   GATCoeffDQN 的核心 hypothesis 是动态 β 能根据 state 判断"何时听邻居",
+#   尤其是 amb 出现时 β 应该往对应邻居倾斜.
+#   wandb log 的 train/gat_beta_entropy 是诊断 GAT 是否真"动态"的关键 metric.
+name: "exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp147 (controlled)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# GATCoeffDQN-specific
+gat_hidden_dim: 64
+alpha:          0.5
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123
+
+logging_mode:     "basic"
+metrics_interval: 50

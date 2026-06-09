@@ -21,3 +21,12 @@ nohup: ignoring input
 [2026年 06月 09日 星期二 16:18:41 IST] 全部启动,等结束 ...
   实时看: tail -f ./logs/run_per_20260609_161826/*.log
 
+[2026年 06月 09日 星期二 20:53:53 IST] ✓ exp153_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER 结束 (exit 0)
+[2026年 06月 09日 星期二 20:53:53 IST] ✓ exp156_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double 结束 (exit 0)
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 20:53:53 IST] 全部完成,总挂钟 16527s (≈ 275min)
+  ✓  exp153_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER  (exit 0)
+  ✓  exp156_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double  (exit 0)
+  log 目录: ./logs/run_per_20260609_161826
+════════════════════════════════════════════════════════════════════════════
