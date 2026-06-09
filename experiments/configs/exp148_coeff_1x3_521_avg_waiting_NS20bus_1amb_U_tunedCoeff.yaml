@@ -1,0 +1,78 @@
+# Experiment: exp148 — CoeffDQN at CoeffDQN-best hyperparams (NOT controlled vs CoLight) on 5-2-1 NS20bus_1amb_U.
+# Pair-up with exp145 (controlled, hd=128) to isolate "is the win from coordination mechanism or from capacity?"
+#
+# Rationale for ONLY 2 strongly-justified changes (vs exp145's controlled hd=128 baseline):
+#   • hidden_dim 128 → 256  : STRONG. CoeffDQN's aug_state = own + 4*nb_dim (~5x wider than own).
+#                              128 is a physical bottleneck on the ~250-dim input; 256 relieves it.
+#                              Independent of PER/Double.
+#   • capacity 50000 → 80000: MODERATE. 1 ambulance/ep × 2000 ep = ~2000 amb transitions over training.
+#                              50k buffer FIFO-evicts most; 80k retains ~2000 amb vs ~1250 → +60%
+#                              diversity for β to learn neighbor weighting (independent of PER).
+#
+# Considered but REJECTED (effect too marginal to justify deviation from controlled):
+#   • target_update 20 → 30 : β/Q coupling argument is 2nd-order; effect tiny vs the 4-param β.
+#   • eps_decay 5000 → 6000 : only ~25 extra exploration episodes out of 2000 (~1.25%); negligible.
+#   • mini_size 1000 → 2000 : PER-flavored reasoning; without PER (uniform sampling), batch
+#                              composition is unchanged by warmup size.
+#
+# All other params (lr, gamma, batch_size, episodes, eps_start/end, eval_seed) UNCHANGED from controlled.
+#
+# 3-way comparison:
+#   exp145 = CoeffDQN @ hd=128 (controlled)   ← architectural test
+#   exp148 = CoeffDQN @ hd=256 + tuning (this) ← CoeffDQN's best shot
+#   Δ (exp148 − exp145) isolates capacity / tuning contribution
+#   Δ (exp145 − exp126) isolates coordination contribution
+name: "exp148_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tunedCoeff"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files (NS 20% bus, WE car, 1 amb on U-route)
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map (same chain as exp126/145)
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — CoeffDQN-tuned for THIS scenario
+hidden_dim:    256     # ← relieve aug_state bottleneck (essential)
+lr:            0.001   # standard; Adam adapts
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000    # unchanged from controlled (effect of ±1000 is negligible)
+target_update: 20      # unchanged from controlled (β/Q coupling effect is 2nd-order, tiny)
+capacity:      80000   # ← larger buffer keeps sparse ambulance transitions (+60% amb diversity)
+mini_size:     1000    # unchanged from controlled (no PER → warmup size doesn't change batch composition)
+batch_size:    256
+
+# Training (episodes same as controlled — fair budget)
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# NOTE: use_double / use_per intentionally NOT set → default False → plain CoeffDQN

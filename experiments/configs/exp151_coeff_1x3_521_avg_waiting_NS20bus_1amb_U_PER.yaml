@@ -1,0 +1,74 @@
+# Experiment: exp151 — CoeffDQN + PER on 5-2-1 NS20bus_1amb_U.
+# Pair with exp145 (plain CoeffDQN, controlled hd=128) — tests whether PER recovers sparse ambulance signal.
+#
+# Motivation: exp145-147 results show CoeffDQN's β learns coordination dominated by frequent classes (bus/car).
+# In 5-4-1 the rare ambulance signal gets diluted in the β learning. PER samples by |TD-error|,
+# which is huge for ambulance transitions (weight 5 × big wait jump) → over-samples amb → β learns amb.
+#
+# Coordination matrix on 5-2-1:
+#   exp127 = vanilla DQN  (no coord, baseline)
+#   exp126 = CoLightOrig  (state-layer coord)
+#   exp145 = CoeffDQN     (reward-layer coord, plain)
+#   exp151 = CoeffDQN + PER (reward-layer coord + prioritized replay)  ← THIS
+#   exp154 = CoeffDQN + PER + Double (also planned)
+#
+# HYPERPARAMS: IDENTICAL to exp145 (controlled hd=128) + PER hyperparams.
+# Same DQN hyperparams so any difference vs exp145 isolates the PER effect alone.
+name: "exp151_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_PER"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files — identical to exp145
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp145
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# ── PER (Schaul 2016 defaults + beta_steps matched to training length) ──
+use_per:           true
+per_alpha:         0.6        # priority exponent (paper default; balances priority vs uniformity)
+per_beta_start:    0.4        # IS correction start (paper default)
+per_beta_end:      1.0        # IS correction end (full bias correction by training end)
+per_beta_steps:    400000     # ≈ 2000 ep × ~200 step/ep → β linearly anneals over full training
+per_eps:           1.0e-6     # priority floor (paper default)
+# use_double: NOT set → default False (this config tests PER alone)
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123
+
+logging_mode:     "basic"
+metrics_interval: 50

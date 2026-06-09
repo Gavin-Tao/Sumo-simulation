@@ -319,6 +319,12 @@ def train(cfg: dict, timestamp: str):
                 # Log PER β annealing (only meaningful when PER on; else it's a constant 1.0)
                 if agent.use_per:
                     ep_log["train/per_beta"] = agent.current_beta
+                # Log GAT attention stats (mean attention per direction across batch+heads).
+                # Useful to see if/how CoLight is actually using each neighbor direction.
+                attn = agent.attention_stats() if hasattr(agent, 'attention_stats') else None
+                if attn is not None:
+                    for k, v in attn.items():
+                        ep_log[f"train/gat_{k}"] = v
                 if ep_log:
                     wandb.log(ep_log, step=step_counter)
 

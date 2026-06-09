@@ -1,0 +1,74 @@
+# Experiment: exp145 — CoeffDQN (concat-state + β-weighted neighbor reward) + PriorityBCA + 5-2-1-avg-waiting-time, 1x3
+# CoeffDQN counterpart of exp126 (CoLightOrig) and exp127 (vanilla DQN), CONTROLLED comparison (same hyperparams).
+# Coordination matrix on this scenario:
+#   exp127 = vanilla DQN  (no coordination, baseline)
+#   exp126 = CoLightOrig  (state-layer coordination only: GAT attention; reward local)
+#   exp145 = CoeffDQN     (concat-state + reward-layer coordination via learnable β per direction)  ← THIS
+#   exp148 = CoeffDQN tuned (separate config — CoeffDQN-best hyperparams, not controlled)
+# Setup: NS=20% bus + 80% car, WE=100% car, Ambulance on U-shaped 2-left-turn route.
+# Per Shi/Yang/Tao TPAMI 2024 + CityLight 2024: reward-layer coordination is the dominant lever when
+# reward is local (waiting time, no downstream signal). CoeffDQN tests this hypothesis directly.
+# Weights: car=1, bus=2, ambulance=5. Both obs and reward over all lanes (matched, no ctrl).
+# HYPERPARAMS: IDENTICAL to exp126 (except n_heads, which CoeffDQN doesn't have).
+# Same hidden_dim=128 → architectural comparison (β vs GAT) without capacity confound.
+# CoeffDQN's aug_state (5x wider than own) does mean 128 is mildly bottlenecked; that's by design here
+# so any win/loss isolates the coordination mechanism, not the capacity. See exp148 for tuned-best version.
+name: "exp145_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files (NS bus, WE pure car, Amb on diagonal 2-left-turn routes) — identical to exp126/127
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map: [up, down, left, right], null = no neighbor — same as exp126
+# Layout (left -> right): t - e - J0
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment — matched to exp126/127
+observation_class: "PriorityBCA"
+reward_fn:         "5-2-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp126 (CoLightOrig) except n_heads (CoeffDQN has none).
+# Controlled comparison: same capacity to isolate the coordination mechanism.
+hidden_dim:    128     # matches exp126 — CoeffDQN's aug_state is wider so this is mildly bottlenecked,
+                       # but that's by design for fair architectural comparison.
+lr:            0.001   # same as exp126 / exp127
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# NOTE: use_double / use_per intentionally NOT set → default False → plain CoeffDQN
+#       (matches exp126 / exp127 / exp89 setup, no Step1/Step2 ablation features)

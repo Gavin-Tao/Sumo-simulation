@@ -63,7 +63,7 @@ class GATLayer(nn.Module):
         alpha = torch.nan_to_num(alpha, nan=0.0)          # all-missing → 0
 
         agg = F.elu((alpha * Wh_j).sum(dim=1))            # [B, out_dim]
-        return agg, Wh_i
+        return agg, Wh_i, alpha
 
 
 class CoLightOrigQNet(nn.Module):
@@ -103,9 +103,17 @@ class CoLightOrigQNet(nn.Module):
         mask = (neighbors.abs().sum(dim=-1, keepdim=True) == 0)  # [B, 4, 1]
 
         head_aggs = []
+        head_alphas = []                                  # for attention logging
         for head in self.heads:
-            agg, _ = head(own, neighbors, mask)
+            agg, _, alpha = head(own, neighbors, mask)
             head_aggs.append(agg)                         # each [B, hidden_dim]
+            head_alphas.append(alpha)                     # each [B, 4, 1]
+
+        # Cache last forward's attention for wandb logging (no grad needed).
+        # Shape: [n_heads, B, 4, 1] → for logging we usually reduce over batch & heads
+        with torch.no_grad():
+            self.last_attention = torch.stack(head_alphas, dim=0).detach()
+            self.last_attention_mask = mask.detach()      # [B, 4, 1] same mask for all heads
 
         own_feat = F.relu(self.own_enc(own))              # [B, hidden_dim]
         cat_feat = torch.cat([own_feat] + head_aggs, dim=-1)  # [B, H*(n_heads+1)]
@@ -183,6 +191,47 @@ class CoLightOrigDQN:
             return self.per_beta_end
         frac = self.count / max(self.per_beta_steps, 1)
         return self.per_beta_start + frac * (self.per_beta_end - self.per_beta_start)
+
+    def attention_stats(self):
+        # -> Optional[dict]  (Python 3.9 compat,不用 dict | None 语法)
+        """Return mean GAT attention per direction across batch+heads from last forward pass.
+
+        Useful for wandb logging. Returns None if no forward has run yet.
+        Format: {"attn_up": float, "attn_down": float, "attn_left": float, "attn_right": float,
+                 "attn_entropy": float}
+        Notes:
+          - Attention is masked by neighbor presence (missing neighbors = 0 attention).
+          - To get "fair" attention per direction, we average ONLY over batch elements where
+            that direction has an active neighbor.
+          - Entropy: how peaked/spread the attention is (high = uniform, low = focused).
+        """
+        if not hasattr(self.q_net, 'last_attention'):
+            return None
+        a = self.q_net.last_attention            # [n_heads, B, 4, 1]
+        m = self.q_net.last_attention_mask       # [B, 4, 1]  True = missing
+        active = (~m).float().squeeze(-1)        # [B, 4]  1 = active neighbor
+        # Mean attention per direction, averaged across heads and active samples
+        a_mean_heads = a.mean(dim=0).squeeze(-1) # [B, 4]
+        per_dir = []
+        for d in range(4):
+            mask_d = active[:, d]                # [B]  which batch items have this neighbor
+            n_active = mask_d.sum().item()
+            if n_active > 0:
+                attn_d = (a_mean_heads[:, d] * mask_d).sum().item() / n_active
+            else:
+                attn_d = 0.0
+            per_dir.append(attn_d)
+        # Entropy of mean attention (across active dirs) — peaked = informative, uniform = unfocused
+        avg_alpha = a_mean_heads.mean(dim=0)     # [4]  batch-averaged
+        avg_alpha = avg_alpha + 1e-12
+        entropy = -(avg_alpha * torch.log(avg_alpha)).sum().item()
+        return {
+            "attn_up":      per_dir[0],
+            "attn_down":    per_dir[1],
+            "attn_left":    per_dir[2],
+            "attn_right":   per_dir[3],
+            "attn_entropy": entropy,
+        }
 
     def take_action(self, own_state: np.ndarray, nb_obs: np.ndarray) -> int:
         """

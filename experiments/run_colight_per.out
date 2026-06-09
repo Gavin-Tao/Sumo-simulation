@@ -1,0 +1,26 @@
+nohup: ignoring input
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 19:02:25 IST] 启动 2 个并行 CoLightOrig+PER 实验
+  GPU: 0, STAGGER: 15s
+  LOG_DIR: ./logs/run_colight_per_20260609_190225
+  ⚠ 注意: 当前 ~7.5GB RAM 已用,加 2 个 CoLight (~3GB) 会到 ~10.5GB / 15GB,紧但够
+  ⚠ 如果跑爆,kill 后改成串行:bash 等第 1 个完成再启第 2 个
+  ⚠ 跑的脚本是 trainorico.py (CoLightOrig 用这个,不是 traincoeff.py)
+════════════════════════════════════════════════════════════════════════════
+
+[2026年 06月 09日 星期二 19:02:25 IST] ▶ LAUNCH  exp159_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER
+  cmd: python3 trainorico.py --config configs/exp159_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER.yaml --gpu 0
+  log: ./logs/run_colight_per_20260609_190225/exp159_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER.log
+  PID: 13773
+
+[2026年 06月 09日 星期二 19:02:25 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 19:02:40 IST] ▶ LAUNCH  exp160_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double
+  cmd: python3 trainorico.py --config configs/exp160_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double.yaml --gpu 0
+  log: ./logs/run_colight_per_20260609_190225/exp160_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double.log
+  PID: 13831
+
+[2026年 06月 09日 星期二 19:02:40 IST] 全部启动,等结束 ...
+  实时看: tail -f ./logs/run_colight_per_20260609_190225/*.log
+  内存监控: watch -n 10 free -h
+

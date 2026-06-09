@@ -1,0 +1,67 @@
+# Experiment: exp146 — CoeffDQN (concat-state + β-weighted neighbor reward) + PriorityBCA + 5-3-1-avg-waiting-time, 1x3
+# CoeffDQN counterpart of exp134 (CoLightOrig) and exp136 (vanilla DQN), CONTROLLED (same hyperparams).
+# Priority-weight ablation axis (vs exp145's 5-2-1): car=1, bus=3, ambulance=5.
+# Coordination matrix:
+#   exp136 = vanilla DQN  (no coordination, baseline)
+#   exp134 = CoLightOrig  (state-layer coordination only: GAT attention; reward local)
+#   exp146 = CoeffDQN     (concat-state + reward-layer coordination via learnable β)  ← THIS
+#   exp149 = CoeffDQN tuned (separate config — CoeffDQN-best hyperparams, not controlled)
+# Setup: NS=20% bus + 80% car, WE=100% car, Ambulance on U-shaped 2-left-turn route.
+# Weights: car=1, bus=3, ambulance=5. Both obs and reward over all lanes (matched, no ctrl).
+# HYPERPARAMS: IDENTICAL to exp134 (except n_heads). Same hidden_dim=128 for controlled comparison.
+name: "exp146_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files — identical to exp134/136
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map: [up, down, left, right], null = no neighbor — same as exp134
+# Layout (left -> right): t - e - J0
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment — matched to exp134/136
+observation_class: "PriorityBCA"
+reward_fn:         "5-3-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp134 (CoLightOrig) except n_heads (CoeffDQN has none).
+hidden_dim:    128     # matches exp134 for controlled comparison (CoeffDQN's wider aug_state mildly bottlenecked here)
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# NOTE: use_double / use_per intentionally NOT set → default False → plain CoeffDQN

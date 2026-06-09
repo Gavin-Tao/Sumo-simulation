@@ -484,6 +484,7 @@ def _make_avg_waiting_bcA(alpha: float, beta: float, gamma: float):
 _521_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 2.0, 5.0)
 _531_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 3.0, 5.0)  # stronger bus weight variant
 _541_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 4.0, 5.0)  # even stronger bus weight variant
+_641_avg_waiting_fn = _make_avg_waiting_bcA(1.0, 4.0, 6.0)  # higher amb weight to fix priority inversion at high bus weight
 
 
 def _521_avg_waiting_reward(ts: "TrafficSignal") -> float:
@@ -496,6 +497,10 @@ def _531_avg_waiting_reward(ts: "TrafficSignal") -> float:
 
 def _541_avg_waiting_reward(ts: "TrafficSignal") -> float:
     return _541_avg_waiting_fn(ts)
+
+
+def _641_avg_waiting_reward(ts: "TrafficSignal") -> float:
+    return _641_avg_waiting_fn(ts)
 
 
 # ---------------------------------------------------------------------------
@@ -783,6 +788,7 @@ REWARD_REGISTRY = {
     "5-2-1-avg-waiting-time":       _521_avg_waiting_reward,
     "5-3-1-avg-waiting-time":       _531_avg_waiting_reward,
     "5-4-1-avg-waiting-time":       _541_avg_waiting_reward,
+    "6-4-1-avg-waiting-time":       _641_avg_waiting_reward,
     "5-2-1-avg-waiting-time-ctrl":  _521_avg_waiting_ctrl_reward,
     "avg-waiting-time":             _avg_waiting_reward,
 

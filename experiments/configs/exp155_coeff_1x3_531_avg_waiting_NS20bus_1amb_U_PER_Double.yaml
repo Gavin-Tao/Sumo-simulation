@@ -1,0 +1,68 @@
+# Experiment: exp155 — CoeffDQN + PER + Double on 5-3-1 NS20bus_1amb_U.
+# Pair with exp146 (plain CoeffDQN) and exp152 (CoeffDQN + PER).
+# Same as exp154 except weight (5-3-1).
+#
+# Coordination matrix on 5-3-1:
+#   exp136 = vanilla DQN
+#   exp134 = CoLightOrig
+#   exp146 = CoeffDQN (plain)
+#   exp152 = CoeffDQN + PER
+#   exp155 = CoeffDQN + PER + Double  ← THIS
+#
+# HYPERPARAMS: IDENTICAL to exp146 + PER + Double.
+name: "exp155_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_PER_Double"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-3-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp146
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# PER + Double
+use_per:           true
+per_alpha:         0.6
+per_beta_start:    0.4
+per_beta_end:      1.0
+per_beta_steps:    400000
+per_eps:           1.0e-6
+use_double:        true
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123
+
+logging_mode:     "basic"
+metrics_interval: 50

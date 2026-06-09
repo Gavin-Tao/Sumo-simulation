@@ -1,0 +1,77 @@
+# Experiment: exp159 — CoLightOrig (GAT) + PER on 5-4-1 NS20bus_1amb_U.
+# Pair with exp135 (CoLightOrig plain) — tests whether PER helps CoLight's GAT recover from
+# 5-4-1 priority inversion (实测 exp135 amb=4.54 > bus=2.35, priority 颠倒).
+#
+# Motivation: CoLight's GAT attention learns to predict bus patterns (frequent class), diluting
+# ambulance signal in state aggregation. PER amplifies amb transitions in batches → Q-net learns
+# amb-specific response better → GAT may also learn to attend more to amb-bearing neighbors.
+#
+# 5-4-1 ablation on CoLightOrig:
+#   exp135 = CoLightOrig plain         (amb=4.54, priority 颠倒)
+#   exp159 = CoLightOrig + PER         ← THIS (预期 amb 改善, priority 可能恢复)
+#   exp160 = CoLightOrig + PER + Double (1x1 实测两者抵消, 1x3 预期同样)
+#
+# HYPERPARAMS: IDENTICAL to exp135 + PER hyperparams (Schaul 2016 paper defaults).
+name: "exp159_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files — identical to exp135
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map: [up, down, left, right], null = no neighbor — same as exp135
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment — matched to exp135
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN + GAT hyperparameters — IDENTICAL to exp135
+hidden_dim:    128
+n_heads:       2
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# ── PER (Schaul 2016 defaults + beta_steps matched to training length) ──
+use_per:           true
+per_alpha:         0.6        # priority exponent (paper default)
+per_beta_start:    0.4        # IS correction start
+per_beta_end:      1.0        # IS correction end
+per_beta_steps:    400000     # ≈ 2000 ep × 200 step/ep
+per_eps:           1.0e-6
+# use_double: NOT set → False (this config tests PER alone)
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123       # matched to exp135 for fair comparison

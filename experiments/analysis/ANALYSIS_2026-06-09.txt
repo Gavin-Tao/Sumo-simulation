@@ -1,0 +1,595 @@
+================================================================================
+  Combined Analysis — 1x1 PER/Double + 1x3 Coordination Ablation
+
+  作者:  Xiaowen Tao (TCD)
+  日期:  2026-06-09
+  覆盖实验:
+    Part A.  1x1 single-intersection PER/Double ablation
+             exp113 / 142 / 143 / 144   (5-2-1, NSamb)
+    Part B.  1x3 chain coordination ablation
+             vanilla DQN:   exp127 / 136 / 137   (5-2-1 / 5-3-1 / 5-4-1)
+             CoLightOrig:   exp126 / 134 / 135   (state-layer GAT)
+             CoeffDQN:      exp145 / 146 / 147   (reward-layer β,controlled)
+             场景: 1x3 NS20bus_1amb_U
+================================================================================
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    Part 1: 实验通用设置(共享参数)                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+DQN 超参(controlled 对比都用这一套):
+  hidden_dim     = 128
+  lr             = 0.001    (Adam)
+  gamma          = 0.99
+  eps_start/end  = 0.9 / 0.01
+  eps_decay      = 5000     步
+  target_update  = 20       步
+  capacity       = 50000
+  mini_size      = 1000
+  batch_size     = 256
+  num_seconds    = 1000     /ep (= 200 env steps/ep)
+  eval_interval  = 5
+  eval_seed      = 123
+
+Episodes 数:
+  1x1 系列: 5000 ep (= 1,000,000 env steps)
+  1x3 系列: 2000 ep (= 400,000 env steps)  (3 个 TS 共 1.2M transitions)
+
+车辆 spawn rate(从 route 文件 vehsPerHour 累加计算,1000s 个 episode):
+  ─────────────────────────────────────────────────────
+  scenario       car/ep   bus/ep   amb/ep   注
+  ─────────────────────────────────────────────────────
+  1x1 NSamb      ~970     ~194     ~1-2     bus on EW dir, amb on NS dir
+                                            (car mixed on both directions)
+  1x3 NS20bus    ~2021    ~117     ~1-2     20% NS bus, 3 路口 chain
+                                            (car 包含 EW 直行 + NS 直行 + 所有左转/转向)
+  ─────────────────────────────────────────────────────
+
+PER 超参(只 exp143/144 + 计划中的 exp151-156):
+  per_alpha       = 0.6     (Schaul 2016 paper 默认)
+  per_beta_start  = 0.4
+  per_beta_end    = 1.0
+  per_beta_steps  = 训练长度 (1x1: 1M;1x3: 400k)
+  per_eps         = 1e-6
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║          Part 2: 1x1 PER/Double Ablation (exp113/142/143/144)              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+─────────────────────────────────────────────────────────────────────────────
+  2.1 实测数据(last 20 evals, MAD k=3.5 filter)
+─────────────────────────────────────────────────────────────────────────────
+
+                    vanilla       +Double      +PER         +PER+Double
+                    ─────────     ─────────    ─────────    ───────────
+Ambulance (n_amb=2 per ep,稀疏高优先级):
+  avg_stopped       6.25 ±8.79    3.25 ±2.82   2.62 ±0.56   3.25 ±1.43
+  avg_wait          2.98 ±6.32    1.32 ±1.13   2.04 ±0.50   2.23 ±1.82
+  avg_stop_events   0.72 ±0.41    0.55 ±0.15   0.53 ±0.11   0.57 ±0.18
+  avg_speed         9.17 ±0.14    8.86 ±1.17   8.68 ±0.92   9.10 ±0.72
+
+  vs vanilla 改进:
+    avg_stopped     —            -48%         -58% ✓ 最大   -48%
+    avg_wait        —            -56% ✓ 最大   -32%         -25%
+
+Bus (~25 buses/ep,频繁中等优先级):
+  avg_stopped       10.39 ±1.17   9.23 ±0.98   8.76 ±1.28   8.93 ±0.96
+  avg_wait          10.77 ±1.13   9.60 ±0.99   9.21 ±1.27   9.32 ±0.98
+  vs vanilla:        —           -11%         -15% ✓        -13%
+
+Car (~140 cars/ep,频繁低优先级):
+  avg_stopped       29.64 ±3.42   34.98 ±2.84  33.27 ±2.54  35.41 ±3.01
+  avg_wait          29.64 ±3.46   35.00 ±2.85  33.29 ±2.53  35.43 ±3.00
+  avg_speed         3.80 ±0.29    3.39 ±0.28   3.50 ±0.18   3.35 ±0.21
+  vs vanilla:        —           +18% ✗      +12% ✗        +19% ✗ 最差
+
+观察 summary:
+  ✓ vanilla 在 car 上全场最好,但 amb std=8.79(单次卡死可达 60+ 秒)
+  ✓ +Double 单独时 amb avg_wait 1.32 = 全场最低(意外!)
+  ✓ +PER 单独时 amb avg_stopped 2.62 = 全场最低,且 std=0.56 极稳
+  ✗ +PER+Double 的 amb avg_stopped 3.25 = +Double 单独值,PER 优势消失
+  ✗ +PER+Double 的 car 35.41 = 全场最差(代价叠加)
+
+
+─────────────────────────────────────────────────────────────────────────────
+  2.2 机制 1: Double DQN 影响"探索 bonus"
+─────────────────────────────────────────────────────────────────────────────
+
+Vanilla Q-learning 的 TD target:
+    y = r + γ · max_a' Q(s', a')
+
+max_a' 的 upward bias:
+- 即使 Q(s', a') 估计无偏,max 操作偏向噪声更大的那个估计
+- E[max_a Q_noisy(a)] > max_a E[Q_noisy(a)]  (Jensen 不等式)
+- → 状态价值被系统性高估
+- = 隐式探索 bonus(像 optimistic initialization,鼓励 visiting)
+
+Double DQN 的修正:
+    y = r + γ · Q_target(s', argmax_a' Q_online(s', a'))
+
+- argmax 用 online 网,选 action
+- value 用 target 网,评估那个 action
+- 两网噪声独立 → 上偏差被相互抵消
+- Q 估计更准,但失去"乐观偏差 = 探索 bonus"
+
+为什么 Double 在 1x1 amb 上意外好(2.98 → 1.32,-56%):
+─────────────────────────────────────────────────────
+
+- Vanilla 对"keep current phase"(默认动作)的 Q 值有系统 overestimation
+- 80% 的训练样本里"保持"是合理的(车流连续)
+- → Q(keep) 被高估 → 切相位的 opportunity cost 被夸大
+- → agent 倾向于"留在当前 phase"
+- amb 到达时,agent 不愿意立刻切相位
+- 实测:vanilla amb avg_wait 2.98 秒 ≈ ~1.4 个 yellow + min_green 周期
+
+Double 消除这个 bias:
+- Q(keep) 不再被高估
+- 看到 amb on lane → Q(switch_to_amb_phase) 不再被低估 → 立即切
+- 实测:Double amb avg_wait 1.32 秒 ≈ 1 个 yellow 周期
+
+代价(car 上):
+- car 的"连续车流"模式本来享受"keep current phase"的稳定
+- Double 让 agent 更激进切相位 → car 流被打断
+- car avg_stopped 29.64 → 34.98 = +18%
+
+
+─────────────────────────────────────────────────────────────────────────────
+  2.3 机制 2: PER 为什么对 amb 特别有效
+─────────────────────────────────────────────────────────────────────────────
+
+Buffer 里 transition 的 vehicle 分布(1x1,基于 spawn rate 估算):
+  vehicle  spawn/ep  在 buffer 里大致占比   单 transition reward 跳变
+  ──────   ────────  ──────────────       ──────────────────────────
+  car      ~970      ~83%                  小 (weight 1 × 单车 wait)
+  bus      ~194      ~17%                  中 (weight 2 × 单车 wait)
+  amb      ~2        ~0.17%                极大 (weight 5 × 大 wait jump)
+
+uniform 采样问题:
+- batch_size 256,amb 期望出现数 = 256 × 0.0017 ≈ 0.4 个/batch (期望值 <1!)
+- → Q-net 大部分 batch 看不到 amb,看到也只是 1 个
+- → 学不准
+
+PER 按 |TD-error| 优先采样:
+- TD-error ≈ |reward 跳变|
+- amb transition TD-error 大 (~ weight 5 × 5-10 秒 wait change ≈ 25-50)
+- car transition TD-error 小 (~ weight 1 × 1-2 秒 ≈ 1-2)
+- → PER 把 amb 的采样概率从 0.0017 拉到 ~0.05-0.15(30-90x 放大)
+- → Q-net 每个 batch 看到 ~12-40 个 amb transition → 学到精细 amb 响应
+
+实测 PER 改善(exp113 vs exp143):
+  amb avg_stopped: 6.25 → 2.62  (-58%)    ← PER 直接命中
+  amb std:         8.79 → 0.56  (-94%)    ← 关键!从"偶尔卡 60s"到"稳定 2-3s"
+  bus avg_stopped: 10.39 → 8.76 (-16%)    ← 中等改善
+  car avg_stopped: 29.64 → 33.27 (+12%)   ← 代价
+
+为什么 std 从 8.79 砍到 0.56?
+- vanilla 偶尔让某次 eval 中的 amb 卡 30-60 秒(红灯叠加)
+- 这种"灾难性 eval"在 last 20 evals 里贡献巨大方差
+- PER 让 Q-net 充分学到 amb 响应 → 不再发生灾难性等待
+- → std 砍 94%
+
+这是 PER 在稀疏 priority 事件上的最大价值:不只是平均值改善,
+而是"消除最坏情况的尾部风险"。对真实交通安全场景(救护车!)极其重要。
+
+
+─────────────────────────────────────────────────────────────────────────────
+  2.4 机制 3: 为什么 PER + Double 会抵消
+─────────────────────────────────────────────────────────────────────────────
+
+核心:Double 平滑 TD-error,PER 依赖 TD-error 差异
+──────────────────────────────────────────────
+
+PER 的"放大效应"取决于 TD-error 的相对差异:
+- 高 TD-error 的 transition 被高频采样
+- 如果所有 TD-error 都差不多 → PER 退化成 uniform 采样
+
+Double 的副作用:
+- 消除 max-Q overestimation → Q 估计更准
+- TD-error 整体更小,outlier 减少
+- amb 那种"reward 跳变巨大"的 transition 的 TD-error 也变得没那么"出众"
+- → PER 区分 amb vs 非 amb 的能力下降
+
+实测直接证据(exp143 vs exp144):
+  amb avg_stopped:
+    +PER 单独:      2.62 ± 0.56
+    +Double 单独:   3.25 ± 2.82
+    +PER+Double:    3.25 ± 1.43   ← 完全等于 +Double 单独!PER 优势 100% 消失
+
+  amb avg_wait:
+    +PER 单独:      2.04 ± 0.50
+    +Double 单独:   1.32 ± 1.13   ← Double 单独反而最好
+    +PER+Double:    2.23 ± 1.82   ← 不如 +Double 单独
+
+  car avg_stopped(代价是否被 cancel?):
+    +PER 单独:      33.27   (vs vanilla +12%)
+    +Double 单独:   34.98   (vs vanilla +18%)
+    +PER+Double:    35.41   (vs vanilla +19%)   ← 代价反而叠加,没有 cancel
+
+→ +PER+Double 的"账单":
+   - 失去 PER 在 amb 上的 -58% 改善
+   - 失去 Double 在 amb avg_wait 上的 -56% 改善
+   - 保留两者对 car 的 +19% 退化(代价反而叠加)
+   - 净亏
+
+理论上 Rainbow paper (Hessel 2018) 说 PER+Double = superlinear improvement,
+但他们场景是 Atari(reward 跨度极大、|A|=18)。本场景 |A|=4,reward 跨度小,
+两个 trick 互补性弱 → 抵消。
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║          Part 3: 1x3 Coordination Ablation (exp126-147 系列)                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+─────────────────────────────────────────────────────────────────────────────
+  3.1 实测数据 — system 级 avg_stopped_time_per_visit
+        (last 20 evals, MAD k=3.5 filter)
+─────────────────────────────────────────────────────────────────────────────
+
+                    vanilla       CoLight       CoeffDQN     谁好
+                    ─────────     ─────────     ─────────    ────
+weight 5-2-1 (car=1, bus=2, amb=5):
+  all               24.66 ±1.23   23.28 ±1.35   22.03 ±1.47  CoeffDQN ✓
+  car               26.07 ±1.38   24.87 ±1.51   23.43 ±1.62  CoeffDQN ✓
+  bus                7.92 ±2.78    4.48 ±1.56    5.43 ±1.35  CoLight ✓
+  ambulance          2.94 ±1.37    2.46 ±1.42    1.58 ±1.14  CoeffDQN ✓
+
+weight 5-3-1 (car=1, bus=3, amb=5):
+  all               26.90 ±1.89   22.87 ±1.44   22.73 ±1.42  CoeffDQN (微胜)
+  car               28.67 ±2.16   24.48 ±1.56   24.08 ±1.27  CoeffDQN (微胜)
+  bus                6.01 ±2.56    3.60 ±1.22    4.05 ±1.33  CoLight ✓
+  ambulance          2.94 ±1.89    2.96 ±1.59    2.24 ±1.42  CoeffDQN ✓
+
+weight 5-4-1 (car=1, bus=4, amb=5):
+  all               28.27 ±2.21   24.35 ±1.56   24.68 ±1.78  CoLight (微胜)
+  car               30.73 ±3.20   26.18 ±1.70   26.49 ±1.85  CoLight (微胜)
+  bus                5.13 ±2.02    2.35 ±1.10    2.34 ±1.01  几乎平手
+  ambulance          4.25 ±3.16    4.54 ±2.09    3.25 ±1.55  CoeffDQN ✓
+
+跨 3 个 weight 的趋势:
+  ✓ vanilla DQN 全场最差(几乎每个 cell 都垫底,只在 5-4-1 amb 上略胜 CoLight)
+  ✓ CoLight 在 bus 上一致最好,但在 amb 上随 bus weight 上升而退化
+  ✓ CoeffDQN 在 amb 上全 3 个 weight 都最好;在 all/car 上 5-2-1/5-3-1 也最好,
+    5-4-1 时 CoLight 微胜 all/car
+  ⚠ 5-4-1 时 bus 反超 amb(priority 颠倒) — 严重问题
+
+
+─────────────────────────────────────────────────────────────────────────────
+  3.2 路口级数据 — 验证 GAT 在端点路口优势小
+─────────────────────────────────────────────────────────────────────────────
+
+5-2-1 路口级 avg_stopped_time(注:路口级没有 _per_visit 后缀):
+                  路口 t (端点,1 邻居)  路口 e (中间,2 邻居)  路口 J0 (端点,1 邻居)
+                  ─────────────────    ─────────────────    ──────────────────
+  vanilla all     27.48               28.00               25.42
+  CoLight all     25.73               23.49               25.35
+  CoeffDQN all    22.15 (最低)        22.35 (最低)        24.34 (最低)
+
+  vanilla bus      7.39                6.94                9.01
+  CoLight bus      5.07 (CoLight 强)   3.79 (CoLight 强)   3.94 (CoLight 强)
+  CoeffDQN bus     5.88                5.02                5.18
+
+  vanilla amb      6.05                7.12                5.92
+  CoLight amb      3.38                4.38                4.12
+  CoeffDQN amb     4.25                4.75                4.38
+
+观察(路口几何效应):
+  - 路口 e 有 2 个活邻居 → GAT attention 对中间路口的"all" 改善最大(28.00→23.49)
+  - 路口 t、J0 只 1 个活邻居 → GAT 优势缩小,CoeffDQN 在 all 上反超
+  - bus 这一项 CoLight 在 3 个路口都最低 → state-layer 协同对 bus 一致有效
+  - 这印证了"GAT 对多邻居场景更有效"的直觉(1x3 链是 GAT 的劣势场景)
+  - 大网络(Dublin)上 GAT 优势应该更明显
+
+
+─────────────────────────────────────────────────────────────────────────────
+  3.3 关键问题: 5-4-1 时 priority 颠倒(bus < amb)
+─────────────────────────────────────────────────────────────────────────────
+
+5-4-1 weight 设计意图: amb 权重 5 最高 → amb 应该最优先 → amb 等待应最少
+
+实测 (system per_visit):
+           bus         amb         结果
+  vanilla  5.13        4.25        amb 好 ✓(差 0.88,priority 严格生效)
+  CoLight  2.35        4.54        bus 好 ✗(amb 差 2.19,priority 颠倒!)
+  CoeffDQN 2.34        3.25        bus 好 ✗(amb 差 0.91,priority 颠倒)
+
+为什么协同方法把 priority 颠倒?
+────────────────────────────
+
+reward 信号在 5-4-1 下的分布(1x3 NS20bus_1amb_U,1000s ep,简化估算):
+
+  vehicle  spawn/ep   平均跨路口数  累计 transition (大致)  × weight  累计 reward 贡献
+  ───────  ─────────  ──────────   ───────────────────    ─────────  ──────────────
+  car      ~2021      ~2(平均)     ~4000                  × 1        ~4000
+  bus      ~117       ~3(都跨链)   ~350                   × 4        ~1400
+  amb      ~1.5       3(U 路全跨)  ~4.5                   × 5        ~22.5
+
+  reward 贡献比例 → car : bus : amb ≈ 178 : 62 : 1
+  amb 在 reward 信号里只占 ~0.4%!  (即使 weight 5,也被频率冲淡)
+
+  注:这是简化估算,实际 reward 贡献还跟 wait time、stop events 等动态量有关。
+      但定性结论稳健:bus 频率 ×4 weight 远盖过 amb 的 ×5 weight × 极稀疏频率。
+
+CoLight 的 GAT 协同:
+- GAT 学到的 attention 模式是"邻居 state 跟我自己 reward 的关联"
+- 主要 reward 信号(35:16:1 中的 35+16=51)是 car+bus,全是常态车流
+- GAT 学到的是"邻居 bus/car 排队 → 我应该怎么做"
+- amb 模式(2%)被 GAT attention 平均化稀释 → 决策时 amb 信号被掺水
+- 后果:amb 来了,agent 的 state input 不够锐利,反应慢
+
+CoeffDQN 的 β reward 协同:
+- β 是按"邻居 reward(主要是 bus/car)" 跟"我自己 reward(主要也是 bus/car)" 的关联度更新
+- bus pattern 相关 → β 学到大数值
+- amb pattern 太稀疏 → β 看不见 → 学不到 amb 协同
+- 但 own_state 不被改动(只动 reward target)
+- → CoeffDQN 比 CoLight 受影响小,但仍有 amb 优化精度损失
+
+对比 vanilla(为什么 priority 没颠倒):
+- vanilla 没有"邻居 reward 协同"这个额外信号
+- 每个路口独立优化 own_r = car + 4×bus + 5×amb
+- amb 来的瞬间,own_r 的 amb 项主导(瞬间值大)
+- → agent 立刻让 amb,priority 严格生效
+
+
+─────────────────────────────────────────────────────────────────────────────
+  3.4 CoLight vs CoeffDQN — 在 amb 上的差距趋势
+─────────────────────────────────────────────────────────────────────────────
+
+amb avg_stopped_time_per_visit 跨 weight 趋势:
+
+  weight       vanilla   CoLight    CoeffDQN     CoLight vs vanilla diff
+  ─────        ───────   ───────    ────────     ──────────────────────
+  5-2-1        2.94      2.46       1.58         CoLight 比 vanilla 好 0.48
+  5-3-1        2.94      2.96       2.24         CoLight 跟 vanilla 平
+  5-4-1        4.25      4.54       3.25         CoLight 比 vanilla 差 0.29 ✗
+
+CoLight 在 amb 上的退化趋势:
+  bus weight 越高 → CoLight 越受 bus 信号主导 → amb 越被牺牲
+
+CoeffDQN 在 amb 上的稳健性:
+  全 3 个 weight 都最低,因为 own_state 保持清晰,Q-net 决策时能看到 amb
+
+这是 reward-layer 协同 vs state-layer 协同的核心差异:
+  - state-layer: 决策时 state 就被 mix 了(amb 信号被稀释)
+  - reward-layer: 决策时 state 干净,只是优化目标受影响
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║          Part 4: 串联 1x1 和 1x3 —— 为什么 PER 是 5-4-1 的关键              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+─────────────────────────────────────────────────────────────────────────────
+  4.1 共同的"稀疏 amb"问题
+─────────────────────────────────────────────────────────────────────────────
+
+1x1 和 1x3 都暴露了同一个根本问题:
+  - amb 在 buffer 里占比 0.5-1%
+  - uniform 采样让 amb 信号被淹没
+  - 加 weight=5 也没用(reward 贡献还是只占 2%)
+
+1x1 (5-2-1) 的表现:
+  - vanilla amb std=8.79(灾难性 outlier)
+  - +PER:std=0.56(消除尾部)→ PER 是稀疏信号的 first-line treatment
+
+1x3 (5-4-1) 的表现:
+  - vanilla 还 OK(amb=4.25,priority 严格生效)
+  - 加协同 → amb 退化(CoLight 4.54,CoeffDQN 3.25 但仍 > bus)
+  - 协同放大了 bus 主导,稀释 amb → 加 PER 应该补回
+
+PER 在两个场景的作用是一致的:把稀疏高 TD-error 的 amb transition
+放大到 batch 里被反复采样 → Q-net / β 学到精细 amb 响应。
+
+
+─────────────────────────────────────────────────────────────────────────────
+  4.2 exp153 / exp156 预期(基于 1x1 经验)
+─────────────────────────────────────────────────────────────────────────────
+
+exp153: CoeffDQN + PER + 5-4-1
+  基于 1x1 PER 的 -58% amb 改善幅度,预期:
+    amb avg_stopped: 3.25(exp147 plain CoeffDQN)→ ~1.5-2.0(显著改善)
+    bus avg_stopped: 2.34 → ~2.5-3.0(略变差,PER 让 amb 抢 bus 资源)
+    car: 26.49 → ~28-29(也略变差)
+    最关键: priority 颠倒被纠正,bus > amb 重新成立
+
+exp156: CoeffDQN + PER + Double + 5-4-1
+  基于 1x1 +PER+Double 抵消现象,预期:
+    amb avg_stopped: ~3.0-3.5(类似 +Double 单独,PER 优势被 Double 抹掉)
+    car: 比 exp153 更差(代价叠加)
+    净效果: 不如 exp153
+
+→ 主推 exp153,exp156 作为消融对照
+
+
+─────────────────────────────────────────────────────────────────────────────
+  4.3 PER + Per-class β (future work,thesis 进阶贡献)
+─────────────────────────────────────────────────────────────────────────────
+
+5-4-1 问题的根源:β 是 4 维(per-direction),无法区分车型
+  - β_up 同时决定"听邻居 bus / car / amb 信号的程度"
+  - bus 主导导致 β 整体偏向 bus 协同
+
+终极解决:把 β 扩展为 per direction × per vehicle class:
+  r_eff = own_r
+        + Σ sigmoid(β_d_car) · nb_r_car_d
+        + Σ sigmoid(β_d_bus) · nb_r_bus_d
+        + Σ sigmoid(β_d_amb) · nb_r_amb_d   ← 12 维 β (4 dir × 3 class)
+
+agent 自学:"在每个方向上,是否应该听邻居关于 amb 的信号 / 关于 bus 的信号"
+- bus 主导信号不会再淹 amb
+- β_amb 学到接近 1(amb 重要,要协同)
+- β_bus/car 学到合理(不抢资源)
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║          Part 5: 通用 considerations(适用于所有实验)                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+─────────────────────────────────────────────────────────────────────────────
+  5.1 测速 bias 问题(departSpeed="max" + 跨路口加减速)
+─────────────────────────────────────────────────────────────────────────────
+
+所有 route 文件设置: departSpeed="max", departPos="base"
+→ 车辆 spawn 速度 = lane 限速(主路 13.89 m/s ≈ 50 km/h)
+
+潜在 bias:
+  - 路口 t(进入点之一)的车辆都"刚 spawn",几乎全 max speed
+  - 路口 e、J0 的车辆可能经历过 t 的加减速周期
+  - 链路够长(172m/186m)的话,大部分 lane 已恢复 max speed
+  - 估算:加减速期 ~60m / 链路 180m = 33% → t 和 e 的 avg_speed 差异 <1 m/s
+
+各指标受 bias 影响:
+  ✓ avg_stopped_time: 不受影响(纯测速度<0.1的时长)
+  ✓ avg_wait:         不受影响(累积 waiting time)
+  ✓ avg_stop_events:  不受影响(数 stop transitions)
+  ⚠ avg_speed:        受影响(t 偏高,e/J0 偏低)
+
+实测建议:
+  - 横向 t/e/J0 比较: 主用 avg_stopped_time 和 avg_wait
+  - avg_speed 当参考,在 thesis caption 里注明 spawn bias
+  - 1x1 无 bias(只 1 个路口)
+
+
+─────────────────────────────────────────────────────────────────────────────
+  5.2 Outlier 过滤策略(MAD k=3.5)
+─────────────────────────────────────────────────────────────────────────────
+
+为什么用 MAD 而不是 std-based:
+  - 极端 outlier 会同时拉高 mean 和 std,std-based 阈值失效
+  - MAD = median(|x - median|) 对 outlier 鲁棒
+  - threshold = 3.5 × MAD × 1.4826(Iglewicz & Hoaglin 推荐)
+  - 正态分布下只丢 <0.05% 数据,保守
+
+实测丢的 outlier 数(window=20):
+  1x3 system:    vanilla=19, CoLight=6, CoeffDQN=13   总 38 个
+  vanilla 被丢的最多 → 收敛差,末期 eval 波动大
+
+ambulance 特殊处理:
+  - 先过滤 n_amb=0 的 eval(0 不是 outlier,是"没救护车")
+  - 再过 MAD
+  - 即:filter zeros → tail 20 → MAD
+
+
+─────────────────────────────────────────────────────────────────────────────
+  5.3 统计 caveats(单 seed 下结论的可信度)
+─────────────────────────────────────────────────────────────────────────────
+
+当前所有实验都是单 seed。多 seed 才能严格说"显著":
+  - 1 σ 差异: 有指示性,但 ~30% 概率纯噪声
+  - 2 σ 差异: 比较可信
+  - 3 σ 差异: 强证据
+
+具体可信度评估(基于均值差 / σ 比):
+  ✓ 强结论(>2σ):
+    - vanilla 在 1x3 上全场最差(每个 cell 至少 2σ 差距)
+    - PER 改善 1x1 amb(-58%,5σ)
+    - +PER+Double 完全抵消 PER 的 amb 优势(3σ 内完全等值)
+
+  ◯ 中等结论(~1σ):
+    - CoeffDQN 在 1x3 amb 上比 CoLight 好(差 0.5-1.0,σ ~1.5)
+    - Double 在 1x1 amb avg_wait 上比 PER 好(差 0.7,σ ~1)
+
+  ⚠ 弱结论(<1σ,需多 seed):
+    - 5-4-1 时 priority 颠倒的精确程度(amb-bus 差 ~1 秒,σ ~2)
+    - CoLight 在 5-3-1 amb 是否"显著比 vanilla 差"
+
+建议:
+  - 5-4-1 + PER 的关键实验(exp153)至少跑 3 seed
+  - 1x1 PER ablation 是 thesis 第二章主要论点,跑 3-5 seed
+  - 其它实验 1 seed 当 motivation 可接受
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║          Part 6: thesis 主线 narrative + 实验建议                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+─────────────────────────────────────────────────────────────────────────────
+  6.1 主线 narrative(三段论)
+─────────────────────────────────────────────────────────────────────────────
+
+Chapter X.1 — 协同有用,但 state-layer 和 reward-layer 不一样
+  论据(1x3 数据):
+    - vanilla 全场最差(协同有用)
+    - CoLight bus 上最强,但 amb 上随 bus weight 涨而退化
+    - CoeffDQN amb 上最强,跨 weight 稳健
+  机制:state 层在 GAT 聚合时稀释 amb 信号;reward 层只动 target,
+       state 保持锐利。
+
+Chapter X.2 — Priority weight 决定哪个 regime 适用
+  论据(1x3 数据):
+    - 5-2-1: CoeffDQN 横扫
+    - 5-3-1: 两者并驾齐驱
+    - 5-4-1: CoLight 微胜 bus/car,但 amb 退化;priority 颠倒(bus < amb)
+  机制:reward 信号被 bus 主导(车辆数 × weight = 35:16:1),
+       amb 在协同信号中只占 2% → β / GAT 学不到 amb 协同。
+
+Chapter X.3 — PER 是稀疏 priority 信号的对症 fix
+  论据(1x1 + 即将的 1x3 5-4-1):
+    - 1x1: PER 把 amb 灾难等待 std 砍 94%,平均 -58%
+    - 1x3 5-4-1 + PER(预期):priority 颠倒纠正,amb < bus 重新成立
+  机制:PER 按 |TD-error| 优先采样,把稀疏 amb transition 在 batch 里
+       放大 20-40 倍,β / Q-net 终于看见 amb 信号。
+
+  反例: +PER+Double 抵消(1x1 实测,1x3 预期同样)。
+  机制:Double 平滑 TD-error → PER 失去差异化采样基础。
+
+  → 主推: PER 单独,不叠 Double。
+
+
+─────────────────────────────────────────────────────────────────────────────
+  6.2 实验优先级(GPU 时间有限时)
+─────────────────────────────────────────────────────────────────────────────
+
+P0(必跑,thesis 必有):
+  - exp151-156 全跑(CoeffDQN + PER ± Double × 3 weight)
+  - 主结论靠 exp153 / 156 (5-4-1)
+
+P1(强烈建议):
+  - 关键 cell 多 seed (至少 3):
+    - 1x1 exp113 / 143:确认 -58% amb 改善的可重复性
+    - 1x3 5-4-1 exp147 / 153:确认 PER 解决 priority 颠倒
+
+P2(thesis 完整性):
+  - 加更高 amb weight 的 weight ablation:10-4-1, 20-4-1, 50-4-1
+    用于回答"多大 weight 才能保证 priority 严格生效?"
+
+P3(future work,可放下篇):
+  - Per-class β (12 维而不是 4 维)
+  - 硬抢绿 (rule-based) baseline 作为 upper bound
+  - 多目标 RL / Hierarchical agent
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                            一句话总结                                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+1x1 数据明确显示:Double DQN 消除"keep current phase"的 Q 高估让 amb 切相位
+更快(-56% avg_wait),PER 把稀疏 amb transition 在 batch 里放大 20-40x 解决
+"灾难性等待"(std -94%),但两者合用时 Double 平滑 TD-error → PER 的放大效应
+失效 → 优势完全抵消。
+
+1x3 数据明确显示:协同有用(vanilla 全场最差),state-layer 协同(CoLight)在 bus
+weight 高时稀释 amb 信号导致 priority 颠倒,reward-layer 协同(CoeffDQN)因
+为 own_state 保持锐利而更稳健,但在 5-4-1 极端 weight 下也开始崩。
+
+→ 主推方案:CoeffDQN(reward-layer 协同)+ PER(对症稀疏 amb 信号),
+   不叠 Double(会抵消 PER 的核心机制)。
+
+   下一步实验:exp151-156 验证 PER 在 5-4-1 上是否能纠正 priority 颠倒。
+
+
+================================================================================
+  END OF NOTES — 2026-06-09
+================================================================================

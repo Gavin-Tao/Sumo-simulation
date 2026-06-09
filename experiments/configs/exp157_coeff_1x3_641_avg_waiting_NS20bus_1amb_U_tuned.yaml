@@ -1,0 +1,76 @@
+# Experiment: exp157 — CoeffDQN + PriorityBCA + 6-4-1-avg-waiting-time on NS20bus_1amb_U, 1x3.
+# Motivation: exp147 (5-4-1) showed priority inversion (bus < amb on stopped_time) because
+# bus weight=4 + bus frequency (~117 buses/ep × 4 = reward share 1404) dominates over
+# amb weight=5 + amb frequency (~2 amb/ep × 5 = reward share 22.5).
+# This config tests whether bumping amb weight from 5 to 6 restores priority order WITHOUT PER.
+#
+# Weight comparison vs exp147:
+#   exp147 = 5-4-1 (car=1, bus=4, amb=5)  ← amb 比 bus 大 25%
+#   exp157 = 6-4-1 (car=1, bus=4, amb=6)  ← amb 比 bus 大 50%  ← THIS
+#
+# Reward share with new weight:
+#   car: 2021 × 1 = 2021
+#   bus: 117 × 4 = 468
+#   amb: 2 × 6 = 12       ← amb 仍占 reward 信号 <0.5%,所以颠倒可能仍存在
+# 这是一个"先看 weight 边际效益"的实验,如果 6-4-1 还不行就再上 10-4-1。
+#
+# Coordination matrix on 6-4-1:
+#   exp157 = CoeffDQN (plain, controlled hd=128)  ← THIS (no PER, no Double)
+#   (后续可加 vanilla DQN / CoLight 同 weight 对比,以及 +PER 版本)
+#
+# HYPERPARAMS: IDENTICAL to exp147 (controlled hd=128).
+name: "exp157_coeff_1x3_641_avg_waiting_NS20bus_1amb_U_tuned"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files — identical scenario to exp147 (NS 20% bus + WE car + 1 amb U-route)
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Neighbor map: [up, down, left, right], null = no neighbor — same as exp147
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment — matched to exp147 except reward_fn
+observation_class: "PriorityBCA"
+reward_fn:         "6-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — IDENTICAL to exp147 (controlled comparison)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123       # matched to exp147 for fair comparison
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# NOTE: use_double / use_per intentionally NOT set → default False → plain CoeffDQN

@@ -1,0 +1,103 @@
+# Experiment: exp158 — CoeffDQN + PER (5-4-1, NS20bus_1amb_U) with BOTH DQN and PER hyperparams tuned.
+#
+# Builds on exp153 (CoeffDQN + PER controlled hd=128) — tunes DQN + PER together for the task:
+#   priority class (ambulance) is rare (~0.5% of buffer) and high-weight (5×).
+#   At 5-4-1, bus weight=4 dominates β coordination → amb gets deprioritized
+#   (exp147 amb=3.25 vs vanilla=4.25, "priority inversion" with bus<amb).
+#   PER amplifies sparse amb sampling but works BEST with a tuned DQN + PER combo.
+#
+# Tuning decisions vs exp153 (each with rationale):
+#   ─────────────────────────────────────────────────────────────────────────
+#   PARAM            exp153 → exp158    REASON
+#   ─────────────────────────────────────────────────────────────────────────
+#   DQN side:
+#   hidden_dim       128 → 256          aug_state ≈ 250 dim (own + 4×nb), 128 is bottlenecked;
+#                                       256 was tuned in exp148. With PER amplifying amb signal,
+#                                       the Q-net needs MORE capacity to fit amb-specific patterns.
+#   capacity         50000 → 100000     PER benefits from larger buffer (retains more rare amb
+#                                       transitions, ~250 → ~500 amb transitions retained at any time).
+#                                       The total training has ~12000 amb transitions over 2000 ep × 6/ep,
+#                                       100k buffer holds ~17% of all amb transitions for re-sampling.
+#   mini_size        2000 → 3000        Even more amb diversity before PER's first amplified update.
+#                                       At 3000 transitions ~15 ep, ~30 amb transitions, β's first
+#                                       PER-weighted gradient sees enough amb-direction diversity.
+#   target_update    20 → 50            PER amplifies high-TD-error → larger gradient updates on amb.
+#                                       Slower target update = more stable reference for amplified updates.
+#                                       50 still updates target ~4× per episode (online learning intact).
+#   eps_decay        5000 → 8000        Bigger network + PER's stronger gradients need slightly more
+#                                       exploration to settle. eps→0.01 by ep ~200 instead of ep ~125.
+#
+#   PER side:
+#   per_alpha        0.6 → 0.7          Stronger prioritization for very sparse amb (0.5% of buffer).
+#                                       0.6 = Schaul default; 0.7 = Rainbow-style stronger amplification.
+#                                       For our amb (extreme rarity), 0.7 better amplifies.
+#
+#   Unchanged from exp153 (already correct):
+#   lr=0.001 (Adam adapts), gamma=0.99, batch_size=256, eps_start=0.9, eps_end=0.01,
+#   per_beta_start=0.4, per_beta_end=1.0, per_beta_steps=400000 (matches training length),
+#   per_eps=1e-6, episodes=2000, eval_seed=123, use_double=false.
+#
+# Expected result vs exp153:
+#   - amb avg_stopped should drop further (exp153 predicted ~1.5-2.0; exp158 maybe ~1.0-1.5)
+#   - car/bus may degrade slightly more (more aggressive amb prioritization)
+#   - priority order (amb < bus < car) should be cleanly restored
+name: "exp158_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER_tunedAll"
+
+# wandb
+wandb_project: "sumo-rl-1x3"
+
+# SUMO files — identical scenario to exp147/153
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — TUNED for CoeffDQN + PER on 5-4-1 sparse priority signal
+hidden_dim:    256       # ← relieve aug_state bottleneck; PER needs more Q-net capacity for amb patterns
+lr:            0.001     # standard Adam, no change
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     8000      # ← slightly longer exploration for bigger net + PER amplified gradients
+target_update: 50        # ← stabilize target under PER's amplified updates (was 20)
+capacity:      100000    # ← retain ~500 amb transitions for PER to oversample
+mini_size:     3000      # ← more amb diversity before PER first update (~30 amb transitions)
+batch_size:    256
+
+# PER hyperparameters — TUNED for very sparse amb signal
+use_per:           true
+per_alpha:         0.7       # ← stronger prioritization (Rainbow-style, vs Schaul default 0.6)
+                             # amb at 0.5% buffer + weight 5 → high TD-error, want max amplification
+per_beta_start:    0.4       # standard IS correction start
+per_beta_end:      1.0       # full IS correction by training end
+per_beta_steps:    400000    # matches 2000 ep × 200 step/ep
+per_eps:           1.0e-6    # priority floor
+
+# use_double: NOT set → False (1x1 ablation showed PER+Double抵消, see ANALYSIS_2026-06-09.txt)
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123       # matched to exp147/153 for fair comparison
+
+logging_mode:     "basic"
+metrics_interval: 50

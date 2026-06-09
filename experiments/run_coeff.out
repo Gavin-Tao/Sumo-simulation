@@ -1,0 +1,82 @@
+nohup: ignoring input
+总览: 3 + 3 个 run,分两批跑
+  GPU: 0, STAGGER: 15s, LOG_DIR: ./logs/run_coeff_20260609_112726
+  RAM: 每批 3 × ~2GB ≈ 6GB (安全)
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 11:27:26 IST] ▶▶▶ BATCH 1 (controlled, hd=128) 启动 (3 个并行)
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 11:27:26 IST] ▶ LAUNCH  exp145_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned
+  cmd: python3 traincoeff.py --config configs/exp145_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned.yaml --gpu 0
+  log: ./logs/run_coeff_20260609_112726/exp145_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 8541
+
+[2026年 06月 09日 星期二 11:27:26 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 11:27:41 IST] ▶ LAUNCH  exp146_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tuned
+  cmd: python3 traincoeff.py --config configs/exp146_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tuned.yaml --gpu 0
+  log: ./logs/run_coeff_20260609_112726/exp146_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 8610
+
+[2026年 06月 09日 星期二 11:27:41 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 11:27:56 IST] ▶ LAUNCH  exp147_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned
+  cmd: python3 traincoeff.py --config configs/exp147_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.yaml --gpu 0
+  log: ./logs/run_coeff_20260609_112726/exp147_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.log
+  PID: 8680
+
+[2026年 06月 09日 星期二 11:27:56 IST] BATCH 1 (controlled, hd=128) 全部启动,等结束 ...
+  实时看: tail -f ./logs/run_coeff_20260609_112726/*.log
+
+[2026年 06月 09日 星期二 13:56:06 IST] ✓ exp145_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned 结束 (exit 0)
+[2026年 06月 09日 星期二 14:00:58 IST] ✓ exp146_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tuned 结束 (exit 0)
+[2026年 06月 09日 星期二 14:00:58 IST] ✓ exp147_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned 结束 (exit 0)
+
+[2026年 06月 09日 星期二 14:00:58 IST] BATCH 1 (controlled, hd=128) 全部完成
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 14:00:58 IST] ▶▶▶ BATCH 2 (tuned, hd=256) 启动 (3 个并行)
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 14:00:58 IST] ▶ LAUNCH  exp148_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tunedCoeff
+  cmd: python3 traincoeff.py --config configs/exp148_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tunedCoeff.yaml --gpu 0
+  log: ./logs/run_coeff_20260609_112726/exp148_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tunedCoeff.log
+  PID: 9473
+
+[2026年 06月 09日 星期二 14:00:58 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 14:01:13 IST] ▶ LAUNCH  exp149_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tunedCoeff
+  cmd: python3 traincoeff.py --config configs/exp149_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tunedCoeff.yaml --gpu 0
+  log: ./logs/run_coeff_20260609_112726/exp149_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tunedCoeff.log
+  PID: 9539
+
+[2026年 06月 09日 星期二 14:01:13 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 14:01:28 IST] ▶ LAUNCH  exp150_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tunedCoeff
+  cmd: python3 traincoeff.py --config configs/exp150_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tunedCoeff.yaml --gpu 0
+  log: ./logs/run_coeff_20260609_112726/exp150_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tunedCoeff.log
+  PID: 9607
+
+[2026年 06月 09日 星期二 14:01:28 IST] BATCH 2 (tuned, hd=256) 全部启动,等结束 ...
+  实时看: tail -f ./logs/run_coeff_20260609_112726/*.log
+
+[2026年 06月 09日 星期二 16:54:30 IST] ✓ exp148_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tunedCoeff 结束 (exit 0)
+[2026年 06月 09日 星期二 16:54:30 IST] ✓ exp149_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tunedCoeff 结束 (exit 0)
+[2026年 06月 09日 星期二 16:55:38 IST] ✓ exp150_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tunedCoeff 结束 (exit 0)
+
+[2026年 06月 09日 星期二 16:55:38 IST] BATCH 2 (tuned, hd=256) 全部完成
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 16:55:38 IST] 6 个 run 全部完成,总挂钟 19692s (≈ 328min)
+
+BATCH 1 (controlled):
+  ✓  exp145_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tuned  (exit 0)
+  ✓  exp146_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tuned  (exit 0)
+  ✓  exp147_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (exit 0)
+
+BATCH 2 (tuned):
+  ✓  exp148_coeff_1x3_521_avg_waiting_NS20bus_1amb_U_tunedCoeff  (exit 0)
+  ✓  exp149_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tunedCoeff  (exit 0)
+  ✓  exp150_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tunedCoeff  (exit 0)
+
+  log 目录: ./logs/run_coeff_20260609_112726
+════════════════════════════════════════════════════════════════════════════

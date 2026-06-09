@@ -1,0 +1,75 @@
+# Experiment: exp153 — CoeffDQN + PER on 5-4-1 NS20bus_1amb_U. ⭐ MOST INTERESTING CASE.
+# Pair with exp147 (plain CoeffDQN controlled). Same scenario as exp151/152 except weight (5-4-1).
+#
+# Why this is the key experiment: at 5-4-1, bus weight=4 dominates the reward signal so β learns
+# coordination biased to bus → ambulance is deprioritized → CoeffDQN's amb metric WORSE than vanilla
+# (3.57 vs 3.37 on per_visit, std ±2). PER should fix this by over-sampling amb transitions
+# (large |TD-error| from weight-5 events) → β learns amb coordination → amb metric recovers.
+#
+# Coordination matrix on 5-4-1:
+#   exp137 = vanilla DQN     (amb=3.37, best on amb)
+#   exp135 = CoLightOrig     (amb=4.15, worst — GAT state aggregation dilutes amb)
+#   exp147 = CoeffDQN (plain) (amb=3.57, slightly worse than vanilla)
+#   exp153 = CoeffDQN + PER  ← THIS  (predicted: amb ≤ vanilla, others slightly worse than exp147)
+#   exp156 = CoeffDQN + PER + Double
+#
+# HYPERPARAMS: IDENTICAL to exp147 + PER hyperparams (same as exp151/152).
+name: "exp153_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — almost identical to exp147 (controlled), 1 exception below.
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     2000     # ← BUMPED from 1000 (vs exp147 / exp151).
+                        # PER over-samples high-TD-error transitions; with only ~5 amb transitions
+                        # in a 1000-warmup buffer, β's first PER-driven update could lock onto a
+                        # biased sample. 2000 warmup → ~10 amb transitions → β sees more diverse
+                        # neighbor-direction patterns before its first amplified update.
+batch_size:    256
+
+# PER (same as exp151/152)
+use_per:           true
+per_alpha:         0.6
+per_beta_start:    0.4
+per_beta_end:      1.0
+per_beta_steps:    400000
+per_eps:           1.0e-6
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123
+
+logging_mode:     "basic"
+metrics_interval: 50

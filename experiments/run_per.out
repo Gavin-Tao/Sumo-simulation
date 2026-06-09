@@ -1,0 +1,23 @@
+nohup: ignoring input
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 09日 星期二 16:18:26 IST] 启动 2 个并行 CoeffDQN+PER 实验
+  GPU: 0, STAGGER: 15s
+  LOG_DIR: ./logs/run_per_20260609_161826
+  注意: BATCH 2 (exp148-150) 可能还在跑,本脚本会和它共存
+════════════════════════════════════════════════════════════════════════════
+
+[2026年 06月 09日 星期二 16:18:26 IST] ▶ LAUNCH  exp153_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER
+  cmd: python3 traincoeff.py --config configs/exp153_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER.yaml --gpu 0
+  log: ./logs/run_per_20260609_161826/exp153_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER.log
+  PID: 11417
+
+[2026年 06月 09日 星期二 16:18:26 IST] stagger 15s ...
+
+[2026年 06月 09日 星期二 16:18:41 IST] ▶ LAUNCH  exp156_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double
+  cmd: python3 traincoeff.py --config configs/exp156_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double.yaml --gpu 0
+  log: ./logs/run_per_20260609_161826/exp156_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double.log
+  PID: 11474
+
+[2026年 06月 09日 星期二 16:18:41 IST] 全部启动,等结束 ...
+  实时看: tail -f ./logs/run_per_20260609_161826/*.log
+

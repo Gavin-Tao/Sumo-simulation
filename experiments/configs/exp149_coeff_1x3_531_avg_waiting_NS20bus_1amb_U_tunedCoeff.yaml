@@ -1,0 +1,62 @@
+# Experiment: exp149 — CoeffDQN at CoeffDQN-best hyperparams on 5-3-1 NS20bus_1amb_U.
+# Pair-up with exp146 (controlled, hd=128). Same scenario as exp148 except reward weights (5-3-1 vs 5-2-1).
+#
+# Rationale (only 2 strongly-justified changes vs exp146 controlled hd=128):
+#   • hidden_dim 128 → 256  : STRONG — relieve aug_state physical bottleneck (input ~250 dim)
+#   • capacity 50000 → 80000: MODERATE — retain more sparse ambulance transitions (+60% amb diversity)
+# REJECTED as too marginal: target_update 30 (2nd-order), eps_decay 6000 (+1.25%), mini_size 2000 (PER-flavored).
+# All other params UNCHANGED from controlled.
+#
+# 3-way comparison on 5-3-1:
+#   exp136 = vanilla DQN  (no coordination)
+#   exp134 = CoLightOrig  (state-layer only)
+#   exp146 = CoeffDQN @ hd=128 (controlled)
+#   exp149 = CoeffDQN @ tuned-best (this)
+name: "exp149_coeff_1x3_531_avg_waiting_NS20bus_1amb_U_tunedCoeff"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+observation_class: "PriorityBCA"
+reward_fn:         "5-3-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters — CoeffDQN-tuned
+hidden_dim:    256
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000    # unchanged from controlled
+target_update: 20      # unchanged from controlled
+capacity:      80000   # ← +60% amb transition diversity
+mini_size:     1000    # unchanged from controlled
+batch_size:    256
+
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+eval_interval: 5
+eval_seed:     123       # matched to exp134/146 (CoLightOrig + controlled CoeffDQN)
+
+logging_mode:     "basic"
+metrics_interval: 50
+
+# use_double / use_per NOT set → plain CoeffDQN
