@@ -126,7 +126,20 @@
       "Read(//proc/17477/fd/**)",
       "Bash(ps -p 17477 -o pid,rss,etime,stat)",
       "Bash(grep -E \"^[0-9]+$\")",
-      "Bash(WANDB_MODE=disabled WANDB_DISABLED=true timeout 240 python3 traincoeff.py --config /tmp/exp_ambmax_smoke.yaml --gpu -1)"
+      "Bash(WANDB_MODE=disabled WANDB_DISABLED=true timeout 240 python3 traincoeff.py --config /tmp/exp_ambmax_smoke.yaml --gpu -1)",
+      "Bash(sed -i 's|from sumo_rl.environment.observations import OBS_REGISTRY|from sumo_rl.environment.observations import PriorityBCAObservationFunction|' /tmp/measure_per_amb.py)",
+      "Bash(sed -i \"s|observation_class=OBS_REGISTRY\\\\[cfg\\\\['observation_class'\\\\]\\\\],|observation_class=PriorityBCAObservationFunction,|\" /tmp/measure_per_amb.py)",
+      "Bash(timeout 600 python3 /tmp/measure_per_amb.py)",
+      "Bash(xargs -I{} sh -c 'if grep -q exp143_ {}/files/config.yaml 2>/dev/null; then cat {}/files/wandb-metadata.json 2>/dev/null | grep -o \"\\\\\"program\\\\\":[^,]*\" | head -1; fi')",
+      "Bash(grep -vE \"^\\\\[_build_phases|^  green_phase|^  runtime|^✅|^This is|^\\\\s+G[rGy]|^\\\\s*$\")",
+      "Bash(sed -i 's|idx = \\(per_buf.buffer.pos - 1\\) % per_buf.capacity|idx = \\(per_buf.next_idx - 1\\) % per_buf.capacity|' /tmp/measure_per_amb.py)",
+      "Bash(sed -i 's|per_buf.buffer.buffer\\\\[idx\\\\]|per_buf.buffer[idx]|g' /tmp/measure_per_amb.py)",
+      "Bash(sed -i 's|exp143_1x1_521_avg_waiting_NSamb_tuned_per.yaml|exp147_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned.yaml|' /tmp/measure_per_amb_1x3.py)",
+      "Bash(sed -i 's|1x1 5-2-1|1x3 5-4-1|g' /tmp/measure_per_amb_1x3.py)",
+      "Bash(timeout 600 python3 /tmp/measure_per_amb_1x3.py)",
+      "Bash(sed -i 's|1x1 5-2-1|1x1 5-4-1|g' /tmp/measure_per_amb_1x1_541.py)",
+      "Bash(sed -i \"s|reward_fn=REWARD_REGISTRY\\\\[cfg\\\\['reward_fn'\\\\]\\\\]|reward_fn=REWARD_REGISTRY['5-4-1-avg-waiting-time']|\" /tmp/measure_per_amb_1x1_541.py)",
+      "Bash(timeout 300 python3 /tmp/measure_per_amb_1x1_541.py)"
     ],
     "additionalDirectories": [
       "/tmp",
