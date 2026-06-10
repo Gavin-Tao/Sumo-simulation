@@ -68,6 +68,24 @@ from sumo_rl.environment.observations import (
     PriorityBCAObservationFunction,
     PriorityCtrlBCAObservationFunction,
     PriorityWaitingBCAObservationFunction,
+    PriorityPhaseLegacyCQ,
+    PriorityPhaseLegacyCQM,
+    PriorityPhaseLegacyCQMM,
+    PriorityPhaseElapsedCQ,
+    PriorityPhaseElapsedCQM,
+    PriorityPhaseElapsedCQMM,
+    PriorityMovementLegacyCQ,
+    PriorityMovementLegacyCQM,
+    PriorityMovementLegacyCQMM,
+    PriorityMovementElapsedCQ,
+    PriorityMovementElapsedCQM,
+    PriorityMovementElapsedCQMM,
+    PriorityLaneLegacyCQ,
+    PriorityLaneLegacyCQM,
+    PriorityLaneLegacyCQMM,
+    PriorityLaneElapsedCQ,
+    PriorityLaneElapsedCQM,
+    PriorityLaneElapsedCQMM,
 )
 
 OBS_REGISTRY = {
@@ -84,6 +102,27 @@ OBS_REGISTRY = {
     "PriorityBCA":            PriorityBCAObservationFunction,
     "PriorityCtrlBCA":        PriorityCtrlBCAObservationFunction,
     "PriorityWaitingBCA":     PriorityWaitingBCAObservationFunction,
+    # Scheme A — phase-level priority buckets (legacy vs perphase-elapsed × field-sets)
+    "PriorityPhaseLegacyCQ":    PriorityPhaseLegacyCQ,
+    "PriorityPhaseLegacyCQM":   PriorityPhaseLegacyCQM,
+    "PriorityPhaseLegacyCQMM":  PriorityPhaseLegacyCQMM,
+    "PriorityPhaseElapsedCQ":   PriorityPhaseElapsedCQ,
+    "PriorityPhaseElapsedCQM":  PriorityPhaseElapsedCQM,
+    "PriorityPhaseElapsedCQMM": PriorityPhaseElapsedCQMM,
+    # Scheme B — movement-level priority buckets (12 turning slots)
+    "PriorityMovementLegacyCQ":    PriorityMovementLegacyCQ,
+    "PriorityMovementLegacyCQM":   PriorityMovementLegacyCQM,
+    "PriorityMovementLegacyCQMM":  PriorityMovementLegacyCQMM,
+    "PriorityMovementElapsedCQ":   PriorityMovementElapsedCQ,
+    "PriorityMovementElapsedCQM":  PriorityMovementElapsedCQM,
+    "PriorityMovementElapsedCQMM": PriorityMovementElapsedCQMM,
+    # Scheme T (simplified) — lane-level priority buckets (flat, no static geometry yet)
+    "PriorityLaneLegacyCQ":    PriorityLaneLegacyCQ,
+    "PriorityLaneLegacyCQM":   PriorityLaneLegacyCQM,
+    "PriorityLaneLegacyCQMM":  PriorityLaneLegacyCQMM,
+    "PriorityLaneElapsedCQ":   PriorityLaneElapsedCQ,
+    "PriorityLaneElapsedCQM":  PriorityLaneElapsedCQM,
+    "PriorityLaneElapsedCQMM": PriorityLaneElapsedCQMM,
 }
 
 

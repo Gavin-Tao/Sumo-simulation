@@ -1,0 +1,67 @@
+# A/B/T tuned variant — vanilla DQN, 1x1 5-4-1, NS 20%bus/80%car.
+# Base: exp172 (same scheme, hd128 defaults). TUNED bundle (uniform across exp180-182; the T arm exp182 is the lane-token Transformer, its capacity analog = d_model 128→256
+# so the A/B/T comparison inside the tuned family stays controlled):
+#   hidden_dim 128→256 : φ priority-bucket state is richer than flat BCA (B/T = 125-dim
+#                        input); 1x1 has no coordination channel — the "capacity deepens
+#                        inversion" risk was a 1x3-coordination finding (exp148-150), and
+#                        1x1 showed no inversion at any weight (exp168-170). Also gives a
+#                        clean 1x1 read on the capacity axis vs exp172.
+#   eps_decay 5000→20000: per-step ε decay window ×4 (≈25ep → ≈100ep at 200 steps/ep).
+#                        Ambulances are sparse (~2/episode); a longer exploration window
+#                        covers ~4× more amb events before the policy goes greedy.
+#   capacity 50k→100k  : uniform buffer keeps amb transitions sampleable ~2× longer
+#                        (≈500 eps of history). Deliberately NOT PER — exp153 showed
+#                        TD-prioritized oversampling of amb outliers causes tail blowups;
+#                        a larger uniform buffer is the mild alternative.
+# Everything else identical to exp172 (lr/gamma/batch/target_update/episodes/seeds/eval).
+# Scheme A: per-phase; phase_state=legacy; fields=["count", "queue"].
+name: "exp180_1x1_541_NS20bus_vanilla_A_phase_legacy_cq_hd256tuned"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment — A/B/T obs configured via obs_phase_state + obs_fields
+observation_class: "PriorityPhase"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue"]
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (TUNED — deltas vs exp172 documented above)
+hidden_dim:    256
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     20000
+target_update: 20
+capacity:      100000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER
+use_double: false
+use_per:    false

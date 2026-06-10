@@ -1,0 +1,70 @@
+# Scheme T tuned — lane-token Transformer, tuned bundle (T-arm counterpart of exp180/181).
+# Base: exp174 (transformer, d128/4H/FF256 + hd-family defaults). TUNED deltas:
+#   d_model 128→256, nhead 4→8, dim_ff 256→512 : the transformer analog of the MLP arms'
+#                        hidden_dim 128→256 (exp180/181) — capacity ×2 with head_dim kept
+#                        at 32 and FF at the 2×d_model convention. Keeps the tuned-family
+#                        capacity axis comparable across A/B/T.
+#   eps_decay 5000→20000: same as exp180/181 — ε window ×4 covers ~4× more sparse amb
+#                        events (~2/episode) before the policy goes greedy.
+#   capacity 50k→100k  : same as exp180/181 — uniform buffer keeps amb transitions ~2×
+#                        longer; deliberately NOT PER (exp153 tail-blowup lesson).
+# Everything else identical to exp174 (lr/gamma/batch/target_update/episodes/seeds/eval).
+# hidden_dim below is ignored under agent_arch=transformer (kept for yaml uniformity).
+name: "exp182_1x1_541_NS20bus_vanilla_T_lane_legacy_cq_transformer_tuned"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment — identical to exp174
+observation_class: "PriorityLaneToken"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue"]
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Q-network architecture (TUNED — deltas vs exp174 documented above)
+agent_arch: "transformer"
+transformer:
+  d_model:    256
+  nhead:      8
+  num_layers: 2
+  dim_ff:     512
+
+# DQN hyperparameters (TUNED — eps_decay/capacity as exp180/181)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     20000
+target_update: 20
+capacity:      100000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER
+use_double: false
+use_per:    false

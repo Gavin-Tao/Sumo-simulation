@@ -1,0 +1,405 @@
+================================================================================
+  A / B / Transformer State 设计 (数据复审版)
+
+  作者:  Xiaowen Tao (TCD)
+  日期:  2026-06-10
+  状态:  设计 v2 — 对照 06-09/06-10 实测数据复审后重写
+  目的:  在 SUMO 信号路口上实现并对比三种 state 组织 (按相位 / 按转向 / 按车道),
+         隔离"状态组织"这一个变量。本版用实测数据复审了原 spec, 标出强印证、
+         结构隐患、与"优先级倒挂"的接口。
+  关联:  REWARD_STATE_AUDIT_2026-06-10.txt   (reward/state 审计 — obs 无 waiting
+                                              是噪声下限; amb 稀疏诊断)
+         RETROSPECTIVE_2026-06-10.txt        (1x1 不倒挂 / 1x3 倒挂 / 容量放大)
+         PRIORITY_ORDERING_SOLUTIONS_2026-06-10.txt (排序保证 G/H/Y 三层)
+         COORDINATION_ANALYSIS_2026-06-09.txt (协同流派)
+  前身:  2026-06-10-ab-transformer-state-design.md (本文件取代之, 已删)
+  辅助:  state_design_AB_worked_example.txt / generic_agent_state_design.txt /
+         State_Design_A_B_Transformer.pptx
+  ⚠ 只做设计与预测, 未改代码。预测标 [推测]; 实测标 exp 号。
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 0: 复审决策 delta — 相对 v1(.md) 改了什么, 为什么                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  改动点              v1 (原 .md)              v2 (本版)              触发的实测证据
+  ─────────────────   ──────────────────────   ────────────────────   ───────────────
+  场景定位            单路口先行               单路口 + 必跑 1x3      1x1 永不倒挂
+                                               (倒挂只活在 1x3)       (RETRO 1.6)
+  Transformer 定位    无条件推荐(zero-shot)    效率推荐 / 排序需配    容量=倒挂放大器
+                                               保证 (容量悖论)        (RETRO 1.1)
+  reward              加权求和 -Σp×awt         加权求和 + 正交性声明  加权求和不保排序
+                                               (state 不修倒挂)       (PRIORITY 1.3)
+  稀疏处理            未提                     三臂统一配 stratified  amb 梯度占比 0.5%
+                                               replay 作为控制变量    (AUDIT P3)
+  φ 的 awt 字段       设计直觉                 实测背书 (它补的正是   obs 无 waiting =
+                                               噪声结构下限)          噪声下限 (AUDIT 1.2)
+  实验协议            单 seed, eval 已注意      multi-seed + clean     单 seed 多 ns;
+                                               seed(C1已修)+NaN哨兵   eval 污染 (RETRO)
+  priority 表        amb5/bus3/truck2/car1     须同时跑 bus=4 档      5-3-1不倒/5-4-1倒
+                                               才能在 A/B/T 复现倒挂   (RETRO 1.1)
+
+  一句话: v1 是"干净的单路口状态组织对比"; 但你真正关心的"倒挂"在单路口不存在,
+  且换 state 组织本身修不了倒挂。v2 把这件事说清, 并把状态轴与排序轴接上。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 1: 数据复审 (本次重写的核心) — 7 条                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 1  ✓✓ 最强印证: φ 的 awt 字段直击实测"噪声结构下限"
+─────────────────────────────────────────────────────────────────────────────
+  实测 (REWARD_STATE_AUDIT 1.2): 当前 PriorityBCA obs 只有 per-lane per-type
+  counts, 完全没有 waiting 信息 → 被点名为"amb |TD| 噪声的结构性下限"。
+  541 时 amb 状态 |TD| = 0.635 (521 仅 0.365)。
+  → 新 φ 每级带 [count, queue, mean_awt, max_awt], 直接补上 waiting 维度。
+    这是整套重设计最硬的数据动机: 不是"换个花样组织 state", 而是"现 obs 缺
+    了一个被实测证明会抬高 amb 拟合噪声的关键信号"。
+
+  [推测] 预测: 三种 state 只要加 awt 字段, amb |TD| 应从 0.635 向 521 档(0.365)
+    下移。这是状态层独立于 A/B/T 分组的"普遍增益", 应作为 v2 的首要可验证假设。
+    验证: 诊断脚本 (tools/diagnose_541.py) 直接复测 amb 状态 |TD|。
+
+  诚实修正 (max_awt 的收益边界):
+    设计理由写的是"稀疏高优先车不被均值稀释"。但实测 (AUDIT 1.1c): amb n=1 时
+    mean_amb ≡ 该车 wait, 零稀释 → 单 amb 桶里 max_awt 与 mean_awt 完全重合,
+    对 amb 是冗余位。max_awt 的真实价值在多车的高优先桶 (如 bus 桶 p3 多辆时,
+    max 保住最堵那辆不被 mean 拉平)。
+    → 结论: max_awt 留着 (对 bus/car 桶有用), 但别把它当 amb 的救星; amb 的
+      抗稀释本来就成立 (n=1)。amb 的真问题是稀疏 (复审 5), 不是被稀释。
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 2  ⚠⚠ 最大结构隐患: 单路口设计 vs 倒挂是多路口现象
+─────────────────────────────────────────────────────────────────────────────
+  实测 (RETROSPECTIVE 1.6): 1x1 三个 weight 全部不倒挂
+    exp168 541: amb 3.88 << bus 8.18
+    exp169 531: amb 4.88 << bus 8.50
+    exp170 521: amb 4.88 << bus 11.19
+  倒挂只在 1x3 协同方法上出现 (exp135/147/150)。震中在 t 路口 amb 独占的
+  无-bus 相位 (+4.16)。
+
+  后果 (对 A/B/T 实验): 在 1x1 上跑 A/B/T, 永远看不到倒挂。1x1 的 A/B/T 只能
+  回答"状态组织对单路口 system 效率 / 单路口 amb 绝对等待"的影响, 回答不了
+  "状态组织对优先级排序"的影响 —— 而后者才是 thesis 核心。
+
+  建议 (写进协议, 见 Part 5):
+    • 1x1 A/B/T: 保留, 定位为"状态组织的干净对比"(无倒挂混淆, 隔离效率/表达力)。
+    • 1x3 A/B/T: 必跑。倒挂只在这里发生, "状态组织 × 倒挂"是二级实验轴。
+      spec 已预留 CoLight GAT (h_int 挂邻居 attention), 多路口不返工。
+    → 两个场景一起跑, 才能把"状态组织效率增益"与"状态组织对倒挂的影响"分开。
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 3  ⚠⚠ 容量悖论: Transformer 在加权求和下可能倒挂最深
+─────────────────────────────────────────────────────────────────────────────
+  实测 (RETROSPECTIVE 1.1, exp148-150): 网络容量 hd128→256
+    521: amb 1.58→2.67 (+69%)
+    531: amb 2.24→2.68, bus 4.05→2.61 → amb≈bus 濒临倒挂
+    541: amb 3.25→3.83, bus 2.34→2.29, all 24.7→21.9 (system 最优!)
+  "优化能力越强倒挂越狠"已三重独立确认 (容量↑ / 协同方法 / CoLight 最深)。
+
+  推论 (容量序): Transformer (encoder+attention) > A-MLP > A-flat。
+  在 1x3 + 加权求和 reward 下, [推测]:
+    • Transformer 给最好的 system 效率 (表达力 + 车道交互, 把 bus/car 压到最低)
+    • 但给最深的 amb 倒挂 (高容量找到"挤 amb 相位换 bus"的全局最优更彻底)
+  → 这与 v1 §9 "无条件推荐 Transformer" 直接冲突。Transformer 的卖点
+    (zero-shot 迁移 / 车道交互) 在效率维成立; 在排序维, 它的容量是倒挂放大器。
+
+  接口 (两份 doc 在此相交):
+    Transformer 要在 1x3 兼得效率与排序, 必须配排序保证 (PRIORITY_ORDERING 的
+    G1 lexicographic 屏蔽 / Y1 多头+lexico)。否则它会成为"system 最优但 amb
+    倒挂最深"的反面展品。→ 推荐组合: Transformer state (effic) × Y1 仲裁 (order)。
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 4  ⚠ reward 仍是加权求和 → A/B/T 不解决排序 (正交性声明)
+─────────────────────────────────────────────────────────────────────────────
+  v1 §12 reward = -Σ p×mean_awt - β·switch, 仍是加权求和。
+  PRIORITY_ORDERING Part 1.3 已证: 加权求和最优解只约束"边际交换率=权重比",
+  不约束"结局排序"。任何换 state 组织都在同一条 Pareto 前沿上移动, 进不了
+  排序保证区。
+  → 显式声明: "状态组织"轴与"排序保证"轴正交。
+      状态层 (A/B/T + φ awt) 改善 observability → 降 amb |TD| → 缩噪声侧
+      排序层 (G1/G2/Y1)              → 改可行域/约束 → 给排序保证
+    两者可叠加 (Y1 的多头 state 就是把两轴合一), 但状态层单独换组织 ≠ 修倒挂。
+    避免实验里误把"Transformer 倒挂"读成"Transformer 状态组织差"——那是
+    reward 结构所致, 与组织无关 (复审 3 说的是容量, 复审 4 说的是 reward)。
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 5  ⚠ 训练稀疏必须作为控制变量 (否则混淆 A/B/T)
+─────────────────────────────────────────────────────────────────────────────
+  实测 (AUDIT P3): on-policy amb transition 仅 1.9%, 梯度占比 0.5% (TD²加权)。
+  无论 A/B/T, 这个稀疏都在。三种 state 谁偶然多采到几次 amb, amb 指标就偏好,
+  会污染"状态组织"这个本应唯一的自变量。
+  → 三臂统一配 stratified replay (amb 25%/batch, 组内 uniform, 见 PRIORITY H1)。
+    把稀疏当常量消掉, 才干净。这一条不是可选项, 是控制变量的一部分。
+  注意: φ 的 max_awt 是"特征层"抗稀释, stratified 是"训练层"抗稀疏 —— 两者
+    解决不同环节 (复审 1 诚实修正已说明 amb 不被稀释, 它被稀疏), 都要。
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 6  ⚠ priority 表 bus=3 可能天然不倒挂, 掩盖效应
+─────────────────────────────────────────────────────────────────────────────
+  v1 §4 表: amb5 / bus3 / truck2 / car1, 是 "5-3-1-ish"。
+  实测: 5-3-1 不倒挂 (exp136/149 边缘), 5-4-1 才稳定倒挂 (exp135/147/150)。
+  → 若 A/B/T 只跑 bus=3, 可能根本观测不到倒挂, "状态组织对排序的影响"无从比较。
+    建议: A/B/T 至少跑 bus=3 与 bus=4 两档 (priority 表参数化)。bus=4 档才是
+    倒挂活跃区, 是检验"状态组织能否缓/加深倒挂"的必要工况。
+  附带: truck=2 引入第 4 类, 1x3 当前 route 无 truck → truck 桶恒空, 第一版
+    可省 (PRIORITY_LEVELS 仍留 5 槽, 只是 p2 数据为 0), 不影响结构。
+
+─────────────────────────────────────────────────────────────────────────────
+  复审 7  ○ 实验协议补丁 (踩过的坑, 全部已记录在案)
+─────────────────────────────────────────────────────────────────────────────
+  • eval seed: v1 已注意; 现 trainer 已修 (CODE_REVIEW C1, env.py:283 训练用
+    training_seed)。表述更新为"用 clean seed, 训练≠评估"。
+  • multi-seed: v1 单 seed。实测 541 方法间 amb 差异多数 ns → winner 必须
+    ≥3 seed + Mann-Whitney (thesis 硬要求)。A/B/T 三臂各 ≥3 seed。
+  • amb=0/NaN: metrics.py 已改 NaN 哨兵 (no-amb → NaN, 非 0.0); 评估按 NaN
+    过滤, 不按 0.0 过滤 (0.0 = 完美通过, 丢了高估 amb 等待)。
+  • smoke test: WANDB_MODE=disabled WANDB_DISABLED=true, 不污染 wandb 云账号。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 2: 核心设计 — 一个 φ, 三种聚合 (保留 v1, 加数据注记)                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+                       ┌─────────────────────────┐
+   一组车辆 V  ───────▶ │  φ(V) → 20 维优先级桶向量 │
+                       └─────────────────────────┘
+                                  ▲
+       ┌──────────────┬───────────┴───────────┬──────────────┐
+   A: 按相位放绿车道分组   B: 按转向分组          T: 按车道分组
+   K 个相位单元          12 个转向槽            N 个车道 token
+
+  A/B/T 只差"V 怎么分组"; φ、全局头、动作、reward 全相同。唯一变量 = 聚合粒度。
+  论文核心 contribution: agent 看"优先级桶 {1..5}"不看车型 → 换 BNF zero-shot。
+
+  ── 2.1 固定 type→priority 表 (第一版) ──────────────────────────────────────
+    priority_map.py:
+      TYPE_TO_PRIORITY = {ambulance:5, bus:3, truck:2, car:1}, DEFAULT=1
+      PRIORITY_LEVELS  = (1,2,3,4,5)
+      vehicle_priority(sumo,vid) = TYPE_TO_PRIORITY.get(getTypeID(vid), 1)
+    ⚠ 复审 6: 须参数化, 至少加 bus=4 档跑倒挂活跃区。
+    ⚠ BNF: traffic_rules.bnf 的 policy17/22 输出 "6" 越界 (<priority>::=1..5),
+      落动态 BNF 前 clamp 6→5; 第一版固定表绕过。
+
+  ── 2.2 φ — 优先级分桶特征器 (20 维 = 5级 × [count,queue,mean_awt,max_awt]) ─
+    for vid in V:
+      p = vehicle_priority(sumo,vid);  w = getAccumulatedWaitingTime(vid)
+      cnt[p]++; sumw[p]+=w; maxw[p]=max(maxw[p],w)
+      if getSpeed(vid)<0.1: queue[p]++
+    每级 → [cnt/cap, queue/cap, (sumw/cnt)/awt_scale, maxw/awt_scale]
+    normalize=True (训练): cap = lanes_length/(MIN_GAP+车长); awt_scale=100。
+
+    字段 ── 数据注记:
+      count_p     需求量
+      queue_p     halting(speed<0.1) 数; 区分排队 vs 通过
+      mean_awt_p  普通车等待压力  ← 复审 1: 这是补"obs 无 waiting"缺口的关键
+      max_awt_p   桶内最堵      ← 复审 1 修正: 对多车高优先桶(bus)有用,
+                                  对单 amb 与 mean 冗余 (n=1 零稀释)
+    预留位: 反应式甲 blocked_belief → 每级 5 字段 (5×5=25), 现 mask 掉不破坏结构。
+
+  ── 2.3 全局头 (7 维, 三种共用, prepend 一次) ───────────────────────────────
+    bnf_present(5) = [1 if p in active_levels else 0]   # 本表 {1,2,3,5}→[1,1,1,0,1]
+    min_green_ok   = 1 if time_since_change ≥ min_green+yellow else 0
+    phase_elapsed  = time_since_last_phase_change / 100
+    header = bnf_present + [min_green_ok, phase_elapsed]  # 长度 7
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 3: 三个解析器 (路口加载时缓存一次)                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  3.1 相位→放绿车道集 (A 用)  phase_served_lanes(ts):
+      raw = trafficlight.getControlledLanes(id)  # 索引对齐 phase.state
+      第 k 相位: 收集 state[i]∈{G,g} 的 raw[i], 按 ts.lanes 序去重
+      注: 共享车道(左+直)会进多个相位放绿集 → A "粗"的来源 (不分转向)。
+
+  3.2 车→转向 (B 用)  lane_allowed_dirs / vehicle_movement:
+      用 route 下一条 edge 匹配 link 的 toLane 所属 edge → 转向 {L,T,R,U}
+      转向槽 = {N,E,S,W}×{L,T,R} = 12。
+      ⚠ getLinks 的 direction index (link[6]) 按本机 traci 版本核对。
+
+  3.3 车道几何 / approach_angle (Transformer 用)  lane_static_features(ts,lane):
+      [length/200, approach_angle(连续角度), cap/50, L?, T?, R?, always_green?] (7)
+      approach_angle = atan2(末段方位) 替代离散 N/E/S/W。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 4: 三种完整 state (同一快照展开) — 维度与组织                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  快照: N/S 进口排队 (queue=count), W/E 当前绿。8 辆车 v1..v8, 含 1 amb(p5)、
+        1 bus(p3)、6 car(p1)。当前相位 WE直 已绿 15s。
+  header(7) = [1,1,1,0,1, 1, 15]
+
+  ── 4.A 相位级 (K 行, 每行 22 = [is_cur,sec] + φ20) ─────────────────────────
+    NS直 [0,0] + φ(放绿道 n_t_0,n_t_1,s_t_0 → v1..v7):
+       p1[5,5,21.6,30] p3[1,1,16,16] p5[1,1,12,12]
+    NS左 [0,0] + φ(n_t_0,s_t_1 → v1,v2,v3,v8): p1[3,3,19,22] p5[1,1,12,12]
+    WE直 [1,15] + φ(空): 0 ;  WE左 [0,0] + φ(空): 0
+    dim_A = 7 + K×22, K=4 → 95
+    注: 共享道整条进 NS直+NS左 → v3 两行都出现; 去掉 servable/blocked 后
+        "v3 在 NS直 走不了"不可见, agent 自学。
+
+  ── 4.B 转向级 (12 槽, 每槽 22, 空槽 mask) ──────────────────────────────────
+    N-L φ(v1): p1[1,1,20,20] ; N-T φ(v2,v3,v4,v5): p1[3,3,23.3,30] p5[1,1,12,12]
+    S-T φ(v6,v7): p1[1,1,18,18] p3[1,1,16,16] ; S-L φ(v8): p1[1,1,22,22]
+    其余 8 槽 φ=0 + mask=1
+    dim_B = 7 + 12×22 = 271
+    注: 看不到"放 N-L→v1 走→v2/v3 解锁"的跨槽非线性, agent 自学。
+
+  ── 4.T 车道 token (每 token 29 = 静态7|is_green2|φ20, + CLS) ────────────────
+    n_t_0: 静态[len,angle_N,cap,L1,T1,R0,ag0]|[0,sec]|φ(v1,v2,v3) p1[2,2,17.5,20] p5[1,1,12,12]
+    n_t_1: 静态[..L0,T1,R0]|φ(v4,v5) p1[2,2,27.5,30]
+    s_t_0: 静态[..L0,T1,R0]|φ(v6,v7) p1[1,1,18,18] p3[1,1,16,16]
+    s_t_1: 静态[..L1,T0,R0]|φ(v8) p1[1,1,22,22] ; 其余车道 φ=0 token(仍参与注意力)
+    state_T = (N_lanes,29) + CLS(可学习)
+    注: n_t_0 token 同带 v1(左,p1)/v2(直,p1)/v3(直,p5) → 注意力可建模"同道左挡直"。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 5: 网络主体 + 容量悖论标注 (复审 3)                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  9.A  A-flat:  state_A(95) → MLP[256,256] → K 个 Q (每相位一个)
+        输入绑死 K → 不跨路口迁移。容量最低 → [推测] 倒挂最浅。
+        drop-in 现有 DQN, 推荐起步。可选 A-FRAP: 每相位行→共享 phase-MLP→1分。
+  9.B  B(FRAP简化): 每转向槽(22)→共享 movement-MLP→e_m;
+        phase_score_k = MLP(pool_{m∈phase_k} e_m, meta)→argmax。只 pool-then-score。
+  9.T  Transformer(推荐配 FRAP 头):
+        每 token(29)→lane-MLP(29→128)→prepend CLS→Transformer(2层4头FF256)
+        CLS 输出 h_int(128) 与 N_lanes 无关; Q_k = MLP(h_int, pool(served(k)))。
+        参数全 per-token/per-phase → 唯一能 zero-shot 跨 N_lanes/K + 建模车道交互。
+        多路口预留: h_int → CoLight GAT(邻居 attn) → h_int'。Fallback: DeepSets。
+
+  ⚠ 容量悖论 (复审 3, 必须写进结论叙事):
+     容量序 T > A-MLP > A-flat。在 1x3 + 加权求和 reward 下 [推测]:
+       system 效率:  T 最好 > B > A-flat
+       amb 倒挂深度:  T 最深 > B > A-flat   ← 与效率反向!
+     → "Transformer 最优"只在效率维成立。排序维它是倒挂放大器, 须配 G1/Y1。
+       推荐终态: Transformer-state(效率) × Y1 多头+lexico(排序) = 兼得。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 6: 动作头 + 要新增的 ObservationFunction                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  动作头 (任意 state 可配, 契约统一 Discrete(num_green_phases), 选绿相位):
+    固定相位+mask: 输出固定 N 个 Q, 不存在的 mask; 绑死相位数; 不跨路口; 配 A/B。
+    FRAP scorer:   每候选相位独立打分; 相位数可变; 跨路口✓; 配 Transformer。
+    min/max-green 掩码沿用 set_next_phase 现有逻辑。
+
+  新增子类 (sumo_rl/environment/observations.py, 签名同现有类):
+    PriorityPhaseObservationFunction     (A) dim = 7 + num_green_phases×22
+    PriorityMovementObservationFunction  (B) dim = 7 + 12×22, 返回 obs+mask
+    PriorityLaneTokenObservationFunction (T) 返回 (N_lanes,29)+静态缓存; 网络处理 padding+mask
+  三者复用同一 phi() 与 global_header(), 只换分组。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 7: 修订后的实验协议 (双场景 + 控制变量 + 统计)                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ── 7.1 控制变量 (唯一自变量 = state 组织 A/B/T) ────────────────────────────
+    恒定: 同 reward(加权求和 -Σp×mean_awt - β·switch, p_max 用 max)、同 demand、
+          同 min/max-green、同探索、clean eval seed(C1已修, 训练≠评估)。
+    ★ 复审 5: 三臂统一配 stratified replay (amb 25%/batch) —— 把稀疏当常量,
+      否则 A/B/T 比较被采样偶然性污染。这是控制变量的一部分, 非可选。
+
+  ── 7.2 双场景 (复审 2: 倒挂只活在 1x3) ─────────────────────────────────────
+    场景①  1x1: A/B/T 干净对比 (无倒挂混淆) → 隔离"状态组织对效率/表达力"。
+    场景②  1x3: A/B/T × {CoLight GAT 协同} → "状态组织 × 倒挂"二级轴。
+                倒挂震中 t 路口, 这里才能看状态组织能否缓/加深倒挂。
+
+  ── 7.3 priority 档 (复审 6) ────────────────────────────────────────────────
+    每场景至少跑 bus=3 与 bus=4 两档。bus=4 是倒挂活跃区, 是排序检验必要工况。
+
+  ── 7.4 指标 (EpisodeMetricsCollector, NaN 哨兵已生效) ──────────────────────
+    主:   system avg_wait / throughput / completion_rate
+    核心: ambulance avg_wait & max_wait, bus avg_wait, amb<bus 是否成立(仅1x3有意义)
+    机理: amb 状态 |TD| (验证复审 1 预测: 加 awt 后是否从 0.635 下降)
+          amb 相位被选率 @ t (1x3)
+    代价: 切换频率 (β 项)
+    ★ 统计: 三臂各 ≥3 seed + Mann-Whitney (复审 7, 单 seed 多 ns, 不可省)。
+
+  ── 7.5 消融轴 ──────────────────────────────────────────────────────────────
+    (a) 5 优先级槽 vs 4 车型槽       — 验"看优先级桶"是否真带来 zero-shot/泛化
+    (b) 加/不加 awt 字段             — 验复审 1 (awt 是否独立于 A/B/T 降 |TD|)
+    (c) 加/不加 stratified replay    — 验复审 5 (稀疏是否是 amb 的真瓶颈)
+    (d) Transformer ± 排序保证(Y1)   — 验复审 3 容量悖论 (T 高效但倒挂, Y1 能否救)
+    (e) Phase-2: 反应式甲 blocked-bit — salvage A 的"换全绿解堵"可见性
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 8: 数据驱动的预测 (全部 [推测])                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  锚: 实测 amb |TD| 541=0.635, 容量↑倒挂↑ (RETRO 1.1), amb 梯度占比 0.5%。
+
+  预测           A-flat        B(转向)       T(Transformer)
+  ───────────    ──────────    ──────────    ────────────────
+  1x1 amb 等待   中            中偏好        最好(表达力)
+  1x1 system     中            中            最好
+  1x3 amb 倒挂   最浅          中            最深(容量放大器) ⚠
+  1x3 system     中            中            最好
+  跨路口迁移     ❌(绑K)       ❌(绑相位)    ✅(zero-shot)
+  车道交互建模   ❌(车道级粗)  ❌(转向级)    ✅(注意力)
+  amb 信用分配   ★最好         中            稀疏下最难学
+
+  关键预测解读:
+    • A-flat amb 信用分配最好: 相位级聚合与动作(选相位)天然对齐, 稀疏 amb 事件
+      直接落到"它的相位"那一行 → 梯度路径最短, 在 amb 极稀(0.5%)时反而稳。
+    • Transformer 1x3 倒挂最深: 高容量在加权求和下把 bus 压到最低更彻底
+      (复审 3), 挤的正是 amb 相位。效率冠军 = 排序末位, 须配 Y1。
+    • awt 字段 (独立于 A/B/T): 预测三臂 amb |TD| 都从 0.635 下移 → 这是
+      "obs 加 waiting"的普遍增益, 是最先该看到的信号 (消融 b)。
+
+  把握: 容量序→倒挂序 把握中高 (三重实测背书); A-flat 信用分配优势把握中
+        (机理外推, 未直测); awt 降 |TD| 把握中高 (直接补实测缺口)。
+  ⚠ 全部待 clean-seed + multi-seed 实测验证; 现有锚点是 seed-123 污染态。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 9: 待解决 + 实施 checklist                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  待解决:
+    1. BNF priority "6" 越界 (policy17/22): 落动态 BNF 前 clamp; 固定表绕过。
+    2. 车辆 context 属性缺失: 动态 BNF 需 route 生成时给 task/location/time/state。
+    3. 归一化口径: count/queue÷cap, awt÷100; 对照 reward 量纲避免尺度打架。
+    4. getLinks direction index (link[6]): 按本机 traci 版本核对。
+    5. 共享车道在 A 重复计入: 已知取舍, 文档化不修。
+
+  实施 checklist:
+    基础设施
+      [ ] priority_map.py (TYPE_TO_PRIORITY 参数化, 含 bus=4 档 + active_levels)
+      [ ] phi() (含 normalize) ; global_header()
+      [ ] phase_served_lanes / vehicle_movement / lane_static_features (缓存)
+    观测类
+      [ ] PriorityPhaseObservationFunction (A) + space
+      [ ] PriorityMovementObservationFunction (B) + mask
+      [ ] PriorityLaneTokenObservationFunction (T) + padding/mask
+    网络
+      [ ] A-flat MLP (drop-in DQN) ; B movement-embed→phase pool-score
+      [ ] Transformer(2层4头)+CLS+FRAP scorer ; (预留) CoLight GAT / DeepSets fallback
+    训练/实验 (复审强约束)
+      [ ] 三臂统一 stratified replay (amb 25%/batch) — 控制变量
+      [ ] 双场景: 1x1(干净对比) + 1x3(倒挂轴)
+      [ ] priority 双档: bus=3 / bus=4
+      [ ] 三臂各 ≥3 seed + Mann-Whitney ; clean eval seed ; NaN 哨兵过滤
+      [ ] 消融 a~e (Part 7.5)
+
+  未来扩展 (非本期):
+    反应式甲 blocked-bit / 动态 BNF(zero-shot 核心) / 多路口 CoLight GAT /
+    预测式乙 servable-blocked(oracle 上界)。
+
+================================================================================
+  收尾: v2 的一句话
+    A/B/T 是"状态组织"轴, 它的正确战场是"效率与表达力"和"跨路口泛化", 不是
+    "修倒挂"。倒挂只活在 1x3, 且只能靠排序保证 (G1/Y1) 解决。状态层最硬的
+    数据贡献是 φ 的 awt 字段补上了实测的"obs 无 waiting"噪声下限。Transformer
+    是效率冠军、排序险手 —— 要赢就配 Y1。
+================================================================================
+  EOF
+================================================================================

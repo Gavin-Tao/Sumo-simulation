@@ -10,6 +10,7 @@ Checkpoints: ./models/{exp_name}/{timestamp}/ckpt_ep{episode:05d}.pth
 """
 
 import argparse
+import functools
 import json
 import math
 import os
@@ -56,6 +57,9 @@ from sumo_rl.environment.observations import (
     PriorityBCAObservationFunction,
     PriorityCtrlBCAObservationFunction,
     PriorityWaitingBCAObservationFunction,
+    PriorityPhaseObservationFunction,
+    PriorityMovementObservationFunction,
+    PriorityLaneTokenObservationFunction,
 )
 
 # ── Registries ────────────────────────────────────────────────────────────────
@@ -73,6 +77,10 @@ OBS_REGISTRY = {
     "PriorityBCA":            PriorityBCAObservationFunction,
     "PriorityCtrlBCA":        PriorityCtrlBCAObservationFunction,
     "PriorityWaitingBCA":     PriorityWaitingBCAObservationFunction,
+    # A/B/T priority-bucket families (configure via obs_phase_state + obs_fields)
+    "PriorityPhase":          PriorityPhaseObservationFunction,      # A: per phase
+    "PriorityMovement":       PriorityMovementObservationFunction,   # B: per turning movement
+    "PriorityLaneToken":      PriorityLaneTokenObservationFunction,  # T (simplified): per lane
 }
 
 
@@ -131,6 +139,16 @@ def train(cfg: dict, timestamp: str):
 
     # ── Environment ───────────────────────────────────────────────────────────
     obs_class = OBS_REGISTRY[cfg["observation_class"]]
+    # Optional obs params (A/B/T families): bind via partial so env can call obs_class(ts).
+    obs_kwargs = {}
+    if "obs_fields" in cfg:
+        obs_kwargs["fields"] = tuple(cfg["obs_fields"])
+    if "obs_phase_state" in cfg:
+        obs_kwargs["phase_state"] = cfg["obs_phase_state"]
+    if "priority_source" in cfg:
+        obs_kwargs["priority_source"] = cfg["priority_source"]
+    if obs_kwargs:
+        obs_class = functools.partial(obs_class, **obs_kwargs)
     env = SumoEnvironment(
         net_file=cfg["net_file"],
         route_file=cfg["route_file"],
@@ -165,6 +183,32 @@ def train(cfg: dict, timestamp: str):
         ts_lane_map  = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
         always_green = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
 
+        # ── Optional Q-net architecture override (agent_arch: "transformer") ──────
+        # Lane-token Transformer (Scheme T full version minus static geometry):
+        # requires the PriorityLaneToken obs family (token_layout() defines the split).
+        # Action space unchanged — CLS readout → K fixed Q-values.
+        q_net_factory = None
+        if cfg.get("agent_arch", "mlp") == "transformer":
+            from sumo_rl.agents.qnet_lane_transformer import LaneTokenTransformerQNet
+            obs_fn0 = env.traffic_signals[last_ts_id].observation_fn
+            if not hasattr(obs_fn0, "token_layout"):
+                raise ValueError(
+                    f"agent_arch=transformer needs a token obs (PriorityLaneToken*), "
+                    f"got {cfg['observation_class']}")
+            layout = obs_fn0.token_layout()
+            tf_cfg = cfg.get("transformer", {}) or {}
+            assert layout["header_dim"] + layout["n_tokens"] * layout["token_dim"] \
+                == env.observation_space.shape[0], "token_layout inconsistent with obs dim"
+            q_net_factory = lambda: LaneTokenTransformerQNet(
+                header_dim=layout["header_dim"], n_tokens=layout["n_tokens"],
+                token_dim=layout["token_dim"], action_dim=env.action_space.n,
+                d_model=int(tf_cfg.get("d_model", 128)), nhead=int(tf_cfg.get("nhead", 4)),
+                num_layers=int(tf_cfg.get("num_layers", 2)), dim_ff=int(tf_cfg.get("dim_ff", 256)),
+            )
+            print(f"  → Q-net arch: LaneTokenTransformer  layout={layout}  "
+                  f"d_model={tf_cfg.get('d_model',128)} heads={tf_cfg.get('nhead',4)} "
+                  f"layers={tf_cfg.get('num_layers',2)} ff={tf_cfg.get('dim_ff',256)}")
+
         agent = DQN(
             starting_state=tuple(initial_states[last_ts_id]),
             state_space=env.observation_space.shape[0],
@@ -188,6 +232,7 @@ def train(cfg: dict, timestamp: str):
             per_beta_end=cfg.get("per_beta_end", 1.0),
             per_beta_steps=cfg.get("per_beta_steps", 100_000),
             per_eps=cfg.get("per_eps", 1e-6),
+            q_net_factory=q_net_factory,
         )
 
         step_counter = 0
