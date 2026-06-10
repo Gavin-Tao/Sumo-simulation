@@ -153,11 +153,12 @@ def train(cfg: dict, timestamp: str):
     episodes            = cfg.get("episodes", 5000)
     checkpoint_interval = cfg.get("checkpoint_interval", 5)
     eval_interval       = cfg.get("eval_interval", 0)      # 0 = disabled
+    training_seed       = int(cfg.get("seed", 0))
     eval_seed           = cfg.get("eval_seed", 42)         # different from training seed (0) by default
 
     # ── Training ──────────────────────────────────────────────────────────────
     for _ in range(1, cfg.get("runs", 1) + 1):
-        initial_states = env.reset(env.sumo_seed)
+        initial_states = env.reset(training_seed)
         last_ts_id = list(env.ts_ids)[-1]
 
         # Build lane map once (lane structure is fixed across episodes)
@@ -194,7 +195,7 @@ def train(cfg: dict, timestamp: str):
 
         for episode in range(1, episodes + 1):
             if episode != 1:
-                initial_states = env.reset(env.sumo_seed)
+                initial_states = env.reset(training_seed)
 
             done = {"__all__": False}
             phase_counts = {ts_id: {} for ts_id in env.ts_ids}
@@ -256,7 +257,7 @@ def train(cfg: dict, timestamp: str):
                 traceback.print_exc()
                 print(f"[ERROR] Resetting environment and continuing from episode {episode + 1}...\n")
                 try:
-                    initial_states = env.reset(env.sumo_seed)
+                    initial_states = env.reset(training_seed)
                 except Exception as reset_err:
                     print(f"[ERROR] Reset also failed: {reset_err}")
                     raise

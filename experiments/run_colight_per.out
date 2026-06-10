@@ -24,3 +24,12 @@ nohup: ignoring input
   实时看: tail -f ./logs/run_colight_per_20260609_190225/*.log
   内存监控: watch -n 10 free -h
 
+[2026年 06月 10日 星期三 01:36:05 IST] ✓ exp159_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER 结束 (exit 0)
+[2026年 06月 10日 星期三 02:04:32 IST] ✓ exp160_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double 结束 (exit 0)
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 10日 星期三 02:04:32 IST] 全部完成,总挂钟 25327s (≈ 422min)
+  ✓  exp159_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER  (exit 0)
+  ✓  exp160_colightorig_1x3_541_avg_waiting_NS20bus_1amb_U_PER_Double  (exit 0)
+  log 目录: ./logs/run_colight_per_20260609_190225
+════════════════════════════════════════════════════════════════════════════

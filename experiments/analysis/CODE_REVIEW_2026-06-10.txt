@@ -1,0 +1,486 @@
+CODE_REVIEW_2026-06-10.txt
+Full codebase bug hunt — sumo-rl project, branch: dev
+Reviewer: Claude Fable-5 (main-loop manual review, 2026-06-10)
+Scope: env.py, traffic_signal.py, rewards.py, observations.py, metrics.py,
+       coefficient/dqn_coeff*.py, prioritized_replay_buffer.py,
+       traincoeff.py, plot_wandb_3way_sweep_w20.py
+Note: NO code was modified. All findings are advisory only.
+
+=============================================================================
+SEVERITY LEVELS
+=============================================================================
+[CRITICAL] Wrong result silently — can corrupt all training/eval numbers
+[HIGH]     Wrong result or crash in specific scenarios actually exercised
+[MEDIUM]   Design mismatch / latent path that may be exercised; affects
+           thesis claims
+[LOW]      Dead code, confusing diagnostics, or narrow latent paths
+[NOTE]     Design choice worth documenting for the thesis; not a defect
+=============================================================================
+
+─────────────────────────────────────────────────────────────────────────────
+C1  [CRITICAL]  env.py:283 — eval reset permanently mutates training seed
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/env.py, line 283
+Code:
+    def reset(self, seed: Optional[int] = None, **kwargs):
+        ...
+        if seed is not None:
+            self.sumo_seed = seed          # ← permanently overwrites instance var
+
+What happens:
+  - Training calls env.reset(env.sumo_seed)  → seed=0 set, OK
+  - Eval calls env.reset(int(eval_seed))     → self.sumo_seed ← 123
+  - Next training episode calls env.reset(env.sumo_seed) → passes 123!
+  - From episode (eval_interval+1) onward, ALL training episodes run with
+    seed 123 instead of seed 0. The "training seed" is effectively replaced
+    by the eval seed after the first eval.
+
+Evidence from RETROSPECTIVE: measured that the eval seed contamination occurs
+after episode 5 (first eval) in every single experiment (exp137 onward).
+
+Impact:
+  - Training experience distribution is shifted to a specific scenario
+    (seed 123: amb spawns at t=375, t=725 in the 1x3 scenario)
+  - All results comparing experiments are based on models that were trained
+    on seed-123 scenarios after ep 5 — this is consistent across all runs,
+    so comparisons are valid, but the reported training condition is wrong
+    (effectively: "trained on fixed replay of seed-123 episode sequence")
+  - Thesis claim "trained over 2000 episodes with varied scenarios" is
+    undermined. Actual training after ep 5 uses only seed-123 scenario.
+
+Fix (not applied per user request):
+    training_seed = cfg.get("seed", 0)
+    for episode in range(1, episodes + 1):
+        if episode != 1:
+            initial_states = env.reset(training_seed)   # always pass explicit seed
+    # eval:
+    eval_obs = env.reset(int(eval_seed))
+    # restore:
+    env.sumo_seed = training_seed   # or pass explicitly on next training reset
+
+─────────────────────────────────────────────────────────────────────────────
+H1  [HIGH]  metrics.py:162-167 — CTBMetricsCollector.LANES hardcoded 1x1
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/metrics.py, lines 162-167
+Code:
+    LANES = [
+        "n_t_0", "n_t_1", "n_t_2", "t_s_0", "t_s_1", "t_s_2",
+        "s_t_0", "s_t_1", "s_t_2", "t_n_0", "t_n_1", "t_n_2",
+        "w_t_0", "w_t_1", "w_t_2", "t_e_0", "t_e_1", "t_e_2",
+        "e_t_0", "e_t_1", "e_t_2", "t_w_0", "t_w_1", "t_w_2",
+    ]
+
+What's wrong:
+  Only covers the single "t" intersection of the 1x1 scenario. In the 1x3
+  topology (t, e, J0), lanes for intersections "e" (e.g. "e_J0_0") and
+  "J0" are absent. If env.evaluation=True is ever set for a 1x3 run,
+  CTBMetricsCollector.collect_step() will return zeros for all vehicles
+  at "e" and "J0" — silently wrong metrics.
+
+Current exposure:
+  In traincoeff.py, env.evaluation is never set to True, so
+  _sumo_step() does NOT call evaluation_metrics_CTB(), and CTBMetricsCollector
+  is never invoked during 1x3 training/eval. The EpisodeMetricsCollector
+  (which uses ts_lane_map built from actual signal-controlled lanes) is used
+  instead, and it is correct.
+
+  However: env.py.__init__ at line 222 instantiates CTBMetricsCollector
+  unconditionally. If any future code sets env.evaluation=True for 1x3,
+  the CTB metrics will silently be wrong with no error.
+
+Scope: Does NOT affect current experiments (traincoeff.py is safe).
+       Any experiment that sets env.evaluation=True on 1x3 would be affected.
+
+─────────────────────────────────────────────────────────────────────────────
+H2  [HIGH]  traincoeff.py:278 — r[ts] direct access, latent KeyError
+─────────────────────────────────────────────────────────────────────────────
+File:  experiments/traincoeff.py, lines 271-280
+Code:
+    for ts in env.ts_ids:
+        ...
+        agent.replay_buffer.add(
+            aug_obs_t, actual_action,
+            r[ts],           # ← direct dict access, no .get()
+            aug_obs_t1, done[ts],
+            nb_r,
+        )
+
+Context:
+  env.step() → _compute_rewards() returns {ts: reward for ts in ts_ids
+               if ts.time_to_act}. Only TSes where time_to_act=True are
+  included in the returned dict r. If any TS is NOT time_to_act, r[ts]
+  raises KeyError and the entire training episode crashes silently
+  (caught by the outer except, causes reset-and-continue).
+
+  The eval loop (line 378) uses eval_rew.get(ts, 0.0) — inconsistent.
+
+When it triggers:
+  In the synchronized 1x3 scenario with identical delta_time=5 for all
+  TSes, all 3 TSes always act simultaneously (all have the same
+  next_action_time after each step), so r always contains all 3 keys.
+  The KeyError never fires in practice for current experiments.
+
+  BUT: if SUMO encounters a phase-timing edge case, or if a recovery reset
+  (inner except clause at line 308) leaves TSes with different
+  next_action_time offsets, the next step could have only 1-2 TSes acting,
+  triggering the KeyError → another except → reset loop → potential infinite
+  instability.
+
+Mitigation (not applied):
+    r.get(ts, 0.0) instead of r[ts]
+
+─────────────────────────────────────────────────────────────────────────────
+H3  [HIGH]  observations.py — PriorityObservationFunction uses raw
+             getControlledLanes() in __call__ vs len(lanes) in observation_space
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/observations.py
+       PriorityObservationFunction.__call__() line 210
+       PriorityObservationFunction.observation_space() line 193-201
+
+Code in __call__:
+    inc_lanes = self.ts.sumo.trafficlight.getControlledLanes(ts_id)
+    # getControlledLanes returns RAW list with possible duplicates
+
+Code in observation_space:
+    num_lanes = len(self.ts.lanes)   # deduplicated (dict.fromkeys)
+    dim = num_phases + 1 + 4 * num_lanes
+
+If getControlledLanes returns K lanes (with duplicates) and len(lanes)=M<K,
+the actual observation vector from __call__ has length > declared dim.
+Gymnasium will raise shape assertion errors on first observation.
+
+Same bug in CTBPriorityObservationFunction._get_vehicle_count_by_type
+  (line 636): uses inc_lanes = sumo.trafficlight.getControlledLanes(ts_id)
+  but observation_space uses len(self.ts.lanes) for dim.
+
+Current exposure:
+  PriorityObservationFunction and CTBPriorityObservationFunction are NOT
+  used in experiments exp130+. The experiments use:
+    - PriorityBCAObservationFunction (uses self.ts.lanes directly ✓)
+  So this bug is latent / dormant for all current experiments.
+
+─────────────────────────────────────────────────────────────────────────────
+M1  [MEDIUM]  Eval amb=0 discard bias — ambulance metrics biased high
+─────────────────────────────────────────────────────────────────────────────
+Location:  plot_wandb_3way_sweep_w20.py (and other plotting scripts)
+
+What happens:
+  Eval seed=123 has 2 ambulance events: t=375s and t=725s per episode.
+  Occasionally the ambulance departs the network before the eval window
+  is measured, giving n_vehicles(ambulance)=0 for that eval episode.
+  These eval points are discarded when computing ambulance metrics
+  (division by zero guard returns 0.0, then the 0-count episode is
+  excluded from means).
+
+Why this biases the metric UPWARD (appearing better):
+  An eval episode where n_vehicles(ambulance)=0 means the ambulance was
+  served so fast it departed before the measurement window. These are
+  the BEST-CASE episodes — discarding them removes the easiest cases
+  and keeps only harder cases.
+
+  Correct behavior: keep all eval episodes including zero-count ones,
+  which represent "served immediately" outcomes. A model that always
+  dispatches ambulance immediately would score 0 waiting time — but
+  would have many n=0 episodes, which are currently all discarded.
+
+  The 5-3-1 results may be artificially biased compared to 5-4-1 because
+  5-3-1 clears ambulance faster (fewer inversion events) → more n=0
+  episodes discarded → reported amb wait is higher than true amb wait.
+  This could partially explain why 5-3-1 appears worse than expected on
+  this metric.
+
+─────────────────────────────────────────────────────────────────────────────
+M2  [MEDIUM]  PriorityBCA observation uses raw integer counts (unscaled)
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/observations.py, PriorityBCAObservationFunction
+
+Observation vector: raw integer counts per lane per vehicle type.
+Reward (5-4-1-avg-waiting-time): accumulated waiting time / 100.
+
+Scale mismatch:
+  - obs features: integers in [0, ~15] (lane vehicle counts)
+  - reward signal: floating point in [-5, +1] (waiting_time/100)
+  - Q-value target range: reward / (1-gamma) ≈ reward / 0.01 if perfectly
+    patient, or ~10× reward for finite episodes
+
+  The DQN input layer maps from raw count space (0-15) to Q-values.
+  As vehicle counts increase during longer waits, the obs values grow
+  while the reward (avg waiting time / 100) also grows, but the
+  correlation is imperfect because:
+    a) A lane with 10 cars at wait=200s has the SAME count feature as
+       10 freshly arrived cars at wait=0s (counts don't capture duration)
+    b) State-reward aliasing: identical observations (same counts) can
+       correspond to very different rewards (depending on queue age)
+
+  Compare with DefaultObservationFunction which uses normalized density
+  (0-1). PriorityBCA's raw counts are bounded by ~30 in the current
+  scenario (lane capacity × 20% bus flow), but could grow arbitrarily
+  under different scenarios, making the Q-net generalize poorly.
+
+  For thesis: this is a known design limitation of count-based obs —
+  document as "future work: replace raw counts with density + waiting
+  time per lane."
+
+─────────────────────────────────────────────────────────────────────────────
+M3  [MEDIUM]  GATCoeffDQN / FixedCoeffDQN: α=0.5 causes neighbor reward
+              to dominate (nb_to_own_abs_ratio >> 1)
+─────────────────────────────────────────────────────────────────────────────
+File:  experiments/traincoeff_gat.py, experiments/traincoeff_fixed.py
+
+Measured from wandb (exp163 at ep=150):
+  nb_to_own_abs_ratio ≈ 14-17× (GAT) and ≈ 12-16× (Fixed)
+
+Root cause:
+  eff_r = 0.5 * own_r + 0.5 * Σ β·nb_r_d
+
+  In the 1x3 chain: the "e" intersection is between "t" and "J0". Its
+  own reward (avg waiting time of vehicles ON e's lanes) is small (e has
+  fewer vehicles because it's a pass-through). But its neighbor rewards
+  are from t (high bus traffic) and J0 (moderate traffic). So
+  |nb_weighted| >> |own_r| for the middle intersection.
+
+  With α=0.5, eff_r is dominated by nb_r. The Q-net essentially learns
+  a policy for the NEIGHBOR'S waiting time, not its own. This explains
+  why GAT/Fixed both perform worse than CoeffDQN in the 5-4-1 scenario:
+  the ambulance signal from own_r is already weak (0.5% gradient
+  contribution), but α=0.5 further dilutes it by 14×.
+
+  For thesis comparison against CoeffDQN: the convex combination α=0.5
+  from TPAMI was designed for symmetric lane flows and balanced reward
+  magnitudes, not for the asymmetric chain topology with priority classes.
+
+─────────────────────────────────────────────────────────────────────────────
+L1  [LOW]  traffic_signal.py — dead code (a=1 placeholders)
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/traffic_signal.py
+
+Lines 248, 260, 262: `a=1` — placeholder debug assignments with no effect.
+Line 108-112: intermediate variables c, d, e, f, a, b computed but never
+used outside the assignment block. Dead code from debugging of
+getControlledLinks format.
+
+No runtime impact. Clean up before thesis submission.
+
+─────────────────────────────────────────────────────────────────────────────
+L2  [LOW]  dqn_coeff_gat.py — batch-averaged β entropy topology-locked
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/agents/coefficient/dqn_coeff_gat.py, lines 234-235
+
+Code:
+    avg_b = b.mean(dim=0) + 1e-12    # [4]
+    entropy = -(avg_b * torch.log(avg_b)).sum().item()
+
+Problem:
+  For the 1x3 chain topology (t → e → J0):
+    - t has only right neighbor (e):  β_t = [0, 0, 0, 1.0]
+    - e has left (t) and right (J0):  β_e = [0, 0, ~0.5, ~0.5]
+    - J0 has only left neighbor (e):  β_J0 = [0, 0, 1.0, 0]
+
+  Batch average of β across all 3 TSes always converges to [0, 0, 0.5, 0.5]
+  regardless of what the GAT learns, because the topology forces:
+    avg_b[2] = (0 + β_e_left + 1.0) / 3 ≈ 0.5 (when β_e_left ≈ 0.5)
+    avg_b[3] = (1.0 + β_e_right + 0) / 3 ≈ 0.5
+
+  The entropy of [0, 0, 0.5, 0.5] is always ln(2) ≈ 0.693 — the
+  "GAT entropy stayed at ln2 throughout 2000 episodes" observation is a
+  topological artifact, not evidence the GAT failed to learn. The
+  interpretable signal would be the PER-TS entropy for intersection "e"
+  specifically (where both neighbors are active and the GAT actually
+  makes a choice).
+
+  Fix: log entropy separately for each ts_id, especially for "e"
+  (the only intersection where the GAT makes a non-trivial choice).
+
+─────────────────────────────────────────────────────────────────────────────
+L3  [LOW]  env.py — print statements in initialization
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/env.py, line 222
+       sumo_rl/environment/traffic_signal.py, line 133
+
+Code:
+    print("✅This is local env.py")
+    print("✅TThis is the local ts.py")
+
+Plus _build_phases() prints green phase state to stdout every reset
+(traffic_signal.py:206-218) — ~6 lines per TS per episode.
+For 2000 episodes × 3 TSes = 36,000 debug print lines per training run.
+These flush stdout, potentially competing with wandb's stdout capture,
+and inflate terminal scrollback. Remove before thesis experiments.
+
+─────────────────────────────────────────────────────────────────────────────
+L4  [LOW]  traincoeff.py — SumoEnvironment.CONNECTION_LABEL class variable
+            not reset between runs
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/environment/env.py, line 89-156
+
+SumoEnvironment.CONNECTION_LABEL is a class-level counter incremented in
+__init__. If multiple SumoEnvironment instances coexist (e.g. bash scripts
+running multiple experiments as subprocesses in the same Python interpreter),
+the label counter keeps incrementing. With libsumo (LIBSUMO=1) this is
+harmless (libsumo doesn't use labels). With traci it matters.
+
+Current exposure: harmless since LIBSUMO=1 always and processes are
+independent. Latent issue only if traci mode + subprocess reuse.
+
+─────────────────────────────────────────────────────────────────────────────
+NOTE-1  [NOTE]  rewards.py — avg waiting time: "dilution" by new arrivals
+─────────────────────────────────────────────────────────────────────────────
+The concern about "dilution when more vehicles arrive" was analyzed in
+REWARD_STATE_AUDIT_2026-06-10.txt. Conclusion: for the specific objective
+of minimizing per-vehicle experienced waiting time, the avg formulation
+is correct. New arrivals (wait≈0) dilute the average, which accurately
+reflects that the signal is already serving vehicles quickly. The dilution
+is not a bug — it's the correct incentive for throughput-maximizing policies.
+
+The only concern is when the observation (count) cannot distinguish "10
+cars just arrived" from "10 cars stuck for 200s." This is addressed in M2.
+
+─────────────────────────────────────────────────────────────────────────────
+NOTE-2  [NOTE]  PER + CoeffDQN — gradient starvation of ambulance signal
+─────────────────────────────────────────────────────────────────────────────
+Measured from experiments (exp145-153, exp171):
+  - amb transitions in buffer: 15.6% (random policy) / ~1.9% (trained policy)
+  - PER boosts amb sampling: 1.79× → 28% of batches contain amb
+  - But per-batch gradient contribution from amb transitions: ~0.5%
+    (because |amb_r| ≈ avg_r; PER amplifies frequency not magnitude)
+
+Root cause: accumulated waiting time reward is bounded by episode length
+(1000s / 100 = 10 max). With only 1-2 amb events per episode of 200 steps,
+the amb transitions are rare AND their reward magnitude is not dramatically
+larger than bus transitions (buses also have long waits under 5-4-1).
+
+PER helps with sample efficiency for amb transitions (~2× more samples)
+but cannot overcome the fundamental ~50× imbalance in transition counts
+(bus: ~100 transitions/ep vs amb: ~2/ep).
+
+The correct fix is not PER but event-gating: provide a higher-magnitude
+reward signal specifically for the amb phase decision. Exp172 (proposed:
+stratified replay with guaranteed amb fraction per batch) would directly
+address this.
+
+─────────────────────────────────────────────────────────────────────────────
+NOTE-3  [NOTE]  CoeffDQN β optimizer — joint training with Q-net risks
+                β learning the wrong gradient
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/agents/coefficient/dqn_coeff.py, line 84-86
+
+    self.optimizer = torch.optim.Adam(
+        list(self.q_net.parameters()) + [self.beta],
+        lr=learning_rate,
+    )
+
+β is a 4-dim nn.Parameter optimized jointly with Q-network weights via
+the same Adam optimizer with the same lr=0.001.
+
+The gradient flowing to β comes from:
+    d(loss)/d(β) = d(loss)/d(eff_r) * d(eff_r)/d(β)
+                 = δ_TD * sigmoid(β) * (1-sigmoid(β)) * nb_r
+
+For the 5-4-1 scenario, nb_r from bus-heavy episodes dominates.
+β converges to a value that minimizes bus TD-error, not amb TD-error.
+The learning rate for β might benefit from being different from the Q-net
+lr (β is 4 scalars vs thousands of Q-net parameters — different curvature).
+
+This is a known limitation of single-optimizer joint training.
+Not a bug, but worth documenting as a design choice.
+
+─────────────────────────────────────────────────────────────────────────────
+NOTE-4  [NOTE]  traincoeff.py — eval timing: EpisodeMetricsCollector
+                collect_step called BEFORE env.step (correct per API)
+─────────────────────────────────────────────────────────────────────────────
+File:  experiments/traincoeff.py, lines 371-378
+
+    while not eval_done["__all__"]:
+        eval_mc.collect_step(env.sumo)    # BEFORE env.step ← correct
+        eval_obs, eval_rew, eval_done, _ = env.step(action=eval_actions)
+
+This matches the EpisodeMetricsCollector docstring ("Call BEFORE
+calling sumo.simulationStep() / env.step()").
+
+The extra collect_step after the loop (line 380) and finalize (line 381)
+correctly capture the final state. ✓
+
+─────────────────────────────────────────────────────────────────────────────
+NOTE-5  [NOTE]  PrioritizedReplayBuffer — max_priority never decreases
+─────────────────────────────────────────────────────────────────────────────
+File:  sumo_rl/agents/prioritized_replay_buffer.py, line 107
+
+    if err > self.max_priority:
+        self.max_priority = err
+
+max_priority is used as the initial priority for new transitions (ensures
+new transitions are sampled "soon"). Once a high-TD transition sets
+max_priority high, this value persists for the lifetime of the buffer even
+after the high-TD transitions are overwritten by FIFO eviction.
+
+Consequence: new transitions in late training get an inflated initial
+priority relative to the actual current TD-errors. This causes new
+transitions to be over-sampled early in their lifetime until
+update_priorities() brings them to their true priority.
+
+This is a known trade-off in PER implementations (Schaul et al. 2016
+recommend this approach to ensure new experiences are sampled at least once).
+Not a bug, documented for completeness.
+
+=============================================================================
+SUMMARY TABLE
+=============================================================================
+
+ID   | Severity | File                           | Short description
+-----|----------|-------------------------------|--------------------------------
+C1   | CRITICAL | env.py:283                    | eval reset mutates training seed
+H1   | HIGH     | metrics.py:162-167            | CTBMetrics LANES hardcoded 1x1
+H2   | HIGH     | traincoeff.py:278             | r[ts] KeyError if TSes desync
+H3   | HIGH     | observations.py:210,636       | PriorityObs raw vs dedup lanes
+M1   | MEDIUM   | plotting scripts              | amb=0 discard biases metric high
+M2   | MEDIUM   | observations.py:PriorityBCA  | raw counts, no normalization
+M3   | MEDIUM   | dqn_coeff_gat.py/fixed.py    | α=0.5 → nb dominates (14-17×)
+L1   | LOW      | traffic_signal.py:248,260,262 | dead code a=1 placeholders
+L2   | LOW      | dqn_coeff_gat.py:234-235      | entropy metric topology-locked
+L3   | LOW      | env.py:222, ts.py:133,206-218 | print spam in hot path
+L4   | LOW      | env.py:89,156                 | CONNECTION_LABEL not reset
+N1   | NOTE     | rewards.py                    | avg-wait dilution is correct
+N2   | NOTE     | all trainers                  | amb gradient starvation
+N3   | NOTE     | dqn_coeff.py:84              | joint β/Q optimizer curvature
+N4   | NOTE     | traincoeff.py:371-380         | eval timing is correct
+N5   | NOTE     | prioritized_replay_buffer.py  | max_priority never decreases
+
+=============================================================================
+FINDINGS THAT AFFECT THESIS CLAIMS
+=============================================================================
+
+1. [C1] The "2000-episode diverse training" claim is incorrect. After the
+   first eval (ep 5), all training episodes use seed 123 (single fixed
+   scenario). This explains the extremely low training variance across runs
+   and makes the training curve look smoother than it would be with true
+   diversity. Must be addressed before final experiments.
+
+2. [M1] Ambulance metric comparisons (5-2-1 vs 5-3-1 vs 5-4-1) may be
+   biased because 5-3-1 serves ambulance faster → more n=0 eval episodes
+   → those episodes discarded → reported amb_wait appears worse than it
+   truly is. The RETROSPECTIVE's conclusion that "5-3-1 works" may be
+   partially an artifact of this discard.
+
+3. [H3] PriorityObservationFunction has an observation-space dimension
+   mismatch bug. Current experiments use PriorityBCA (unaffected). If
+   any ablation experiment accidentally uses "Priority" as obs class,
+   it will fail silently (gymnasium allows mismatched shapes in some
+   versions) or crash.
+
+4. [L2] The "GAT entropy stayed at ln2 throughout training" diagnostic
+   was misinterpreted as "GAT failed to learn." The correct interpretation
+   is that ln(2) entropy is the geometric minimum for the 1x3 topology —
+   it is topologically determined, not learning-determined. Per-ts entropy
+   for intersection "e" alone would be the meaningful diagnostic.
+
+=============================================================================
+FILES NOT REVIEWED (out of scope or low risk)
+=============================================================================
+- experiments/train.py            (vanilla DQN, minimal changes)
+- experiments/traincolight.py     (CoLight baseline)
+- experiments/trainorico.py       (OriCo, older)
+- sumo_rl/agents/dqn_agent_txw.py (base DQN, well-tested)
+- sumo_rl/agents/noisy_linear.py  (standard NoisyNet, unchanged)
+- nets/ (SUMO configuration files)
+- configs/exp*.yaml               (hyperparameter configs, not code)
+=============================================================================

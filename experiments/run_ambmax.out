@@ -21,3 +21,42 @@ nohup: ignoring input
 [2026年 06月 09日 星期二 22:33:21 IST] PHASE 1 (5-4-1 ambmax: exp167 1x3 + exp168 1x1) 全部启动, 等结束 ...
   实时看: tail -f ./logs/run_ambmax_20260609_223306/*.log
 
+[2026年 06月 10日 星期三 03:11:23 IST] ✓ exp167_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_ambmax_tuned 结束 (exit 0)
+[2026年 06月 10日 星期三 03:11:23 IST] ✓ exp168_coeff_1x1_541_avg_waiting_NSamb_ambmax_tuned 结束 (exit 0)
+
+[2026年 06月 10日 星期三 03:11:23 IST] PHASE 1 (5-4-1 ambmax: exp167 1x3 + exp168 1x1) 全部完成
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 10日 星期三 03:11:23 IST] ▶▶▶ PHASE 2 (1x1 ambmax 敏感性: exp169 5-3-1 + exp170 5-2-1) 启动 (2 并行)
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 10日 星期三 03:11:23 IST] ▶ LAUNCH  exp169_coeff_1x1_531_avg_waiting_NSamb_ambmax_tuned
+  log: ./logs/run_ambmax_20260609_223306/exp169_coeff_1x1_531_avg_waiting_NSamb_ambmax_tuned.log
+  PID: 25524
+
+[2026年 06月 10日 星期三 03:11:23 IST] stagger 15s ...
+
+[2026年 06月 10日 星期三 03:11:38 IST] ▶ LAUNCH  exp170_coeff_1x1_521_avg_waiting_NSamb_ambmax_tuned
+  log: ./logs/run_ambmax_20260609_223306/exp170_coeff_1x1_521_avg_waiting_NSamb_ambmax_tuned.log
+  PID: 25585
+
+[2026年 06月 10日 星期三 03:11:38 IST] PHASE 2 (1x1 ambmax 敏感性: exp169 5-3-1 + exp170 5-2-1) 全部启动, 等结束 ...
+  实时看: tail -f ./logs/run_ambmax_20260609_223306/*.log
+
+[2026年 06月 10日 星期三 04:20:48 IST] ✓ exp169_coeff_1x1_531_avg_waiting_NSamb_ambmax_tuned 结束 (exit 0)
+[2026年 06月 10日 星期三 04:20:48 IST] ✓ exp170_coeff_1x1_521_avg_waiting_NSamb_ambmax_tuned 结束 (exit 0)
+
+[2026年 06月 10日 星期三 04:20:48 IST] PHASE 2 (1x1 ambmax 敏感性: exp169 5-3-1 + exp170 5-2-1) 全部完成
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 10日 星期三 04:20:48 IST] 全部 4 个 run 完成,总挂钟 20862s (≈ 347min)
+
+PHASE 1:
+  ✓  exp167_coeff_1x3_541_avg_waiting_NS20bus_1amb_U_ambmax_tuned  (exit 0)
+  ✓  exp168_coeff_1x1_541_avg_waiting_NSamb_ambmax_tuned  (exit 0)
+
+PHASE 2:
+  ✓  exp169_coeff_1x1_531_avg_waiting_NSamb_ambmax_tuned  (exit 0)
+  ✓  exp170_coeff_1x1_521_avg_waiting_NSamb_ambmax_tuned  (exit 0)
+
+  log 目录: ./logs/run_ambmax_20260609_223306
+════════════════════════════════════════════════════════════════════════════

@@ -80,11 +80,7 @@ def fetch_run_history(exp_name: str, project: str = "sumo-rl-1x3") -> pd.DataFra
 
 def collect_stats(hist: pd.DataFrame, scope: str, vtype: str, metric: str,
                   window: int) -> tuple:
-    """Return (mean, std, n) of last `window` eval rows for given metric.
-
-    Skips rows where the metric was 0 AND the row contains an indicator of
-    n_amb=0 (only relevant for ambulance — uses bus_pv as a proxy filter).
-    """
+    """Return (mean, std, n) of last `window` eval rows for given metric."""
     # Build column name based on scope
     if scope == "system":
         col = f"eval_system/{vtype}/{metric}"
@@ -94,12 +90,7 @@ def collect_stats(hist: pd.DataFrame, scope: str, vtype: str, metric: str,
     if col not in hist.columns:
         return None, None, 0
 
-    # For ambulance, also need a way to detect amb-empty evals.
-    # We use amb_pv == 0 as a heuristic (only when no amb in eval the per-visit is 0).
     series = hist[col].dropna().reset_index(drop=True)
-    if vtype == "ambulance":
-        # Drop rows where amb metric == 0 (likely n_amb=0)
-        series = series[series != 0.0]
     series = series.tail(window)
     if len(series) < 2:
         return None, None, len(series)

@@ -18,3 +18,13 @@ nohup: ignoring input
 [2026年 06月 09日 星期二 21:51:43 IST] 全部启动, 等结束 ...
   实时看: tail -f ./logs/run_coord541_20260609_215128/*.log
 
+[2026年 06月 10日 星期三 02:51:42 IST] ✓ exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned 结束 (exit 0)
+[2026年 06月 10日 星期三 02:51:42 IST] ✓ exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned 结束 (exit 0)
+
+════════════════════════════════════════════════════════════════════════════
+[2026年 06月 10日 星期三 02:51:42 IST] exp163/166 全部完成, 总挂钟 18014s (≈ 300min)
+  ✓  exp163_gatcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (exit 0)
+  ✓  exp166_fixedcoeff_1x3_541_avg_waiting_NS20bus_1amb_U_tuned  (exit 0)
+  log 目录: ./logs/run_coord541_20260609_215128
+  → 跑完后接着跑 run_exp161_162_164_165.sh
+════════════════════════════════════════════════════════════════════════════

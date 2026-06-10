@@ -149,16 +149,12 @@ def load_history(run_dir):
 
 
 def collect_stats(hist, scope, vtype, metric, window):
-    """Return (mean, std, n) of last `window` eval rows for the given metric.
-
-    For ambulance, filter out 0-value rows (likely n_amb=0 evaluation episodes).
-    """
+    """Return (mean, std, n) of last `window` eval rows for the given metric."""
     col = f"eval_{scope}/{vtype}/{metric}"
     series = hist.get(col, [])
     if not series:
         return None, None, 0
-    if vtype == "ambulance":
-        series = [v for v in series if v != 0.0]
+    series = [v for v in series if not (isinstance(v, float) and v != v)]  # drop NaN
     tail = series[-window:]
     if len(tail) < 2:
         return None, None, len(tail)

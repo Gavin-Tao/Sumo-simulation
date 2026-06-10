@@ -169,9 +169,7 @@ def collect_stats(hist, scope, vtype, metric, window, mad_k=3.5):
     series = hist.get(col, [])
     if not series:
         return None, None, 0, 0
-    # For ambulance, drop n_amb=0 evals first (the 0's aren't outliers — they're "no amb present")
-    if vtype == "ambulance":
-        series = [v for v in series if v != 0.0]
+    series = [v for v in series if not (isinstance(v, float) and v != v)]  # drop NaN
     tail = series[-window:]
     if len(tail) < 2:
         return None, None, len(tail), 0
