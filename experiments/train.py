@@ -147,6 +147,8 @@ def train(cfg: dict, timestamp: str):
         obs_kwargs["phase_state"] = cfg["obs_phase_state"]
     if "priority_source" in cfg:
         obs_kwargs["priority_source"] = cfg["priority_source"]
+    if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
+        obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
     if obs_kwargs:
         obs_class = functools.partial(obs_class, **obs_kwargs)
     env = SumoEnvironment(
@@ -209,6 +211,20 @@ def train(cfg: dict, timestamp: str):
                   f"d_model={tf_cfg.get('d_model',128)} heads={tf_cfg.get('nhead',4)} "
                   f"layers={tf_cfg.get('num_layers',2)} ff={tf_cfg.get('dim_ff',256)}")
 
+        # ── Transformer eval diagnostics: CLS attention over lane tokens ──────────
+        # eval_diag/cls_attn_entropy: low = CLS focuses few lanes; eval_diag/cls_attn_max:
+        # peak attention; eval_diag/cls_attn_on_amb: attention mass on tokens whose p5
+        # (ambulance) count > 0 — "does the net look at the ambulance lane?"
+        attn_diag = None
+        if q_net_factory is not None and hasattr(obs_fn0, "token_layout"):
+            nf = len(obs_fn0.fields)
+            K_ts = env.traffic_signals[last_ts_id].num_green_phases
+            tok_base = (0 if obs_fn0._is_legacy else 1) \
+                       + (K_ts if obs_fn0.include_phase_service else 0)
+            amb_off = (tok_base + 4 * nf + obs_fn0.fields.index("count")) \
+                      if "count" in obs_fn0.fields else None
+            attn_diag = {"layout": layout, "amb_off": amb_off}
+
         agent = DQN(
             starting_state=tuple(initial_states[last_ts_id]),
             state_space=env.observation_space.shape[0],
@@ -233,6 +249,7 @@ def train(cfg: dict, timestamp: str):
             per_beta_steps=cfg.get("per_beta_steps", 100_000),
             per_eps=cfg.get("per_eps", 1e-6),
             q_net_factory=q_net_factory,
+            grad_clip=cfg.get("grad_clip", None),
         )
 
         step_counter = 0
@@ -245,6 +262,9 @@ def train(cfg: dict, timestamp: str):
             done = {"__all__": False}
             phase_counts = {ts_id: {} for ts_id in env.ts_ids}
             ep_losses: list = []
+            ep_gnorms: list = []
+            ep_qmeans: list = []
+            ep_qmaxs:  list = []
 
             try:
                 while not done["__all__"]:
@@ -254,6 +274,11 @@ def train(cfg: dict, timestamp: str):
 
                     if agent.loss is not None:
                         ep_losses.append(agent.loss)
+                        if agent.grad_norm is not None:
+                            ep_gnorms.append(agent.grad_norm)
+                        if agent.q_mean is not None:
+                            ep_qmeans.append(agent.q_mean)
+                            ep_qmaxs.append(agent.q_abs_max)
                     step_counter += 1
 
                     # ── Track phase selection ─────────────────────────────────────
@@ -328,6 +353,12 @@ def train(cfg: dict, timestamp: str):
                     }
                     if ep_losses:
                         ep_log["train/loss"] = sum(ep_losses) / len(ep_losses)
+                # Optimizer-side diagnostics (present for all archs; grad_norm only when clipping on)
+                if ep_gnorms:
+                    ep_log["train/grad_norm"] = sum(ep_gnorms) / len(ep_gnorms)
+                if ep_qmeans:
+                    ep_log["train/q_mean"]    = sum(ep_qmeans) / len(ep_qmeans)
+                    ep_log["train/q_abs_max"] = max(ep_qmaxs)
                 # Log PER β annealing (only meaningful when PER on; else it's a constant 1.0)
                 if agent.use_per:
                     ep_log["train/per_beta"] = agent.current_beta
@@ -350,9 +381,24 @@ def train(cfg: dict, timestamp: str):
                     ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green
                 )
                 eval_ts_reward: dict = {ts: 0.0 for ts in env.ts_ids}
+                attn_ent: list = []; attn_mx: list = []; attn_amb: list = []
                 while not eval_done["__all__"]:
                     eval_mc.collect_step(env.sumo)
                     eval_actions = {ts: agent.take_action(eval_obs[ts]) for ts in env.ts_ids}
+                    if attn_diag is not None:
+                        xt = torch.tensor(np.asarray(eval_obs[last_ts_id]),
+                                          dtype=torch.float32, device=agent.device)
+                        attn = agent.q_net.cls_attention(xt)[0]          # (n_tokens,) raw CLS→token mass
+                        p = attn.clamp_min(1e-12); p = p / p.sum()       # renormalize over tokens for entropy
+                        attn_ent.append(float(-(p * p.log()).sum()))
+                        attn_mx.append(float(attn.max()))
+                        if attn_diag["amb_off"] is not None:
+                            H = attn_diag["layout"]["header_dim"]
+                            D = attn_diag["layout"]["token_dim"]
+                            toks = xt[H:].reshape(-1, D)
+                            amb_mask = toks[:, attn_diag["amb_off"]] > 0
+                            if bool(amb_mask.any()):
+                                attn_amb.append(float(attn[amb_mask].sum()))
                     eval_obs, eval_rew, eval_done, _ = env.step(action=eval_actions)  # type: ignore[misc]
                     for ts in env.ts_ids:
                         eval_ts_reward[ts] += eval_rew.get(ts, 0.0)
@@ -401,6 +447,11 @@ def train(cfg: dict, timestamp: str):
                     eval_reward_log = {f"eval_{ts}/reward": eval_ts_reward[ts] for ts in env.ts_ids}
                     eval_reward_log["eval_system/mean_reward"] = eval_mean
                     eval_reward_log["eval_system/best_reward"] = best_eval_reward
+                    if attn_ent:
+                        eval_reward_log["eval_diag/cls_attn_entropy"] = sum(attn_ent) / len(attn_ent)
+                        eval_reward_log["eval_diag/cls_attn_max"]     = sum(attn_mx) / len(attn_mx)
+                        if attn_amb:   # only on evals where an ambulance was present
+                            eval_reward_log["eval_diag/cls_attn_on_amb"] = sum(attn_amb) / len(attn_amb)
                     wandb.log({**mc_log, **eval_reward_log}, step=step_counter)
                 print(f"  → eval ep={episode}")
 

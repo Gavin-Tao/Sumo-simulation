@@ -2,6 +2,10 @@
 # static geometry, per user decision). Obs identical to the A/B arms in family terms
 # (PriorityLaneToken, legacy, count+queue); network = token Transformer, action unchanged.
 
+#   R1 fix ON (default): each token carries a K=4 "served-by-phase" multi-hot lane
+#   identity (token 10→14 dims) — without it CLS pooling is permutation-invariant
+#   and NS-left vs EW-left queues are indistinguishable (measured). Ablate with
+#   obs_phase_service: false.
 #   net: per-lane token --Linear--> d128 --+CLS--> TransformerEncoder(2L, 4H, FF256)
 #        Q = MLP(concat(CLS, header)) → 4 Q-values (action space UNCHANGED: pick 1 of K=4)
 #   note: legacy tokens carry φ only (current-phase one-hot lives in the header). For
@@ -19,6 +23,7 @@ cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-B
 observation_class: "PriorityLaneToken"
 obs_phase_state:   "legacy"
 obs_fields:        ["count", "queue"]
+obs_phase_service: true   # R1 lane-identity multi-hot (default true; false = identity-ablation arm)
 reward_fn:         "5-4-1-avg-waiting-time"
 num_seconds:       1000
 delta_time:        5
@@ -30,6 +35,7 @@ max_green:         50
 
 # Q-network architecture
 agent_arch: "transformer"
+grad_clip: 1.0          # R2: transformer + Adam 1e-3 needs clipping; MLP arms unaffected (no key)
 transformer:
   d_model:    128
   nhead:      4

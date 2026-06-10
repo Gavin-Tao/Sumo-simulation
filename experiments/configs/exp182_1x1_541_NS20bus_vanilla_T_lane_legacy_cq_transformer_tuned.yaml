@@ -22,6 +22,7 @@ cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-B
 observation_class: "PriorityLaneToken"
 obs_phase_state:   "legacy"
 obs_fields:        ["count", "queue"]
+obs_phase_service: true   # R1 lane-identity multi-hot (default true; false = identity-ablation arm)
 reward_fn:         "5-4-1-avg-waiting-time"
 num_seconds:       1000
 delta_time:        5
@@ -33,6 +34,7 @@ max_green:         50
 
 # Q-network architecture (TUNED — deltas vs exp174 documented above)
 agent_arch: "transformer"
+grad_clip: 1.0          # R2: transformer + Adam 1e-3 needs clipping; MLP arms unaffected (no key)
 transformer:
   d_model:    256
   nhead:      8

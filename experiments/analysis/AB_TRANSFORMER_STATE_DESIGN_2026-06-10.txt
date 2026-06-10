@@ -3,7 +3,13 @@
 
   作者:  Xiaowen Tao (TCD)
   日期:  2026-06-10
-  状态:  设计 v2 — 对照 06-09/06-10 实测数据复审后重写
+  状态:  设计 v2 + 2026-06-11 实现/REVIEW 追记 (Part 10-12)
+         实现已落地 (exp172-182, run_abt_541.sh 三批);
+         R1 (Transformer 身份混叠) 与 R2 (无梯度裁剪) 均已于 06-11 修复
+         并经功能性验证 (见 R1/R2 节内"已实施"段)
+  续篇:  ABT_GENERIC_DESIGN_2026-06-11.txt — 泛化打磨 (1x3/Dublin/异构/
+         共享车道) + 第二轮代码审查 (G1-G9) + 分阶段路线; 其 Part 3
+         取代本文 Part 9 的"未来扩展"
   目的:  在 SUMO 信号路口上实现并对比三种 state 组织 (按相位 / 按转向 / 按车道),
          隔离"状态组织"这一个变量。本版用实测数据复审了原 spec, 标出强印证、
          结构隐患、与"优先级倒挂"的接口。
@@ -401,5 +407,173 @@
     数据贡献是 φ 的 awt 字段补上了实测的"obs 无 waiting"噪声下限。Transformer
     是效率冠军、排序险手 —— 要赢就配 Y1。
 ================================================================================
-  EOF
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 10: 实现记录 (2026-06-11 追记) — 设计已落地, 本节记"实现成什么样"     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ── 10.1 落地范围与文件地图 ─────────────────────────────────────────────────
+    sumo_rl/environment/priority_map.py        (新) policy 真值源:
+        DEFAULT_TABLE{amb5/bus3/truck2/car1}, PRIORITY_LEVELS(1..5),
+        load_priority_table(None|dict|.json) 启动编译一次 → 平面 dict;
+        越界 priority (BNF"6"类) 在加载时报错。Phase-2 动态 BNF 只改这里。
+    sumo_rl/environment/observations.py        (+522 行, 纯新增零删改 →
+        PriorityBCA 等旧类逐字节未动, exp175 对照路径与历史一致)
+      · PriorityPhaseObservationFunction (A):  按相位放绿车道聚合
+      · PriorityMovementObservationFunction (B): 12 转向槽 = {N,E,S,W}×{L,T,R};
+        进口方位 = 几何 atan2(+180°), 转向 = 进出向夹角分类(U 并入 L);
+        车→槽: route 下一边匹配 (from_edge,to_edge), per-vid memoize
+      · PriorityLaneTokenObservationFunction (T): 每进口车道一个 token;
+        token_layout() 输出 {header_dim, n_tokens, token_dim} 作为扁平向量
+        与 token 网络间的契约
+      · 共享 φ: 每优先级桶 [count,queue,mean_awt,max_awt] 可选字段 (fields 参数);
+        归一化 count/queue÷jam容量, awt÷100; vid→priority memoize (类型不变);
+        >50000 安全阀整体清空 (TrafficSignal 每集重建 → 实际不触发)
+      · 两种 phase_state: legacy = 前置相位 one-hot + 二值 min_green
+        (与 PriorityBCA 前块逐位相等, 实测证明); perphase = header
+        [min_green_ok, phase_elapsed] + 每单元 is_cur/is_green
+      · 18 个命名变体 (3 方案 × 2 phase_state × {cq,cqm,cqmm}) 注册进
+        traincoeff.py; train.py 走"基类 + obs_fields/obs_phase_state 配置
+        传参 (functools.partial)"路线, 字段组合不再爆名字
+    sumo_rl/agents/qnet_lane_transformer.py    (新) LaneTokenTransformerQNet:
+        token --Linear--> d_model --+可学习CLS--> TransformerEncoder(默认2层
+        4头FF256, dropout=0 保确定性) --> MLP(concat(CLS, header)) --> K 个 Q。
+        动作空间不变 (4选1); 无静态几何 (用户决定); 接口与 MLP Qnet 同契约
+        (扁平 (B,dim) 进 (B,K) 出) → DQN 训练逻辑零改动
+    sumo_rl/agents/dqn_agent_txw.py            DQN.__init__ 加可选 q_net_factory
+        (零参可调用返回 nn.Module); 不传 = 原 MLP 路径逐字节不变
+    experiments/train.py                       (a) 3 基类注册 + obs_kwargs
+        partial; (b) agent_arch:"transformer" 接线: 从 obs_fn.token_layout()
+        取布局, assert 布局×token == obs 维度, 构造 factory 传入 DQN
+    experiments/configs/exp172-182 (11 个) + experiments/run_abt_541.sh
+    nets/.../Eq_350_20-80-99-1-...NSamb/       (新场景) EW 走廊 20%bus+80%car
+        (70+280 veh/h), NS 99%car+1%amb 不变, 转向全 car; SUMO 校验通过
+
+  ── 10.2 实验矩阵 (exp172-182, 全部 1x1 / 5-4-1 / vanilla DQN / train.py) ────
+    批1  172 A-phase legacy cq (dim45) | 173 B-movement legacy cq (125)
+         | 174 T-lane legacy cq + Transformer d128/4H/FF256 (125, 284k 参数)
+         | 175 PriorityBCA 对照 (原始 obs, 原始路径)
+    批2  180/181 = A/B tuned: hd 128→256, eps_decay 5000→20000, capacity
+         50k→100k | 182 = T tuned: d_model 128→256 (8头/FF512 随动) + 同
+         eps_decay/capacity — 容量轴跨架构类比对应, 探索窗/回放池三臂相同
+    批3  176-179 B 字段消融: c / cqm / cqmm / qm
+    协议: eval ε=0 纯 greedy (5 个 trainer 一致, 已逐一确认), training_seed
+         与 eval_seed=123 分离 (C1 修复在位), NaN 哨兵生效, best-ckpt 按
+         reward 选 (永不 NaN)。曾误判 train.py eval 带 ε — 实为读码窗口
+         漏看 317-318 行, 已纠正并全family核实。
+
+  ── 10.3 已做验证 (语义级, 非仅"不崩") ──────────────────────────────────────
+    · A 相位→车道映射 == 独立推导真值; phase0 = EW直2道+常绿右转4道 (手推一致)
+    · A-legacy 前块 == PriorityBCA 前块, 多步逐位相等
+    · A 相位行 per-priority count == TraCI 直数 (4相位×3类×11时点)
+    · φ mean/max == 手算; B 12槽 count == 按 route 独立重算; B phase0 服务槽
+      {N-R,E-T,E-R,S-R,W-T,W-R} 与相位语义吻合; T per-lane count == TraCI
+    · Transformer: 单元 (B=1/256 forward, backward, CLS 梯度非零, 284k/1.1M
+      参数) + train.py 端到端 (update/eval/ckpt, reward -2576→-685, exit=0)
+    · run_abt_541.sh: 3 批次, glob 唯一性 11/11, pid↔exp 对齐修复,
+      OMP_NUM_THREADS=4 防 CPU 超订; 并行写共享 output/ 的 tripinfo/fcd 是
+      交错垃圾 (训练不读, 勿用于分析)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 11: 代码级 REVIEW 发现 (2026-06-11, 按严重度排)                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ── R1 ★★★ Transformer 车道身份混叠 (已实验证实, 影响 exp174/182 解读) ──────
+    现象: 无位置编码 + token 无车道身份特征 (legacy=纯φ; perphase 也只多一个
+      is_green) → encoder 对 token 置换等变, CLS 池化后置换不变 → Q 只依赖
+      "车道 φ 的多重集 + 全局 header"。
+    实验证明 (2026-06-11, 合成 token): "NS左 排队" vs "EW左 排队" (同 φ 值
+      放不同 token 槽位) → Q 逐位相同 (max diff 8.9e-8 = 浮点噪声)。
+    本场景具体伤害: 4 条左转道全是纯 car (350 veh/h 同构) → "该放 NS左 还是
+      EW左"在 obs 上不可分, 两个左转相位 (4 选 2) 的决策系统性失明。直行相位
+      因组成不同部分可分 (EW直 含 p3 bus, NS直 偶含 p5 amb)。
+    为什么只伤 T-Transformer: MLP 臂 (A/B/旧T) 的扁平向量里"位置即身份",
+      不受影响。原 spec 的静态几何块 (approach_angle+转向 one-hot) 正是车道
+      身份的载体 —— 去掉它又不加替代物, 身份信息就没了。这不是"简化", 是
+      "可观测性塌缩", 必须计入 exp174/182 结果解读: T 臂表现差≠车道粒度差,
+      可能只是身份缺失。
+    修复选项 (改动量小→大, 待用户拍板, 未实施):
+      (c) ★推荐: 每 token 追加 K 维 "served-by-phase" multi-hot (该车道被哪些
+          相位放绿, 从已缓存的 _phase_lanes 直接得) — 不是静态几何, 恰好是
+          动作对齐的身份 ("这条队该由哪个相位放行"), token_dim 10→14;
+          且保留集合语义 (换路口仅需 K 一致)。
+      (a) 每 token 学习式位置嵌入 (12×d_model 表) — 简单有效, 但身份绑定
+          token 序号, 跨路口零样本叙事减弱。
+      (b) 恢复最小静态子集 (approach_angle + L/T/R 三位) — 最接近原 spec,
+          但与"去静态几何"的决定相抵。
+    若不修: 跑出来也有信息 (= "无身份 set-pooling 的下界"), 但解读必须按上述
+      口径; 且 182 (tuned) 的容量加倍救不了身份缺失 — 这是表示问题不是容量问题。
+    ✅ 已实施 (2026-06-11, 选项(c)): PriorityLaneToken 每 token 追加 K=4 维
+      served-by-phase multi-hot (include_phase_service=True 默认开, 可关作
+      身份消融臂; config 键 obs_phase_service)。token 10→14, exp174 obs
+      125→173 / exp182 同步。service 语义实测: 右转道 [1,1,1,1], n_t_1=[0,0,1,0],
+      n_t_2=[0,0,0,1], e_t_1=[1,0,0,0], e_t_2=[0,1,0,0] ✓。
+      功能性证明 (可学性 A/B): 教网络"NS左排队→选相位3 / EW左排队→选相位1",
+        无身份: loss 卡死 0.1250 (理论下界, 同输入异目标), 两输入同 argmax ✗
+        有身份: loss→0.0000, argmax 正确分派 (3 与 1) ✓
+      —— 任务从"数学上不可学"变为"可学", 修复在功能层面成立。
+
+  ── R2 ★★ Transformer 无梯度裁剪 + lr 1e-3 ──────────────────────────────────
+    update() 为 backward→step, 无 clip_grad_norm_。MLP 在此 lr 历史稳定;
+    Transformer + Adam 1e-3 无裁剪是已知不稳组合 (尤其 target 漂移期)。
+    处置: 先跑, 盯 train loss 是否尖刺/发散; 若不稳, 第一旋钮 = 裁剪 1.0
+    或 lr→5e-4 (只动 T 臂, 不连累 A/B)。
+    ✅ 已实施 (2026-06-11): DQN 加 grad_clip 参数 (默认 None = 历史行为逐字节
+      不变), update() 在 backward 与 step 间 clip_grad_norm_; exp174/182
+      config 设 grad_clip: 1.0 — 只动 T 臂, A/B/175 无此键不受影响。
+      端到端冒烟通过 (token14/dim173 + 裁剪路径, exit=0)。
+
+  ── R3 ★ 诊断工具与 Transformer ckpt 不兼容 ─────────────────────────────────
+    tools/diagnose_541.py / diagnose_3w.py 按 MLP Qnet 结构重建网络加载
+    state_dict → exp174/182 的 best.pth 无法用现有工具做行为探针/Q校准。
+    需要时给工具加 arch 分支 (读 config 的 agent_arch + transformer 块)。
+
+  ── R4 ★ train.py episode 循环的宽 except (既有, 非今日引入) ─────────────────
+    捕获一切异常→打印→reset 继续。冒烟时它把"mini_size<batch_size 采样错"
+    当 SUMO 错误吞掉继续跑。真实配置 (mini 1000≥batch 256) 不触发; 但任何
+    复现性错误都会被静默成"跳集", wandb 上只见怪异空窗。建议(低优先): 对
+    非 SUMO 异常计数, 连续 N 次同类即 abort。
+
+  ── R5 ○ 设计注记 (非缺陷, 解读时需在场) ────────────────────────────────────
+    · A/B/T 全部只看 incoming, 无 out-lane/压力信号; PriorityBCA 对照含
+      in+out counts → 对照与新方案差的不止"组织方式" (175 是参照非单变量)。
+    · 基线臂 (172-174) 字段=cq, 无 waiting → AUDIT 1.2 的"obs 无 waiting
+      噪声下限"在基线臂依旧存在; mean 的增益只在 B 的消融臂 (177/178) 可见。
+    · p2(truck)/p4 死桶: 每 φ 组 8/20 维常零 (本场景), 无害但胖。
+    · B 看不见"route 终点在本路口"的车 (slot=-1 跳过); 本场景 0 辆。
+    · load_priority_table 每集每 ts 重建 (TrafficSignal 重建链), json 源
+      = 每集一次文件读; 量级可忽略。
+    · 1x1 无倒挂 (exp168-170): 本轮回答"组织×效率/绝对amb等待", 不回答倒挂。
+
+  ── R6 ✓ 复查通过清单 (一句话存档) ───────────────────────────────────────────
+    eval-seed 污染修复在位 (train.py 179/216/278 vs 320); 5 trainer eval
+    全 ε=0; ckpt 路径按 exp_name/timestamp 隔离; metrics NaN 哨兵安全
+    (best-ckpt 用 reward); observations.py 纯增量; bash pid 对齐已修;
+    分桶/相位/槽位语义与 TraCI 真值多点位逐位吻合 (10.3)。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 12: 设计改进建议 (按优先级, 均未实施待拍板)                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  S1 ★★★ 修 R1 身份混叠 — 推荐 served-by-phase multi-hot (Part 11 R1(c))。
+     这是 exp174/182 出结果前唯一值得抢先做的改动; 不修则按 R1 口径解读。
+  S2 ★★  T 臂稳定性预案: loss 尖刺 → clip 1.0 / lr 5e-4 (只动 T)。
+  S3 ★★  字段消融补轴: 若 B 的 cqm>cq 显著 (mean 字段兑现 AUDIT 预测),
+     给 A/T 各补一个 cqm 臂 (各 1 个 config), 验证增益跨组织方式成立。
+  S4 ★   out-φ / 压力变体: φ 同时算 incoming 与 outgoing (维度×2), 作为
+     "A/B/T vs PriorityBCA 信息集对齐"的补充臂, 把 175 对照升级成可解释对比。
+  S5 ★   下一战场 1x3 (倒挂轴): 同一套 obs 类直接可用 (B/T 的几何法不依赖
+     具体路网); 配 stratified replay (训练层正交修复) + ≥3 seed
+     + Mann-Whitney (thesis 硬要求, 现全部单 seed)。
+  S6 ○   需要"网络 vs 状态"拆解时, 补一个 PriorityLaneToken+MLP 臂
+     (即原 174 内容, 1 个 config 的事) — 当前 174 已是 state+网络的捆绑对比。
+  S7 ○   diagnose 工具加 transformer 分支 (R3), 跑完 174/182 想做机理分析时需要。
+  S8 ○   perphase 次级轴: token 级 is_green (174 改 1 行 obs_phase_state) —
+     注意它只标"当前"相位, 不解决 R1 的完整身份问题, 别当替代品。
+
+================================================================================
+  EOF (v2 + 2026-06-11 实现/REVIEW 追记)
 ================================================================================
