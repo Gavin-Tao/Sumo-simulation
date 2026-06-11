@@ -1,0 +1,10 @@
+<configuration>
+    <input>
+        <net-file value="1x3_4phases.net.xml"/>
+        <route-files value="Eq_350_100-0-100-0-Bus-Car.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+    </time>
+</configuration>

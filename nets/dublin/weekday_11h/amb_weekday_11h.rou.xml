@@ -1,0 +1,15 @@
+<routes>
+  <vType id="ambulance" vClass="emergency" guiShape="emergency" color="0,1,0" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
+  <vehicle id="amb_0" type="ambulance" depart="497.4" departLane="1" departSpeed="max">
+    <route edges="43538577#3 668344588 3791745#0 3791745#4 4919462#0 128944693#0 128944693#1 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#7 -532427444#6 -532427444#3 -532427444#2 369977731"/>
+  </vehicle>
+  <vehicle id="amb_1" type="ambulance" depart="2029.7" departLane="0" departSpeed="max">
+    <route edges="372226878#0 5826896#0 5826896#1 317003249#1 317003249#2 -668344588 -43538577#3 129212233#0"/>
+  </vehicle>
+  <vehicle id="amb_2" type="ambulance" depart="2546.0" departLane="0" departSpeed="max">
+    <route edges="-4475730 2294384#0 4472590#0 37721356#0 4078079#1 38192817 gneE51 5976022 341583777#0 532427444#0 532427444#3 532427444#4 532427444#7 16309917#0"/>
+  </vehicle>
+  <vehicle id="amb_3" type="ambulance" depart="2573.7" departLane="1" departSpeed="max">
+    <route edges="43538577#3 668344588 3791745#0 3791745#4 304634278#0 304634278#1 4476043#0"/>
+  </vehicle>
+</routes>

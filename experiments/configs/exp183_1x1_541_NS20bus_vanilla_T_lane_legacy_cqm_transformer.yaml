@@ -1,0 +1,65 @@
+# Scheme T (cqm) — exp174 with the mean_awt field added (count+queue+mean).
+# Single-variable delta vs exp174: obs_fields cq → cqm. Everything else identical
+# (lane-token Transformer, legacy phase_state, R1 service multi-hot, R2 grad_clip).
+# Pairs with exp177 (B-movement cqm) as the cqm-field 1x1 arms.
+#   hidden_dim below is ignored when agent_arch=transformer (kept for yaml uniformity).
+name: "exp183_1x1_541_NS20bus_vanilla_T_lane_legacy_cqm_transformer"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment — identical to exp174 except obs_fields += mean_awt
+observation_class: "PriorityLaneToken"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue", "mean_awt"]
+obs_phase_service: true   # R1 lane-identity multi-hot (default true; false = identity-ablation arm)
+reward_fn:         "5-4-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Q-network architecture
+agent_arch: "transformer"
+grad_clip: 1.0          # R2: transformer + Adam 1e-3 needs clipping; MLP arms unaffected (no key)
+transformer:
+  d_model:    128
+  nhead:      4
+  num_layers: 2
+  dim_ff:     256
+
+# DQN hyperparameters (same as exp174; hidden_dim unused under transformer arch)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER
+use_double: false
+use_per:    false

@@ -22,6 +22,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import math
 import os
@@ -68,6 +69,9 @@ from sumo_rl.environment.observations import (
     PriorityBCAObservationFunction,
     PriorityCtrlBCAObservationFunction,
     PriorityWaitingBCAObservationFunction,
+    PriorityPhaseObservationFunction,
+    PriorityMovementObservationFunction,
+    PriorityLaneTokenObservationFunction,
     PriorityPhaseLegacyCQ,
     PriorityPhaseLegacyCQM,
     PriorityPhaseLegacyCQMM,
@@ -102,6 +106,10 @@ OBS_REGISTRY = {
     "PriorityBCA":            PriorityBCAObservationFunction,
     "PriorityCtrlBCA":        PriorityCtrlBCAObservationFunction,
     "PriorityWaitingBCA":     PriorityWaitingBCAObservationFunction,
+    # A/B/T base families (configure via obs_phase_state + obs_fields)
+    "PriorityPhase":          PriorityPhaseObservationFunction,
+    "PriorityMovement":       PriorityMovementObservationFunction,
+    "PriorityLaneToken":      PriorityLaneTokenObservationFunction,
     # Scheme A — phase-level priority buckets (legacy vs perphase-elapsed × field-sets)
     "PriorityPhaseLegacyCQ":    PriorityPhaseLegacyCQ,
     "PriorityPhaseLegacyCQM":   PriorityPhaseLegacyCQM,
@@ -208,6 +216,42 @@ def train(cfg: dict, timestamp: str):
     # Neighbor map: ts_id → [up, down, left, right] (None = no neighbor)
     neighbor_map: dict = cfg.get("neighbor_map", {})
 
+    # ── M3 (Dublin): static per-junction action masks (mirrors train.py) ──
+    action_meta_file = cfg.get("action_meta_file")
+    if action_meta_file and cfg.get("use_per"):
+        sys.exit("action_meta_file + use_per: masked PER not implemented yet")
+    ts_mask, std2green, green2std, ts_turnmap = {}, {}, {}, {}
+    if action_meta_file:
+        import json as _json
+        with open(action_meta_file) as _f:
+            _meta = _json.load(_f)["tls"]
+        for _tid, _t in _meta.items():
+            ts_mask[_tid] = np.array(_t["mask"], dtype=bool)
+            _s2g = np.full(8, -1, dtype=int)
+            for _a, _gi in _t["std_to_green_index"].items():
+                _s2g[int(_a)] = _gi
+            std2green[_tid] = _s2g
+            _g2s = np.full(int(_s2g.max()) + 1, -1, dtype=int)
+            for _a in range(8):
+                if _s2g[_a] >= 0:
+                    _g2s[_s2g[_a]] = _a
+            green2std[_tid] = _g2s
+            ts_turnmap[_tid] = {int(_i): (_c[0]["approach"], _c[0]["turn"])
+                                for _i, _c in _t["links"].items()}
+
+    def _masked_reset(_env, _seed):
+        _states = _env.reset(int(_seed))
+        if action_meta_file:
+            for _tid in _env.ts_ids:
+                _ts = _env.traffic_signals[_tid]
+                _ts.std_action_map = green2std[_tid]
+                if hasattr(_ts.observation_fn, "rebind_movements"):
+                    _ts.observation_fn.rebind_movements(ts_turnmap[_tid])
+                _ts.observation_space = _ts.observation_fn.observation_space()
+            _states = {_tid: _env.traffic_signals[_tid].observation_fn()
+                       for _tid in _env.ts_ids}
+        return _states
+
     if logging_mode != "none":
         wandb.init(
             project=cfg.get("wandb_project", "sumo-rl"),
@@ -219,6 +263,26 @@ def train(cfg: dict, timestamp: str):
         )
 
     obs_class = OBS_REGISTRY[cfg["observation_class"]]
+    # Optional obs params (A/B/T families): bind via partial so env can call obs_class(ts).
+    obs_kwargs = {}
+    if "obs_fields" in cfg:
+        obs_kwargs["fields"] = tuple(cfg["obs_fields"])
+    if "obs_phase_state" in cfg:
+        obs_kwargs["phase_state"] = cfg["obs_phase_state"]
+    if "priority_source" in cfg:
+        obs_kwargs["priority_source"] = cfg["priority_source"]
+    if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
+        obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
+    if obs_kwargs:
+        obs_class = functools.partial(obs_class, **obs_kwargs)
+    # Table-driven reward (reward-side dual of φ): resolve to a callable here —
+    # it needs this experiment's priority table, so it can't live in the registry.
+    reward_fn = cfg["reward_fn"]
+    if reward_fn == "priority-avg-waiting":
+        from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
+        from sumo_rl.environment.priority_map import load_priority_table
+        reward_fn = make_priority_avg_waiting_reward(
+            load_priority_table(cfg.get("priority_source")))
     env = SumoEnvironment(
         net_file=cfg["net_file"],
         route_file=cfg["route_file"],
@@ -232,7 +296,7 @@ def train(cfg: dict, timestamp: str):
         single_agent=cfg.get("single_agent", False),
         yellow_time=cfg.get("yellow_time", 2),
         delta_time=cfg.get("delta_time", 5),
-        reward_fn=cfg["reward_fn"],
+        reward_fn=reward_fn,
         observation_class=obs_class,
         sumo_seed=cfg.get("seed", 0),
         sumo_warnings=True,
@@ -245,7 +309,7 @@ def train(cfg: dict, timestamp: str):
     eval_seed           = cfg.get("eval_seed", 42)
 
     for _ in range(1, cfg.get("runs", 1) + 1):
-        initial_states = env.reset(training_seed)
+        initial_states = _masked_reset(env, training_seed)
         obs_dim     = env.observation_space.shape[0]
         aug_obs_dim = obs_dim * 5              # own + 4 neighbors
 
@@ -255,7 +319,7 @@ def train(cfg: dict, timestamp: str):
         agent = CoeffDQN(
             aug_state_dim=aug_obs_dim,
             hidden_dim=cfg.get("hidden_dim", 64),
-            action_dim=env.action_space.n,
+            action_dim=(8 if action_meta_file else env.action_space.n),
             learning_rate=cfg.get("lr", 0.01),
             gamma=cfg.get("gamma", 0.99),
             epsilon=cfg.get("epsilon", 0.1),
@@ -279,10 +343,11 @@ def train(cfg: dict, timestamp: str):
 
         step_counter = 0
         best_eval_reward = -float("inf")
+        best_eval_hist: list = []   # sliding window for the best-ckpt criterion (B2 fix)
 
         for episode in range(1, episodes + 1):
             if episode != 1:
-                initial_states = env.reset(training_seed)
+                initial_states = _masked_reset(env, training_seed)
 
             done = {"__all__": False}
             phase_counts = {ts_id: {} for ts_id in env.ts_ids}
@@ -295,7 +360,11 @@ def train(cfg: dict, timestamp: str):
                     aug_obs_now = {}
                     for ts in env.ts_ids:
                         aug_obs_now[ts] = get_aug_obs(ts, initial_states, neighbor_map, obs_dim)
-                        actions[ts]     = agent.take_action(aug_obs_now[ts])
+                        if action_meta_file:
+                            a_std = agent.take_action(aug_obs_now[ts], mask=ts_mask[ts])
+                            actions[ts] = int(std2green[ts][a_std])
+                        else:
+                            actions[ts] = agent.take_action(aug_obs_now[ts])
 
                     s, r, done, info = env.step(action=actions)
 
@@ -313,11 +382,18 @@ def train(cfg: dict, timestamp: str):
                         aug_obs_t      = aug_obs_now[ts]                                    # reuse cached
                         aug_obs_t1     = get_aug_obs(ts, s, neighbor_map, obs_dim)
                         nb_r           = get_nb_rewards(ts, r, neighbor_map)
-                        agent.replay_buffer.add(
-                            aug_obs_t, actual_action,
-                            r[ts], aug_obs_t1, done[ts],
-                            nb_r,
-                        )
+                        if action_meta_file:
+                            agent.replay_buffer.add(
+                                aug_obs_t, int(green2std[ts][actual_action]),
+                                r[ts], aug_obs_t1, done[ts],
+                                nb_r, next_mask=ts_mask[ts],
+                            )
+                        else:
+                            agent.replay_buffer.add(
+                                aug_obs_t, actual_action,
+                                r[ts], aug_obs_t1, done[ts],
+                                nb_r,
+                            )
 
                     initial_states = s
 
@@ -338,12 +414,20 @@ def train(cfg: dict, timestamp: str):
                                 "weights": b_w, "indices": b_idx,
                             })
                         else:
-                            b_s, b_a, b_r, b_ns, b_d, b_nb_r = agent.replay_buffer.sample(agent.batch_size)  # type: ignore[call-arg]
-                            agent.update({
+                            _batch = agent.replay_buffer.sample(agent.batch_size)  # type: ignore[call-arg]
+                            if len(_batch) == 7:
+                                b_s, b_a, b_r, b_ns, b_d, b_nb_r, b_m = _batch
+                            else:
+                                b_s, b_a, b_r, b_ns, b_d, b_nb_r = _batch
+                                b_m = None
+                            _td = {
                                 "states": b_s, "actions": b_a,
                                 "next_states": b_ns, "rewards": b_r, "dones": b_d,
                                 "nb_rewards": b_nb_r,
-                            })
+                            }
+                            if b_m is not None:
+                                _td["next_masks"] = b_m
+                            agent.update(_td)
 
             except Exception as e:
                 import traceback
@@ -351,7 +435,7 @@ def train(cfg: dict, timestamp: str):
                 traceback.print_exc()
                 print(f"[ERROR] Resetting and continuing from episode {episode + 1}...\n")
                 try:
-                    initial_states = env.reset(training_seed)
+                    initial_states = _masked_reset(env, training_seed)
                 except Exception as reset_err:
                     print(f"[ERROR] Reset also failed: {reset_err}")
                     raise
@@ -401,7 +485,7 @@ def train(cfg: dict, timestamp: str):
                 agent.epsilon = 0.0                          # greedy policy
                 agent.q_net.eval()                           # disable noise if use_noisy
 
-                eval_obs = env.reset(int(eval_seed))
+                eval_obs = _masked_reset(env, eval_seed)
                 eval_done: dict = {"__all__": False}
                 eval_mc = EpisodeMetricsCollector(
                     ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green
@@ -412,7 +496,11 @@ def train(cfg: dict, timestamp: str):
                     eval_actions = {}
                     for ts in env.ts_ids:
                         aug = get_aug_obs(ts, eval_obs, neighbor_map, obs_dim)  # type: ignore[arg-type]
-                        eval_actions[ts] = agent.take_action(aug)
+                        if action_meta_file:
+                            a_std = agent.take_action(aug, mask=ts_mask[ts])
+                            eval_actions[ts] = int(std2green[ts][a_std])
+                        else:
+                            eval_actions[ts] = agent.take_action(aug)
                     eval_obs, eval_rew, eval_done, _ = env.step(action=eval_actions)  # type: ignore[misc]
                     for ts in env.ts_ids:
                         eval_ts_reward[ts] += eval_rew.get(ts, 0.0)
@@ -420,8 +508,18 @@ def train(cfg: dict, timestamp: str):
                 eval_mc.collect_step(env.sumo)               # capture final step (matches training pattern)
                 eval_mc.finalize(env.sumo)
                 eval_mean = sum(eval_ts_reward.values()) / len(env.ts_ids)
-                if eval_mean > best_eval_reward:
-                    best_eval_reward = eval_mean
+                # B2 fix (ABT_1X3_RESULTS_2026-06-11 Part 4): the best-ckpt
+                # criterion is the SLIDING MEAN of the last K evals, not a
+                # single-eval argmax — one lucky eval episode must not freeze
+                # the best checkpoint (K = cfg best_eval_window, default 3;
+                # comparison starts once the window is full).
+                _bw = int(cfg.get("best_eval_window", 3))
+                best_eval_hist.append(eval_mean)
+                if len(best_eval_hist) > _bw:
+                    del best_eval_hist[: len(best_eval_hist) - _bw]
+                eval_sliding = sum(best_eval_hist) / len(best_eval_hist)
+                if len(best_eval_hist) == _bw and eval_sliding > best_eval_reward:
+                    best_eval_reward = eval_sliding
                     save_checkpoint(agent, episode, model_dir, filename="best.pth")
                     # Snapshot the best ckpt's full eval metrics (all scopes x vTypes x all metric fields)
                     # for offline analysis / thesis tables. Overwrites each new-best event.
@@ -429,6 +527,8 @@ def train(cfg: dict, timestamp: str):
                         "_meta": {
                             "episode":          episode,
                             "eval_mean_reward": float(best_eval_reward),
+                            "eval_last_reward": float(eval_mean),
+                            "best_criterion":   f"sliding{_bw}",
                             "timestamp":        timestamp,
                             "ckpt_filename":    "best.pth",
                         },
@@ -436,7 +536,7 @@ def train(cfg: dict, timestamp: str):
                     }
                     with open(os.path.join(model_dir, "best_metrics.json"), "w") as _f:
                         json.dump(best_metrics, _f, indent=2, default=float)
-                    print(f"  → best ckpt updated (reward={best_eval_reward:.4f})")
+                    print(f"  → best ckpt updated (sliding{_bw}={best_eval_reward:.4f}, last={eval_mean:.4f})")
                 if logging_mode != "none":
                     _BASIC = {
                         "avg_stopped_time", "avg_stop_events", "avg_speed",

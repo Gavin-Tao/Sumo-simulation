@@ -1,0 +1,67 @@
+# Scheme B (cqm) on 1x3 + CoeffDQN COORDINATION (learnable β, reward-layer).
+# Third arm of the coordination-ladder comparison on identical B-cqm state:
+#   exp184 = no-coord (L0, train.py)
+#   exp186 = CoLightOrig GAT (L1 state-layer, trainorico.py)
+#   exp187 = CoeffDQN β    (L2 reward-layer, traincoeff.py)  ← this
+# Same obs (PriorityMovement, legacy, count+queue+mean), same scenario/reward/hypers;
+# the only change is the agent fuses neighbours' rewards into the TD target via a
+# learnable per-direction weight β (sigmoid-bounded). Run with traincoeff.py.
+#   Probes whether reward-layer coordination amplifies the 5-4-1 inversion now that
+#   ambulance has a dedicated priority-bucket signal — and whether β learns non-zero
+#   (the β→0 collapse measured on PriorityBCA may differ under richer φ state).
+name: "exp187_1x3_541_NS20bus_coeff_B_movement_legacy_cqm"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/train_only.sumocfg"   # no tripinfo/fcd/TLS outputs: training reads none of them; measured 58.8% per-episode saving
+
+# Neighbor map: [up, down, left, right], null = no neighbor.  Chain: t - e - J0
+neighbor_map:
+  "t":  [null, null, null, "e"]
+  "e":  [null, null, "t",  "J0"]
+  "J0": [null, null, "e",  null]
+
+# Environment — same obs as exp184/186 (B cqm); coordination added at reward layer
+observation_class: "PriorityMovement"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:   {ambulance: 5, bus: 4, car: 1}   # bucket index == reward weight (aligned 06-11; exp172-183 ran bus=p3)
+reward_fn:         "priority-avg-waiting"   # table-driven (== 5-4-1 bit-exact, verified); weights from priority_source
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# CoeffDQN hyperparameters (IDENTICAL to exp147 controlled set)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Logging
+logging_mode:     "basic"
+metrics_interval: 50
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# NOTE: use_double / use_per intentionally NOT set → default False → plain CoeffDQN

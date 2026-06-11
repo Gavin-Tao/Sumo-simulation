@@ -1,0 +1,9 @@
+<connections>
+  <connection from="3792491#0" to="230483152#0" fromLane="1" toLane="0"/>  <!-- feed-unreachable -->
+  <connection from="-4074528#4" to="3791031#0" fromLane="0" toLane="1"/>  <!-- feed-unreachable -->
+  <connection from="3792491#0" to="230483152#0" fromLane="0" toLane="1"/>  <!-- drain-deadend -->
+  <connection from="38192817" to="gneE51" fromLane="0" toLane="0"/>  <!-- drain-deadend -->
+  <connection from="2294384#0" to="4472590#0" fromLane="0" toLane="0"/>  <!-- feed-unreachable -->
+  <connection from="4475687" to="52879957#1" fromLane="1" toLane="0"/>  <!-- drain-deadend -->
+  <connection from="77616869#0" to="8080823#0" fromLane="0" toLane="0"/>  <!-- drain-deadend -->
+</connections>

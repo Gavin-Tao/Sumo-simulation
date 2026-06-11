@@ -115,13 +115,21 @@ class CoeffDQN:
         """Effective β values ∈ (0, 1) after sigmoid — [up, down, left, right]."""
         return torch.sigmoid(self.beta).tolist()
 
-    def take_action(self, aug_state: np.ndarray) -> int:
-        """aug_state: [own_dim + 4 * nb_dim]"""
+    def take_action(self, aug_state: np.ndarray, mask=None) -> int:
+        """aug_state: [own_dim + 4 * nb_dim]
+        mask: optional bool array over actions (M3 Dublin) — ε samples only
+        valid actions, greedy sets invalid Q to -inf."""
         if np.random.random() < self.epsilon:
+            if mask is not None:
+                return int(np.random.choice(np.flatnonzero(mask)))
             return np.random.randint(self.action_dim)
         state_t = torch.tensor(aug_state, dtype=torch.float32).unsqueeze(0).to(self.device)
         with torch.no_grad():
-            return self.q_net(state_t).argmax().item()
+            q = self.q_net(state_t)
+            if mask is not None:
+                q = q.masked_fill(~torch.as_tensor(mask, dtype=torch.bool,
+                                                   device=self.device), -1e9)
+            return q.argmax().item()
 
     def update(self, transition_dict: dict):
         self.start_train = True
@@ -142,13 +150,24 @@ class CoeffDQN:
 
         # Detach only the target-network part so target_q_net params are not
         # updated, while eff_rewards stays in the graph so β receives gradients.
+        next_mask_t = None
+        if 'next_masks' in transition_dict:
+            import numpy as _np
+            next_mask_t = torch.as_tensor(_np.asarray(transition_dict['next_masks']),
+                                          dtype=torch.bool, device=self.device)
         with torch.no_grad():
             if self.use_double:
                 # Double DQN: online net 选动作, target net 给值
-                next_actions = self.q_net(next_states).argmax(1, keepdim=True)
+                nq = self.q_net(next_states)
+                if next_mask_t is not None:
+                    nq = nq.masked_fill(~next_mask_t, -1e9)
+                next_actions = nq.argmax(1, keepdim=True)
                 max_next_q   = self.target_q_net(next_states).gather(1, next_actions)
             else:
-                max_next_q = self.target_q_net(next_states).max(1)[0].view(-1, 1)
+                tq = self.target_q_net(next_states)
+                if next_mask_t is not None:
+                    tq = tq.masked_fill(~next_mask_t, -1e9)
+                max_next_q = tq.max(1)[0].view(-1, 1)
 
         q_targets = eff_rewards + self.gamma * max_next_q * (1 - dones)
 

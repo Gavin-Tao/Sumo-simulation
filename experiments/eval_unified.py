@@ -65,6 +65,7 @@ from sumo_rl.environment.observations import (
     PriorityPhaseObservationFunction,
     PriorityMovementObservationFunction,
     PriorityLaneTokenObservationFunction,
+    PriorityLaneTokenNbObservationFunction,
 )
 
 OBS_REGISTRY = {
@@ -85,6 +86,7 @@ OBS_REGISTRY = {
     "PriorityPhase":          PriorityPhaseObservationFunction,      # A: per phase
     "PriorityMovement":       PriorityMovementObservationFunction,   # B: per turning movement
     "PriorityLaneToken":      PriorityLaneTokenObservationFunction,  # T (simplified): per lane
+    "PriorityLaneTokenNb":    PriorityLaneTokenNbObservationFunction,  # T + boundary tokens (obs-level coord)
 }
 
 AGENT_TYPES = ("dqn", "coeff", "colight", "orico")
@@ -190,8 +192,12 @@ def load_agent(agent_type, ckpt_path, cfg, obs_dim, action_space, device, n_head
 
 # ── Action helper (hides per-type obs construction) ───────────────────────────
 
-def pick_action(agent_type, agent, ts, states, neighbor_map, obs_dim):
+def pick_action(agent_type, agent, ts, states, neighbor_map, obs_dim,
+                ts_mask=None, std2green=None):
     if agent_type == "dqn":
+        if ts_mask is not None:   # M3 masked-action mode (Dublin)
+            a_std = agent.take_action(states[ts], mask=ts_mask[ts])
+            return int(std2green[ts][a_std])
         return agent.take_action(states[ts])
 
     elif agent_type == "coeff":
@@ -207,7 +213,7 @@ def pick_action(agent_type, agent, ts, states, neighbor_map, obs_dim):
 
 def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
              device, n_heads, wandb_log=False, warmup_steps=20,
-             fixed_seed=False, debug=False):
+             fixed_seed=False, debug=False, seed_base=None):
 
     obs_class    = OBS_REGISTRY[cfg["observation_class"]]
     # Optional obs params (A/B/T families): bind via partial so env can call obs_class(ts).
@@ -218,11 +224,64 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
         obs_kwargs["phase_state"] = cfg["obs_phase_state"]
     if "priority_source" in cfg:
         obs_kwargs["priority_source"] = cfg["priority_source"]
+    if "obs_downstream" in cfg:      # ψ downstream block (E1b) — B family
+        obs_kwargs["include_downstream"] = bool(cfg["obs_downstream"])
+    if "obs_downstream_fields" in cfg:
+        obs_kwargs["downstream_fields"] = tuple(cfg["obs_downstream_fields"])
     if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
         obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
+    if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count
+        obs_kwargs["remote_slots"] = int(cfg["obs_remote_slots"])
     if obs_kwargs:
         obs_class = functools.partial(obs_class, **obs_kwargs)
+    # Table-driven reward (exp184+ style configs): resolve to a callable, mirroring
+    # the trainers — the string is not in REWARD_REGISTRY by design.
+    reward_fn = cfg["reward_fn"]
+    if reward_fn == "priority-avg-waiting":
+        from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
+        from sumo_rl.environment.priority_map import load_priority_table
+        reward_fn = make_priority_avg_waiting_reward(
+            load_priority_table(cfg.get("priority_source")))
     neighbor_map = cfg.get("neighbor_map", {})
+
+    # ── M3 (Dublin): static per-junction action masks (ledger B3-c) ──
+    action_meta_file = cfg.get("action_meta_file")
+    ts_mask = std2green = None
+    green2std, ts_turnmap = {}, {}
+    if action_meta_file:
+        if agent_type != "dqn":
+            sys.exit("action_meta_file: masked eval only implemented for --agent dqn")
+        with open(action_meta_file) as _f:
+            _meta = json.load(_f)["tls"]
+        ts_mask, std2green = {}, {}
+        for _tid, _t in _meta.items():
+            ts_mask[_tid] = np.array(_t["mask"], dtype=bool)
+            _s2g = np.full(8, -1, dtype=int)
+            for _a, _gi in _t["std_to_green_index"].items():
+                _s2g[int(_a)] = _gi
+            std2green[_tid] = _s2g
+            _g2s = np.full(int(_s2g.max()) + 1, -1, dtype=int)
+            for _a in range(8):
+                if _s2g[_a] >= 0:
+                    _g2s[_s2g[_a]] = _a
+            green2std[_tid] = _g2s
+            ts_turnmap[_tid] = {int(_i): (_c[0]["approach"], _c[0]["turn"])
+                                for _i, _c in _t["links"].items()}
+
+    def _masked_reset(_env, _seed):
+        """env.reset + (masked mode) stash std map / rebind obs movement
+        tables / refresh cached observation_space — mirrors train.py."""
+        _states = _env.reset(int(_seed))
+        if action_meta_file:
+            for _tid in _env.ts_ids:
+                _ts = _env.traffic_signals[_tid]
+                _ts.std_action_map = green2std[_tid]
+                if hasattr(_ts.observation_fn, "rebind_movements"):
+                    _ts.observation_fn.rebind_movements(ts_turnmap[_tid])
+                _ts.observation_space = _ts.observation_fn.observation_space()
+            _states = {_tid: _env.traffic_signals[_tid].observation_fn()
+                       for _tid in _env.ts_ids}
+        return _states
 
     env = SumoEnvironment(
         net_file=cfg["net_file"],
@@ -237,12 +296,12 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
         single_agent=cfg.get("single_agent", False),
         yellow_time=cfg.get("yellow_time", 2),
         delta_time=cfg.get("delta_time", 5),
-        reward_fn=cfg["reward_fn"],
+        reward_fn=reward_fn,
         observation_class=obs_class,
         sumo_seed=cfg.get("seed", 0),
     )
 
-    initial_states = env.reset(env.sumo_seed)
+    initial_states = _masked_reset(env, env.sumo_seed)
     obs_dim        = env.observation_space.shape[0]
     ts_lane_map    = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
     always_green   = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
@@ -265,15 +324,15 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
         )
 
     agent = load_agent(agent_type, ckpt_path, cfg, obs_dim,
-                       env.action_space.n, device, n_heads,
-                       q_net_factory=q_net_factory)
+                       (8 if action_meta_file else env.action_space.n),
+                       device, n_heads, q_net_factory=q_net_factory)
 
     all_episode_metrics: list[dict] = []
-    base_seed = cfg.get("seed", 0)
+    base_seed = cfg.get("seed", 0) if seed_base is None else int(seed_base)
 
     for episode in range(1, n_episodes + 1):
         seed           = base_seed if fixed_seed else base_seed + episode - 1
-        initial_states = env.reset(seed)
+        initial_states = _masked_reset(env, seed)
 
         done           = {"__all__": False}
         mc             = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time,
@@ -287,7 +346,8 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
 
             actions = {
                 ts: pick_action(agent_type, agent, ts,
-                                initial_states, neighbor_map, obs_dim)
+                                initial_states, neighbor_map, obs_dim,
+                                ts_mask=ts_mask, std2green=std2green)
                 for ts in env.ts_ids
             }
 
@@ -385,6 +445,11 @@ if __name__ == "__main__":
     parser.add_argument("--wandb",      action="store_true",    help="Log summary to wandb")
     parser.add_argument("--warmup",     type=int,  default=20,  help="Steps before metrics collection")
     parser.add_argument("--fixed-seed", action="store_true",    help="Use config seed for all episodes")
+    parser.add_argument("--seed-base",  type=int,  default=None,
+                        help="Episode seeds = seed_base + i. SET THIS to an "
+                             "unseen range (e.g. 1000): the default (config "
+                             "seed) starts AT the training seed — eval-seed "
+                             "discipline (engineering audit C1)")
     parser.add_argument("--debug",      action="store_true",    help="Print per-step debug info")
     args = parser.parse_args()
 
@@ -400,4 +465,4 @@ if __name__ == "__main__":
 
     run_eval(args.agent, cfg, args.ckpt, args.episodes, args.gui, device,
              n_heads=n_heads, wandb_log=args.wandb, warmup_steps=args.warmup,
-             fixed_seed=args.fixed_seed, debug=args.debug)
+             fixed_seed=args.fixed_seed, debug=args.debug, seed_base=args.seed_base)

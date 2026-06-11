@@ -243,6 +243,7 @@ def train(cfg: dict, timestamp: str):
 
         step_counter = 0
         best_eval_reward = -float("inf")
+        best_eval_hist: list = []   # sliding window for the best-ckpt criterion (B2 fix)
 
         for episode in range(1, episodes + 1):
             if episode != 1:
@@ -400,8 +401,18 @@ def train(cfg: dict, timestamp: str):
                 eval_mc.collect_step(env.sumo)               # capture final step (matches training pattern)
                 eval_mc.finalize(env.sumo)
                 eval_mean = sum(eval_ts_reward.values()) / len(env.ts_ids)
-                if eval_mean > best_eval_reward:
-                    best_eval_reward = eval_mean
+                # B2 fix (ABT_1X3_RESULTS_2026-06-11 Part 4): the best-ckpt
+                # criterion is the SLIDING MEAN of the last K evals, not a
+                # single-eval argmax — one lucky eval episode must not freeze
+                # the best checkpoint (K = cfg best_eval_window, default 3;
+                # comparison starts once the window is full).
+                _bw = int(cfg.get("best_eval_window", 3))
+                best_eval_hist.append(eval_mean)
+                if len(best_eval_hist) > _bw:
+                    del best_eval_hist[: len(best_eval_hist) - _bw]
+                eval_sliding = sum(best_eval_hist) / len(best_eval_hist)
+                if len(best_eval_hist) == _bw and eval_sliding > best_eval_reward:
+                    best_eval_reward = eval_sliding
                     save_checkpoint(agent, episode, model_dir, filename="best.pth")
                     # Snapshot the best ckpt's full eval metrics (all scopes x vTypes x all metric fields)
                     # for offline analysis / thesis tables. Overwrites each new-best event.
@@ -409,6 +420,8 @@ def train(cfg: dict, timestamp: str):
                         "_meta": {
                             "episode":          episode,
                             "eval_mean_reward": float(best_eval_reward),
+                            "eval_last_reward": float(eval_mean),
+                            "best_criterion":   f"sliding{_bw}",
                             "timestamp":        timestamp,
                             "ckpt_filename":    "best.pth",
                         },
@@ -416,7 +429,7 @@ def train(cfg: dict, timestamp: str):
                     }
                     with open(os.path.join(model_dir, "best_metrics.json"), "w") as _f:
                         json.dump(best_metrics, _f, indent=2, default=float)
-                    print(f"  → best ckpt updated (reward={best_eval_reward:.4f})")
+                    print(f"  → best ckpt updated (sliding{_bw}={best_eval_reward:.4f}, last={eval_mean:.4f})")
                 if logging_mode != "none":
                     _BASIC = {
                         "avg_stopped_time", "avg_stop_events", "avg_speed",

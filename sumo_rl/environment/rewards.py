@@ -890,3 +890,68 @@ REWARD_REGISTRY = {
     "31-priority-queue":       _31_priority_queue_reward,
     "21-priority-queue":       _21_priority_queue_reward,
 }
+
+
+# ── Priority-bucket reward (table-driven; the reward-side dual of φ state) ───
+def make_priority_avg_waiting_reward(table: dict):
+    """Reward = -( Σ_p  p × avg_wait(vehicles whose priority == p) ) / 100.
+
+    Classes are PRIORITY LEVELS (vehicle_type → priority from `table`), not
+    vehicle types: two types sharing a level share one class, and the weight IS
+    the level. Dual of the φ priority-bucket state — swapping the table/BNF
+    re-buckets state and reward together (the zero-shot chain).
+
+    With table {ambulance:5, bus:4, car:1} and no other types present, this is
+    numerically equivalent to "5-4-1-avg-waiting-time" (same single-pass
+    accumulation + identical cross-lane wait correction; only float summation
+    order differs → ≤1e-12 drift).
+
+    Hot-loop cost: ONE pass over incoming-lane vehicles (same shape as the
+    legacy fns), with vid→weight memoised — from a vehicle's second step onward
+    this SAVES one TraCI getTypeID call vs the legacy implementation. The final
+    aggregation loops over ≤5 priority levels (negligible).
+
+    NOT in REWARD_REGISTRY on purpose: it needs the experiment's table, so the
+    trainer builds it (reward_fn: "priority-avg-waiting" + priority_source in
+    the config) and passes the callable to SumoEnvironment.
+    """
+    from .priority_map import DEFAULT_PRIORITY
+    type_w = {t: float(p) for t, p in table.items()}
+    default_w = float(DEFAULT_PRIORITY)
+    vid_w: dict = {}            # vid → weight memo (vehicle type is immutable)
+
+    def fn(ts: "TrafficSignal") -> float:
+        if len(vid_w) > 50000:  # safety valve; SUMO ids are unique, never reused
+            vid_w.clear()
+        sumo = ts.sumo
+        env_vehicles = ts.env.vehicles
+        totals: dict = {}
+        counts: dict = {}
+        for lane in ts.lanes:
+            for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                veh_lane = sumo.vehicle.getLaneID(vid)
+                acc = sumo.vehicle.getAccumulatedWaitingTime(vid)
+                if vid not in env_vehicles:
+                    env_vehicles[vid] = {veh_lane: acc}
+                else:
+                    env_vehicles[vid][veh_lane] = acc - sum(
+                        env_vehicles[vid][l]
+                        for l in env_vehicles[vid] if l != veh_lane
+                    )
+                lane_wait = env_vehicles[vid][veh_lane]
+                w = vid_w.get(vid)
+                if w is None:
+                    w = type_w.get(sumo.vehicle.getTypeID(vid), default_w)
+                    vid_w[vid] = w
+                if w in totals:
+                    totals[w] += lane_wait
+                    counts[w] += 1
+                else:
+                    totals[w] = lane_wait
+                    counts[w] = 1
+        r = 0.0
+        for w, tot in totals.items():
+            r += w * (tot / counts[w])
+        return -r / 100.0
+
+    return fn

@@ -1,0 +1,3327 @@
+{
+ "source_net": "nets/dublin/dublin_8action_demoted.net.xml",
+ "boundary": {
+  "entries": [
+   "-40701185",
+   "-4074527#1",
+   "-4475730",
+   "-4475731",
+   "-77616869#2",
+   "110223240#0",
+   "22962979",
+   "372226878#0",
+   "4074526#0",
+   "4074528#0",
+   "43321718#3",
+   "43538577#3",
+   "43538584",
+   "532097269#1.24",
+   "74233405#1"
+  ],
+  "exits": [
+   "-14039718#5",
+   "-3791031#3",
+   "-43321718#3",
+   "-553868718#0",
+   "129212233#0",
+   "14039718#0",
+   "16309917#0",
+   "369977731",
+   "4074527#0",
+   "4074531#0",
+   "4401661#0",
+   "4475730",
+   "4475731",
+   "4476043#0",
+   "4628796#1",
+   "8080823#0"
+  ]
+ },
+ "tls": {
+  "133307283": {
+   "n_links": 7,
+   "n_state": 7,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "mask": [
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "2": 2,
+    "4": 4,
+    "5": 5
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "2": 1,
+    "4": 2,
+    "5": 3
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGrGGrr"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrGrrrG"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": true,
+     "state": "rrrGGrG"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GGGrrrr"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "S": {
+     "edges": [
+      "-77616869#2"
+     ],
+     "bearing": 165.7
+    },
+    "N": {
+     "edges": [
+      "532427445#0"
+     ],
+     "bearing": 346.4
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "133307283",
+      "junction_index": 0,
+      "from_edge": "-77616869#2",
+      "from_lane": 0,
+      "to_edge": "48454248#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "133307283",
+      "junction_index": 1,
+      "from_edge": "-77616869#2",
+      "from_lane": 0,
+      "to_edge": "-532427445#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "133307283",
+      "junction_index": 2,
+      "from_edge": "-77616869#2",
+      "from_lane": 0,
+      "to_edge": "14039609#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "133307283",
+      "junction_index": 3,
+      "from_edge": "532427445#0",
+      "from_lane": 0,
+      "to_edge": "14039609#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "133307283",
+      "junction_index": 4,
+      "from_edge": "532427445#0",
+      "from_lane": 0,
+      "to_edge": "77616869#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     },
+     {
+      "tl_index": 4,
+      "junction": "133307283",
+      "junction_index": 5,
+      "from_edge": "532427445#0",
+      "from_lane": 0,
+      "to_edge": "77616869#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "133307283",
+      "junction_index": 6,
+      "from_edge": "532427445#0",
+      "from_lane": 0,
+      "to_edge": "48454248#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "135109534": {
+   "n_links": 6,
+   "n_state": 6,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "mask": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "4": 0,
+    "5": 2,
+    "6": 1
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "2": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GrrrGG"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrGGGr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GGGrrr"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GrrrGG"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "GGGrrr"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "rrGGGr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "-14152308"
+     ],
+     "bearing": 55.2
+    },
+    "S": {
+     "edges": [
+      "14152304#0"
+     ],
+     "bearing": 140.7
+    },
+    "N": {
+     "edges": [
+      "-14152304#3"
+     ],
+     "bearing": 325.5
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "135109534",
+      "junction_index": 0,
+      "from_edge": "14152304#0",
+      "from_lane": 0,
+      "to_edge": "14152304#2",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "135109534",
+      "junction_index": 1,
+      "from_edge": "14152304#0",
+      "from_lane": 0,
+      "to_edge": "14152308",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "135109534",
+      "junction_index": 2,
+      "from_edge": "-14152308",
+      "from_lane": 0,
+      "to_edge": "-14152304#1",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "135109534",
+      "junction_index": 3,
+      "from_edge": "-14152308",
+      "from_lane": 0,
+      "to_edge": "14152304#2",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "135109534",
+      "junction_index": 4,
+      "from_edge": "-14152304#3",
+      "from_lane": 0,
+      "to_edge": "14152308",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "135109534",
+      "junction_index": 5,
+      "from_edge": "-14152304#3",
+      "from_lane": 0,
+      "to_edge": "-14152304#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "1430847303": {
+   "n_links": 4,
+   "n_state": 4,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "mask": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false
+   ],
+   "canonical": {
+    "1": 1,
+    "6": 6,
+    "7": 1
+   },
+   "std_to_green_index": {
+    "1": 0,
+    "6": 1
+   },
+   "actions": {
+    "a0": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrGG"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a6": {
+     "valid": true,
+     "state": "GGrr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "rrGG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "3791031#0"
+     ],
+     "bearing": 109.2
+    },
+    "W": {
+     "edges": [
+      "26545993#0"
+     ],
+     "bearing": 287.3
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "1430847303",
+      "junction_index": 0,
+      "from_edge": "3791031#0",
+      "from_lane": 0,
+      "to_edge": "4074531#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "1430847303",
+      "junction_index": 1,
+      "from_edge": "3791031#0",
+      "from_lane": 1,
+      "to_edge": "4074531#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "1430847303",
+      "junction_index": 2,
+      "from_edge": "26545993#0",
+      "from_lane": 0,
+      "to_edge": "4074531#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "1430847303",
+      "junction_index": 3,
+      "from_edge": "26545993#0",
+      "from_lane": 1,
+      "to_edge": "-3791031#3",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "1448436": {
+   "n_links": 7,
+   "n_state": 7,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "mask": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true
+   ],
+   "canonical": {
+    "1": 1,
+    "2": 2,
+    "5": 2,
+    "6": 1,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "1": 0,
+    "2": 1,
+    "7": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrrGGGG"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GGGGrrr"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "GGGGrrr"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "rrrGGGG"
+    },
+    "a7": {
+     "valid": true,
+     "state": "GrrGrGG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "-3791745#3"
+     ],
+     "bearing": 86.5
+    },
+    "S": {
+     "edges": [
+      "317003249#2"
+     ],
+     "bearing": 176.7
+    },
+    "W": {
+     "edges": [
+      "668344588"
+     ],
+     "bearing": 266.6
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "1448436",
+      "junction_index": 0,
+      "from_edge": "317003249#2",
+      "from_lane": 0,
+      "to_edge": "-668344588",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "1448436",
+      "junction_index": 1,
+      "from_edge": "317003249#2",
+      "from_lane": 0,
+      "to_edge": "3791745#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "1448436",
+      "junction_index": 2,
+      "from_edge": "317003249#2",
+      "from_lane": 1,
+      "to_edge": "3791745#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "1448436",
+      "junction_index": 3,
+      "from_edge": "-3791745#3",
+      "from_lane": 0,
+      "to_edge": "-317003249#2",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "1448436",
+      "junction_index": 4,
+      "from_edge": "-3791745#3",
+      "from_lane": 1,
+      "to_edge": "-668344588",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "1448436",
+      "junction_index": 5,
+      "from_edge": "668344588",
+      "from_lane": 0,
+      "to_edge": "3791745#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "1448436",
+      "junction_index": 6,
+      "from_edge": "668344588",
+      "from_lane": 1,
+      "to_edge": "3791745#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "1448442": {
+   "n_links": 7,
+   "n_state": 7,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 1
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "rrrGrGG"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGGrrrr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GrrrGrr"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrGrrGr"
+    },
+    "a4": {
+     "valid": true,
+     "state": "rrrGGrr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GrrrrGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGGrrrr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "-554991019"
+     ],
+     "bearing": 6.8
+    },
+    "E": {
+     "edges": [
+      "24349650"
+     ],
+     "bearing": 99.2
+    },
+    "S": {
+     "edges": [
+      "532427444#7"
+     ],
+     "bearing": 187.6
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "1448442",
+      "junction_index": 0,
+      "from_edge": "24349650",
+      "from_lane": 0,
+      "to_edge": "-532427444#7",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "1448442",
+      "junction_index": 1,
+      "from_edge": "24349650",
+      "from_lane": 0,
+      "to_edge": "16309917#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "1448442",
+      "junction_index": 2,
+      "from_edge": "24349650",
+      "from_lane": 0,
+      "to_edge": "554991019",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "1448442",
+      "junction_index": 3,
+      "from_edge": "-554991019",
+      "from_lane": 0,
+      "to_edge": "-532427444#7",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "1448442",
+      "junction_index": 4,
+      "from_edge": "-554991019",
+      "from_lane": 0,
+      "to_edge": "16309917#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "1448442",
+      "junction_index": 5,
+      "from_edge": "532427444#7",
+      "from_lane": 0,
+      "to_edge": "16309917#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "1448442",
+      "junction_index": 6,
+      "from_edge": "532427444#7",
+      "from_lane": 1,
+      "to_edge": "554991019",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "26165090": {
+   "n_links": 5,
+   "n_state": 5,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mask": [
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    true
+   ],
+   "canonical": {
+    "0": 0,
+    "3": 3,
+    "4": 0,
+    "6": 3,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "3": 1,
+    "7": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GrGGr"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GGrrG"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GrGGr"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a3",
+     "state": "GGrrG"
+    },
+    "a7": {
+     "valid": true,
+     "state": "GrrGG"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "15464769#2"
+     ],
+     "bearing": 17.4
+    },
+    "E": {
+     "edges": [
+      "2110697#0"
+     ],
+     "bearing": 107.4
+    },
+    "W": {
+     "edges": [
+      "14039949#0"
+     ],
+     "bearing": 288.5
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "26165090",
+      "junction_index": 0,
+      "from_edge": "2110697#0",
+      "from_lane": 0,
+      "to_edge": "15464767#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "26165090",
+      "junction_index": 1,
+      "from_edge": "2110697#0",
+      "from_lane": 0,
+      "to_edge": "-15464769#2",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "26165090",
+      "junction_index": 2,
+      "from_edge": "15464769#2",
+      "from_lane": 0,
+      "to_edge": "15464767#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "26165090",
+      "junction_index": 3,
+      "from_edge": "14039949#0",
+      "from_lane": 0,
+      "to_edge": "-15464769#2",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "26165090",
+      "junction_index": 4,
+      "from_edge": "14039949#0",
+      "from_lane": 0,
+      "to_edge": "15464767#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "26165126": {
+   "n_links": 6,
+   "n_state": 6,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "mask": [
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "3": 3,
+    "4": 0,
+    "5": 0,
+    "7": 1
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "3": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGGrrG"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrGGGr"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrGrGr"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGrrG"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGrrG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "rrGGGr"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "-5826896#0"
+     ],
+     "bearing": 32.9
+    },
+    "S": {
+     "edges": [
+      "554991019"
+     ],
+     "bearing": 186.8
+    },
+    "W": {
+     "edges": [
+      "372226878#0"
+     ],
+     "bearing": 288.4
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "26165126",
+      "junction_index": 0,
+      "from_edge": "-5826896#0",
+      "from_lane": 0,
+      "to_edge": "4919471#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "26165126",
+      "junction_index": 1,
+      "from_edge": "-5826896#0",
+      "from_lane": 0,
+      "to_edge": "-554991019",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "26165126",
+      "junction_index": 2,
+      "from_edge": "372226878#0",
+      "from_lane": 0,
+      "to_edge": "5826896#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "26165126",
+      "junction_index": 3,
+      "from_edge": "372226878#0",
+      "from_lane": 0,
+      "to_edge": "4919471#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "26165126",
+      "junction_index": 4,
+      "from_edge": "372226878#0",
+      "from_lane": 0,
+      "to_edge": "-554991019",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "26165126",
+      "junction_index": 5,
+      "from_edge": "554991019",
+      "from_lane": 0,
+      "to_edge": "5826896#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "32236377": {
+   "n_links": 5,
+   "n_state": 5,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mask": [
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "3": 3,
+    "5": 0,
+    "6": 1
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "3": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GrrGG"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGGrr"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrGGr"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GrrGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGGrr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "4919535#1"
+     ],
+     "bearing": 122.9
+    },
+    "S": {
+     "edges": [
+      "14152308"
+     ],
+     "bearing": 200.5
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "32236377",
+      "junction_index": 0,
+      "from_edge": "4919535#1",
+      "from_lane": 0,
+      "to_edge": "-14152308",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "32236377",
+      "junction_index": 1,
+      "from_edge": "4919535#1",
+      "from_lane": 0,
+      "to_edge": "24349650",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "32236377",
+      "junction_index": 2,
+      "from_edge": "4919535#1",
+      "from_lane": 0,
+      "to_edge": "4919460",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "32236377",
+      "junction_index": 3,
+      "from_edge": "14152308",
+      "from_lane": 0,
+      "to_edge": "24349650",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "32236377",
+      "junction_index": 4,
+      "from_edge": "14152308",
+      "from_lane": 0,
+      "to_edge": "4919460",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "389281": {
+   "n_links": 8,
+   "n_state": 8,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "7": 1
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGrrrGGr"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrGGGrrr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrGrrrrG"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrGrGrrr"
+    },
+    "a4": {
+     "valid": true,
+     "state": "GGGrrrrr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "rrrrrGGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "rrGGGrrr"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "-532427444#3"
+     ],
+     "bearing": 5.3
+    },
+    "S": {
+     "edges": [
+      "532427444#0"
+     ],
+     "bearing": 185.3
+    },
+    "W": {
+     "edges": [
+      "22962979"
+     ],
+     "bearing": 276.3
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "389281",
+      "junction_index": 0,
+      "from_edge": "-532427444#3",
+      "from_lane": 0,
+      "to_edge": "14039949#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "389281",
+      "junction_index": 1,
+      "from_edge": "-532427444#3",
+      "from_lane": 0,
+      "to_edge": "-532427444#2",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "389281",
+      "junction_index": 2,
+      "from_edge": "22962979",
+      "from_lane": 0,
+      "to_edge": "532427444#3",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "389281",
+      "junction_index": 3,
+      "from_edge": "22962979",
+      "from_lane": 0,
+      "to_edge": "14039949#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "389281",
+      "junction_index": 4,
+      "from_edge": "22962979",
+      "from_lane": 0,
+      "to_edge": "-532427444#2",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "389281",
+      "junction_index": 5,
+      "from_edge": "532427444#0",
+      "from_lane": 0,
+      "to_edge": "532427444#3",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "389281",
+      "junction_index": 6,
+      "from_edge": "532427444#0",
+      "from_lane": 1,
+      "to_edge": "532427444#3",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "389281",
+      "junction_index": 7,
+      "from_edge": "532427444#0",
+      "from_lane": 1,
+      "to_edge": "14039949#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "389332": {
+   "n_links": 6,
+   "n_state": 6,
+   "controlled_indices": [
+    0,
+    1,
+    3,
+    5
+   ],
+   "mask": [
+    false,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "1": 1,
+    "3": 3,
+    "6": 1,
+    "7": 3
+   },
+   "std_to_green_index": {
+    "1": 0,
+    "3": 1
+   },
+   "actions": {
+    "a0": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGrGrr"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrrGrG"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGrGrr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a3",
+     "state": "GrrGrG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "-304634278#0"
+     ],
+     "bearing": 81.6
+    },
+    "W": {
+     "edges": [
+      "3791745#4"
+     ],
+     "bearing": 264.3
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "389332",
+      "junction_index": 0,
+      "from_edge": "-304634278#0",
+      "from_lane": 0,
+      "to_edge": "4919462#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "389332",
+      "junction_index": 1,
+      "from_edge": "-304634278#0",
+      "from_lane": 0,
+      "to_edge": "-3791745#5",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     },
+     {
+      "tl_index": 1,
+      "junction": "389332",
+      "junction_index": 2,
+      "from_edge": "-304634278#0",
+      "from_lane": 1,
+      "to_edge": "-3791745#5",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "389332",
+      "junction_index": 3,
+      "from_edge": "3791745#4",
+      "from_lane": 0,
+      "to_edge": "304634278#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     },
+     {
+      "tl_index": 3,
+      "junction": "389332",
+      "junction_index": 4,
+      "from_edge": "3791745#4",
+      "from_lane": 1,
+      "to_edge": "304634278#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "389332",
+      "junction_index": 5,
+      "from_edge": "3791745#4",
+      "from_lane": 1,
+      "to_edge": "4919462#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "5166592132": {
+   "n_links": 4,
+   "n_state": 4,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "mask": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "1": 1,
+    "2": 2,
+    "3": 1,
+    "5": 2,
+    "7": 1
+   },
+   "std_to_green_index": {
+    "1": 0,
+    "2": 1
+   },
+   "actions": {
+    "a0": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGGr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrrG"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGGr"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "rrrG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGGr"
+    }
+   },
+   "arms": {
+    "S": {
+     "edges": [
+      "532435057#0"
+     ],
+     "bearing": 194.8
+    },
+    "W": {
+     "edges": [
+      "3790875#2"
+     ],
+     "bearing": 287.6
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "5166592132",
+      "junction_index": 0,
+      "from_edge": "3790875#2",
+      "from_lane": 0,
+      "to_edge": "26545993#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "5166592132",
+      "junction_index": 1,
+      "from_edge": "3790875#2",
+      "from_lane": 1,
+      "to_edge": "26545993#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "5166592132",
+      "junction_index": 2,
+      "from_edge": "3790875#2",
+      "from_lane": 1,
+      "to_edge": "2294311#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "5166592132",
+      "junction_index": 3,
+      "from_edge": "532435057#0",
+      "from_lane": 0,
+      "to_edge": "26545993#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "659802": {
+   "n_links": 6,
+   "n_state": 6,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "mask": [
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "2": 2,
+    "3": 3,
+    "4": 0,
+    "5": 2,
+    "6": 3
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "2": 1,
+    "3": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "rrGGGr"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GrrrGG"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GGGrrr"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "rrGGGr"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "GrrrGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a3",
+     "state": "GGGrrr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "4074528#0"
+     ],
+     "bearing": 26.7
+    },
+    "E": {
+     "edges": [
+      "-4074527#1"
+     ],
+     "bearing": 118.2
+    },
+    "S": {
+     "edges": [
+      "-125872847#11"
+     ],
+     "bearing": 207.6
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "659802",
+      "junction_index": 0,
+      "from_edge": "-4074527#1",
+      "from_lane": 0,
+      "to_edge": "125872847#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "659802",
+      "junction_index": 1,
+      "from_edge": "-4074527#1",
+      "from_lane": 0,
+      "to_edge": "-4074528#4",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "659802",
+      "junction_index": 2,
+      "from_edge": "4074528#0",
+      "from_lane": 0,
+      "to_edge": "4074527#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "659802",
+      "junction_index": 3,
+      "from_edge": "4074528#0",
+      "from_lane": 0,
+      "to_edge": "125872847#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "659802",
+      "junction_index": 4,
+      "from_edge": "-125872847#11",
+      "from_lane": 0,
+      "to_edge": "-4074528#4",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "659802",
+      "junction_index": 5,
+      "from_edge": "-125872847#11",
+      "from_lane": 0,
+      "to_edge": "4074527#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "cluster_135109528_9101656": {
+   "n_links": 9,
+   "n_state": 9,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "rrrGrrrGG"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGrrrGrrr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GrrrGGrrr"
+    },
+    "a3": {
+     "valid": true,
+     "state": "rrGrrrGGr"
+    },
+    "a4": {
+     "valid": true,
+     "state": "rrrGGGrrr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GrrrrrrGG"
+    },
+    "a6": {
+     "valid": true,
+     "state": "GGGrrrrrr"
+    },
+    "a7": {
+     "valid": true,
+     "state": "rrrrrGGGr"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "15464769#0"
+     ],
+     "bearing": 19.5
+    },
+    "E": {
+     "edges": [
+      "26602093#0"
+     ],
+     "bearing": 108.9
+    },
+    "S": {
+     "edges": [
+      "-15464769#2"
+     ],
+     "bearing": 197.4
+    },
+    "W": {
+     "edges": [
+      "-14152304#1"
+     ],
+     "bearing": 319.1
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 0,
+      "from_edge": "26602093#0",
+      "from_lane": 0,
+      "to_edge": "15464769#2",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 1,
+      "from_edge": "26602093#0",
+      "from_lane": 0,
+      "to_edge": "14152304#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 2,
+      "from_edge": "26602093#0",
+      "from_lane": 1,
+      "to_edge": "-15464769#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 3,
+      "from_edge": "15464769#0",
+      "from_lane": 0,
+      "to_edge": "15464769#2",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 4,
+      "from_edge": "15464769#0",
+      "from_lane": 0,
+      "to_edge": "14152304#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 5,
+      "from_edge": "-14152304#1",
+      "from_lane": 0,
+      "to_edge": "-15464769#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 6,
+      "from_edge": "-14152304#1",
+      "from_lane": 0,
+      "to_edge": "15464769#2",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 7,
+      "from_edge": "-15464769#2",
+      "from_lane": 0,
+      "to_edge": "14152304#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "cluster_135109528_9101656",
+      "junction_index": 8,
+      "from_edge": "-15464769#2",
+      "from_lane": 0,
+      "to_edge": "-15464769#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "cluster_1448439_2464758361": {
+   "n_links": 5,
+   "n_state": 5,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mask": [
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "2": 2,
+    "4": 0,
+    "5": 2
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "2": 1
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGGGr"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrGGG"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGGr"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "rrGGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "S": {
+     "edges": [
+      "5826896#1"
+     ],
+     "bearing": 180.2
+    },
+    "N": {
+     "edges": [
+      "-317003249#1"
+     ],
+     "bearing": 357.3
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "cluster_1448439_2464758361",
+      "junction_index": 0,
+      "from_edge": "-317003249#1",
+      "from_lane": 0,
+      "to_edge": "4919459#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "cluster_1448439_2464758361",
+      "junction_index": 1,
+      "from_edge": "-317003249#1",
+      "from_lane": 0,
+      "to_edge": "-369564011#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "cluster_1448439_2464758361",
+      "junction_index": 2,
+      "from_edge": "5826896#1",
+      "from_lane": 0,
+      "to_edge": "317003249#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "cluster_1448439_2464758361",
+      "junction_index": 3,
+      "from_edge": "5826896#1",
+      "from_lane": 1,
+      "to_edge": "317003249#1",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "cluster_1448439_2464758361",
+      "junction_index": 4,
+      "from_edge": "5826896#1",
+      "from_lane": 1,
+      "to_edge": "4919459#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "n_links": 7,
+   "n_state": 7,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "mask": [
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "2": 0,
+    "4": 4,
+    "5": 0
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "4": 1
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGGGGrr"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGGGrr"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": true,
+     "state": "GrrrrGG"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGGGrr"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "empty-core"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "gneE62"
+     ],
+     "bearing": 18.2
+    },
+    "S": {
+     "edges": [
+      "4472590#0"
+     ],
+     "bearing": 136.5
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 0,
+      "from_edge": "4472590#0",
+      "from_lane": 0,
+      "to_edge": "4628796#1",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 1,
+      "from_edge": "4472590#0",
+      "from_lane": 0,
+      "to_edge": "37721356#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 2,
+      "from_edge": "4472590#0",
+      "from_lane": 1,
+      "to_edge": "37721356#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 3,
+      "from_edge": "4472590#0",
+      "from_lane": 2,
+      "to_edge": "gneE63",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 4,
+      "from_edge": "4472590#0",
+      "from_lane": 2,
+      "to_edge": "gneE63",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 5,
+      "from_edge": "gneE62",
+      "from_lane": 0,
+      "to_edge": "4628796#1",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "cluster_1998326407_2876012598_4781977262_658429",
+      "junction_index": 6,
+      "from_edge": "gneE62",
+      "from_lane": 0,
+      "to_edge": "37721356#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "n_links": 8,
+   "n_state": 8,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "mask": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true
+   ],
+   "canonical": {
+    "1": 1,
+    "2": 2,
+    "5": 5,
+    "6": 1,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "1": 0,
+    "2": 1,
+    "5": 2,
+    "7": 3
+   },
+   "actions": {
+    "a0": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGGrrrrr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrrGrGrG"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": true,
+     "state": "rrrrrGGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGGrrrrr"
+    },
+    "a7": {
+     "valid": true,
+     "state": "rrrGGGrr"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "37721356#0"
+     ],
+     "bearing": 110.6
+    },
+    "S": {
+     "edges": [
+      "317003251#0"
+     ],
+     "bearing": 200.9
+    },
+    "W": {
+     "edges": [
+      "38192816"
+     ],
+     "bearing": 267.1
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 0,
+      "from_edge": "37721356#0",
+      "from_lane": 0,
+      "to_edge": "4078079#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 1,
+      "from_edge": "37721356#0",
+      "from_lane": 1,
+      "to_edge": "4078079#1",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 2,
+      "from_edge": "37721356#0",
+      "from_lane": 1,
+      "to_edge": "2110697#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 3,
+      "from_edge": "38192816",
+      "from_lane": 0,
+      "to_edge": "2110697#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 4,
+      "from_edge": "38192816",
+      "from_lane": 1,
+      "to_edge": "4629169#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 5,
+      "from_edge": "317003251#0",
+      "from_lane": 0,
+      "to_edge": "4078079#1",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 6,
+      "from_edge": "317003251#0",
+      "from_lane": 0,
+      "to_edge": "2110697#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "cluster_21620852_2383668110_2383668118_4009885977",
+      "junction_index": 7,
+      "from_edge": "317003251#0",
+      "from_lane": 0,
+      "to_edge": "4629169#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "n_links": 5,
+   "n_state": 5,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mask": [
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 0,
+    "2": 2,
+    "3": 0,
+    "5": 2,
+    "7": 0
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "2": 1
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGGGr"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGGr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrrGG"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGGr"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "rrrGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GGGGr"
+    }
+   },
+   "arms": {
+    "S": {
+     "edges": [
+      "52879956"
+     ],
+     "bearing": 203.4
+    },
+    "W": {
+     "edges": [
+      "2110698#0"
+     ],
+     "bearing": 293.0
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "junction_index": 0,
+      "from_edge": "2110698#0",
+      "from_lane": 0,
+      "to_edge": "3792490#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "junction_index": 1,
+      "from_edge": "2110698#0",
+      "from_lane": 1,
+      "to_edge": "3792490#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "junction_index": 2,
+      "from_edge": "2110698#0",
+      "from_lane": 1,
+      "to_edge": "271848004#1",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "junction_index": 3,
+      "from_edge": "52879956",
+      "from_lane": 0,
+      "to_edge": "357012332#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "junction_index": 4,
+      "from_edge": "52879956",
+      "from_lane": 1,
+      "to_edge": "3792490#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "n_links": 6,
+   "n_state": 6,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "mask": [
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "2": 2,
+    "3": 3,
+    "4": 2,
+    "5": 0,
+    "7": 3
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "2": 1,
+    "3": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GrrrGG"
+    },
+    "a1": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GGGrrr"
+    },
+    "a3": {
+     "valid": true,
+     "state": "rrGGGr"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "GGGrrr"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "dup-of-a0",
+     "state": "GrrrGG"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a3",
+     "state": "rrGGGr"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "524737392#0"
+     ],
+     "bearing": 16.0
+    },
+    "S": {
+     "edges": [
+      "-53750892#4"
+     ],
+     "bearing": 195.8
+    },
+    "W": {
+     "edges": [
+      "523892327#0"
+     ],
+     "bearing": 285.2
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "cluster_5166592137_5166592140_557198554_57744042",
+      "junction_index": 0,
+      "from_edge": "524737392#0",
+      "from_lane": 0,
+      "to_edge": "53750892#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "cluster_5166592137_5166592140_557198554_57744042",
+      "junction_index": 1,
+      "from_edge": "524737392#0",
+      "from_lane": 0,
+      "to_edge": "-523892327#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "cluster_5166592137_5166592140_557198554_57744042",
+      "junction_index": 2,
+      "from_edge": "523892327#0",
+      "from_lane": 0,
+      "to_edge": "532435056#1",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "cluster_5166592137_5166592140_557198554_57744042",
+      "junction_index": 3,
+      "from_edge": "523892327#0",
+      "from_lane": 0,
+      "to_edge": "53750892#0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "cluster_5166592137_5166592140_557198554_57744042",
+      "junction_index": 4,
+      "from_edge": "-53750892#4",
+      "from_lane": 0,
+      "to_edge": "-523892327#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "cluster_5166592137_5166592140_557198554_57744042",
+      "junction_index": 5,
+      "from_edge": "-53750892#4",
+      "from_lane": 0,
+      "to_edge": "532435056#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,141 @@
+name: exp194_dublin11h_531_colightorig_B_movement_legacy_cqm_mask_clip
+wandb_project: sumo-rl-dublin
+net_file: ../nets/dublin/dublin_8std.net.xml
+route_file: ../nets/dublin/weekday_11h/car_weekday_11h.rou.xml,../nets/dublin/weekday_11h/bus_weekday_11h.rou.xml,../nets/dublin/weekday_11h/amb_weekday_11h.rou.xml
+cfg_file: ../nets/dublin/weekday_11h/dublin_weekday_11h.sumocfg
+observation_class: PriorityMovement
+obs_phase_state: legacy
+obs_fields:
+- count
+- queue
+- mean_awt
+priority_source:
+  ambulance: 5
+  bus: 3
+  car: 1
+reward_fn: priority-avg-waiting
+num_seconds: 3600
+delta_time: 5
+yellow_time: 2
+min_green: 5
+use_gui: false
+use_max_green: true
+max_green: 50
+hidden_dim: 128
+lr: 0.0003
+gamma: 0.99
+epsilon: 0.1
+eps_start: 0.9
+eps_end: 0.01
+eps_decay: 30000
+target_update: 20
+capacity: 300000
+mini_size: 1000
+batch_size: 512
+seed: 0
+episodes: 800
+checkpoint_interval: 50
+runs: 1
+eval_interval: 5
+eval_seed: 123
+logging_mode: basic
+use_double: false
+use_per: false
+action_meta_file: ../nets/dublin/dublin_8std_meta.json
+obs_downstream: true
+obs_downstream_fields:
+- count
+- queue
+neighbor_map:
+  '133307283':
+  - '26165090'
+  - null
+  - null
+  - cluster_21620852_2383668110_2383668118_4009885977
+  '135109534':
+  - '32236377'
+  - cluster_135109528_9101656
+  - '1448442'
+  - null
+  '1430847303':
+  - null
+  - '659802'
+  - '5166592132'
+  - null
+  '1448436':
+  - null
+  - cluster_1448439_2464758361
+  - null
+  - '389332'
+  '1448442':
+  - '26165126'
+  - '389281'
+  - null
+  - '135109534'
+  '26165090':
+  - cluster_135109528_9101656
+  - cluster_21620852_2383668110_2383668118_4009885977
+  - '389281'
+  - null
+  '26165126':
+  - cluster_1448439_2464758361
+  - '1448442'
+  - null
+  - null
+  '32236377':
+  - '26165126'
+  - '135109534'
+  - '1448442'
+  - null
+  '389281':
+  - '135109534'
+  - cluster_21620852_2383668110_2383668118_4009885977
+  - null
+  - '26165090'
+  '389332':
+  - null
+  - cluster_1448439_2464758361
+  - '1448436'
+  - null
+  '5166592132':
+  - null
+  - cluster_5166592137_5166592140_557198554_57744042
+  - null
+  - '1430847303'
+  '659802':
+  - '1430847303'
+  - null
+  - cluster_5166592137_5166592140_557198554_57744042
+  - null
+  cluster_135109528_9101656:
+  - '135109534'
+  - '26165090'
+  - '389281'
+  - null
+  cluster_1448439_2464758361:
+  - '1448436'
+  - '26165126'
+  - null
+  - null
+  cluster_1998326407_2876012598_4781977262_658429:
+  - cluster_2498303858_3624079904_6141082777_6141082778_9936781
+  - null
+  - null
+  - null
+  cluster_21620852_2383668110_2383668118_4009885977:
+  - '26165090'
+  - null
+  - '133307283'
+  - null
+  cluster_2498303858_3624079904_6141082777_6141082778_9936781:
+  - cluster_5166592137_5166592140_557198554_57744042
+  - cluster_1998326407_2876012598_4781977262_658429
+  - null
+  - '659802'
+  cluster_5166592137_5166592140_557198554_57744042:
+  - '5166592132'
+  - cluster_2498303858_3624079904_6141082777_6141082778_9936781
+  - null
+  - '1430847303'
+n_heads: 2
+grad_clip: 1.0

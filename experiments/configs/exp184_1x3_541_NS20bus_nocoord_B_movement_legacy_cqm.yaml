@@ -1,0 +1,57 @@
+# Scheme B (cqm) on 1x3 — NO coordination (independent per-intersection DQN,
+# parameter-shared, no neighbor_map / no GAT). Lifts exp177 (B-movement cqm, 1x1)
+# to the 3-intersection NS-20bus-1amb-U corridor — the inversion testbed.
+# Single shared DQN over the 3 homogeneous intersections (t/e/J0, each K=4,
+# N_lanes=12) acting on its own local obs only. This is the L0 (no-coordination)
+# baseline of the coordination ladder; CoLight/CoeffDQN variants add L1+ later.
+name: "exp184_1x3_541_NS20bus_nocoord_B_movement_legacy_cqm"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/train_only.sumocfg"   # no tripinfo/fcd/TLS outputs: training reads none of them; measured 58.8% per-episode saving
+
+# Environment — same obs as exp177 (B cqm); scenario → 1x3, no neighbor_map
+observation_class: "PriorityMovement"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:   {ambulance: 5, bus: 4, car: 1}   # bucket index == reward weight (aligned 06-11; exp172-183 ran bus=p3)
+reward_fn:         "priority-avg-waiting"   # table-driven (== 5-4-1 bit-exact, verified); weights from priority_source
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (same as exp177/exp173)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER
+use_double: false
+use_per:    false

@@ -206,6 +206,61 @@
        宽 except 从未触发 — 结果分析建立在完整数据上); 11 个 best_metrics
        .json 全部有效。
 
+  ── 3.6c priority 表与 reward 权重错位 (用户发现, 06-11 深夜修复) ────────────
+    V5 [语义错误→✅已修] priority_map.DEFAULT_TABLE 写 bus:3, 而 reward
+       (5-4-1) 给 bus 权重 4 — policy 住在两处且不一致。桶号是名义身份,
+       不参与算术 → exp172-183 的学习/族内对比**机械上无损** (1x1 结果
+       照常成立, B 臂保序/amb-49% 都是带着此错位做到的), 但语义错误
+       ("桶即优先级"读不通) + zero-shot 叙事缺口。
+       修复: DEFAULT_TABLE bus 3→4 (对齐规则写入注释: 桶号必须==reward
+       权重; 5-3-1 实验须显式 priority_source); exp184-187 配置加显式
+       priority_source: {ambulance:5, bus:4, car:1}。
+       验证: B/T/显式dict 三路径 bus 全部落 p4、p3 清零, 与 TraCI 真值
+       逐数吻合。
+       ⚠ 数据分水岭 #2: exp172-183 (含正在跑的 183) bus 在 p3 槽,
+       exp184+ bus 在 p4 槽 — 跨分水岭的 state 布局对 bus 槽位不兼容,
+       旧 ckpt 不能热加载到新表; 184(1x3) vs 177(1x1) 的拓扑对比自带
+       此布局注记。
+       ✅ 完整统一已实施 (同日稍后): rewards.make_priority_avg_waiting_reward
+       (table) — 按"优先级等级"而非"车型"分类 (同级车型合一类, 权重==等级),
+       是 φ 状态的 reward 侧对偶; 单趟遍历 + vid→权重 memoize (车辆第二步
+       起省一次 getTypeID TraCI 调用)。三 trainer 接线: reward_fn:
+       "priority-avg-waiting" + priority_source → 构造 callable 传 env
+       (刻意不进注册表, 避免默认表静默错配)。
+       验证: 同 seed 双环境 150 步×3ts, 与 "5-4-1-avg-waiting-time"
+       reward 逐位相同 (max diff=0.00e+00); 速度快 14.6% (memo 生效);
+       同级合并 (bus=amb=5) 路径正常。旧注册名全部保留未动 (零污染);
+       换表/换 BNF 现在 state+reward 全链同步生效 — zero-shot 闭环完成。
+
+  ── 3.6d 第三轮增审 (06-11 午, priority-reward 统一后) ──────────────────────
+    V6 [已修✓] eval_unified.py 缺 "priority-avg-waiting" 解析器 → 评估
+       exp184+ ckpt 会在 registry 查找时崩。修复: 与三 trainer 同款 6 行
+       resolver; env 调用改用解析后变量。
+    V7 [已修✓] env.py begin_time>0 时 "-b {t}" 拼成单个 argv token (SUMO
+       无法解析) — E1 latent 家族成员, 顺手根修 (extend 两 token)。
+       现配置 begin=0 不受影响。
+    V8 [性能✓] 实测: 训练期 sumocfg 的输出文件 (tripinfo+fcd+edgedata+
+       TLS×3ts) 占每集时间 58.8% (2.09s→0.86s/集, 1x3) — 训练管线无人读
+       这些文件。修复: 各场景加 train_only.sumocfg (无 <output>/<additional>),
+       exp184-187 已指向; 1x1 20-80 同备 (供 rerun)。原 sumocfg 未动
+       (手动分析照旧)。等价性: 同 seed 同动作, reward/obs 与原 cfg 逐位
+       相同 (max diff=0.0) — 输出是纯旁路观测, 不进动力学。
+       收益: 2000 集/run 省 ~41 分钟; 并行批次写共享 output/ 的交错垃圾
+       问题 (旧 P-flag) 同时消失。
+       ✅ 全量推广 (同日稍后): 全部 7 个 1x3 场景各生成 train_only.sumocfg
+       (net/route/end 从各自原 cfg 程序化解析), 88 个指向 1x3 的 exp 配置
+       已批量重写 cfg_file (历史 run 溯源不受影响 — config 快照在
+       models/*/config.yaml 与 wandb 里); 7/7 场景 lean cfg boot-test 通过。
+       未来任何 1x3 重跑 (含 PRIORITY doc 计划的 clean-seed 复跑) 自动享受
+       ~59% 提速。考古注记: 11 个 exp18-42 时代配置指向的场景目录本就不存在
+       (改前已死, 与本次无关) — 这是早期场景清理留下的死配置, 列入死代码
+       清册 (P2-12); 原 sumocfg 全部未动, 手动分析照旧。
+       1x1 20-80 场景的 train_only 也已就位 (供 rerun); 其余 1x1 场景未动
+       (无近期 rerun 计划, 需要时同法生成)。
+    复查通过: env.vehicles 在 reset 清空 (319 行) — "跨集 vid 重用污染
+       跨车道修正"的候选 bug 排除; 三 trainer + eval_unified 无 stale
+       cfg["reward_fn"] 直引; 全链 py_compile + e2e 冒烟过。
+
   ── 3.7 配置/绘图/测试/repo ─────────────────────────────────────────────────
     P1 [纠正→NOTE] config 路径相对 experiments/ cwd — 从仓库根目录直接跑
        trainer 会 FileNotFoundError。代理据此误报 CRITICAL; 实际今天从

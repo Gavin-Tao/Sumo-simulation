@@ -13,12 +13,24 @@ class ReplayBuffer:
     def __init__(self, capacity):
         self.buffer = collections.deque(maxlen=capacity)  # 队列,先进先出
 
-    def add(self, state, action, reward, next_state, done):  # 将数据加入buffer
-        self.buffer.append((state, action, reward, next_state, done))
+    def add(self, state, action, reward, next_state, done, next_mask=None):
+        """next_mask: optional 8-dim bool array (Dublin masked-action mode,
+        M3) — the valid-action mask of THIS transition's junction, needed for
+        the masked target max. Per run either ALL transitions carry a mask or
+        none does (mixing would break unzip)."""
+        if next_mask is None:
+            self.buffer.append((state, action, reward, next_state, done))
+        else:
+            self.buffer.append((state, action, reward, next_state, done, next_mask))
 
     def sample(self, batch_size):  # 从buffer中采样数据,数量为batch_size
         transitions = random.sample(self.buffer, batch_size)
-        state, action, reward, next_state, done = zip(*transitions)
+        cols = list(zip(*transitions))
+        if len(cols) == 6:
+            state, action, reward, next_state, done, next_mask = cols
+            return (np.array(state), action, reward, np.array(next_state), done,
+                    np.array(next_mask))
+        state, action, reward, next_state, done = cols
         return np.array(state), action, reward, np.array(next_state), done
 
     def size(self):  # 目前buffer中数据的数量
@@ -116,15 +128,23 @@ class DQN:
         frac = self.count / max(self.per_beta_steps, 1)
         return self.per_beta_start + frac * (self.per_beta_end - self.per_beta_start)
 
-    def take_action(self, state):  # epsilon-贪婪策略采取动作
-        
-        #print(self.epsilon)
+    def take_action(self, state, mask=None):  # epsilon-贪婪策略采取动作
+        """mask: optional bool array over the action space (M3, Dublin) —
+        the ε branch samples only valid actions, the greedy branch sets
+        invalid Q to -inf before argmax. Invalid actions are therefore never
+        chosen and never enter the buffer."""
         if np.random.random() < self.epsilon:
-            action = np.random.randint(self.action_space)
-            #print("random")
+            if mask is not None:
+                action = int(np.random.choice(np.flatnonzero(mask)))
+            else:
+                action = np.random.randint(self.action_space)
         else:
             state = torch.tensor([state], dtype=torch.float).to(self.device)
-            action = self.q_net(state).argmax().item()
+            q = self.q_net(state)
+            if mask is not None:
+                q = q.masked_fill(~torch.as_tensor(mask, dtype=torch.bool,
+                                                   device=self.device), -1e9)
+            action = q.argmax().item()
         return action
 
     def update(self, transition_dict):
@@ -143,16 +163,26 @@ class DQN:
                              dtype=torch.float).view(-1, 1).to(self.device)
 
         q_values = self.q_net(states).gather(1, actions)  # Q值
-        # 下个状态的最大Q值
+        # 下个状态的最大Q值 (M3: masked target max — never bootstrap from a
+        # phantom action of a junction that doesn't have it)
+        next_mask_t = None
+        if 'next_masks' in transition_dict:
+            next_mask_t = torch.as_tensor(np.asarray(transition_dict['next_masks']),
+                                          dtype=torch.bool, device=self.device)
         if self.use_double:
             # Double DQN: online net 选动作, target net 给值
             with torch.no_grad():
-                next_actions = self.q_net(next_states).argmax(1, keepdim=True)
+                nq = self.q_net(next_states)
+                if next_mask_t is not None:
+                    nq = nq.masked_fill(~next_mask_t, -1e9)
+                next_actions = nq.argmax(1, keepdim=True)
                 max_next_q_values = self.target_q_net(next_states).gather(1, next_actions)
         else:
             # Vanilla DQN: target net 自取 max (原逻辑)
-            max_next_q_values = self.target_q_net(next_states).max(1)[0].view(
-                -1, 1)
+            tq = self.target_q_net(next_states)
+            if next_mask_t is not None:
+                tq = tq.masked_fill(~next_mask_t, -1e9)
+            max_next_q_values = tq.max(1)[0].view(-1, 1)
         q_targets = rewards + self.gamma * max_next_q_values * (1 - dones
                                                                 )  # TD误差目标
 

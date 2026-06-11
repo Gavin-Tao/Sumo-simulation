@@ -140,7 +140,8 @@ class CoLightOrigDQN:
                  per_beta_start: float = 0.4,
                  per_beta_end: float = 1.0,
                  per_beta_steps: int = 100_000,
-                 per_eps: float = 1e-6):
+                 per_eps: float = 1e-6,
+                 grad_clip: float = None):
         self.obs_dim       = obs_dim
         self.action_dim    = action_dim
         self.gamma         = gamma
@@ -156,6 +157,11 @@ class CoLightOrigDQN:
         self.device        = device
         self.count         = 0
         self.loss          = None
+        # grad_clip: max grad-norm before optimizer.step(); None = off
+        # (exp186 diagnosis: GAT on 125-dim B obs destabilises without it —
+        # same remedy as the transformer R2 clip, configurable per run)
+        self.grad_clip     = grad_clip
+        self.grad_norm     = None   # pre-clip total norm, set only when clipping
         self.start_train   = False
 
         self.q_net = CoLightOrigQNet(
@@ -233,17 +239,26 @@ class CoLightOrigDQN:
             "attn_entropy": entropy,
         }
 
-    def take_action(self, own_state: np.ndarray, nb_obs: np.ndarray) -> int:
+    def take_action(self, own_state: np.ndarray, nb_obs: np.ndarray,
+                    mask=None) -> int:
         """
         own_state: [obs_dim]
         nb_obs:    [4, obs_dim]
+        mask:      optional bool array over actions (M3 Dublin) — ε samples
+                   only valid actions, greedy sets invalid Q to -inf.
         """
         if np.random.random() < self.epsilon:
+            if mask is not None:
+                return int(np.random.choice(np.flatnonzero(mask)))
             return np.random.randint(self.action_dim)
         own = torch.tensor(own_state, dtype=torch.float32).unsqueeze(0).to(self.device)
         nbs = torch.tensor(nb_obs,    dtype=torch.float32).unsqueeze(0).to(self.device)
         with torch.no_grad():
-            return self.q_net(own, nbs).argmax().item()
+            q = self.q_net(own, nbs)
+            if mask is not None:
+                q = q.masked_fill(~torch.as_tensor(mask, dtype=torch.bool,
+                                                   device=self.device), -1e9)
+            return q.argmax().item()
 
     def update(self, transition_dict: dict):
         self.start_train = True
@@ -257,13 +272,23 @@ class CoLightOrigDQN:
         next_nb_obs = torch.tensor(transition_dict['next_nb_obs'], dtype=torch.float32).to(self.device)  # [B,4,obs_dim]
 
         q_values   = self.q_net(states, nb_obs).gather(1, actions)
+        next_mask_t = None
+        if 'next_masks' in transition_dict:
+            next_mask_t = torch.as_tensor(np.asarray(transition_dict['next_masks']),
+                                          dtype=torch.bool, device=self.device)
         with torch.no_grad():
             if self.use_double:
                 # Double DQN: online net 选动作, target net 给值
-                next_actions = self.q_net(next_states, next_nb_obs).argmax(1, keepdim=True)
+                nq = self.q_net(next_states, next_nb_obs)
+                if next_mask_t is not None:
+                    nq = nq.masked_fill(~next_mask_t, -1e9)
+                next_actions = nq.argmax(1, keepdim=True)
                 max_next_q   = self.target_q_net(next_states, next_nb_obs).gather(1, next_actions)
             else:
-                max_next_q = self.target_q_net(next_states, next_nb_obs).max(1)[0].view(-1, 1)
+                tq = self.target_q_net(next_states, next_nb_obs)
+                if next_mask_t is not None:
+                    tq = tq.masked_fill(~next_mask_t, -1e9)
+                max_next_q = tq.max(1)[0].view(-1, 1)
         q_targets  = rewards + self.gamma * max_next_q * (1 - dones)
 
         # ── Loss: PER 用 IS 权重加权,否则原 MSE ──
@@ -279,6 +304,9 @@ class CoLightOrigDQN:
         self.loss = loss.item()
         self.optimizer.zero_grad()
         loss.backward()
+        if self.grad_clip is not None:
+            self.grad_norm = float(torch.nn.utils.clip_grad_norm_(
+                self.q_net.parameters(), self.grad_clip))
         self.optimizer.step()
 
         if self.count % self.target_update == 0:

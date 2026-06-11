@@ -1,0 +1,325 @@
+================================================================================
+  用户审查台账 —— 2026-06-11 全部问题的处置记录
+  (哪些改了/怎么改的 | 哪些没改/为什么/可以怎么改 | 残留 bug 清单)
+
+  作者:  Xiaowen Tao (TCD), 2026-06-11 深夜
+  范围:  本日全部用户审查意见 (Dublin 管线 + ABT 实验 + 训练器), 逐条对账。
+  关联:  DUBLIN_VALIDATION_DESIGN_2026-06-11.txt Part 9 (as-built 9.1-9.8)
+         DUBLIN_PIPELINE_METHODS_2026-06-11.txt (方法叙述)
+         ABT_1X3_RESULTS_2026-06-11.txt (实验分析 + B1-B6)
+  图例:  ✅ 已改并验证 | 🔶 部分处理/工具就绪未执行 | ⭕ 经论证不改 | ❗ 残留
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   A. 需求与路网 (Dublin)                                                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  A1 ✅ "不是所有外围路都生成车" (Dame=0 / Duke=700 倒挂)
+     改法: ① 入口=连接图真值 15 条; ② 下限 floors=max(10, 0.15×车道先验)
+     [假设 A9]; ③ 道路等级上限 (prio≥10: 800/车道; prio=4: 300);
+     ④ 行可行性降权 (target>A·caps 的行按 (可达/目标)² 降权, 阻止
+     为不可达目标灌爆入口)。
+     残留 ❗: V3 24-30% (结构性欠流行: Merrion Row/SSG 环流, 根因=net
+     缺 Nassau 逆流公交道等真实供给路径)。可再改: a) Mercer 车场内部
+     源汇 (A8 放松); b) 对欠流行单独手修 1-2 处转向比例; c) 接受并
+     在论文以"体积加权 MAPE + 残差归因"诚实呈现 (当前选择)。
+
+  A2 ✅ 步行区入口喂爆 Nassau 走廊 (32235616/135109491 "产生车太快")
+     改法: PED_ZONE_ENTRIES (Grafton/Harry St) 上限 20 veh/h —— 现实
+     Grafton 是步行街, 有据可依。两路口 18h 3 小时仅 12/33 辆。
+     没删 net (用户给了删除选项): 保留进车道、管住量, 可逆。
+
+  A3 ✅ 4472590#0_0 等车道永远没车
+     改法: ① lane-reach 修复 (.con.xml 7 条: 3 不可达转向袋补喂 +
+     4 死端车道补出口), netconvert 联合应用 + "恰好新增这 7 条"校验;
+     ② lane_chain_dp 随机化 (原固定最小索引 → 全部车挤一条道)。
+     残留 ❗: 14 条空 lane (edge 有流量) + 失衡 (4472590#0=906/166/20)
+     —— 锁道模型固有: 下游可行性把链钉死。可再改: 入链时按"下游可行
+     分支数"加权采样 (而非均匀) 可摊匀一部分; 或接受为锁道语义的
+     文档化特征 (当前选择, 已记 9.7⑵)。
+
+  A4 ✅ 无竞争路口不该有信号灯 (135109491 及西邻 32235616 被点名)
+     改法: 数据驱动降级规则 (两条不同臂、互 foes、任一时段都 ≥10veh/h
+     的 link 对不存在 → priority), 9/27 降级; 行人剥离(L1)是论文辩护。
+     连带: 12 个 right_before_left 节点改 priority (爱尔兰无此规则,
+     且对称互让在 Grafton 迷你环死锁)。
+
+  A5 ✅ 4919615#0_0 (William St S) 拥挤 / "不产生或去掉"
+     改法: BANNED_STREETS 定向零路由 (William St S + Montague 链 +
+     后续 Digges St Upper), 可逆 (没删 net); rbl 改型协同解决死锁。
+     三时段两链 0 辆。
+
+  A6 ✅ bus 不停靠 / 所有车上路就跑
+     改法: busStop/dwell 全移除, stop_times 仅用于定 bus 进网时刻。
+
+  A7 ✅ bus 中途变道引入 bias (38192817 卡住案例)
+     改法: bus 也锁道 —— 跑真实 GTFS 路径中存在完整车道链的最长连续
+     子段 (与 shape 匹配同款救援), departLane 钉死, lc 全零;
+     实测三时段 0 班被丢弃。
+
+  A8 ✅ 高峰 teleport (15A/15B 公交 yield, Aungier 走廊)
+     处置: permissive-only 审计 = 0 (每个 movement 都有保护 G 相位)
+     → 判定为固定配时轮转的高峰本性, RL agent 有动作可解, 不消毒需求;
+     Digges St Upper (prio 3) 加禁行。终态 V2: 三场景 0/0/0 teleport。
+
+  A9b ✅ junction 130159360 (Harcourt×Clonmel 角) "产生太多车辆拥堵"
+     诊断: 节点本身不产生车 —— 源头是 Harcourt St 入口被解到 800 上限
+     (18h 经该角 743 辆)。删节点无效, 且有实测反证: PED 站 668 就在
+     Harcourt St 上, 街面实测仅 153-258 veh/h (Luas 在该街上跑)。
+     改法: MEASURED 上限 Harcourt=300 (PED_ZONE_ENTRIES 机制, 依据=
+     站 668 实测)。效果: 该角 743→292 veh (18h), V2 仍 0/2/0 teleport。
+     方法论注: 被剔除的 PED 站作为"街面截面实测"再次发挥作用 —— 不进
+     拟合, 但做入口上限与诊断。
+
+  A9 ⭕ 52879956 同绿"不现实" / 是否删除
+     不改的论证: ① 两股流几何不交叉 (SSG 单行环流, foes 真值),
+     汇流点是 g-让行, V1 零硬冲突 —— "传送过去"是合法通过;
+     ② 现实中该灯交替是为行人, 我们整体剥离了行人 (L1, 全网均匀,
+     不偏袒动作); ③ 删边=切断环流东侧 → Merrion Row 需求场更扭曲,
+     route 级 bias 比"观感"严重一个量级; ④ 该路口 a0(全放/S右转让行)
+     vs a2(S 臂保护) 是真实的合流控制权衡, agent 有正经东西可学。
+     如仍要视觉真实可加"直行对互斥"约束 (不推荐, 纯浪费容量)。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   B. 相位与动作 (M0/M3)                                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  B1 ✅ "确保 net 是 8 模板无冲突绿灯集合"
+     V1 复验 (独立断言脚本, 非构造时自检): 18 路口 program greens ==
+     meta canonical 逐串相等 / 零跨臂 G 冲突 / 全 link 被服务 /
+     canonical 映射一致 / permissive-only = 0。
+     复验抓到的真 bug ✅: 相位 A⊆B 时 A→B 过渡黄灯无 'y' 字符,
+     _build_phases 会把它误计为额外绿相位 → std→相位映射整体错位。
+     修复: 无 'y' 的过渡不发射 (物理上无车失去路权, 无需过渡)。
+
+  B2 ✅ 转向语义 (52879956_0 dir=s 实为左弯)
+     改法: action 侧弃用 netconvert dir, 与 obs B 方案共用同一几何
+     分类器 (出口/进口车道末段航向差±45°带, CCW=L, U并入L);
+     6/111 条受控连接改判 (含两处环岛角)。
+
+  B3 ✅ mask 接口化 ("提前预知的文件传给训练环境, 没文件默认不 mask")
+     改法: cfg 键 action_meta_file → dublin_8std_meta.json (静态,
+     启动读一次)。不配置 = 原行为 (vanilla 回归烟雾 0 错误)。
+     机制: take_action(state, mask) ε 只采 valid / 贪心 invalid 置
+     -1e9; buffer 存执行的 canonical STD 动作 + 该 transition 的
+     mask; target max 按 mask (vanilla+double); action_dim 恒 8;
+     env 收 std→绿索引映射后的相位号。
+     坑 (已修): TrafficSignal 在 __init__ 缓存 observation_space →
+     每次 reset 后 stash green→std 映射时必须刷新该缓存
+     (_masked_reset helper, train.py 4 处 reset 全接)。
+     残留 ❗ (未实现, 有显式报错保护):
+       a) PER + mask (sys.exit 提示) — 改法: PrioritizedReplayBuffer
+          加 mask 列, update 同款 masked max;
+       b) ✅ coeff trainer 已接 mask (2026-06-11 深夜VII, exp192 解锁):
+          CoeffDQN.take_action(mask)/masked target + CoeffReplayBuffer
+          可选 mask 列 + traincoeff 四件套; 烟雾 0 错误。
+          四个 trainer (train/trainorico/traincoeff + eval_unified)
+          mask 全覆盖, 仅 traincoeff_gat 未接 (无近期需求);
+          ✅ colight (trainorico) 已接 mask (2026-06-11 深夜VI): 四件套
+          全移植 + CoLightOrigDQN.take_action(mask)/masked target +
+          CoLightReplayBuffer 可选 mask 列; Dublin neighbor_map 生成器
+          (gen_neighbor_map.py: ≤4 最近 RL 邻居按方位归 U/D/L/R 槽,
+          ≤350m, 43 条有向边); exp194 烟雾 0 错误;
+       c) ✅ eval_unified 已接 mask (2026-06-11 深夜V): action_meta_file
+          全链路 (masked reset/rebind/obs_space 刷新/std↔green 映射/
+          action_dim=8), 同时补上 ψ 两个 obs 键的传递 (修一个真 bug:
+          309 维 ψ ckpt 在 eval 里被建成 189 维环境 → load 报错)。
+          端到端验证 ✓: exp191 配置训 2ep 产 ckpt → eval_unified
+          --seed-base 1000 评 2ep, 0 错误。非 dqn agent + meta 显式报错。
+
+  B4 ✅ Unused states 警告 (cluster_1448439 after tl-index 4)
+     改法: 状态长度改 max(linkIndex)+1, 不再继承源程序的尾部行人
+     padding。V1 全套复验 + 场景 + mask 烟雾回归通过。
+
+  B5 ✅ net 不要出现 'g', 全部保护相位 (用户指示, 2026-06-11 深夜III)
+     语义澄清: 'g' 的三个来源 (核心冲突降级/同车道汇流降级/permissive
+     右转) 全部本质带冲突 → "去 g" = 改 'r' (严格保护相位), 不能改 'G'
+     (会造出真冲突绿)。覆盖安全: permissive-only 审计=0, 每个 movement
+     都有保护 G 相位, 无动作丢失。reindex 加 ALLOW_PERMISSIVE=False
+     (剥 g 不影响闭包判定, 等价于从未授予; dedupe/mask 在终串上重算,
+     动作分布微变 {2:6,3:7,4:2,6:2,8:1})。设计决策 D3 (permissive g)
+     就此反转, 代价=部分绿灯利用率, 收益=动作语义干净 (车只在被明确
+     放行的相位走) + 与 1x3 全 G 口径一致。
+     验证 ✓: V1 全套 (零 g/零冲突/每 link 有 G 相位) + 三场景 V2
+     仍 0/0/0 teleport + masked 烟雾 0 错误。
+     用户标准最终形态 (深夜IV): 相位内零冲突 —— crossing (foes) 与
+     merge (汇入同一目标车道, 含共享 index) 双零, 实证 0/0; 状态字符
+     仅 {G, r}。该标准已写进 reindex 的 V1 断言成为永久契约 (任何
+     未来重建违反即报错), 不再依赖构造顺序的副产物。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   C. 观测 (ABT)                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  C1 ✅ "ABT 缺 outgoing 信息, 设计角度是不是不对?"
+     判定: 用户直觉正确 (老 PriorityBCA/PressLight 有出口 count;
+     没有 ψ 看不见溢回)。设计文档 ABT_OUTGOING_LANE_DESIGN 只作参考,
+     按用户两轮修订实现:
+     ① obs_downstream (默认 False=现状零影响);
+     ② ψ = 按优先级分桶 (下游 p5 救护车直接可见 — Tnb 证据支持);
+     ③ obs_downstream_fields ⊆ {count, queue} (默认两者):
+        count=出口多满+谁在上面; queue=出口排不排得动 (满而动 vs
+        满而死, 防溢回位, MaxPressure 下游项)。φ 进/ψ 出同构分桶 →
+        网络可自学按优先级压力差 (用户"进出对比"的本意)。
+     维度: B-cqm 185 → +count 245 → +count+queue 305。
+     残留 ❗: 偏离原 I6 原则 (优先级住需求侧) 系用户决策 — E1b ±ψ
+     对照实验本身会裁决 (见 E 节)。
+
+  C5 ⭕ "PriorityMovement 怎么处理多同向车道 / 共享车道?" (用户问题, 代码核查)
+     —— 多对多 lane↔movement 映射, 两种情况分开看 (实测 observations.py):
+
+     ① 多条同方向车道 (如两条 N 直行) —— 干净聚合, 无瑕疵:
+        connection 同属一条 from_edge、同一 to_edge → 进同一 slot (N-T)。
+        · 车辆: 两车道的 N-T 车全累加进 slot_stats[N-T] (count/queue/wait 求和);
+        · 容量: cap[N-T] += lcap 逐条 feed 车道累加 → 两车道容量正确相加;
+        · 归一化 density = 两车道总车 / 两车道总容量。多对一聚合 = movement
+          粒度本意, 完全正确。
+
+     ② 共享车道 (一条车道既直行又右转, 多 connection 去不同 to_edge) ——
+        车辆分得准 (含 count 不重复), 容量有近似瑕疵:
+        · 车辆归类 (准): _vehicle_slot = route 的 (from_edge, 下一条边); 车辆
+          锁 route → 下一边唯一 → 直行车进 N-T、右转车进 N-R, 即使物理同车道。
+          用"车辆意图"而非"所在车道"归类 = B 方案优于纯 lane 方案处 (ABT 设计强调)。
+        · 车辆数【不会同时给两个 slot】(用户追问, observations.py __call__
+          实测): 聚合循环每辆车调一次 _vehicle_slot → 返回【单一】slot →
+          slot_stats[slot]+=1 只加一次。共享车道上 3 直行+2 右转 →
+          N-T count=3 / N-R count=2, 相加=5=车道实际车数, 【零重复】。
+          count/queue/wait 三个分子量都走此机制。(-1 = 无受控下一跳的车
+          被 continue 跳过, 不进任何 slot — 有意。)
+        · is_green (准): 该相位放行共享车道时, 它 feed 的所有 slot 都标 served。
+        · 容量 (瑕疵): lane_feeds[lane]={N-T,N-R}, cap 累加时这条车道的【完整
+          容量被加进它 feed 的每个 slot】→ 同一物理空间在 N-T 与 N-R 的分母里
+          被【重复计入】。后果: 共享车道的 slot 容量偏大 → 归一化 density 偏小
+          (agent 觉得这些 movement 比实际更空)。
+
+     ★ 瑕疵的精确机制 = 分子/分母口径不一致:
+        分子 (count/queue/wait): 按【车辆意图】切分到唯一 slot → 不重复;
+        分母 (capacity):         按【车道 feed 的 slot】全额累加  → 重复。
+        density = 分子/分母 → 被低估; 瑕疵纯在"分母标度", 不污染车辆动态本身。
+
+     影响有限: 只动归一化标度 (不动 count/queue 相对动态); 仅共享车道发生
+     (Dublin 市中心有, 1x3 无 → 1x3 从未暴露); 系统性偏置非噪声, RL 能适应。
+     可修 (一行, cap[s] += lcap/len(slots) 均分), 但"共享容量该算给谁"无唯一
+     正解 (均分 vs 全额"该 movement 最多排这么长队"各有理)。
+     决定 ⭕ 先不改: ① 系统性偏置 RL 可适应; ② Dublin 训练已排队, 改标度会让
+     已配实验口径漂移; ③ 该等 Dublin 基线出来、确认共享车道路口策略确实受
+     影响再针对性修。列为已知近似。
+
+  C2 ✅ obs 侧 G1 罗盘碰撞 (已修, 2026-06-11 深夜II)
+     问题: 四臂落罗盘扇区需要一套裁决机制 (谁是 N 谁是 W), 且 obs 与
+     action 必须用同一套。action 侧有 tie-break, obs 侧裸 round →
+     4 臂路口两条 N 扇区臂在 obs 归同一槽 (计数混合) 且 obs 的 W 槽
+     恒零, 与动作 a7 (服务被让位臂) 语义矛盾。
+     改法: PriorityMovement 的槽位建表抽成 _build_movement_tables(
+     turnmap), 新增 rebind_movements(turnmap) (重建表+清 vid memo);
+     trainer 在每次 reset 后把 meta 的 link→(approach,turn) 与
+     std_action_map 同通道 stash 并 rebind —— obs/action 共用同一
+     映射, 设计文档 2.1 的承诺真正兑现。无 meta = 原几何行为零影响。
+     验证 ✓: 4 臂路口 link5/6 由 N-L/N-R 重归 W-L/W-R (与 meta 一致),
+     masked 烟雾 0 错误, vanilla 路径不受影响。
+
+  C4 ✅ "非受控区域的等待会污染 metrics 吗?" (用户问题, 查证结论)
+     三层口径, 两层天然干净, 一层双轨:
+     ① reward: 只迭代 ts.lanes (受控进口道) — 训练信号零污染 ✓;
+     ② per-ts metrics: accumulated-wait 增量只归"该步所在 ts 进口道"
+        (代码注释原话 "no downstream contamination"), 系统级
+        n_stop_events 也只在受控进口道计 ✓;
+     ③ system 口径双轨并存: avg_wait 族 = 整车全程累计 (含 priority
+        路口/让行处等待, "用户体验"视角); waiting_inc/avg_waiting_inc
+        族 = 仅受控车道增量 (含 per-vtype/per-visit/xts 变体)。
+     无需改码; 确立纪律: **Dublin 的策略对比表用 waiting_inc 族**
+     (1x3 两者几乎等价, 全部路口受控); avg_wait 作体验指标随注释报告。
+     ⚠ 此前 1x3/Dublin 分析用的是 avg_wait — 1x3 不受影响,
+     Dublin 后续分析需切换主指标。
+
+  C3 ✅ B-cqm vs B-cq 主力 → B-cqm (1x1: reward 打平, amb 3.65<4.65,
+     mean_awt 不付费改善 22%); 1x1 cqm 无倒挂 (amb 3.65 < bus 6.03,
+     倒挂的是 T 族与 PriorityBCA 控制臂)。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   D. 训练器                                                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  D1 ✅ best-ckpt 单次 eval argmax 噪声
+     改法: 4 个 trainer (train/traincoeff/trainorico/traincoeff_gat)
+     统一滑动均值判据 (cfg best_eval_window, 默认 3, 窗满才比较);
+     best_metrics.json 加 eval_last_reward/best_criterion。
+     ⚠ 分水岭: ≤exp188 是旧判据, 跨线比较注意口径。
+
+  D2 ✅ colight 梯度裁剪可配置
+     改法: CoLightOrigDQN 加 grad_clip (cfg 键同名, 默认 None=原行为),
+     clip_grad_norm_ + 记录 pre-clip 范数。烟雾通过。
+     残留 🔶: exp186 修复重跑未执行 (一行 config: grad_clip 1.0 +
+     建议 lr 3e-4)。traincoeff/traincolight(非orig) 未加 (coeff 训练
+     稳定, 不动它; 需要时同款三行)。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   E. 实验与评估 (待执行队列, 按优先级)                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  E1 🔶 amb 统计欠功效 (1x3 最重要发现): 50-ep 评估协议 (B1-a) 未跑
+     —— 对既有 5 个 ckpt, eval_unified --episodes 50, ≈1h CPU, 出
+     "协同是否侵蚀 amb 优先级"的可发表数字。
+  E2 ✅ exp186 colight+clip 修复 → 重建为 exp190 (1x3 541 colight,
+     grad_clip 1.0 + lr 3e-4, 无 ψ)。
+  E3 ✅ E1b ±ψ 对照 config 已建: exp189 (1x3 B nocoord +ψ)。
+     ⚠ 口径不一致 (见 F 节): exp189 outgoing = qm, 而新臂 197 = cq。
+  E4 🔶 主力臂 +2 seeds (184/185/187/188)。
+  E5 ✅ Dublin 首训 config 全建 (exp191-196, B/T/colight × 521/531/111);
+     C2 (obs 映射 stash) ✅ / B3-c (eval_unified mask) ✅ 均已完成。
+  E6 ✅ eval_unified --seed-base 参数已加 (2026-06-11 深夜III):
+     episode seed = seed_base + i; 默认仍为 config seed (兼容), help
+     文本明确警示"默认从训练 seed 开始, 评估必须设未见区间 (如 1000)"。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   F. 实验配置矩阵 + 运行队列 (2026-06-11 终版, 全部实测核对 ✓)               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  obs 口径 (用户决策): incoming φ = cqm (count/queue/mean_awt);
+  outgoing ψ = cq (count/queue, 默认开 obs_downstream)。理由: 下游
+  正行驶的救护车 mean_awt=0 会隐身, count 始终可见 (见 C1/C4)。
+
+  exp   场景    优先级  obs方案          协同      in   out  trainer
+  ───────────────────────────────────────────────────────────────────────
+  189   1x3     541    B-movement       none      cqm  qm*  train.py
+  190   1x3     541    B-movement       colight   cqm  -    trainorico.py
+  191   dublin  521    B-movement       none      cqm  cq   train.py
+  192   dublin  531    B-movement       none      cqm  cq   train.py
+  193   dublin  111    B-movement       none      cqm  cq   train.py   (无优先级基线)
+  194   dublin  531    B-movement       colight   cqm  cq   trainorico.py (grad_clip 1.0)
+  195   dublin  531    T-lane (transf)  none      cqm  cq   train.py   (grad_clip 1.0)
+  196   dublin  531    T-lane-Nb(transf) Tnb边界  cqm  cq   train.py   (grad_clip 1.0)
+  197   1x3     541    B-movement       colight   cqm  cq   trainorico.py (grad_clip 1.0)
+  全部 Dublin 臂带 action_meta_file (mask) + obs_pad_tokens=6 (仅 T).
+
+  ⚠ 待决/隐患:
+   F1 *exp189 outgoing=qm 与 197=cq 不一致 → 二者作 1x3 ±协同对照时
+      非单变量。用户仅授权改 191-196, 189 未动, 待用户定夺是否统一。
+   F2 exp191=521 而 192/194/195/196=531: B-nocoord 优先级消融轴 =
+      {111(193), 521(191), 531(192)}; 协同/T 臂统一 531。合理, 非错误。
+   F3 exp195/196 transformer 超参 (d_model 128/nhead 4/layers 2, lr
+      1e-3) 直接继承 1x3 的 exp185/188, 未针对 Dublin 18 异构路口 ×
+      8 动作的更大任务调整 —— 评估被用户中断, 未达成结论, 暂用继承值。
+
+  运行队列 (run_dublin_queue.sh, 用户指定调度):
+    Phase 1: exp192 ∥ exp197 ∥ exp189 并行 (三个), 等全部完成;
+    Phase 2: 193 → 191 → 194 → 195 → 196 严格串行 (一个完才下一个)。
+    日志 logs/dublin_queue/exp<N>.log; GPU 默认 0; WANDB online。
+    trainer 映射见上表 (194/197=trainorico, 其余=train.py)。
+
+================================================================================
+  残留 bug/风险 速查 (全部 ❗ 汇总):
+    A1 V3 24-30% 结构性欠流 | A3 车道失衡/14 条空 lane (锁道固有)
+    B3a PER+mask 未实现 (有报错保护)
+    F1 exp189(qm) vs 197(cq) 1x3 对照口径不一致 (待用户定夺)
+    F3 exp195/196 transformer 超参未针对 Dublin 规模调 (评估被中断)
+    E1 amb 欠功效未补测 | E4 多数臂单训练 seed
+    C5 共享车道容量重复计入 (归一化标度偏置, 已知近似, 暂不改)
+    + Tnb 在 1x3 净伤害待 Dublin 复测
+================================================================================

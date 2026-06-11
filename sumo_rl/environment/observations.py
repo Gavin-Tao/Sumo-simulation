@@ -332,7 +332,9 @@ class PriorityPhaseObservationFunction(ObservationFunction):
     def __init__(self, ts: TrafficSignal,
                  fields: tuple = ("count", "queue", "mean_awt", "max_awt"),
                  phase_state: str = "perphase", priority_source=None,
-                 normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0):
+                 normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0,
+                 include_downstream: bool = False,
+                 downstream_fields: tuple = ("count", "queue")):
         super().__init__(ts)
         bad = [f for f in fields if f not in self._ALL_FIELDS]
         if bad:
@@ -344,6 +346,28 @@ class PriorityPhaseObservationFunction(ObservationFunction):
         self._is_legacy = (phase_state == "legacy")
         self.normalize = normalize
         self.awt_scale = awt_scale
+        # ψ downstream block (E1b, user-revised 2026-06-11): per slot,
+        # PRIORITY-BUCKETED fields over the movement's to-lanes, mirroring
+        # φ's field-ablation design. downstream_fields ⊆ {count, queue,
+        # mean_awt}:
+        #   count — how full is my exit and WHO is on it (a downstream p5
+        #           ambulance is directly visible);
+        #   queue — is the exit actually DISCHARGING (full-but-moving vs
+        #           stopped: the spillback bit count cannot express; the
+        #           MaxPressure-form downstream term);
+        #   mean_awt — HOW LONG the exit has been blocked (per-priority mean
+        #           accumulated waiting of downstream vehicles / awt_scale,
+        #           same φ convention).
+        # Each = vehicles of that priority / Σ jam-capacity of the to-lanes
+        # (same normalization invariant I5 as φ). Default OFF — existing
+        # ABT runs unchanged.
+        self.include_downstream = bool(include_downstream)
+        bad_ds = [f for f in downstream_fields
+                  if f not in ("count", "queue", "mean_awt")]
+        if bad_ds:
+            raise ValueError(
+                f"unknown ψ fields {bad_ds}; allowed ('count','queue','mean_awt')")
+        self.downstream_fields = tuple(downstream_fields)
         self._phi_dim = len(PRIORITY_LEVELS) * len(self.fields)
 
         # policy = single source of truth (priority_map.py / external file), compiled once.
@@ -516,7 +540,9 @@ class PriorityMovementObservationFunction(ObservationFunction):
     def __init__(self, ts: TrafficSignal,
                  fields: tuple = ("count", "queue", "mean_awt", "max_awt"),
                  phase_state: str = "perphase", priority_source=None,
-                 normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0):
+                 normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0,
+                 include_downstream: bool = False,
+                 downstream_fields: tuple = ("count", "queue")):
         super().__init__(ts)
         bad = [f for f in fields if f not in self._ALL_FIELDS]
         if bad:
@@ -528,12 +554,59 @@ class PriorityMovementObservationFunction(ObservationFunction):
         self._is_legacy = (phase_state == "legacy")
         self.normalize = normalize
         self.awt_scale = awt_scale
+        # ψ downstream block (E1b, user-revised 2026-06-11): per slot,
+        # PRIORITY-BUCKETED fields over the movement's to-lanes, mirroring
+        # φ's field-ablation design. downstream_fields ⊆ {count, queue,
+        # mean_awt}:
+        #   count — how full is my exit and WHO is on it (a downstream p5
+        #           ambulance is directly visible);
+        #   queue — is the exit actually DISCHARGING (full-but-moving vs
+        #           stopped: the spillback bit count cannot express; the
+        #           MaxPressure-form downstream term);
+        #   mean_awt — HOW LONG the exit has been blocked (per-priority mean
+        #           accumulated waiting of downstream vehicles / awt_scale,
+        #           same φ convention).
+        # Each = vehicles of that priority / Σ jam-capacity of the to-lanes
+        # (same normalization invariant I5 as φ). Default OFF — existing
+        # ABT runs unchanged.
+        self.include_downstream = bool(include_downstream)
+        bad_ds = [f for f in downstream_fields
+                  if f not in ("count", "queue", "mean_awt")]
+        if bad_ds:
+            raise ValueError(
+                f"unknown ψ fields {bad_ds}; allowed ('count','queue','mean_awt')")
+        self.downstream_fields = tuple(downstream_fields)
         self._phi_dim = len(PRIORITY_LEVELS) * len(self.fields)
 
         self._prio_table = load_priority_table(priority_source)   # policy source of truth
+        self._veh_len = veh_len
+        self._build_movement_tables()
 
+        self._vid_prio: dict = {}
+        self._vid_slot: dict = {}
+
+    def rebind_movements(self, turnmap: dict) -> None:
+        """Rebuild all slot tables from an EXTERNAL link->(approach, turn)
+        mapping — the one the action reindexer wrote to the meta sidecar.
+
+        Compass-sector collisions (two arms in one 90° sector, e.g. the
+        4-arm cluster_135109528) need ONE arbitration rule deciding which
+        arm is N and which is W; the reindexer has it (relocate the arm
+        nearest an adjacent EMPTY sector), this class's raw `_approach`
+        does not. Rebinding makes obs and action share the SAME mapping,
+        as the design doc (2.1) always promised. Called by the trainer
+        after every env reset, alongside std_action_map.
+        """
+        self._build_movement_tables(turnmap)
+        self._vid_prio.clear()
+        self._vid_slot.clear()
+
+    def _build_movement_tables(self, turnmap: dict = None) -> None:
+        ts = self.ts
+        veh_len = self._veh_len
         # --- static movement geometry, cached once ---
         links = ts.sumo.trafficlight.getControlledLinks(ts.id)    # index = phase.state position
+        self._slot_out: dict = {}             # slot id -> set(to-lanes)  (ψ)
         self._link_slot = {}                  # link index -> slot id
         self._movement_by_edges = {}          # (from_edge, to_edge) -> slot id  (vehicle lookup)
         lane_feeds = {}                       # lane -> set(slot)
@@ -541,10 +614,15 @@ class PriorityMovementObservationFunction(ObservationFunction):
             if not grp:
                 continue
             fl, tl = grp[0][0], grp[0][1]
-            slot = self._slot_idx(self._approach(fl), self._turn(fl, tl))
+            if turnmap is not None and i in turnmap:
+                ap, tn = turnmap[i]
+                slot = self._slot_idx(ap, tn)
+            else:
+                slot = self._slot_idx(self._approach(fl), self._turn(fl, tl))
             self._link_slot[i] = slot
             self._movement_by_edges[(self._edge(fl), self._edge(tl))] = slot
             lane_feeds.setdefault(fl, set()).add(slot)
+            self._slot_out.setdefault(slot, set()).add(tl)
 
         # per-phase served-slot sets (slot served if ANY of its links is G/g this phase)
         self._phase_serves = {}
@@ -563,8 +641,18 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 cap[s] += lcap
         self._slot_cap = {s: max(c, 1.0) for s, c in cap.items()}
 
-        self._vid_prio: dict = {}
-        self._vid_slot: dict = {}
+        # ψ: per-slot total jam capacity of the downstream (to-) lanes, same
+        # normalization invariant as φ (I5: length / (MIN_GAP + veh_len))
+        self._slot_out_cap = {}
+        if self.include_downstream:
+            _lane_cap = {}
+            for slots in self._slot_out.values():
+                for tl in slots:
+                    if tl not in _lane_cap:
+                        _lane_cap[tl] = max(
+                            ts.sumo.lane.getLength(tl) / (ts.MIN_GAP + veh_len), 1.0)
+            for slot, tls_ in self._slot_out.items():
+                self._slot_out_cap[slot] = max(sum(_lane_cap[t] for t in tls_), 1.0)
 
     # ── geometry helpers ──────────────────────────────────────────────────────
     @staticmethod
@@ -639,7 +727,18 @@ class PriorityMovementObservationFunction(ObservationFunction):
 
         min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
         if self._is_legacy:
-            obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
+            # heterogeneous-K nets (Dublin, M3): the trainer stashes a
+            # green->std-action map on the TrafficSignal; the one-hot is then
+            # emitted in the FIXED 8-dim std-action space, so obs dims are
+            # uniform across junctions AND phase identity is semantically
+            # aligned (a0 = NS-straight everywhere). Without the stash the
+            # original K-dim one-hot is produced (existing runs unchanged).
+            _g2s = getattr(ts, "std_action_map", None)
+            if _g2s is not None:
+                _cur = int(_g2s[ts.green_phase])
+                obs = [1.0 if _cur == a else 0.0 for a in range(8)]
+            else:
+                obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
             obs.append(min_green_ok)
         else:
             obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
@@ -658,14 +757,40 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 else:
                     vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
                 obs += [vals[f] for f in self.fields]
+            if self.include_downstream:
+                cnt = {p: 0 for p in PRIORITY_LEVELS}
+                qd = {p: 0 for p in PRIORITY_LEVELS}
+                sw = {p: 0.0 for p in PRIORITY_LEVELS}
+                need_m = "mean_awt" in self.downstream_fields
+                for tl in self._slot_out.get(slot, ()):
+                    for vid in ts.sumo.lane.getLastStepVehicleIDs(tl):
+                        _p = self._vehicle_priority(vid)
+                        cnt[_p] += 1
+                        if ts.sumo.vehicle.getSpeed(vid) < 0.1:
+                            qd[_p] += 1
+                        if need_m:
+                            sw[_p] += ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                capo = self._slot_out_cap.get(slot, 1.0)
+                norm = capo if self.normalize else 1.0
+                for f in self.downstream_fields:
+                    if f == "mean_awt":
+                        obs += [((sw[p] / cnt[p]) if cnt[p] else 0.0) /
+                                (self.awt_scale if self.normalize else 1.0)
+                                for p in PRIORITY_LEVELS]
+                    else:
+                        src = cnt if f == "count" else qd
+                        obs += [src[p] / norm for p in PRIORITY_LEVELS]
         return np.array(obs, dtype=np.float32)
 
     def observation_space(self) -> spaces.Box:
-        K = self.ts.num_green_phases
+        K = 8 if getattr(self.ts, "std_action_map", None) is not None             else self.ts.num_green_phases
+        psi_dim = len(PRIORITY_LEVELS) * len(self.downstream_fields) \
+            if self.include_downstream else 0
+        slot_dim = self._phi_dim + psi_dim
         if self._is_legacy:
-            dim = (K + 1) + self.N_SLOTS * self._phi_dim
+            dim = (K + 1) + self.N_SLOTS * slot_dim
         else:
-            dim = 2 + self.N_SLOTS * (1 + self._phi_dim)
+            dim = 2 + self.N_SLOTS * (1 + slot_dim)
         return spaces.Box(
             low=np.zeros(dim, dtype=np.float32),
             high=np.full(dim, np.inf, dtype=np.float32),
@@ -725,8 +850,29 @@ class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
     the lane-identity fix for permutation-invariant token nets (R1).
     """
 
-    def __init__(self, ts: TrafficSignal, include_phase_service: bool = True, **kw):
+    def __init__(self, ts: TrafficSignal, include_phase_service: bool = True,
+                 include_downstream: bool = False,
+                 downstream_fields: tuple = ("count", "queue"),
+                 pad_tokens: int = None, **kw):
         super().__init__(ts, **kw)
+        # pad_tokens (Dublin/heterogeneous nets): pad the OWN-token count to a
+        # network-wide uniform value with all-zero tokens, so junctions with
+        # different lane counts share one obs layout (G4-T). None = no padding.
+        self._pad_tokens = int(pad_tokens) if pad_tokens else None
+        # ψ downstream block (E1b, T form — outgoing doc 3.4 option (i), with
+        # the user-revised priority-bucketed fields): per lane token, append
+        # bucketed fields over the lanes THIS lane feeds. Default OFF.
+        self.include_downstream = bool(include_downstream)
+        bad_ds = [f for f in downstream_fields
+                  if f not in ("count", "queue", "mean_awt")]
+        if bad_ds:
+            raise ValueError(
+                f"unknown ψ fields {bad_ds}; allowed ('count','queue','mean_awt')")
+        self.downstream_fields = tuple(downstream_fields)
+        self._psi_dim = (len(PRIORITY_LEVELS) * len(self.downstream_fields)
+                         if self.include_downstream else 0)
+        self._psi_tgt: dict = {}   # lane -> [to-lane, ...] (lazy, TraCI getLinks)
+        self._psi_cap: dict = {}   # lane -> Σ jam capacity of its to-lanes
         self._lanes = list(ts.lanes)
         self._n_lanes = len(self._lanes)
         self._phase_served_set = {k: set(lanes) for k, lanes in self._phase_lanes.items()}
@@ -747,14 +893,77 @@ class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
         """Flat-vector layout for token-based Q-nets (e.g. LaneTokenTransformerQNet).
 
         Mirrors __call__/observation_space exactly:
-          legacy  : header = phase_onehot(K)+min_green, token = [service(K)?]+φ
-          perphase: header = [min_green_ok, phase_elapsed], token = [is_green]+[service(K)?]+φ
+          legacy  : header = phase_onehot(K)+min_green, token = [service(K)?]+φ+ψ?
+          perphase: header = [min_green_ok, phase_elapsed], token = [is_green]+[service(K)?]+φ+ψ?
         """
         K = self.ts.num_green_phases
-        svc = K if self.include_phase_service else 0
+        K_hdr = 8 if getattr(self.ts, "std_action_map", None) is not None else K
+        svc = self._svc_dim()
+        n_tok = max(self._n_lanes, self._pad_tokens or 0)
+        # phi_off = where φ starts inside a token (consumed by diagnostics, e.g.
+        # the attn_on_amb probe in train.py — subclasses with extra leading token
+        # fields MUST override consistently). ψ sits AFTER φ, so phi_off is
+        # unaffected by include_downstream.
         if self._is_legacy:
-            return {"header_dim": K + 1, "n_tokens": self._n_lanes, "token_dim": svc + self._phi_dim}
-        return {"header_dim": 2, "n_tokens": self._n_lanes, "token_dim": 1 + svc + self._phi_dim}
+            return {"header_dim": K_hdr + 1, "n_tokens": n_tok,
+                    "token_dim": svc + self._phi_dim + self._psi_dim, "phi_off": svc}
+        return {"header_dim": 2, "n_tokens": n_tok,
+                "token_dim": 1 + svc + self._phi_dim + self._psi_dim, "phi_off": 1 + svc}
+
+    def _svc_dim(self):
+        """Service-multi-hot width: 8 (std-action space) when the trainer has
+        stashed a std_action_map (Dublin/M3), else K. Phase identity is then
+        semantically aligned across heterogeneous junctions."""
+        if not self.include_phase_service:
+            return 0
+        return 8 if getattr(self.ts, "std_action_map", None) is not None \
+            else self.ts.num_green_phases
+
+    def _emit_service(self, obs, lane):
+        g2s = getattr(self.ts, "std_action_map", None)
+        if g2s is None:
+            obs += self._lane_service[lane]
+            return
+        svc = [0.0] * 8
+        for k, served in self._phase_served_set.items():
+            if lane in served:
+                svc[int(g2s[k])] = 1.0
+        obs += svc
+
+    def _psi_targets(self, lane):
+        """Successor lanes of `lane` (cached; TraCI getLinks)."""
+        if lane not in self._psi_tgt:
+            links = self.ts.sumo.lane.getLinks(lane)
+            tgts = list(dict.fromkeys(l[0] for l in links if l and l[0]))
+            self._psi_tgt[lane] = tgts
+            veh_len = 5.0
+            self._psi_cap[lane] = max(sum(
+                self.ts.sumo.lane.getLength(t) / (self.ts.MIN_GAP + veh_len)
+                for t in tgts), 1.0) if tgts else 1.0
+        return self._psi_tgt[lane]
+
+    def _emit_psi(self, obs, lane):
+        """Append the ψ block for one token: priority-bucketed fields over
+        the lanes this lane feeds (same φ helpers, same I5 normalization)."""
+        agg = {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS}
+        for t in self._psi_targets(lane):
+            st = self._lane_bucket_stats(t)
+            for p in PRIORITY_LEVELS:
+                agg[p][0] += st[p][0]
+                agg[p][1] += st[p][1]
+                agg[p][2] += st[p][2]
+        cap = self._psi_cap.get(lane, 1.0)
+        norm = cap if self.normalize else 1.0
+        for f in self.downstream_fields:
+            for p in PRIORITY_LEVELS:
+                c, q, sw, _ = agg[p]
+                if f == "count":
+                    obs.append(c / norm)
+                elif f == "queue":
+                    obs.append(q / norm)
+                else:  # mean_awt
+                    obs.append(((sw / c) if c else 0.0) /
+                               (self.awt_scale if self.normalize else 1.0))
 
     def __call__(self) -> np.ndarray:
         ts = self.ts
@@ -765,7 +974,18 @@ class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
 
         min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
         if self._is_legacy:
-            obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
+            # heterogeneous-K nets (Dublin, M3): the trainer stashes a
+            # green->std-action map on the TrafficSignal; the one-hot is then
+            # emitted in the FIXED 8-dim std-action space, so obs dims are
+            # uniform across junctions AND phase identity is semantically
+            # aligned (a0 = NS-straight everywhere). Without the stash the
+            # original K-dim one-hot is produced (existing runs unchanged).
+            _g2s = getattr(ts, "std_action_map", None)
+            if _g2s is not None:
+                _cur = int(_g2s[ts.green_phase])
+                obs = [1.0 if _cur == a else 0.0 for a in range(8)]
+            else:
+                obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
             obs.append(min_green_ok)
         else:
             obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
@@ -775,7 +995,7 @@ class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
             if not self._is_legacy:
                 obs.append(1.0 if lane in served else 0.0)      # is_green per lane token
             if self.include_phase_service:
-                obs += self._lane_service[lane]                 # K-dim lane identity (R1)
+                self._emit_service(obs, lane)                   # lane identity (R1; 8-dim std on Dublin)
             cap = self._lane_cap[lane]
             ls = lane_stats[lane]
             for p in PRIORITY_LEVELS:
@@ -787,15 +1007,17 @@ class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
                 else:
                     vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
                 obs += [vals[f] for f in self.fields]
+            if self.include_downstream:
+                self._emit_psi(obs, lane)
+        if self._pad_tokens and self._pad_tokens > self._n_lanes:
+            tok = (0 if self._is_legacy else 1) + self._svc_dim() \
+                  + self._phi_dim + self._psi_dim
+            obs += [0.0] * ((self._pad_tokens - self._n_lanes) * tok)
         return np.array(obs, dtype=np.float32)
 
     def observation_space(self) -> spaces.Box:
-        K = self.ts.num_green_phases
-        svc = K if self.include_phase_service else 0
-        if self._is_legacy:
-            dim = (K + 1) + self._n_lanes * (svc + self._phi_dim)
-        else:
-            dim = 2 + self._n_lanes * (1 + svc + self._phi_dim)
+        lay = self.token_layout()
+        dim = lay["header_dim"] + lay["n_tokens"] * lay["token_dim"]
         return spaces.Box(
             low=np.zeros(dim, dtype=np.float32),
             high=np.full(dim, np.inf, dtype=np.float32),
@@ -831,6 +1053,126 @@ class PriorityLaneElapsedCQM(PriorityLaneTokenObservationFunction):
 class PriorityLaneElapsedCQMM(PriorityLaneTokenObservationFunction):
     def __init__(self, ts, **kw):
         super().__init__(ts, phase_state="perphase", fields=_CQMM, **kw)
+
+
+class PriorityLaneTokenNbObservationFunction(PriorityLaneTokenObservationFunction):
+    """Scheme T + boundary-token coordination (obs-level; trainer-agnostic).
+
+    Extends the own-lane token set with REMOTE tokens: this intersection's outgoing
+    lanes that are another signalised intersection's incoming lanes (the shared
+    corridor links). Each remote lane contributes a full φ token, so priority-bucket
+    detail crosses the boundary — an ambulance entering the next link is visible
+    here as a live p5 token (vs. the 2-scalar ψ aggregate or a CLS-bottleneck GAT).
+    The SAME encoder attends over own+remote tokens: coordination = a wider
+    receptive field, no new mechanism, no neighbor_map, runs on plain train.py.
+
+    Token = [is_remote(1)] + <parent token layout>:
+      own tokens:    is_remote=0; service = own phases serving the lane
+      remote tokens: is_remote=1; service = zeros (the NEIGHBOR's phases serve it —
+                     meaningless in this agent's action space); is_green (perphase
+                     mode) = 0 for the same reason
+      padding:       all-zero tokens up to a network-wide UNIFORM remote-slot count
+                     (auto = max remote-lane count over all TLS, so chain ends pad
+                     with zeros and the shared agent sees one obs dim everywhere)
+
+    Comparison contract: vs. PriorityLaneToken (e.g. exp185) the ONLY change is the
+    +1 is_remote bit on own tokens (constant 0) and the appended remote section.
+    """
+
+    def __init__(self, ts: TrafficSignal, remote_slots: int = None, **kw):
+        super().__init__(ts, **kw)
+        sumo = ts.sumo
+        tls_ids = list(sumo.trafficlight.getIDList())
+        in_lanes = {t2: set(sumo.trafficlight.getControlledLanes(t2)) for t2 in tls_ids}
+        out_map = {
+            t2: list(dict.fromkeys(
+                link[0][1] for link in sumo.trafficlight.getControlledLinks(t2) if link))
+            for t2 in tls_ids
+        }
+
+        def remote_of(t2):
+            others_in = set().union(*(v for k, v in in_lanes.items() if k != t2)) \
+                        if len(tls_ids) > 1 else set()
+            return [l for l in out_map[t2] if l in others_in]
+
+        if remote_slots is None:
+            remote_slots = max(len(remote_of(t2)) for t2 in tls_ids)
+        self._remote_slots = int(remote_slots)
+        self._remote_lanes = remote_of(ts.id)[: self._remote_slots]
+        veh_len = 5.0
+        self._remote_cap = {
+            lane: max(ts.lanes_length[lane] / (ts.MIN_GAP + veh_len), 1.0)
+            for lane in self._remote_lanes
+        }
+
+    def token_layout(self) -> dict:
+        lay = super().token_layout()
+        return {"header_dim": lay["header_dim"],
+                "n_tokens": lay["n_tokens"] + self._remote_slots,
+                "token_dim": 1 + lay["token_dim"],
+                "phi_off": 1 + lay["phi_off"]}
+
+    def _emit_phi(self, obs, stats, cap):
+        for p in PRIORITY_LEVELS:
+            c, q, sw, mw = stats[p]
+            mean = (sw / c) if c else 0.0
+            if self.normalize:
+                vals = {"count": c / cap, "queue": q / cap,
+                        "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
+            else:
+                vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
+            obs += [vals[f] for f in self.fields]
+
+    def __call__(self) -> np.ndarray:
+        ts = self.ts
+        if len(self._vid_prio) > 50000:
+            self._vid_prio.clear()
+        K = ts.num_green_phases
+
+        min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
+        if self._is_legacy:
+            _g2s = getattr(ts, "std_action_map", None)
+            if _g2s is not None:   # Dublin/M3: fixed 8-dim std-action one-hot
+                _cur = int(_g2s[ts.green_phase])
+                obs = [1.0 if _cur == a else 0.0 for a in range(8)]
+            else:
+                obs = [1.0 if ts.green_phase == i else 0.0 for i in range(K)]
+            obs.append(min_green_ok)
+        else:
+            obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
+
+        served = self._phase_served_set.get(ts.green_phase, set())
+        for lane in self._lanes:                                    # own tokens
+            obs.append(0.0)                                         # is_remote
+            if not self._is_legacy:
+                obs.append(1.0 if lane in served else 0.0)
+            if self.include_phase_service:
+                self._emit_service(obs, lane)
+            self._emit_phi(obs, self._lane_bucket_stats(lane), self._lane_cap[lane])
+            if self.include_downstream:
+                self._emit_psi(obs, lane)
+
+        zeros_mid = (1 if not self._is_legacy else 0) + self._svc_dim()
+        if self._pad_tokens and self._pad_tokens > self._n_lanes:   # own padding
+            tok = 1 + zeros_mid + self._phi_dim + self._psi_dim
+            obs += [0.0] * ((self._pad_tokens - self._n_lanes) * tok)
+        for lane in self._remote_lanes:                             # remote tokens
+            obs.append(1.0)                                         # is_remote
+            obs += [0.0] * zeros_mid                                # is_green/service n/a
+            self._emit_phi(obs, self._lane_bucket_stats(lane), self._remote_cap[lane])
+            if self.include_downstream:                             # remote ψ: locally observable
+                self._emit_psi(obs, lane)
+
+        pad_tok = 1 + zeros_mid + self._phi_dim + self._psi_dim     # all-zero padding
+        for _ in range(self._remote_slots - len(self._remote_lanes)):
+            obs += [0.0] * pad_tok
+        return np.array(obs, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        lay = self.token_layout()
+        dim = lay["header_dim"] + lay["n_tokens"] * lay["token_dim"]
+        return spaces.Box(low=np.zeros(dim, dtype=np.float32),
+                          high=np.full(dim, np.inf, dtype=np.float32))
 
 
 class PriorityCtrlBCAObservationFunction(ObservationFunction):

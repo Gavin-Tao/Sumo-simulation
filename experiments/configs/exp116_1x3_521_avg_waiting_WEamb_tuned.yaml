@@ -10,7 +10,7 @@ wandb_project: "sumo-rl-1x3"
 # SUMO files (NS straight = bus, WE straight = 99% car + 1% ambulance)
 net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/1x3_4phases.net.xml"
 route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/Eq_350_NSbus_WE99-1-Car-Amb.rou.xml"
-cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/Eq_350_NSbus_WE99-1-Car-Amb.sumocfg"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NSbus_WE99-1-Car-Amb/train_only.sumocfg"   # no SUMO outputs during training (58.8% per-episode saving, dynamics bit-identical — PROJECT_AUDIT V8)
 
 # Environment
 observation_class: "PriorityBCA"

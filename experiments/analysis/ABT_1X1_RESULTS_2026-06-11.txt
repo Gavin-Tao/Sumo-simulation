@@ -11,6 +11,10 @@
   口径:  末 50 evals (≈末 250 训练集) 均值±std; amb 用 per_visit (普通
          avg_stopped_time 对"无 amb"仍返 0.0 旧语义, 见 4.6); 单 seed,
          所有结论待 ≥3 seed 确认 (std 已给, 重叠处明示 ns)。
+         注: 本批 (172-183) 的 φ 表为 bus:3 (桶号≠reward权重4 的历史错位,
+         06-11 深夜已修为 bus:4, 见 PROJECT_AUDIT 3.6c) — 桶号是名义身份,
+         本批结论机械上不受影响; 但 exp184+ 的 bus 落 p4 槽, 跨此分水岭
+         的 state 布局对 bus 槽位不兼容。
   关联:  AB_TRANSFORMER_STATE_DESIGN (设计+R系列) / ABT_GENERIC (G系列) /
          REWARD_STATE_AUDIT (mean 字段预测的出处) / PROJECT_AUDIT (数据分水岭)
   配图:  experiments/figures/abt_1x1_compare/ — fig1_scheme (方案对比) /

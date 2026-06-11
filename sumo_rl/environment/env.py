@@ -239,7 +239,8 @@ class SumoEnvironment(gym.Env):
             str(self.time_to_teleport),
         ]
         if self.begin_time > 0:
-            sumo_cmd.append(f"-b {self.begin_time}")
+            # must be two argv tokens — a single "-b 5" string is one unparseable token
+            sumo_cmd.extend(["-b", str(self.begin_time)])
         if self.sumo_seed == "random":
             sumo_cmd.append("--random")
         else:

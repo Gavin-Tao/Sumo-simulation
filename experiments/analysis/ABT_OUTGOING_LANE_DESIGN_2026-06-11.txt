@@ -137,6 +137,14 @@
       (b) 它真正的价值在"网络级 Transformer"— t 的出口 token 与 e 的进口
       token 是同一条车道, 是跨路口图注意力的天然缝合点。→ 方案(ii) 留给
       Stage 3+ 的网络级架构, 单路口 agent 阶段用 (i)。
+      ✅ 方案(ii) 已实现为 T 的协同形态 (06-11): PriorityLaneTokenNb —
+      边界 token = 本路口出口∩邻居受控进口, token=[is_remote]+[service]+φ,
+      remote 的 service 置零 (role 位即 is_remote), 槽位全网自动统一
+      (=max, 链端补零 token, 共享 agent 同构)。1x3 实测: t=t_e_*/e=双侧6/
+      J0=-E0_*, 三 ts 统一 365 维, remote φ 与 TraCI 逐桶吻合, e2e 通过。
+      exp188 (vs exp185 单变量=obs 类) 即协同阶梯的 T 原生档 — 它同时是
+      ψ 的富化版 (2 标量 → 整条链路的优先级桶细节, 驶来救护车以 p5 token
+      可见), E1b 的 gain_ratio 框架照用。
     token_layout 契约同步: token_dim 公式 + assert 自动随 fields/ψ 开关走。
 
   ── 3.5 开关与适用规则 ──────────────────────────────────────────────────────

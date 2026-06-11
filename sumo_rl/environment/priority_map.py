@@ -22,10 +22,17 @@ import json
 PRIORITY_LEVELS = (1, 2, 3, 4, 5)   # fixed bucket space (zero-shot invariant)
 DEFAULT_PRIORITY = 1                 # fallback for unknown vehicle types
 
-# Built-in default static table. Each type → its own bucket so the agent sees them
-# separately; the reward weights (e.g. 5-4-1) are a SEPARATE concern from this mapping.
+# Built-in default static table. ALIGNMENT RULE: bucket index MUST equal the reward
+# weight of that class (current standard = 5-4-1 avg-waiting → ambulance 5, bus 4,
+# car 1), so "the bucket IS the priority" reads true end-to-end. For experiments with
+# other weights (e.g. 5-3-1) set `priority_source: {ambulance: 5, bus: 3, car: 1}`
+# explicitly in the config — do NOT rely on this default.
+# HISTORY:  before/on 2026-06-11  11.33 am this table had bus: 3 while the reward weighted
+# bus ×4 — bucket index is nominal so learning/comparisons were unaffected, but the
+# semantics were wrong. exp172-183 ran with bus in p3; exp184+ use this aligned table
+# (bus in p4). State layouts across that watershed are NOT slot-compatible for bus.
 # (truck is absent from the current scenarios → its bucket simply stays empty.)
-DEFAULT_TABLE = {"ambulance": 5, "bus": 3, "truck": 2, "car": 1}
+DEFAULT_TABLE = {"ambulance": 5, "bus": 4, "truck": 2, "car": 1}
 
 
 def load_priority_table(source: str | dict | None = None) -> dict:
