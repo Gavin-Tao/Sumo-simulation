@@ -10,6 +10,8 @@
          (3) 给出分阶段落地路线 (哪些现在就能跑, 哪些要改什么才能跑)。
   关联:  AB_TRANSFORMER_STATE_DESIGN_2026-06-10.txt (设计 v2 + 单路口实现
              Part 10-12, R1 身份混叠/R2 裁剪均已修复并功能验证)
+         ABT_OUTGOING_LANE_DESIGN_2026-06-11.txt (outgoing/下游 ψ 设计深挖 —
+             1x3 起的消融轴 E1b, 协同阶梯 L0.5; 原则 I6 优先级住在需求侧)
          PRIORITY_ORDERING_SOLUTIONS_2026-06-10.txt (排序保证 G/H/Y 层)
          REWARD_STATE_AUDIT_2026-06-10.txt (stratified replay 等训练层方案)
   ⚠ 本文档只做审查/设计/预测, 未改代码。实测标 ✓, 推断标 [推测]。

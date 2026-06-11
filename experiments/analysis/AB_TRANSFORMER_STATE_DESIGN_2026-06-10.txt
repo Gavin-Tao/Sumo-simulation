@@ -563,8 +563,10 @@
   S2 ★★  T 臂稳定性预案: loss 尖刺 → clip 1.0 / lr 5e-4 (只动 T)。
   S3 ★★  字段消融补轴: 若 B 的 cqm>cq 显著 (mean 字段兑现 AUDIT 预测),
      给 A/T 各补一个 cqm 臂 (各 1 个 config), 验证增益跨组织方式成立。
-  S4 ★   out-φ / 压力变体: φ 同时算 incoming 与 outgoing (维度×2), 作为
-     "A/B/T vs PriorityBCA 信息集对齐"的补充臂, 把 175 对照升级成可解释对比。
+  S4 ★   outgoing 信息: 已深挖成独立设计 (ABT_OUTGOING_LANE_DESIGN_2026-06-11
+     .txt), 且修正本条旧案 — 不做 out-φ 维度×2, 改 type-agnostic
+     ψ=[occ,queue] 2 维/单元 ("优先级住在需求侧"原则); 1x1 不加 (边界出口
+     信号≡0), 1x3 起作消融轴 E1b。
   S5 ★   下一战场 1x3 (倒挂轴): 同一套 obs 类直接可用 (B/T 的几何法不依赖
      具体路网); 配 stratified replay (训练层正交修复) + ≥3 seed
      + Mann-Whitney (thesis 硬要求, 现全部单 seed)。

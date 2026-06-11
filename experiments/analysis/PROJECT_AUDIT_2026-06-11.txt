@@ -1,0 +1,265 @@
+================================================================================
+  全工程审计 — 代码 × 数据 × 流程 的健康台账与改进路线
+
+  作者:  Xiaowen Tao (TCD)
+  日期:  2026-06-11
+  范围:  整个仓库: sumo_rl/environment (env/traffic_signal/observations/rewards/
+         metrics/priority_map), sumo_rl/agents (DQN 系/coefficient/PER/
+         transformer), experiments (6 个 trainer/170 配置/绘图管线/analysis),
+         nets, BNF, tests/testing, git/repo 卫生。
+  方法:  3 路并行代理全量扫描 + 主审逐条甄别 (有误报, 已纠正并标注) +
+         本 session 两轮 A/B/T 审查结论 + 既有 5 份 analysis 文档的实测数据。
+  定位:  这是"对账文档" — 把散在各 doc 的发现收敛成一张当前状态台账:
+         什么修了、什么还开着、什么时候会咬人、数据哪些可信。
+  关联:  CODE_REVIEW_2026-06-10 (第一次全库 bug hunt) / RETROSPECTIVE_2026-06-10
+         / REWARD_STATE_AUDIT / AB_TRANSFORMER (R系列) / ABT_GENERIC (G系列)
+         / ABT_OUTGOING_LANE / PRIORITY_ORDERING_SOLUTIONS
+  ⚠ 只读审计, 未改代码。实测标 ✓, 代理报告但主审纠正/降级的标 [纠正]。
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 0: TL;DR                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  现在就该知道的 5 件事:
+  1. ✅ 当前主线 (exp172-182 批) 无阻塞问题 — 两轮审查 + 语义级验证后干净,
+     可以放心跑。PER 实现核对正确, 5 个 DQN trainer 评估协议一致。
+  2. ⚠ 数据可信度分水岭: C1 (eval seed 污染) 修复之前的所有 wandb run,
+     绝对数字只属于 seed-123 记忆; 方法间相对比较内部公平。exp172+ 是
+     第一批 clean 数据。论文引用任何旧数字必须带 seed-123 口径声明。
+  3. ⚠ 测试体系为零: pytest 收集 0 条 (import 失败), testing/ 是一次性脚本。
+     今天 R1 那类"训练曲线看不出来"的结构性 bug, 目前全靠手工冒烟拦截。
+  4. ⚠ 环境层有一组"换场景就咬人"的 latent (begin_time≠0 / 异构相位
+     yellow_dict KeyError / 多 agent 不同步 obs=None), 现配置全不触发,
+     上 Dublin 前要清。
+  5. [纠正] 代理报的 "CRITICAL: 全部 config 路径损坏不可执行" 是误报 —
+     路径相对 experiments/ cwd, 从 experiments/ 运行全部正常 (今天端到端
+     跑通十余次, exp171 完整 2000 集)。真实结论降级: config 对 cwd 敏感
+     (NOTE, 见 3.7)。审计代理的发现必须甄别, 这条留作方法论教训。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 1: 数据可信度台账 (结合数据 — 哪些既有结果还能用)                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ── 1.1 C1 分水岭 (eval seed 污染) ──────────────────────────────────────────
+    机制: env.reset(seed) 永久覆写 sumo_seed → 首次 eval (ep5) 后所有训练集
+    都在 eval_seed=123 上跑 → 训练集==测试集。修复 (06-09/10): 6 个 trainer
+    全部显式传 training_seed ✓ (train.py:179/216/278 已核)。
+    判定规则:
+      修复前 run (≈exp1-171):
+        × 绝对数字 (amb=3.25 等) = "对 seed-123 单一交通模式的记忆"
+        ✓ 方法间相对比较 (同协议同污染, 内部公平) — 倒挂存在性、
+          协同 vs 无协同的方向性结论仍立
+        × 泛化性主张一律不能引用
+      修复后 run (exp172+): 第一批 clean; 论文主表应全部来自这里。
+    残留风险: env.py:283 的根因未改 (修的是 trainer 调用侧) — 任何 NEW
+    trainer 不遵循 training_seed 模式会复发。建议 P1 把根因在 env 层修掉
+    (reset 不再永久覆写), 见 Part 5。
+
+  ── 1.2 M1 偏差 (amb=0.0 丢弃) ──────────────────────────────────────────────
+    旧绘图把 amb=0 当"无救护车"丢弃, 但 seed 固定下 0 = 完美通过 —
+    实测 exp145 末 40 评估有 15 个完美 run 被丢 (越好的方法被丢越多)。
+    已修: metrics NaN 哨兵 + 3 个绘图脚本改 NaN 过滤 ✓。
+    判定: 修复前生成的旧图里, 5-2-1→5-4-1 的退化被低估; 重画才可入论文。
+
+  ── 1.3 单 seed 现状 ────────────────────────────────────────────────────────
+    全部既有结论单 seed; RETROSPECTIVE 已测 541 方法间 amb 差异多数不显著。
+    规则不变: winner 必须 ≥3 seed + Mann-Whitney 背书后才进论文。
+
+  ── 1.4 可信数据资产清单 ────────────────────────────────────────────────────
+    ✓ 机理诊断类 (不依赖泛化): amb 梯度占比 0.5%、|TD| 0.635、Q-margin/std
+      链条、β→0、GAT entropy=ln2、buffer 组成 — 这些是"在该协议下的内部
+      测量", C1 不动摇其意义。
+    ✓ 因果链 (margin×noise) 与倒挂存在性: 三重独立确认, 定性可信。
+    ⚠ 一切 per-visit/avg 绝对秒数: seed-123 口径。
+    ✓ exp172-182 (跑完后): clean 基线, 论文主数据源。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 2: 已知问题修复状态台账 (跨 doc 对账)                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  编号        问题                                  状态        证据
+  ──────      ──────────────────────────────        ────────    ──────────────
+  C1          eval seed 污染训练                    ✅ 已修      6 trainer 核行号
+  M1          amb=0.0 丢弃偏差                      ✅ 已修      NaN哨兵+3脚本
+  R1          Transformer 车道身份混叠              ✅ 已修      可学性A/B证明
+  R2          Transformer 无梯度裁剪                ✅ 已修      grad_clip 1.0
+  R3          diagnose 工具只认 MLP ckpt            ⏳ 开放      用到 174/182
+                                                                机理分析时再修
+  R4          train.py 宽 except 吞系统性错误       ⏳ 开放      建议连错N次abort
+  G1/G3       B 罗盘槽碰撞 / N_SLOTS 硬编码         ⏳ 开放      Dublin 前必修
+  G2          B memo 按 vid, 环线重访陈旧           ⏳ 开放      上环线前一行修
+  G4          单共享 agent 假设全网同构             ⏳ 开放      异构前选型
+  G5/G6       Transformer 无 padding / service绑K   ⏳ 开放      异构前必修
+  H(旧)       CTBMetrics/PriorityObs 维度隐患       ⏳ 开放      本轮再确认(3.4)
+  BNF"6"      policy17/22 越界 {1..5}               ⏳ 开放      动态BNF前clamp
+                                                                (新 priority_map
+                                                                 加载时会报错✓)
+  倒挂        5-4-1 优先级倒挂                      ⏳ 设计完     G1/Y1 方案在
+                                                                PRIORITY doc,
+                                                                等 1x3 clean 复现
+  → 已修的 4 件全部经功能级验证; 开放项全部有触发条件标注 (Part 4 总表)。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 3: 本轮全库扫描新发现 (代理报告经主审甄别后收录)                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ── 3.1 环境层 latent (env.py / traffic_signal.py) — 换场景才咬人 ────────────
+    E1 [MED-latent] begin_time≠0 时 agent 永不 time_to_act (next_action_time
+       初始化与 sim_step 起点不匹配, ts.py:86/223)。现配置 begin=0 不触发;
+       用真实时段数据 (Dublin 早高峰切片) 时必踩。
+    E2 [MED-latent] 多 agent 若 time_to_act 不同步, observations dict 含
+       None → .copy() 崩 (env.py:212/401-403)。当前全部 ts 同 delta_time
+       → 每步全员同步, 不触发; 异构 delta_time / PettingZoo observe()
+       路径是触发面。
+    E3 [MED-latent] yellow_dict 假设 N×(N-1) 全对称转移; 相位不对称的
+       net (真实路口常见) 在 set_next_phase 直接 KeyError (ts.py:187-198/
+       254)。Dublin 网导入后第一个要冒烟的就是它。
+    E4 [NOTE] get_lanes_density 容量分母用 getLastStepLength (空车道返 0 →
+       分母=MIN_GAP): 数值上无害 (空车道 count=0, density 恒 0), 但口径随
+       "当前车型组成"漂移。对照: 新 A/B/T 用固定 veh_len=5 — 口径稳定,
+       这是新设计优于旧类的一个小点, 论文可提。
+    E5 [NOTE] fixed_ts 模式 num_green_phases=len(phases)//2 假设绿黄严格
+       交替; 含全红相位的 net 会算错 (syc 净有全红! 但 fixed_ts=False
+       不走此路径)。开 fixed_ts 基线对照前先验证。
+    E6 [NOTE] last_executed_action 语义 = "当前/将要的 green_phase" 而非
+       传入动作 (被 min_green 拒绝时恰好等于旧相位, "碰巧正确")。
+       replay 存储用它 → 语义按"实际执行相位"理解, 文档化即可。
+
+  ── 3.2 rewards.py (892 行, 注册 45 个, 活跃 ~26 个) ────────────────────────
+    W1 [NOTE] 活跃 reward 族 (5-x-1 avg-waiting / ambmax / priority-pressure)
+       数学逐一核对正确: per-class 均值、/100、跨车道修正、零车守卫全部在位 ✓
+    W2 [LOW] ctrl 变体与非 ctrl 变体的 lane 集不对称 (signal_controlled vs
+       全 lanes): 同名权重的 ctrl/非ctrl 不可直接比 — 既有结论未混用 ✓,
+       规则: 对比实验内 lane 口径必须同侧。
+    W3 [NOTE] ambmax 的 amb 项用 MAX、car/bus 用均值 — 这是 exp167-171 的
+       有意设计 (worst-case 主导), 不是 bug; 单 amb 场景 MAX≡avg (审计已证)。
+    W4 [LOW] 7 个定义但未注册/未使用的函数 + 大量历史权重档 — 死代码体量
+       可观, 不影响运行; 论文冻结版建议清册。
+
+  ── 3.3 metrics.py (889 行) ─────────────────────────────────────────────────
+    M2 [MED] 逐车 TraCI 调用包在裸 except continue 里 (469-473/627-633):
+       teleport/移除车辆的 step 指标被静默丢弃, 无计数器。teleport 在拥堵
+       场景 (Dublin) 频发 → 建议加 skip 计数并入 summary, 量化偏差。
+    M3 [NOTE] completion_rate 语义核对清晰 (受控车道车辆中完成行程比),
+       去重机制 (set 差/ts_visited) 无双计 ✓。
+    M4 [NOTE] NaN 哨兵的消费侧: wandb 显示空点 ✓, best_metrics.json 可读 ✓,
+       新绘图过滤 ✓; 但任何 NEW 消费方 (csv/pandas 聚合) 必须显式 dropna —
+       写进数据处理规范。
+
+  ── 3.4 旧 observation 类 (新 A/B/T 族不在此列, 已单独审过) ──────────────────
+    O1 [确认已知] PriorityObservationFunction: __call__ 用 raw
+       getControlledLanes (可含重复) 而 observation_space 用去重 ts.lanes —
+       两者长度可不等 (= 旧 CODE_REVIEW 的 PriorityObs 隐患, 本轮独立复发现)。
+       syc 网 raw 恰无重复 → 历史 run 未触发; 共享车道多连接的网会炸。
+    O2 [LOW] QueuePrio/CTB 等老类 Box high=1 但内容是未归一计数 — 越界
+       observation; DQN 不校验 Box 所以历史无害, 但任何会 clip 的包装器
+       (VecNormalize 等) 会悄悄改数据。
+    → 老类继续服役的只有 PriorityBCA (exp175 对照) — 它不在 O1/O2 名单 ✓。
+
+  ── 3.5 agents 层 ───────────────────────────────────────────────────────────
+    A1 [NOTE✓] PER 实现核对正确: 比例优先级 α 指数、IS 权重 /max 归一、
+       新样本 max_priority 注入、update_priorities — 与 Schaul 2016 一致。
+       (exp153 的"PER 伤 amb"是机制级结论, 不是实现 bug — 增强该结论可信度。)
+    A2 [NOTE] CoeffDQN β 硬编码 4 邻居 [上下左右] — 非网格拓扑 (Dublin)
+       语义失效; 与 G4 同属异构前提层, 并入 Stage 2 选型。
+    A3 [LOW] 死代码: dqn_agent.py (含硬编码 E:\ 路径) + txw_2layers/3layers/
+       dynamic_weight 三变体无人引用 — 冻结版清册。
+
+  ── 3.6 trainers 协议一致性 ─────────────────────────────────────────────────
+    T1 [NOTE✓] 5 个 DQN trainer: eval ε=0、eval_seed、training_seed、
+       EpisodeMetricsCollector、best.pth=mean_reward 全部一致 ✓ (代理矩阵
+       + 本 session 逐行核对双重确认)。跨 trainer 比较协议公平。
+    T2 [LOW] 仪表差异非协议差异: transformer 的 eval_diag/cls_attn_* 与
+       grad_norm 只在 T 臂存在; per_beta 各 trainer 记录条件不一 —
+       绘图脚本要按"键可能缺失"写。
+    T3 [NOTE] train_ppo_uni.py 是另一套协议 (无 eval loop/不同 ckpt 语义) —
+       PPO 结果不要与 DQN 系混在同一张对比表。
+    T4 [NOTE] traincolight.py 已在 commit 8ded53e 删除, trainorico.py 为
+       CoLight 谱系唯一入口 — 引用旧 CoLight 结果时注明 trainer 变更。
+
+  ── 3.7 配置/绘图/测试/repo ─────────────────────────────────────────────────
+    P1 [纠正→NOTE] config 路径相对 experiments/ cwd — 从仓库根目录直接跑
+       trainer 会 FileNotFoundError。代理据此误报 CRITICAL; 实际今天从
+       experiments/ 端到端跑通十余次。规则: trainer 一律在 experiments/
+       下启动 (run_abt_541.sh 已内置 cd)。
+    P2 [MED] 绘图管线: run-dir 硬编码 (新增消融必须改代码) + 手写 .wandb
+       protobuf 解析器无版本检查 (wandb 升级会静默丢数据)。论文图前
+       参数化 + 钉死 wandb 版本。
+    P3 [MED] diagnose_541/3w 硬编码 MLP fc1/fc2 + own_dim=77 → 仅适配
+       exp145/147 形状 (= R3 的具体形态)。
+    P4 [HIGH-流程] 测试体系为零: pytest 收集 0 (gymnasium/traci import 错),
+       testing/ 是一次性脚本。本项目的高危 bug 形态 (R1 结构性失明/C1 污染)
+       恰是测试能拦的类型 — P1 路线里给核心不变量补最小测试集。
+    P5 [LOW] exp 编号治理: 文件层无冲突 (1-182 唯一), 但 doc 层规划冲突
+       已实际发生 (PRIORITY doc 规划的 exp172-177 被 ABT 批占用) —
+       建议 MEMORY/编号登记处统一领号。
+    P6 [LOW] 分支: dev 领先 main 11 commits, main 两周未动 — 论文以 dev
+       为准; 里程碑处合回 main 打 tag (复现锚点)。
+    P7 [LOW] logs/ 95MB + ray_results/ 66MB 在 .gitignore 内 ✓;
+       egg-info/旧 model/ 属正常开发残留。
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 4: 风险分级总表 (按"什么时候咬人")                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  触发时机          条目                                          动作窗口
+  ──────────        ──────────────────────────────────────        ──────────
+  现在 (1x1 批)     无阻塞项                                       直接跑 ✓
+  写论文引用旧数据  1.1 seed-123 口径 / 1.2 旧图低估退化 /         引用前
+                    1.3 单 seed ns
+  1x3 批            G2 (环线才触发,U-route 已核安全) /             配置阶段
+                    M2 teleport 计数 (链路堵时开始相关) /
+                    E1b ±ψ 消融的 layout 同步
+  新写 trainer      C1 根因仍在 env 层 (必须复刻 training_seed     写之前
+                    模式) — 或先做 P1 根修
+  fixed_ts 对照     E5 全红相位计数错                              开用前
+  Dublin / 异构     E3 yellow_dict KeyError / E1 begin_time /      Stage 2-3
+                    E2 不同步 / G1·G3·G4·G5·G6 / A2 β 拓扑 /
+                    O1 raw-lane 重复 / M2 teleport 高发
+  wandb 升级        P2 本地解析器静默失效                          升级前钉版本
+  机理分析 174/182  P3/R3 diagnose 不认 transformer ckpt           分析前
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║   Part 5: 改进路线 (P0/P1/P2, 与既有 Stage/E 路线对齐)                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  P0 (本周, 不挡当前批):
+    1. 跑 exp172-182 (无阻塞); 盯 train/grad_norm 与 loss (R2 预案);
+    2. R4 加"连续 N 次非 SUMO 异常 abort" (十行级, 防废跑);
+    3. 数据规范一页纸: seed-123 口径声明模板 + NaN dropna 规则 + cwd 规则
+       (本文 1.1/M4/P1 的操作化)。
+
+  P1 (1x3 前后, thesis-grade 基建):
+    4. C1 根修: env.reset 不再永久覆写 sumo_seed (trainer 侧模式保留为
+       双保险) — 消灭"新 trainer 复发"面;
+    5. 最小测试集 (pytest + 无 GUI SUMO): (a) obs 维度==space 全 registry
+       扫描; (b) A/B/T 分桶 vs TraCI 真值 (今天的冒烟固化); (c) reward
+       活跃族零车/单车边界; (d) seed 隔离回归 (训练 seed 不被 eval 改);
+       — 正是 R1/C1 这类 bug 的拦截网;
+    6. 绘图参数化 (run-dir/exp 号做参数) + 固定 wandb 版本;
+    7. M2 teleport skip 计数器入 summary;
+    8. 多 seed 流程: winner 3-seed 脚本化 (run_abt 的 seed 循环扩展)。
+
+  P2 (异构/Dublin 前, 与 ABT_GENERIC Stage 2-3 合并执行):
+    9. 环境层 latent 清场: E1/E2/E3 (+E5 若用 fixed_ts);
+    10. G1/G3/G4/G5/G6 + A2 (同一改造窗口);
+    11. diagnose 工具 arch 分支 (R3/P3);
+    12. 死代码清册 (W4/A3) + dev→main 里程碑合并打 tag (P6)。
+
+  原则 (从本轮审计提炼):
+    · 审计/代理产出必须甄别 — 本轮 1 条 CRITICAL 是误报 (P1[纠正]);
+      反向教训同样成立: R1 这种真问题, 冒烟跑通≠没问题, 语义级验证才算数。
+    · 修 bug 的层级要对: C1 修在 trainer 侧是止血, 根修在 env 层才绝后患。
+    · 触发条件分级 (Part 4) 比严重度分级更有用 — 它直接告诉你"哪一步之前
+      必须做什么", 这是研究代码与产品代码审计的本质区别。
+
+================================================================================
+  EOF
+================================================================================
