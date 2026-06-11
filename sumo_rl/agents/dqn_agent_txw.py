@@ -45,16 +45,26 @@ class DQN:
                  per_beta_start: float = 0.4,
                  per_beta_end: float = 1.0,
                  per_beta_steps: int = 100_000,
-                 per_eps: float = 1e-6):
+                 per_eps: float = 1e-6,
+                 q_net_factory=None,
+                 grad_clip: float = None):
         self.state = starting_state
         self.state_space = state_space
         self.action_space = action_space
         self.hidden_dim = hidden_dim
-        self.q_net = Qnet(self.state_space, self.hidden_dim,
-                          self.action_space).to(device)  # Q网络
-        # 目标网络
-        self.target_q_net = Qnet(self.state_space, self.hidden_dim,
-                                 self.action_space).to(device)
+        # q_net_factory: optional zero-arg callable returning an nn.Module with the same
+        # contract as Qnet (flat (B, state_space) in → (B, action_space) Q-values out).
+        # Lets train scripts swap the architecture (e.g. lane-token Transformer) without
+        # touching the update/take_action/checkpoint logic.
+        if q_net_factory is not None:
+            self.q_net = q_net_factory().to(device)
+            self.target_q_net = q_net_factory().to(device)
+        else:
+            self.q_net = Qnet(self.state_space, self.hidden_dim,
+                              self.action_space).to(device)  # Q网络
+            # 目标网络
+            self.target_q_net = Qnet(self.state_space, self.hidden_dim,
+                                     self.action_space).to(device)
         # 使用Adam优化器
         self.optimizer = torch.optim.Adam(self.q_net.parameters(),
                                           lr=learning_rate)
@@ -82,9 +92,17 @@ class DQN:
         self.eps_end = eps_end
         self.eps_decay = eps_decay
         
+        # grad_clip: max grad-norm for clip_grad_norm_ before optimizer.step();
+        # None (default) = no clipping = exact historical behaviour. Set (e.g. 1.0)
+        # for architectures that need it (transformer Q-net at lr 1e-3).
+        self.grad_clip = grad_clip
         self.count = 0  # 计数器,记录更新次数
         self.device = device
         self.loss = None
+        # per-update diagnostics (read by trainers for wandb; None until first update)
+        self.grad_norm = None    # pre-clip total grad norm — only set when grad_clip is on
+        self.q_mean = None       # mean of online-net Q(s,a) over the batch
+        self.q_abs_max = None    # max |Q| over the batch — divergence shows here first
         self.start_train = False
         self.use_double = use_double  # 默认 False = 原 vanilla DQN 行为
 
@@ -149,8 +167,15 @@ class DQN:
             dqn_loss = torch.mean(F.mse_loss(q_values, q_targets))  # 均方误差损失函数
 
         self.loss = dqn_loss.item()
+        with torch.no_grad():
+            self.q_mean    = q_values.mean().item()
+            self.q_abs_max = q_values.abs().max().item()
         self.optimizer.zero_grad()  # PyTorch中默认梯度会累积,这里需要显式将梯度置为0
         dqn_loss.backward()  # 反向传播更新参数
+        if self.grad_clip is not None:
+            # clip_grad_norm_ returns the PRE-clip total norm — free diagnostic
+            self.grad_norm = float(torch.nn.utils.clip_grad_norm_(
+                self.q_net.parameters(), self.grad_clip))
         self.optimizer.step()
 
         if self.count % self.target_update == 0:

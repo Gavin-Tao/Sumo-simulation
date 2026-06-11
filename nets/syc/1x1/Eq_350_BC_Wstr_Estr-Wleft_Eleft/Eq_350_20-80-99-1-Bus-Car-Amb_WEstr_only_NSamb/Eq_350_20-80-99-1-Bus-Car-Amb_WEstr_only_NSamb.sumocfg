@@ -1,0 +1,16 @@
+<configuration>
+    <input>
+        <net-file value="syc_4phases.net.xml"/>
+        <route-files value="Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"/>
+        <additional-files value="1x1_outputs.add.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+    </time>
+    <output>
+		<tripinfo-output value="output/tripinfo.out.xml"/>
+		<fcd-output value="output/fcd_output.xml"/>
+
+	</output>
+</configuration>

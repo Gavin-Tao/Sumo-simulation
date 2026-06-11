@@ -17,6 +17,7 @@ Usage:
 """
 
 import argparse
+import functools
 import os
 import sys
 import json
@@ -61,6 +62,9 @@ from sumo_rl.environment.observations import (
     PriorityBCAObservationFunction,
     PriorityCtrlBCAObservationFunction,
     PriorityWaitingBCAObservationFunction,
+    PriorityPhaseObservationFunction,
+    PriorityMovementObservationFunction,
+    PriorityLaneTokenObservationFunction,
 )
 
 OBS_REGISTRY = {
@@ -77,6 +81,10 @@ OBS_REGISTRY = {
     "PriorityBCA":            PriorityBCAObservationFunction,
     "PriorityCtrlBCA":        PriorityCtrlBCAObservationFunction,
     "PriorityWaitingBCA":     PriorityWaitingBCAObservationFunction,
+    # A/B/T priority-bucket families (configure via obs_phase_state + obs_fields)
+    "PriorityPhase":          PriorityPhaseObservationFunction,      # A: per phase
+    "PriorityMovement":       PriorityMovementObservationFunction,   # B: per turning movement
+    "PriorityLaneToken":      PriorityLaneTokenObservationFunction,  # T (simplified): per lane
 }
 
 AGENT_TYPES = ("dqn", "coeff", "colight", "orico")
@@ -199,6 +207,18 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
              fixed_seed=False, debug=False):
 
     obs_class    = OBS_REGISTRY[cfg["observation_class"]]
+    # Optional obs params (A/B/T families): bind via partial so env can call obs_class(ts).
+    obs_kwargs = {}
+    if "obs_fields" in cfg:
+        obs_kwargs["fields"] = tuple(cfg["obs_fields"])
+    if "obs_phase_state" in cfg:
+        obs_kwargs["phase_state"] = cfg["obs_phase_state"]
+    if "priority_source" in cfg:
+        obs_kwargs["priority_source"] = cfg["priority_source"]
+    if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
+        obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
+    if obs_kwargs:
+        obs_class = functools.partial(obs_class, **obs_kwargs)
     neighbor_map = cfg.get("neighbor_map", {})
 
     env = SumoEnvironment(

@@ -725,7 +725,7 @@ class EpisodeMetricsCollector:
                 continue
             s_v = sum(r.get(field, {}).values())
             vals.append(s_v / k_v)
-        return sum(vals) / len(vals) if vals else 0.0
+        return sum(vals) / len(vals) if vals else float('nan')
 
     def _xts_mean(self, vtype: str, metric_name: str) -> float:
         """Metric B: cross-intersection mean, skipping ts where vtype is absent.
@@ -759,7 +759,7 @@ class EpisodeMetricsCollector:
             else:
                 raise ValueError(f"Unknown metric_name for xts_mean: {metric_name}")
             vals.append(v)
-        return sum(vals) / len(vals) if vals else 0.0
+        return sum(vals) / len(vals) if vals else float('nan')
 
     def _build_system_summary(self) -> dict:
         # When excluded_lanes is active, filter to vehicles that reached at least

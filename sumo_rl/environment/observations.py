@@ -1,10 +1,12 @@
 """Observation functions for traffic signals."""
+import math
 from abc import abstractmethod
 
 import numpy as np
 from gymnasium import spaces
 
 from .traffic_signal import TrafficSignal
+from .priority_map import load_priority_table, PRIORITY_LEVELS, DEFAULT_PRIORITY
 
 
 class ObservationFunction:
@@ -279,6 +281,556 @@ class PriorityBCAObservationFunction(ObservationFunction):
             bus_l.append(b)
             amb_l.append(a)
         return car_l, bus_l, amb_l
+
+
+class PriorityPhaseObservationFunction(ObservationFunction):
+    """Scheme A — phase-level priority-bucket observation (action space unchanged).
+
+    Builds on the per-type counting idea of ``PriorityBCAObservationFunction`` but
+    (1) aggregates vehicles **by green phase** (over each phase's served G/g incoming
+    lanes) instead of flat per-lane, and (2) replaces "count per car/bus/amb type"
+    with a fixed **priority-bucket featurizer φ** over levels {1..5}, so the agent
+    sees priority buckets (swap the policy table → zero-shot) rather than vehicle types.
+
+    Two phase-state encodings (``phase_state``), so the timing/identity block can be
+    swapped without touching φ:
+      - "legacy": the previously-working encoding — a global front block
+            [phase_one_hot(K), min_green_binary(1)]  then per phase k:  φ_k
+        (matches DefaultObservationFunction / PriorityBCA's phase block exactly; no timing).
+      - "perphase": header [min_green_ok, phase_elapsed]  then per phase k:  [is_cur] + φ_k
+        (current-phase one-hot distributed into each row as is_cur, plus the continuous
+         time-in-phase scalar — once, in the header, since it is global not per-phase).
+
+    Layout lengths:
+        legacy   : (K + 1) + K × φ_dim
+        perphase : 2       + K × (1 + φ_dim)
+        φ_k = for p in 1..5:  [<fields>]   (per priority bucket)
+
+    Per-bucket fields are configurable via ``fields`` so the feature set can be ablated:
+      - "mean_awt": REQUIRED in spirit — the reward is priority-weighted avg waiting
+        time, so the value function must observe waiting time or it predicts an
+        unobserved quantity (the measured |TD| floor of the count-only obs).
+      - "queue": magnitude/discharge demand; orthogonal to mean_awt (leading vs lagging).
+        Fresh arrivals show up in queue before they age into mean_awt — dropping it
+        blinds the agent to new demand. Standard TSC state variable.
+      - "count": total demand incl. moving vehicles; correlated with queue (queue ⊆ count),
+        so the most droppable. Always computed internally (needed for mean) — emitting is free.
+      - "max_awt": dilution-robust / leading indicator of future mean; redundant with mean
+        for the n=1 ambulance bucket. Clean ablation knob.
+    Lean core = ("queue", "mean_awt"); full = ("count","queue","mean_awt","max_awt").
+
+    Perf: phase→served-lanes and per-phase capacity are cached once in __init__; each
+    step iterates every incoming lane's vehicles exactly once (shared lanes reused across
+    phases) and memoizes vid→priority (vehicle type is immutable). If per-vehicle TraCI
+    (getAccumulatedWaitingTime/getSpeed) ever dominates runtime, switch to TraCI
+    subscriptions — the layout here is unchanged by that.
+    """
+
+    _ALL_FIELDS = ("count", "queue", "mean_awt", "max_awt")
+    _PHASE_STATES = ("legacy", "perphase")
+
+    def __init__(self, ts: TrafficSignal,
+                 fields: tuple = ("count", "queue", "mean_awt", "max_awt"),
+                 phase_state: str = "perphase", priority_source=None,
+                 normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0):
+        super().__init__(ts)
+        bad = [f for f in fields if f not in self._ALL_FIELDS]
+        if bad:
+            raise ValueError(f"unknown φ fields {bad}; allowed {self._ALL_FIELDS}")
+        if phase_state not in self._PHASE_STATES:
+            raise ValueError(f"phase_state must be one of {self._PHASE_STATES}")
+        self.fields = tuple(fields)
+        self.phase_state = phase_state
+        self._is_legacy = (phase_state == "legacy")
+        self.normalize = normalize
+        self.awt_scale = awt_scale
+        self._phi_dim = len(PRIORITY_LEVELS) * len(self.fields)
+
+        # policy = single source of truth (priority_map.py / external file), compiled once.
+        self._prio_table = load_priority_table(priority_source)
+
+        # --- static caches (computed once) ---
+        self._phase_lanes = self._build_phase_served_lanes()        # k -> [served incoming lanes]
+        self._lane_cap = {                                          # lane -> jam capacity (#veh)
+            lane: max(ts.lanes_length[lane] / (ts.MIN_GAP + veh_len), 1.0)
+            for lane in ts.lanes
+        }
+        self._phase_cap = {                                         # k -> Σ served-lane capacity
+            k: max(sum(self._lane_cap[l] for l in lanes), 1.0)
+            for k, lanes in self._phase_lanes.items()
+        }
+        self._active = sorted(set(self._prio_table.values()))       # priority levels the table uses
+        self._vid_prio: dict = {}                                   # vid -> priority memo
+
+    def _build_phase_served_lanes(self) -> dict:
+        """k -> incoming lanes that get G/g in green phase k (ts.lanes order, deduped)."""
+        raw = self.ts.sumo.trafficlight.getControlledLanes(self.ts.id)   # indices align phase.state
+        served = {}
+        for k, ph in enumerate(self.ts.green_phases):
+            seen = {raw[i] for i, ch in enumerate(ph.state) if ch in ('G', 'g')}
+            served[k] = [lane for lane in self.ts.lanes if lane in seen]
+        return served
+
+    def _vehicle_priority(self, vid) -> int:
+        p = self._vid_prio.get(vid)
+        if p is None:
+            p = self._prio_table.get(self.ts.sumo.vehicle.getTypeID(vid), DEFAULT_PRIORITY)
+            self._vid_prio[vid] = p
+        return p
+
+    def _lane_bucket_stats(self, lane) -> dict:
+        """One pass over a lane's vehicles → {p: [count, queue, sum_awt, max_awt]}."""
+        sumo = self.ts.sumo
+        stats = {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS}
+        for vid in sumo.lane.getLastStepVehicleIDs(lane):
+            s = stats[self._vehicle_priority(vid)]
+            w = sumo.vehicle.getAccumulatedWaitingTime(vid)
+            s[0] += 1
+            if sumo.vehicle.getSpeed(vid) < 0.1:
+                s[1] += 1
+            s[2] += w
+            if w > s[3]:
+                s[3] = w
+        return stats
+
+    def __call__(self) -> np.ndarray:
+        ts = self.ts
+        if len(self._vid_prio) > 50000:          # safety valve against unbounded growth
+            self._vid_prio.clear()
+
+        min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
+        if self._is_legacy:
+            # previously-working encoding: front phase one-hot + binary min_green
+            obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
+            obs.append(min_green_ok)
+        else:
+            # per-phase encoding: min_green_ok + continuous time-in-phase (global, once)
+            obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
+
+        # per-lane stats once; shared lanes are reused across phase groups
+        lane_stats = {lane: self._lane_bucket_stats(lane) for lane in ts.lanes}
+
+        for k in range(ts.num_green_phases):
+            if not self._is_legacy:
+                obs.append(1.0 if ts.green_phase == k else 0.0)   # is_cur per phase row
+            agg = {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS}
+            for lane in self._phase_lanes[k]:
+                ls = lane_stats[lane]
+                for p in PRIORITY_LEVELS:
+                    a, s = agg[p], ls[p]
+                    a[0] += s[0]; a[1] += s[1]; a[2] += s[2]
+                    if s[3] > a[3]:
+                        a[3] = s[3]
+            cap = self._phase_cap[k]
+            for p in PRIORITY_LEVELS:
+                c, q, sw, mw = agg[p]
+                mean = (sw / c) if c else 0.0
+                if self.normalize:
+                    vals = {"count": c / cap, "queue": q / cap,
+                            "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
+                else:
+                    vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
+                obs += [vals[f] for f in self.fields]
+        return np.array(obs, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        K = self.ts.num_green_phases
+        if self._is_legacy:
+            dim = (K + 1) + K * self._phi_dim
+        else:
+            dim = 2 + K * (1 + self._phi_dim)
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.full(dim, np.inf, dtype=np.float32),
+        )
+
+
+# ── Scheme A — 6 ready-to-use variants (phase_state × fields) ───────────────────
+# 2 phase-state encodings × 3 field-sets. All share φ, policy table, action space.
+#   legacy   = the previously-working phase block (front one-hot + binary min_green)
+#   perphase = is_cur per phase row + [min_green_ok, phase_elapsed]
+_CQ   = ("count", "queue")
+_CQM  = ("count", "queue", "mean_awt")
+_CQMM = ("count", "queue", "mean_awt", "max_awt")
+
+
+class PriorityPhaseLegacyCQ(PriorityPhaseObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQ, **kw)
+
+
+class PriorityPhaseLegacyCQM(PriorityPhaseObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQM, **kw)
+
+
+class PriorityPhaseLegacyCQMM(PriorityPhaseObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQMM, **kw)
+
+
+class PriorityPhaseElapsedCQ(PriorityPhaseObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQ, **kw)
+
+
+class PriorityPhaseElapsedCQM(PriorityPhaseObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQM, **kw)
+
+
+class PriorityPhaseElapsedCQMM(PriorityPhaseObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQMM, **kw)
+
+
+class PriorityMovementObservationFunction(ObservationFunction):
+    """Scheme B — movement-level priority-bucket observation (action space unchanged).
+
+    Same φ priority-bucket featurizer and same two phase-state encodings as Scheme A,
+    but aggregates vehicles **by turning movement** instead of by phase. Movements are
+    12 fixed slots = {N,E,S,W} approach × {L,T,R} turn. A vehicle's slot = (the compass
+    side it approaches from, its turn) — both derived from geometry + its route, so the
+    layout is generic (no edge-name or TraCI direction-index dependency).
+
+    Layout lengths (N_SLOTS = 12):
+        legacy   : (K + 1) + 12 × φ_dim                      # front phase one-hot + min_green
+        perphase : 2       + 12 × (1 + φ_dim)                # [min_green_ok, phase_elapsed]; per-slot is_green
+    Per slot the perphase ``is_green`` = 1 if that movement is served (G/g) by the current
+    green phase (multi-hot: a phase serves several movements) — the Scheme-B analog of A's
+    per-phase is_cur. Empty/impossible movements are simply all-zero φ (no separate mask
+    channel needed for the MLP head).
+
+    ``fields`` and ``phase_state`` behave exactly as in PriorityPhaseObservationFunction.
+    Perf: movement slots, per-phase served-slot sets, and per-slot capacity are cached once;
+    each step iterates incoming-lane vehicles once and memoizes vid→(priority, slot)
+    (both immutable per vehicle).
+    """
+
+    _ALL_FIELDS = ("count", "queue", "mean_awt", "max_awt")
+    _PHASE_STATES = ("legacy", "perphase")
+    _APPROACHES = ("N", "E", "S", "W")
+    _TURNS = ("L", "T", "R")
+    N_SLOTS = 12
+
+    def __init__(self, ts: TrafficSignal,
+                 fields: tuple = ("count", "queue", "mean_awt", "max_awt"),
+                 phase_state: str = "perphase", priority_source=None,
+                 normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0):
+        super().__init__(ts)
+        bad = [f for f in fields if f not in self._ALL_FIELDS]
+        if bad:
+            raise ValueError(f"unknown φ fields {bad}; allowed {self._ALL_FIELDS}")
+        if phase_state not in self._PHASE_STATES:
+            raise ValueError(f"phase_state must be one of {self._PHASE_STATES}")
+        self.fields = tuple(fields)
+        self.phase_state = phase_state
+        self._is_legacy = (phase_state == "legacy")
+        self.normalize = normalize
+        self.awt_scale = awt_scale
+        self._phi_dim = len(PRIORITY_LEVELS) * len(self.fields)
+
+        self._prio_table = load_priority_table(priority_source)   # policy source of truth
+
+        # --- static movement geometry, cached once ---
+        links = ts.sumo.trafficlight.getControlledLinks(ts.id)    # index = phase.state position
+        self._link_slot = {}                  # link index -> slot id
+        self._movement_by_edges = {}          # (from_edge, to_edge) -> slot id  (vehicle lookup)
+        lane_feeds = {}                       # lane -> set(slot)
+        for i, grp in enumerate(links):
+            if not grp:
+                continue
+            fl, tl = grp[0][0], grp[0][1]
+            slot = self._slot_idx(self._approach(fl), self._turn(fl, tl))
+            self._link_slot[i] = slot
+            self._movement_by_edges[(self._edge(fl), self._edge(tl))] = slot
+            lane_feeds.setdefault(fl, set()).add(slot)
+
+        # per-phase served-slot sets (slot served if ANY of its links is G/g this phase)
+        self._phase_serves = {}
+        for k, ph in enumerate(ts.green_phases):
+            served = set()
+            for i, slot in self._link_slot.items():
+                if i < len(ph.state) and ph.state[i] in ('G', 'g'):
+                    served.add(slot)
+            self._phase_serves[k] = served
+
+        # per-slot capacity = Σ jam-capacity of lanes feeding that movement
+        cap = {s: 0.0 for s in range(self.N_SLOTS)}
+        for lane, slots in lane_feeds.items():
+            lcap = ts.lanes_length.get(lane, 0.0) / (ts.MIN_GAP + veh_len)
+            for s in slots:
+                cap[s] += lcap
+        self._slot_cap = {s: max(c, 1.0) for s, c in cap.items()}
+
+        self._vid_prio: dict = {}
+        self._vid_slot: dict = {}
+
+    # ── geometry helpers ──────────────────────────────────────────────────────
+    @staticmethod
+    def _edge(lane: str) -> str:
+        return lane.rsplit('_', 1)[0]
+
+    def _heading(self, lane: str) -> float:
+        s = self.ts.sumo.lane.getShape(lane)
+        (x0, y0), (x1, y1) = s[-2], s[-1]
+        return math.degrees(math.atan2(y1 - y0, x1 - x0))
+
+    def _approach(self, lane: str) -> str:
+        """Compass side the vehicle approaches FROM (opposite of its heading into junction)."""
+        a = (self._heading(lane) + 180) % 360
+        return ("E", "N", "W", "S")[round(a / 90) % 4]
+
+    def _turn(self, fl: str, tl: str) -> str:
+        d = (self._heading(tl) - self._heading(fl) + 180) % 360 - 180
+        if -45 < d <= 45:
+            return "T"
+        if 45 < d <= 135:
+            return "L"
+        if -135 < d <= -45:
+            return "R"
+        return "L"          # U-turn folded into L (first version)
+
+    def _slot_idx(self, approach: str, turn: str) -> int:
+        return self._APPROACHES.index(approach) * 3 + self._TURNS.index(turn)
+
+    # ── per-vehicle memoized lookups ──────────────────────────────────────────
+    def _vehicle_priority(self, vid) -> int:
+        p = self._vid_prio.get(vid)
+        if p is None:
+            p = self._prio_table.get(self.ts.sumo.vehicle.getTypeID(vid), DEFAULT_PRIORITY)
+            self._vid_prio[vid] = p
+        return p
+
+    def _vehicle_slot(self, vid, from_edge: str) -> int:
+        """Movement slot of vid (−1 if it has no controlled next movement). Memoized."""
+        if vid in self._vid_slot:
+            return self._vid_slot[vid]
+        sumo = self.ts.sumo
+        route = sumo.vehicle.getRoute(vid)
+        idx = sumo.vehicle.getRouteIndex(vid)
+        nxt = route[idx + 1] if idx + 1 < len(route) else None
+        slot = self._movement_by_edges.get((from_edge, nxt), -1)
+        self._vid_slot[vid] = slot
+        return slot
+
+    # ── observation ───────────────────────────────────────────────────────────
+    def __call__(self) -> np.ndarray:
+        ts = self.ts
+        if len(self._vid_prio) > 50000:
+            self._vid_prio.clear(); self._vid_slot.clear()
+
+        # aggregate vehicles into (slot, priority) buckets — single pass over incoming lanes
+        slot_stats = {s: {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS} for s in range(self.N_SLOTS)}
+        for lane in ts.lanes:
+            from_edge = self._edge(lane)
+            for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
+                slot = self._vehicle_slot(vid, from_edge)
+                if slot < 0:
+                    continue
+                s = slot_stats[slot][self._vehicle_priority(vid)]
+                w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                s[0] += 1
+                if ts.sumo.vehicle.getSpeed(vid) < 0.1:
+                    s[1] += 1
+                s[2] += w
+                if w > s[3]:
+                    s[3] = w
+
+        min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
+        if self._is_legacy:
+            obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
+            obs.append(min_green_ok)
+        else:
+            obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
+
+        served = self._phase_serves.get(ts.green_phase, set())
+        for slot in range(self.N_SLOTS):
+            if not self._is_legacy:
+                obs.append(1.0 if slot in served else 0.0)      # is_green per movement slot
+            cap = self._slot_cap[slot]
+            for p in PRIORITY_LEVELS:
+                c, q, sw, mw = slot_stats[slot][p]
+                mean = (sw / c) if c else 0.0
+                if self.normalize:
+                    vals = {"count": c / cap, "queue": q / cap,
+                            "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
+                else:
+                    vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
+                obs += [vals[f] for f in self.fields]
+        return np.array(obs, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        K = self.ts.num_green_phases
+        if self._is_legacy:
+            dim = (K + 1) + self.N_SLOTS * self._phi_dim
+        else:
+            dim = 2 + self.N_SLOTS * (1 + self._phi_dim)
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.full(dim, np.inf, dtype=np.float32),
+        )
+
+
+# ── Scheme B — 6 ready-to-use variants (phase_state × fields) ───────────────────
+class PriorityMovementLegacyCQ(PriorityMovementObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQ, **kw)
+
+
+class PriorityMovementLegacyCQM(PriorityMovementObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQM, **kw)
+
+
+class PriorityMovementLegacyCQMM(PriorityMovementObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQMM, **kw)
+
+
+class PriorityMovementElapsedCQ(PriorityMovementObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQ, **kw)
+
+
+class PriorityMovementElapsedCQM(PriorityMovementObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQM, **kw)
+
+
+class PriorityMovementElapsedCQMM(PriorityMovementObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQMM, **kw)
+
+
+class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
+    """Scheme T (simplified) — lane-level priority-bucket observation (action unchanged).
+
+    The finest granularity: one token per incoming lane. Parallel to A (per phase) and
+    B (per movement); same φ featurizer, same two phase_state encodings, same fields.
+    Reuses the parent's φ helpers (_lane_bucket_stats / _vehicle_priority).
+
+    ⚠ SIMPLIFIED on purpose: this is a FLAT per-lane vector for the current MLP, and it
+    OMITS the static per-lane geometry block (length / approach-angle / capacity / turn
+    one-hot / free-right) of the full design. The real Transformer head (per-lane token
+    matrix + CLS + attention, lane-count-agnostic) and that static block are the planned
+    next step ("后面再加"); this version exists to slot the lane-granularity obs into the
+    existing pipeline now.
+
+    Layout (N_lanes = len(ts.lanes); svc = K if include_phase_service else 0):
+        legacy   : (K + 1) + N_lanes × (svc + φ_dim)            # front phase one-hot + min_green
+        perphase : 2       + N_lanes × (1 + svc + φ_dim)        # [min_green_ok, phase_elapsed]; per-lane is_green
+    per-lane is_green = 1 if that lane gets G/g in the current green phase.
+    per-lane service (K multi-hot, default ON) = which green phases serve this lane —
+    the lane-identity fix for permutation-invariant token nets (R1).
+    """
+
+    def __init__(self, ts: TrafficSignal, include_phase_service: bool = True, **kw):
+        super().__init__(ts, **kw)
+        self._lanes = list(ts.lanes)
+        self._n_lanes = len(self._lanes)
+        self._phase_served_set = {k: set(lanes) for k, lanes in self._phase_lanes.items()}
+        # Lane identity for set-pooling Q-nets (R1 fix): a K-dim "served-by-phase"
+        # multi-hot per token — which green phases give this lane G/g. Without it the
+        # transformer's CLS pooling is permutation-invariant over tokens, so e.g.
+        # "NS-left queued" vs "EW-left queued" produce identical Q-values (measured).
+        # This is NOT static geometry — it is the action-aligned identity ("which
+        # phase releases this queue"). Disable only as an identity-ablation arm.
+        self.include_phase_service = include_phase_service
+        K = ts.num_green_phases
+        self._lane_service = {
+            lane: [1.0 if lane in self._phase_served_set[k] else 0.0 for k in range(K)]
+            for lane in self._lanes
+        }
+
+    def token_layout(self) -> dict:
+        """Flat-vector layout for token-based Q-nets (e.g. LaneTokenTransformerQNet).
+
+        Mirrors __call__/observation_space exactly:
+          legacy  : header = phase_onehot(K)+min_green, token = [service(K)?]+φ
+          perphase: header = [min_green_ok, phase_elapsed], token = [is_green]+[service(K)?]+φ
+        """
+        K = self.ts.num_green_phases
+        svc = K if self.include_phase_service else 0
+        if self._is_legacy:
+            return {"header_dim": K + 1, "n_tokens": self._n_lanes, "token_dim": svc + self._phi_dim}
+        return {"header_dim": 2, "n_tokens": self._n_lanes, "token_dim": 1 + svc + self._phi_dim}
+
+    def __call__(self) -> np.ndarray:
+        ts = self.ts
+        if len(self._vid_prio) > 50000:
+            self._vid_prio.clear()
+
+        lane_stats = {lane: self._lane_bucket_stats(lane) for lane in self._lanes}
+
+        min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
+        if self._is_legacy:
+            obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
+            obs.append(min_green_ok)
+        else:
+            obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
+
+        served = self._phase_served_set.get(ts.green_phase, set())
+        for lane in self._lanes:
+            if not self._is_legacy:
+                obs.append(1.0 if lane in served else 0.0)      # is_green per lane token
+            if self.include_phase_service:
+                obs += self._lane_service[lane]                 # K-dim lane identity (R1)
+            cap = self._lane_cap[lane]
+            ls = lane_stats[lane]
+            for p in PRIORITY_LEVELS:
+                c, q, sw, mw = ls[p]
+                mean = (sw / c) if c else 0.0
+                if self.normalize:
+                    vals = {"count": c / cap, "queue": q / cap,
+                            "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
+                else:
+                    vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
+                obs += [vals[f] for f in self.fields]
+        return np.array(obs, dtype=np.float32)
+
+    def observation_space(self) -> spaces.Box:
+        K = self.ts.num_green_phases
+        svc = K if self.include_phase_service else 0
+        if self._is_legacy:
+            dim = (K + 1) + self._n_lanes * (svc + self._phi_dim)
+        else:
+            dim = 2 + self._n_lanes * (1 + svc + self._phi_dim)
+        return spaces.Box(
+            low=np.zeros(dim, dtype=np.float32),
+            high=np.full(dim, np.inf, dtype=np.float32),
+        )
+
+
+# ── Scheme T (simplified) — 6 ready-to-use variants (phase_state × fields) ──────
+class PriorityLaneLegacyCQ(PriorityLaneTokenObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQ, **kw)
+
+
+class PriorityLaneLegacyCQM(PriorityLaneTokenObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQM, **kw)
+
+
+class PriorityLaneLegacyCQMM(PriorityLaneTokenObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="legacy", fields=_CQMM, **kw)
+
+
+class PriorityLaneElapsedCQ(PriorityLaneTokenObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQ, **kw)
+
+
+class PriorityLaneElapsedCQM(PriorityLaneTokenObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQM, **kw)
+
+
+class PriorityLaneElapsedCQMM(PriorityLaneTokenObservationFunction):
+    def __init__(self, ts, **kw):
+        super().__init__(ts, phase_state="perphase", fields=_CQMM, **kw)
 
 
 class PriorityCtrlBCAObservationFunction(ObservationFunction):
