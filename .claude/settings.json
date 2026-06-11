@@ -191,7 +191,7 @@
       "Bash(sed -i 's|pv=r\\\\x27amb_pv\\\\x27.*|pv=r[\"amb_pv\"]; sp=r[\"speed\"]\\\\n    sps = f\"{sp[0]:.2f}\" if sp and sp[0] is not None else \"—\"\\\\n    pvs = f\"{pv[0]:.2f}±{pv[1]:.2f}\" if pv and pv[0] is not None else \"—\"\\\\n    print\\(f\"{e:7s}{pvs:>14s}{\\(pv[2] if pv else 0\\):>6d}{sps:>12s}\"\\)|' /tmp/extract_abt.py)",
       "Bash(python3 /tmp/extract_abt.py)",
       "Bash(grep -vE \"Warning|^\\\\s*$\")",
-      "Bash(timeout 580 python eval_unified.py --config ./configs/exp172_1x1_541_NS20bus_vanilla_A_phase_legacy_cq.yaml --ckpt ./models/exp172_1x1_541_NS20bus_vanilla_A_phase_legacy_cq/2026-06-11T00-35-30/ckpt_ep02000.pth --agent dqn --episodes 1)"
+      "Bash(export WANDB_MODE=disabled WANDB_DISABLED=true)"
     ],
     "additionalDirectories": [
       "/tmp",

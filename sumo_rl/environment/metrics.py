@@ -345,6 +345,10 @@ class EpisodeMetricsCollector:
         self.vtypes         = vtypes
         self.delta_time     = delta_time
         self._excluded_lanes: set = set(excluded_lanes) if excluded_lanes else set()
+        # M2 observability: per-vehicle TraCI queries skipped because the vehicle
+        # vanished (teleport/removal). Skips keep prior semantics (record kept,
+        # that step's contribution dropped) but are now counted, not silent.
+        self.query_skips: int = 0
 
         # lane_id -> ts_id  (fast lookup)
         self._lane_to_ts: dict = {
@@ -470,6 +474,7 @@ class EpisodeMetricsCollector:
                 speed            = sumo.vehicle.getSpeed(vid)
                 current_acc_wait = sumo.vehicle.getAccumulatedWaitingTime(vid)
             except Exception:
+                self.query_skips += 1
                 continue
             vtype = rec["type"]
             cur_ts = veh_ts.get(vid)     # None if not on any ts's approach lanes
@@ -624,13 +629,24 @@ class EpisodeMetricsCollector:
                   for still-active vehicles before finalizing them.
         """
         if sumo is not None:
+            # Guard with the live ID set: vehicles that left the network after the
+            # last collect_step would make libsumo PRINT a C++-side error before the
+            # exception even reaches us ("Vehicle 'x' is not known" spam at episode
+            # end). Skipping them is semantics-identical to the old except-pass
+            # (last_acc_wait keeps its previous value).
+            current_ids = set(sumo.vehicle.getIDList())
             for vid in list(self._active):
+                if vid not in current_ids:
+                    continue
                 try:
                     self._active[vid]["last_acc_wait"] = (
                         sumo.vehicle.getAccumulatedWaitingTime(vid)
                     )
                 except Exception:
-                    pass
+                    self.query_skips += 1
+        if self.query_skips:
+            print(f"[metrics] {self.query_skips} per-vehicle TraCI queries skipped "
+                  f"this episode (vanished vehicles — see PROJECT_AUDIT M2)")
         for vid, rec in self._active.items():
             rec["completed"] = False
             self._finalized[vid] = rec

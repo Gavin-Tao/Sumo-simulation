@@ -115,7 +115,8 @@ def get_nb_obs(ts_id, states, neighbor_map, obs_dim):
 
 # ── Agent factory + checkpoint loader ────────────────────────────────────────
 
-def load_agent(agent_type, ckpt_path, cfg, obs_dim, action_space, device, n_heads):
+def load_agent(agent_type, ckpt_path, cfg, obs_dim, action_space, device, n_heads,
+               q_net_factory=None):
     common = dict(
         learning_rate=cfg.get("lr", 0.01),
         gamma=cfg.get("gamma", 0.99),
@@ -134,11 +135,13 @@ def load_agent(agent_type, ckpt_path, cfg, obs_dim, action_space, device, n_head
             state_space=obs_dim,
             hidden_dim=hidden,
             action_space=action_space,
+            q_net_factory=q_net_factory,   # transformer ckpts need the matching arch
             **common,
         )
         agent.q_net.load_state_dict(ckpt["policy_state_dict"])
         agent.q_net.eval()
-        print(f"[dqn] Loaded {ckpt_path}  ep={ckpt.get('episode', '?')}")
+        arch = "transformer" if q_net_factory is not None else "mlp"
+        print(f"[dqn/{arch}] Loaded {ckpt_path}  ep={ckpt.get('episode', '?')}")
 
     elif agent_type == "coeff":
         agent = CoeffDQN(
@@ -244,8 +247,26 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
     ts_lane_map    = {ts: env.traffic_signals[ts].signal_controlled_lanes for ts in env.ts_ids}
     always_green   = set().union(*(env.traffic_signals[ts].always_green_lanes for ts in env.ts_ids))
 
+    # Transformer arch (exp174/182-style ckpts): rebuild the matching Q-net via
+    # factory, mirroring train.py — the MLP Qnet cannot load these state dicts.
+    q_net_factory = None
+    if cfg.get("agent_arch", "mlp") == "transformer":
+        from sumo_rl.agents.qnet_lane_transformer import LaneTokenTransformerQNet
+        obs_fn0 = env.traffic_signals[env.ts_ids[-1]].observation_fn
+        if not hasattr(obs_fn0, "token_layout"):
+            raise ValueError("agent_arch=transformer needs a token obs (PriorityLaneToken*)")
+        layout = obs_fn0.token_layout()
+        tf_cfg = cfg.get("transformer", {}) or {}
+        q_net_factory = lambda: LaneTokenTransformerQNet(
+            header_dim=layout["header_dim"], n_tokens=layout["n_tokens"],
+            token_dim=layout["token_dim"], action_dim=env.action_space.n,
+            d_model=int(tf_cfg.get("d_model", 128)), nhead=int(tf_cfg.get("nhead", 4)),
+            num_layers=int(tf_cfg.get("num_layers", 2)), dim_ff=int(tf_cfg.get("dim_ff", 256)),
+        )
+
     agent = load_agent(agent_type, ckpt_path, cfg, obs_dim,
-                       env.action_space.n, device, n_heads)
+                       env.action_space.n, device, n_heads,
+                       q_net_factory=q_net_factory)
 
     all_episode_metrics: list[dict] = []
     base_seed = cfg.get("seed", 0)
@@ -303,8 +324,15 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
     keys    = all_episode_metrics[0].keys()
     summary = {}
     for k in keys:
-        vals       = np.array([ep[k] for ep in all_episode_metrics], dtype=float)
-        summary[k] = {"mean": float(vals.mean()), "std": float(vals.std())}
+        vals = np.array([ep[k] for ep in all_episode_metrics], dtype=float)
+        # NaN-aware: metrics use NaN as the "no vehicles of this type" sentinel
+        # (e.g. ambulance absent in an episode) — exclude, don't poison the mean.
+        n_valid = int(np.sum(~np.isnan(vals)))
+        summary[k] = {
+            "mean": float(np.nanmean(vals)) if n_valid else float("nan"),
+            "std":  float(np.nanstd(vals))  if n_valid else float("nan"),
+            "n":    n_valid,
+        }
 
     print("\n" + "=" * 70)
     print(f"Evaluation summary  ({n_episodes} episodes)  [{agent_type}]")

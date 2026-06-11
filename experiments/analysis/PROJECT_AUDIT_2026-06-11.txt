@@ -142,9 +142,17 @@
        可观, 不影响运行; 论文冻结版建议清册。
 
   ── 3.3 metrics.py (889 行) ─────────────────────────────────────────────────
-    M2 [MED] 逐车 TraCI 调用包在裸 except continue 里 (469-473/627-633):
-       teleport/移除车辆的 step 指标被静默丢弃, 无计数器。teleport 在拥堵
-       场景 (Dublin) 频发 → 建议加 skip 计数并入 summary, 量化偏差。
+    M2 [MED→✅已修 06-11晚] 逐车 TraCI 调用裸 except 静默吞掉:
+       (a) finalize() 对已离网车辆发起注定失败的查询 → libsumo 在 C++ 层
+           先打印 "Vehicle 'x' is not known" 再抛异常, except 兜不住打印
+           (集末每集 ~10 条报错串的根源) → 改为先用 getIDList 守卫,
+           不再发起失败查询 — 与旧 except-pass 语义逐位一致;
+       (b) collect_step/finalize 的 skip 改为计数 (query_skips) + 集末
+           告警打印, 不再无声。
+       验证: 同 seed 同 ckpt 重评, 报错串 10→0, 187 指标×mean/std 中
+       184 逐位相同、3 处为 1e-15 同值 (PYTHONHASHSEED 集合序的浮点
+       求和噪声, 跨进程固有, 与修复无关)。teleport 偏差的"量化入 summary"
+       部分仍留 P1 (现已可由 query_skips 观测)。
     M3 [NOTE] completion_rate 语义核对清晰 (受控车道车辆中完成行程比),
        去重机制 (set 差/ts_visited) 无双计 ✓。
     M4 [NOTE] NaN 哨兵的消费侧: wandb 显示空点 ✓, best_metrics.json 可读 ✓,
@@ -181,6 +189,22 @@
        PPO 结果不要与 DQN 系混在同一张对比表。
     T4 [NOTE] traincolight.py 已在 commit 8ded53e 删除, trainorico.py 为
        CoLight 谱系唯一入口 — 引用旧 CoLight 结果时注明 trainer 变更。
+
+  ── 3.6b eval_unified.py (晚间增审, exp172-182 跑完后) ──────────────────────
+    V1 [已修✓] transformer ckpt 加载缺口 (R3 预言形态): load_agent 的 dqn
+       分支只建 MLP Qnet → exp174/182 的 best.pth 必然 key 不匹配。
+       修复: q_net_factory 镜像 train.py 接线; 实测 exp174 best.pth 加载
+       (ep=1255) + 整集评估通过, MLP 路径 (exp173) 回归正常。
+    V2 [已修✓] summary 的 NaN 污染 (M4 消费方实例): vals.mean() 遇 NaN
+       哨兵整列变 NaN → 改 nanmean/nanstd + n_valid 计数。
+    V3 [NOTE] obs 侧 (obs_fields/phase_state/phase_service/priority_source)
+       已与 train.py 同步在位 ✓; A/B/T registry 在位 ✓。
+    V4 [NOTE] 集末 "Vehicle 'flow_x' is not known" 报错串 = M2 的可见形态
+       (metrics 对已离网车辆的 TraCI 查询被裸 except 吞掉) — 集末瞬间、
+       无实质影响, M2 修复时一并消失。
+    数据完整性核查 (exp172-182): 11 个 run 日志零 [ERROR]/Traceback (R4
+       宽 except 从未触发 — 结果分析建立在完整数据上); 11 个 best_metrics
+       .json 全部有效。
 
   ── 3.7 配置/绘图/测试/repo ─────────────────────────────────────────────────
     P1 [纠正→NOTE] config 路径相对 experiments/ cwd — 从仓库根目录直接跑
