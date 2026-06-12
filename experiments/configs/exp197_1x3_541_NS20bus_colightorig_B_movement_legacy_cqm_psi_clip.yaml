@@ -1,4 +1,4 @@
-name: exp193_1x3_541_NS20bus_colightorig_B_movement_legacy_cqm_psi_clip
+name: exp197_1x3_541_NS20bus_colightorig_B_movement_legacy_cqm_psi_clip
 wandb_project: sumo-rl-1x3
 net_file: ../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml
 route_file: ../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml
@@ -39,7 +39,7 @@ use_max_green: true
 max_green: 50
 hidden_dim: 128
 n_heads: 2
-lr: 0.0003
+lr: 0.001
 gamma: 0.99
 epsilon: 0.1
 eps_start: 0.9

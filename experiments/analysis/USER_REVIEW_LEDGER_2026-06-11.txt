@@ -296,7 +296,11 @@
   195   dublin  531    T-lane (transf)  none      cqm  cq   train.py   (grad_clip 1.0)
   196   dublin  531    T-lane-Nb(transf) Tnb边界  cqm  cq   train.py   (grad_clip 1.0)
   197   1x3     541    B-movement       colight   cqm  cq   trainorico.py (grad_clip 1.0)
+  198   dublin  531    B-movement       none      cqm  cq   train.py   (= 192 去 clip, ±clip 对照)
   全部 Dublin 臂带 action_meta_file (mask) + obs_pad_tokens=6 (仅 T).
+  ⚠ 2026-06-12 01:05 起 190-197 全部回 187 标准包 (用户裁定, lr 1e-3/
+  batch 256/cap 50k/decay 5000), 唯一非标准项 = grad_clip 1.0;
+  exp198 (无 clip) 是 clip 必要性的受控对照。上表 in/out 列仍有效。
 
   ⚠ 待决/隐患:
    F1 *exp189 outgoing=qm 与 197=cq 不一致 → 二者作 1x3 ±协同对照时

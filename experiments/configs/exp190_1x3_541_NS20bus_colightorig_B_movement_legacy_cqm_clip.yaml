@@ -39,7 +39,7 @@ use_max_green: true
 max_green: 50
 hidden_dim: 128
 n_heads: 2
-lr: 0.0003
+lr: 0.001
 gamma: 0.99
 epsilon: 0.1
 eps_start: 0.9

@@ -249,7 +249,15 @@
       "Bash(ls -1 configs/exp19[1-7]_*.yaml)",
       "Bash(ls configs/exp197_*)",
       "Bash(bash -n run_dublin_queue.sh)",
-      "Bash(sed -n '/PHASE 1/,/PHASE 2/p' run_dublin_queue.sh)"
+      "Bash(sed -n '/PHASE 1/,/PHASE 2/p' run_dublin_queue.sh)",
+      "Bash(export GIT_PAGER=cat PAGER=cat)",
+      "Bash(git push *)",
+      "Bash(ps -p 84023 -o cmd --no-headers)",
+      "Bash(kill 84023)",
+      "Bash(nohup bash run_dublin_queue.sh)",
+      "Bash(pkill -f run_dublin_queue.sh)",
+      "Bash(kill 89638 89938 90277)",
+      "Bash(pkill -f wandb-core)"
     ],
     "additionalDirectories": [
       "/tmp",

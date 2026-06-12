@@ -3,3 +3,6 @@
 [2026-06-11 22:26:24] ▶ START exp192  (train.py)  exp192_dublin11h_531_B_movement_legacy_cqm_mask_nocoord.yaml
 [2026-06-11 22:26:24] ▶ START exp197  (trainorico.py)  exp197_1x3_541_NS20bus_colightorig_B_movement_legacy_cqm_psi_clip.yaml
 [2026-06-11 22:26:24] ▶ START exp189  (train.py)  exp189_1x3_541_NS20bus_nocoord_B_movement_legacy_cqm_psi.yaml
+Terminated
+[2026-06-12 00:39:14] ✗ FAIL  exp192 (rc=143) — see logs/dublin_queue/exp192.log
+[2026-06-12 00:42:32] ✓ DONE  exp189

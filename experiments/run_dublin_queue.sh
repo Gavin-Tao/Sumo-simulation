@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Dublin + 1x3 training queue (2026-06-11).
 #
-# Schedule (user-specified):
-#   Phase 1: exp192 + exp197 + exp189 run IN PARALLEL, wait for ALL three.
-#   Phase 2: then 193 -> 191 -> 194 -> 195 -> 196 run ONE AT A TIME
-#            (each must finish before the next starts).
+# Schedule (updated 2026-06-12 00:55, user: don't re-run finished work):
+#   DONE already: exp189 (completed ep2000, 2026-06-11T22-26 batch).
+#   Phase 1: exp192 (retry, +grad_clip/lr3e-4 after divergence) + exp197
+#            (params re-aligned to the exp187 standard package, clip kept)
+#            run IN PARALLEL, wait for BOTH.
+#   Phase 2: then 193 -> 191 -> 194 -> 195 -> 196 ONE AT A TIME.
 #
 # trainer per exp:
 #   189/191/192/193 = train.py        (B-movement MLP; 191/192/193 masked, 189 is 1x3)
@@ -48,15 +50,13 @@ run_one() {  # blocking: run a single exp to completion
 
 echo "===== queue start | GPU=$GPU WANDB=$WANDB_MODE logs=$LOGDIR/ ====="
 
-# ── Phase 1: 192 + 197 + 189 in parallel, wait for all three ────────────────
-echo "[$(date '+%F %T')] ▶ PHASE 1: exp192 ∥ exp197 ∥ exp189"
+# ── Phase 1: 192 + 197 in parallel (189 already done), wait for both ────────
+echo "[$(date '+%F %T')] ▶ PHASE 1: exp192 ∥ exp197  (exp189 done earlier, skipped)"
 run_one 192 & P192=$!
 run_one 197 & P197=$!
-run_one 189 & P189=$!
 wait $P192; R192=$?
 wait $P197; R197=$?
-wait $P189; R189=$?
-echo "[$(date '+%F %T')] PHASE 1 done (exp192 rc=$R192, exp197 rc=$R197, exp189 rc=$R189)"
+echo "[$(date '+%F %T')] PHASE 1 done (exp192 rc=$R192, exp197 rc=$R197)"
 
 # ── Phase 2: strictly sequential 193 -> 191 -> 194 -> 195 -> 196 ─────────────
 echo "[$(date '+%F %T')] ▶ PHASE 2: sequential 193 191 194 195 196"
