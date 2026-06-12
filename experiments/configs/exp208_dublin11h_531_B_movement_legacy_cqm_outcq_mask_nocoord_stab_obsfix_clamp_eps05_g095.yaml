@@ -1,0 +1,57 @@
+name: exp208_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_stab_obsfix_clamp_eps05_g095
+wandb_project: sumo-rl-dublin
+net_file: ../nets/dublin/dublin_8std.net.xml
+route_file: ../nets/dublin/weekday_11h/car_weekday_11h.rou.xml,../nets/dublin/weekday_11h/bus_weekday_11h.rou.xml,../nets/dublin/weekday_11h/amb_weekday_11h.rou.xml
+cfg_file: ../nets/dublin/weekday_11h/dublin_weekday_11h.sumocfg
+observation_class: PriorityMovement
+obs_phase_state: legacy
+obs_fields:
+- count
+- queue
+- mean_awt
+# ---- obs-side fixes (audit 2026-06-12, all measured defects) ----
+obs_awt_basis: local      # strip inherited wait -> stationary feature distribution
+obs_awt_cap: 500          # bound worst-case stuck-on-lane wait at feature 5.0
+obs_lane_occ: true        # shared-lane physical occupancy truth (+12 dims)
+priority_source:
+  ambulance: 5
+  bus: 3
+  car: 1
+reward_fn: priority-avg-waiting
+num_seconds: 3600
+delta_time: 5
+yellow_time: 2
+min_green: 5
+use_gui: false
+use_max_green: true
+max_green: 50
+hidden_dim: 128
+lr: 0.001
+gamma: 0.95
+epsilon: 0.1
+eps_start: 0.9
+eps_end: 0.05
+# ---- training-side stabilization (deadly-triad, exp200-validated recipe) ----
+eps_decay: 30000          # exploration tail ~ep80 instead of ep30
+target_update: 720        # sync once per episode (720 steps) -> quasi-fixed TD target
+capacity: 300000          # ~23 episodes in buffer instead of 3.8
+use_double: true          # kill max-operator overestimation feedback
+loss_fn: huber            # saturate gradients on exploding TD errors
+grad_clip: 1.0
+mini_size: 1000
+batch_size: 256
+seed: 0
+episodes: 800
+checkpoint_interval: 50
+runs: 1
+eval_interval: 5
+eval_seed: 123
+logging_mode: basic
+use_per: false
+action_meta_file: ../nets/dublin/dublin_8std_meta.json
+obs_downstream: true
+obs_downstream_fields:
+- count
+- queue
+# ---- R1 (forensics Part 7): TD target clamp at the domain bound Q<=0 ----
+target_clip_max: 0.0

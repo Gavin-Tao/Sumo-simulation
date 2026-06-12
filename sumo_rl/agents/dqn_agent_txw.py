@@ -52,6 +52,8 @@ class DQN:
     def __init__(self, starting_state, state_space, hidden_dim, action_space, learning_rate, gamma,
                  epsilon, target_update, capacity, mini_size, batch_size, eps_start, eps_end, eps_decay, device,
                  use_double: bool = False,
+                 loss_fn: str = "mse",
+                 target_clip_max=None,
                  use_per: bool = False,
                  per_alpha: float = 0.6,
                  per_beta_start: float = 0.4,
@@ -108,6 +110,11 @@ class DQN:
         # None (default) = no clipping = exact historical behaviour. Set (e.g. 1.0)
         # for architectures that need it (transformer Q-net at lr 1e-3).
         self.grad_clip = grad_clip
+        # target_clip_max (R1, QMAX_DIVERGENCE_FORENSICS Part 7): clamp the
+        # TD target at a domain upper bound. With all-negative rewards the
+        # true Q is <= 0, so target_clip_max=0.0 cuts the max-operator's
+        # positive ratchet structurally. Default None = original behaviour.
+        self.target_clip_max = None if target_clip_max is None else float(target_clip_max)
         self.count = 0  # 计数器,记录更新次数
         self.device = device
         self.loss = None
@@ -117,6 +124,10 @@ class DQN:
         self.q_abs_max = None    # max |Q| over the batch — divergence shows here first
         self.start_train = False
         self.use_double = use_double  # 默认 False = 原 vanilla DQN 行为
+        # loss_fn: "mse" (默认, 原行为) | "huber" (smooth_l1 — 对爆炸性
+        # TD 误差的梯度有界, deadly-triad 标准缓解项之一)
+        assert loss_fn in ("mse", "huber"), loss_fn
+        self.loss_fn = loss_fn
 
     @property
     def current_beta(self) -> float:
@@ -185,16 +196,24 @@ class DQN:
             max_next_q_values = tq.max(1)[0].view(-1, 1)
         q_targets = rewards + self.gamma * max_next_q_values * (1 - dones
                                                                 )  # TD误差目标
+        if self.target_clip_max is not None:
+            q_targets = q_targets.clamp(max=self.target_clip_max)   # R1 锚
 
         # ── Loss: PER 用 importance-sampling 权重加权;否则原 MSE ──
         if 'weights' in transition_dict:
             weights = torch.tensor(transition_dict['weights'],
                                    dtype=torch.float).view(-1, 1).to(self.device)
             td_errors_for_per = (q_targets - q_values).detach()  # 保留符号,后面取 abs
-            elementwise_sq    = (q_values - q_targets) ** 2
-            dqn_loss          = (weights * elementwise_sq).mean()
+            if self.loss_fn == "huber":
+                elementwise = F.smooth_l1_loss(q_values, q_targets, reduction='none')
+            else:
+                elementwise = (q_values - q_targets) ** 2
+            dqn_loss = (weights * elementwise).mean()
         else:
-            dqn_loss = torch.mean(F.mse_loss(q_values, q_targets))  # 均方误差损失函数
+            if self.loss_fn == "huber":
+                dqn_loss = F.smooth_l1_loss(q_values, q_targets)
+            else:
+                dqn_loss = torch.mean(F.mse_loss(q_values, q_targets))  # 均方误差损失函数
 
         self.loss = dqn_loss.item()
         with torch.no_grad():

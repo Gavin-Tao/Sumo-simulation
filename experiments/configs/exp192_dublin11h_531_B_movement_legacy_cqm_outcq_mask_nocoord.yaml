@@ -1,15 +1,14 @@
-name: exp195_dublin11h_531_nocoord_T_lane_legacy_cqm_psi_transformer
+name: exp192_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord
 wandb_project: sumo-rl-dublin
 net_file: ../nets/dublin/dublin_8std.net.xml
 route_file: ../nets/dublin/weekday_11h/car_weekday_11h.rou.xml,../nets/dublin/weekday_11h/bus_weekday_11h.rou.xml,../nets/dublin/weekday_11h/amb_weekday_11h.rou.xml
 cfg_file: ../nets/dublin/weekday_11h/dublin_weekday_11h.sumocfg
-observation_class: PriorityLaneToken
+observation_class: PriorityMovement
 obs_phase_state: legacy
 obs_fields:
 - count
 - queue
 - mean_awt
-obs_phase_service: true
 priority_source:
   ambulance: 5
   bus: 3
@@ -22,13 +21,6 @@ min_green: 5
 use_gui: false
 use_max_green: true
 max_green: 50
-agent_arch: transformer
-grad_clip: 1.0
-transformer:
-  d_model: 128
-  nhead: 4
-  num_layers: 2
-  dim_ff: 256
 hidden_dim: 128
 lr: 0.001
 gamma: 0.99
@@ -54,4 +46,4 @@ obs_downstream: true
 obs_downstream_fields:
 - count
 - queue
-obs_pad_tokens: 6
+grad_clip: 1.0

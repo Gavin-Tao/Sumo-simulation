@@ -9,6 +9,24 @@ from .traffic_signal import TrafficSignal
 from .priority_map import load_priority_table, PRIORITY_LEVELS, DEFAULT_PRIORITY
 
 
+def _local_wait(entry: dict, vid, lane, acc: float) -> float:
+    """Waiting accrued ON THIS LANE: acc minus the vehicle's accumulated wait
+    when first seen on the lane (crossing a junction effectively resets it —
+    the obs_awt_basis="local" semantics; B-aggregation audit Part 7 Q1).
+
+    Self-healing baseline: if acc < recorded entry, the entry is stale — same
+    vehicle id re-inserted in a NEW EPISODE (routes reuse ids; acc restarts
+    at 0) or the waiting-time-memory window decayed acc. Re-anchor at the
+    current acc; local restarts from 0 (bounded undercount) instead of
+    silently flooring at a stale baseline for hundreds of seconds.
+    """
+    key = (vid, lane)
+    e = entry.get(key)
+    if e is None or acc < e:
+        entry[key] = e = acc
+    return acc - e
+
+
 class ObservationFunction:
     """Abstract base class for observation functions."""
 
@@ -334,7 +352,8 @@ class PriorityPhaseObservationFunction(ObservationFunction):
                  phase_state: str = "perphase", priority_source=None,
                  normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0,
                  include_downstream: bool = False,
-                 downstream_fields: tuple = ("count", "queue")):
+                 downstream_fields: tuple = ("count", "queue"),
+                 awt_basis: str = "global"):
         super().__init__(ts)
         bad = [f for f in fields if f not in self._ALL_FIELDS]
         if bad:
@@ -368,6 +387,16 @@ class PriorityPhaseObservationFunction(ObservationFunction):
             raise ValueError(
                 f"unknown ψ fields {bad_ds}; allowed ('count','queue','mean_awt')")
         self.downstream_fields = tuple(downstream_fields)
+        # awt_basis (audit Part 7 Q1): "global" = raw getAccumulatedWaitingTime
+        # (vehicle lifetime within the memory window — original behaviour);
+        # "local" = waiting accrued on the CURRENT lane only (entry-baseline
+        # subtraction; crossing a junction effectively resets), matching the
+        # reward's per-junction accounting. Default "global": existing
+        # configs/runs byte-identical.
+        if awt_basis not in ("global", "local"):
+            raise ValueError(f"awt_basis must be 'global' or 'local', got {awt_basis}")
+        self.awt_basis = awt_basis
+        self._awt_entry: dict = {}          # (vid, lane) -> acc at first sighting
         self._phi_dim = len(PRIORITY_LEVELS) * len(self.fields)
 
         # policy = single source of truth (priority_map.py / external file), compiled once.
@@ -405,10 +434,13 @@ class PriorityPhaseObservationFunction(ObservationFunction):
     def _lane_bucket_stats(self, lane) -> dict:
         """One pass over a lane's vehicles → {p: [count, queue, sum_awt, max_awt]}."""
         sumo = self.ts.sumo
+        local = (self.awt_basis == "local")
         stats = {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS}
         for vid in sumo.lane.getLastStepVehicleIDs(lane):
             s = stats[self._vehicle_priority(vid)]
             w = sumo.vehicle.getAccumulatedWaitingTime(vid)
+            if local:
+                w = _local_wait(self._awt_entry, vid, lane, w)
             s[0] += 1
             if sumo.vehicle.getSpeed(vid) < 0.1:
                 s[1] += 1
@@ -421,6 +453,8 @@ class PriorityPhaseObservationFunction(ObservationFunction):
         ts = self.ts
         if len(self._vid_prio) > 50000:          # safety valve against unbounded growth
             self._vid_prio.clear()
+        if len(self._awt_entry) > 200000:        # ditto; transient local under-count only
+            self._awt_entry.clear()
 
         min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
         if self._is_legacy:
@@ -542,7 +576,11 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  phase_state: str = "perphase", priority_source=None,
                  normalize: bool = True, awt_scale: float = 100.0, veh_len: float = 5.0,
                  include_downstream: bool = False,
-                 downstream_fields: tuple = ("count", "queue")):
+                 downstream_fields: tuple = ("count", "queue"),
+                 include_lane_occ: bool = False,
+                 awt_cap=None,
+                 awt_basis: str = "global",
+                 slot_stats: str = "intent"):
         super().__init__(ts)
         bad = [f for f in fields if f not in self._ALL_FIELDS]
         if bad:
@@ -576,6 +614,46 @@ class PriorityMovementObservationFunction(ObservationFunction):
             raise ValueError(
                 f"unknown ψ fields {bad_ds}; allowed ('count','queue','mean_awt')")
         self.downstream_fields = tuple(downstream_fields)
+        # I2 (B-aggregation audit 2026-06-12): on shared lanes every slot gets
+        # the FULL lane capacity in its denominator, so slot density under-
+        # states physical congestion by up to len(slots)× (measured: lane
+        # 82% full, max slot density 0.549). lane_occ appends ONE scalar per
+        # slot = max over its feeding lanes of (ALL vehicles on lane / lane
+        # jam-capacity) — intent-independent, bounded physical truth.
+        # Default OFF: configs without the key are byte-identical.
+        self.include_lane_occ = bool(include_lane_occ)
+        # F2: mean_awt/max_awt are unbounded (Dublin gridlock: features hit
+        # 5-30+ after /awt_scale) — an input-side divergence amplifier.
+        # awt_cap is in RAW seconds, applied to the per-bucket mean/max
+        # BEFORE /awt_scale, φ and ψ alike (awt_cap=500, awt_scale=100 →
+        # feature ≤ 5.0). Default None = no cap (original behaviour).
+        if awt_cap is not None and not float(awt_cap) > 0:
+            raise ValueError(f"awt_cap must be > 0 or None, got {awt_cap}")
+        self.awt_cap = None if awt_cap is None else float(awt_cap)
+        # awt_basis (audit Part 7 Q1): "global" = raw getAccumulatedWaitingTime
+        # (original); "local" = waiting accrued on the CURRENT lane only
+        # (entry-baseline subtraction, φ and ψ alike) — matches the reward's
+        # per-junction accounting and keeps the feature distribution
+        # stationary on multi-junction nets (Dublin drift: global P99
+        # 1.58→5.09 within one hour vs local bounded).
+        if awt_basis not in ("global", "local"):
+            raise ValueError(f"awt_basis must be 'global' or 'local', got {awt_basis}")
+        self.awt_basis = awt_basis
+        self._awt_entry: dict = {}          # (vid, lane) -> acc at first sighting
+        # slot_stats (B_copy ablation, audit follow-up 2026-06-12):
+        #   "intent"    — vehicles bucketed by route intent (from,next)->slot;
+        #                 each vehicle in exactly ONE slot (original B).
+        #   "lane_copy" — detector-realistic ablation: NO route knowledge;
+        #                 each slot aggregates ALL vehicles on its feeding
+        #                 lanes, so a shared lane's slots get identical
+        #                 copies (numerator and denominator both lane-scope
+        #                 -> density = pooled physical occupancy), and a
+        #                 multi-lane slot gets the capacity-weighted mean.
+        #                 Tests how much intent resolution actually buys.
+        if slot_stats not in ("intent", "lane_copy"):
+            raise ValueError(f"slot_stats must be 'intent' or 'lane_copy', got {slot_stats}")
+        self.slot_stats = slot_stats
+        self._lane_copy = (slot_stats == "lane_copy")
         self._phi_dim = len(PRIORITY_LEVELS) * len(self.fields)
 
         self._prio_table = load_priority_table(priority_source)   # policy source of truth
@@ -600,6 +678,7 @@ class PriorityMovementObservationFunction(ObservationFunction):
         self._build_movement_tables(turnmap)
         self._vid_prio.clear()
         self._vid_slot.clear()
+        self._awt_entry.clear()
 
     def _build_movement_tables(self, turnmap: dict = None) -> None:
         ts = self.ts
@@ -640,6 +719,15 @@ class PriorityMovementObservationFunction(ObservationFunction):
             for s in slots:
                 cap[s] += lcap
         self._slot_cap = {s: max(c, 1.0) for s, c in cap.items()}
+
+        # I2 lane_occ tables: slot -> its feeding lanes; lane -> jam capacity
+        self._slot_in_lanes = {s: tuple(l for l, ss in lane_feeds.items() if s in ss)
+                               for s in range(self.N_SLOTS)}
+        self._in_lane_cap = {
+            l: max(ts.lanes_length.get(l, 0.0) / (ts.MIN_GAP + veh_len), 1.0)
+            for l in lane_feeds}
+        # lane -> slots it feeds (B_copy / lane_copy aggregation)
+        self._lane_slots = {l: tuple(ss) for l, ss in lane_feeds.items()}
 
         # ψ: per-slot total jam capacity of the downstream (to-) lanes, same
         # normalization invariant as φ (I5: length / (MIN_GAP + veh_len))
@@ -707,23 +795,61 @@ class PriorityMovementObservationFunction(ObservationFunction):
         ts = self.ts
         if len(self._vid_prio) > 50000:
             self._vid_prio.clear(); self._vid_slot.clear()
+        if len(self._awt_entry) > 200000:    # valve; transient local under-count only
+            self._awt_entry.clear()
 
         # aggregate vehicles into (slot, priority) buckets — single pass over incoming lanes
         slot_stats = {s: {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS} for s in range(self.N_SLOTS)}
-        for lane in ts.lanes:
-            from_edge = self._edge(lane)
-            for vid in ts.sumo.lane.getLastStepVehicleIDs(lane):
-                slot = self._vehicle_slot(vid, from_edge)
-                if slot < 0:
+        lane_n = {}                      # lane -> total vehicles (I2 lane_occ)
+        _local = (self.awt_basis == "local")
+        if self._lane_copy:
+            # B_copy: lane-detector aggregation — every vehicle on a lane
+            # counts toward ALL slots the lane feeds (shared-lane slots get
+            # identical copies; no route-intent lookup, slot -1 filtering
+            # does not apply: a detector cannot tell intent).
+            for lane in ts.lanes:
+                vids = ts.sumo.lane.getLastStepVehicleIDs(lane)
+                lane_n[lane] = len(vids)
+                slots = self._lane_slots.get(lane, ())
+                if not slots or not vids:
                     continue
-                s = slot_stats[slot][self._vehicle_priority(vid)]
-                w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
-                s[0] += 1
-                if ts.sumo.vehicle.getSpeed(vid) < 0.1:
-                    s[1] += 1
-                s[2] += w
-                if w > s[3]:
-                    s[3] = w
+                lstats = {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS}
+                for vid in vids:
+                    s = lstats[self._vehicle_priority(vid)]
+                    w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                    if _local:
+                        w = _local_wait(self._awt_entry, vid, lane, w)
+                    s[0] += 1
+                    if ts.sumo.vehicle.getSpeed(vid) < 0.1:
+                        s[1] += 1
+                    s[2] += w
+                    if w > s[3]:
+                        s[3] = w
+                for sl in slots:
+                    for p in PRIORITY_LEVELS:
+                        t, s = slot_stats[sl][p], lstats[p]
+                        t[0] += s[0]; t[1] += s[1]; t[2] += s[2]
+                        if s[3] > t[3]:
+                            t[3] = s[3]
+        else:
+            for lane in ts.lanes:
+                from_edge = self._edge(lane)
+                vids = ts.sumo.lane.getLastStepVehicleIDs(lane)
+                lane_n[lane] = len(vids)
+                for vid in vids:
+                    slot = self._vehicle_slot(vid, from_edge)
+                    if slot < 0:
+                        continue
+                    s = slot_stats[slot][self._vehicle_priority(vid)]
+                    w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                    if _local:
+                        w = _local_wait(self._awt_entry, vid, lane, w)
+                    s[0] += 1
+                    if ts.sumo.vehicle.getSpeed(vid) < 0.1:
+                        s[1] += 1
+                    s[2] += w
+                    if w > s[3]:
+                        s[3] = w
 
         min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
         if self._is_legacy:
@@ -751,6 +877,9 @@ class PriorityMovementObservationFunction(ObservationFunction):
             for p in PRIORITY_LEVELS:
                 c, q, sw, mw = slot_stats[slot][p]
                 mean = (sw / c) if c else 0.0
+                if self.awt_cap is not None:          # F2: bound in raw seconds
+                    mean = min(mean, self.awt_cap)
+                    mw = min(mw, self.awt_cap)
                 if self.normalize:
                     vals = {"count": c / cap, "queue": q / cap,
                             "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
@@ -769,24 +898,41 @@ class PriorityMovementObservationFunction(ObservationFunction):
                         if ts.sumo.vehicle.getSpeed(vid) < 0.1:
                             qd[_p] += 1
                         if need_m:
-                            sw[_p] += ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                            _w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                            if _local:
+                                _w = _local_wait(self._awt_entry, vid, tl, _w)
+                            sw[_p] += _w
                 capo = self._slot_out_cap.get(slot, 1.0)
                 norm = capo if self.normalize else 1.0
                 for f in self.downstream_fields:
                     if f == "mean_awt":
-                        obs += [((sw[p] / cnt[p]) if cnt[p] else 0.0) /
-                                (self.awt_scale if self.normalize else 1.0)
-                                for p in PRIORITY_LEVELS]
+                        for p in PRIORITY_LEVELS:
+                            m = (sw[p] / cnt[p]) if cnt[p] else 0.0
+                            if self.awt_cap is not None:   # F2, same as φ
+                                m = min(m, self.awt_cap)
+                            obs.append(m / (self.awt_scale if self.normalize else 1.0))
                     else:
                         src = cnt if f == "count" else qd
                         obs += [src[p] / norm for p in PRIORITY_LEVELS]
+            if self.include_lane_occ:
+                # I2: physical occupancy of the worst feeding lane — counts
+                # ALL vehicles on the lane regardless of intent, so shared-
+                # lane slots all see the true congestion (φ density cannot).
+                occ = 0.0
+                for l in self._slot_in_lanes.get(slot, ()):
+                    n = lane_n.get(l)
+                    if n is None:
+                        n = ts.sumo.lane.getLastStepVehicleNumber(l)
+                        lane_n[l] = n
+                    occ = max(occ, n / self._in_lane_cap[l])
+                obs.append(occ)
         return np.array(obs, dtype=np.float32)
 
     def observation_space(self) -> spaces.Box:
         K = 8 if getattr(self.ts, "std_action_map", None) is not None             else self.ts.num_green_phases
         psi_dim = len(PRIORITY_LEVELS) * len(self.downstream_fields) \
             if self.include_downstream else 0
-        slot_dim = self._phi_dim + psi_dim
+        slot_dim = self._phi_dim + psi_dim + (1 if self.include_lane_occ else 0)
         if self._is_legacy:
             dim = (K + 1) + self.N_SLOTS * slot_dim
         else:
@@ -969,6 +1115,8 @@ class PriorityLaneTokenObservationFunction(PriorityPhaseObservationFunction):
         ts = self.ts
         if len(self._vid_prio) > 50000:
             self._vid_prio.clear()
+        if len(self._awt_entry) > 200000:    # valve (local basis bookkeeping)
+            self._awt_entry.clear()
 
         lane_stats = {lane: self._lane_bucket_stats(lane) for lane in self._lanes}
 
@@ -1127,6 +1275,8 @@ class PriorityLaneTokenNbObservationFunction(PriorityLaneTokenObservationFunctio
         ts = self.ts
         if len(self._vid_prio) > 50000:
             self._vid_prio.clear()
+        if len(self._awt_entry) > 200000:    # valve (local basis bookkeeping)
+            self._awt_entry.clear()
         K = ts.num_green_phases
 
         min_green_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0

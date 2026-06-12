@@ -228,6 +228,14 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
         obs_kwargs["include_downstream"] = bool(cfg["obs_downstream"])
     if "obs_downstream_fields" in cfg:
         obs_kwargs["downstream_fields"] = tuple(cfg["obs_downstream_fields"])
+    if "obs_lane_occ" in cfg:        # I2 (B only): shared-lane physical occupancy, +1/slot
+        obs_kwargs["include_lane_occ"] = bool(cfg["obs_lane_occ"])
+    if "obs_awt_cap" in cfg:         # F2 (B only): bound mean/max_awt at N raw seconds
+        obs_kwargs["awt_cap"] = float(cfg["obs_awt_cap"])
+    if "obs_awt_basis" in cfg:       # A/B/T: mean/max_awt accounting basis (global|local)
+        obs_kwargs["awt_basis"] = str(cfg["obs_awt_basis"])
+    if "obs_slot_stats" in cfg:      # B only: intent (default) | lane_copy ablation
+        obs_kwargs["slot_stats"] = str(cfg["obs_slot_stats"])
     if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
         obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
     if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count

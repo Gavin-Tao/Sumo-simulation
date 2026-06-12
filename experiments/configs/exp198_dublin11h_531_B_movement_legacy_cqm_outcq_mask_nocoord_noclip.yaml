@@ -1,4 +1,4 @@
-name: exp198_dublin11h_531_B_movement_legacy_cqm_mask_nocoord_noclip
+name: exp198_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_noclip
 wandb_project: sumo-rl-dublin
 net_file: ../nets/dublin/dublin_8std.net.xml
 route_file: ../nets/dublin/weekday_11h/car_weekday_11h.rou.xml,../nets/dublin/weekday_11h/bus_weekday_11h.rou.xml,../nets/dublin/weekday_11h/amb_weekday_11h.rou.xml

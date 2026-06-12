@@ -153,6 +153,14 @@ def train(cfg: dict, timestamp: str):
         obs_kwargs["include_downstream"] = bool(cfg["obs_downstream"])
     if "obs_downstream_fields" in cfg:   # ψ field ablation: subset of (count, queue)
         obs_kwargs["downstream_fields"] = tuple(cfg["obs_downstream_fields"])
+    if "obs_lane_occ" in cfg:        # I2 (B only): shared-lane physical occupancy, +1/slot
+        obs_kwargs["include_lane_occ"] = bool(cfg["obs_lane_occ"])
+    if "obs_awt_cap" in cfg:         # F2 (B only): bound mean/max_awt at N raw seconds
+        obs_kwargs["awt_cap"] = float(cfg["obs_awt_cap"])
+    if "obs_awt_basis" in cfg:       # A/B/T: mean/max_awt accounting basis (global|local)
+        obs_kwargs["awt_basis"] = str(cfg["obs_awt_basis"])
+    if "obs_slot_stats" in cfg:      # B only: intent (default) | lane_copy ablation
+        obs_kwargs["slot_stats"] = str(cfg["obs_slot_stats"])
     if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
         obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
     if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count
@@ -169,6 +177,30 @@ def train(cfg: dict, timestamp: str):
         from sumo_rl.environment.priority_map import load_priority_table
         reward_fn = make_priority_avg_waiting_reward(
             load_priority_table(cfg.get("priority_source")))
+    # reward_scale (Dublin survival package, 2026-06-12): multiply the reward
+    # by a constant to bring Dublin's per-step magnitudes (~35x the 1x3 ones
+    # in congestion) back into the regime where the standard DQN package is
+    # PROVEN stable. Default 1.0 = no effect. NOTE: eval_mean_reward and all
+    # logged rewards scale with it — only compare runs sharing the same scale.
+    _rs = float(cfg.get("reward_scale", 1.0))
+    if _rs != 1.0 and callable(reward_fn):
+        _base_reward_fn = reward_fn
+        def reward_fn(ts, _f=_base_reward_fn, _s=_rs):  # noqa: F811
+            return _f(ts) * _s
+        print(f"[reward_scale] active: x{_rs}")
+    # reward_floor (R2, QMAX_DIVERGENCE_FORENSICS Part 7): clip the training
+    # reward at a lower bound (Atari-style, local form). Bites only in
+    # gridlock (r < floor ⇔ weighted avg wait > |floor|*100 s) — bounds the
+    # TD-target scale explosion. NOTE: the in-training eval episodes share
+    # this wrapper, so eval_system/mean_reward is floor-compressed for runs
+    # using it; cross-arm comparisons should use waiting metrics. Default
+    # absent = original behaviour.
+    _rfloor = cfg.get("reward_floor", None)
+    if _rfloor is not None and callable(reward_fn):
+        _base_reward_fn2 = reward_fn
+        def reward_fn(ts, _f=_base_reward_fn2, _c=float(_rfloor)):
+            return max(_f(ts), _c)
+        print(f"[reward_floor] active: {_rfloor}")
     env = SumoEnvironment(
         net_file=cfg["net_file"],
         route_file=cfg["route_file"],
@@ -310,6 +342,8 @@ def train(cfg: dict, timestamp: str):
             eps_decay=cfg.get("eps_decay", 1000),
             device=device,
             use_double=cfg.get("use_double", False),
+            loss_fn=cfg.get("loss_fn", "mse"),
+            target_clip_max=cfg.get("target_clip_max", None),
             use_per=cfg.get("use_per", False),
             per_alpha=cfg.get("per_alpha", 0.6),
             per_beta_start=cfg.get("per_beta_start", 0.4),
@@ -453,6 +487,14 @@ def train(cfg: dict, timestamp: str):
                 # Log PER β annealing (only meaningful when PER on; else it's a constant 1.0)
                 if agent.use_per:
                     ep_log["train/per_beta"] = agent.current_beta
+                # D2 (CHANGES_AUDIT 2026-06-12): insertion backlog — vehicles
+                # held OUTSIDE the network are invisible to both state and
+                # reward; end-of-episode backlog makes boundary-hidden
+                # congestion measurable. Logging only, no behaviour change.
+                try:
+                    ep_log["train/pending_veh"] = len(env.sumo.simulation.getPendingVehicles())
+                except Exception:
+                    pass
                 if ep_log:
                     wandb.log(ep_log, step=step_counter)
 
@@ -554,6 +596,11 @@ def train(cfg: dict, timestamp: str):
                     eval_reward_log = {f"eval_{ts}/reward": eval_ts_reward[ts] for ts in env.ts_ids}
                     eval_reward_log["eval_system/mean_reward"] = eval_mean
                     eval_reward_log["eval_system/best_reward"] = best_eval_reward
+                    try:    # D2: end-of-eval insertion backlog (see train log)
+                        eval_reward_log["eval_system/pending_veh"] = len(
+                            env.sumo.simulation.getPendingVehicles())
+                    except Exception:
+                        pass
                     if attn_ent:
                         eval_reward_log["eval_diag/cls_attn_entropy"] = sum(attn_ent) / len(attn_ent)
                         eval_reward_log["eval_diag/cls_attn_max"]     = sum(attn_mx) / len(attn_mx)

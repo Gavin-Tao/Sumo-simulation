@@ -1,0 +1,162 @@
+================================================================================
+  2026-06-12 当日改动与文档复核审计
+  —— 不把文档当 ground truth: B state 代码正确性 / 全流水线 / Dublin 盲点
+
+  方法: 逐文件代码走读 + 7 类自动化验证 (回归哈希、组合矩阵、单测、
+        端到端微跑) + 文档声明逐条对源复核。
+  结论: 发现并修复 1 个真 bug (BUG-1); 其余全部验证通过; 文档 2 处
+        需要口径注记; Dublin 新增 6 项未考虑事项 (D1-D6, 其中 D1/D2
+        是新发现的实质问题)。
+================================================================================
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 1: 当日改动清单 (审计对象)                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  observations.py (B=PriorityMovement):
+    include_lane_occ (I2, +1/槽物理占用) | awt_cap (F2, 原始秒封顶)
+    | awt_basis global/local (口径切换, _local_wait 自愈基线)
+    | slot_stats intent/lane_copy (B_copy 消融) | 配套表
+    _slot_in_lanes/_in_lane_cap/_lane_slots
+  observations.py (A=PriorityPhase, T/Nb 继承其 _lane_bucket_stats):
+    awt_basis (同语义)
+  dqn_agent_txw.py: target_clip_max (R1, TD 目标钳位)
+  train.py: reward_floor 包装器 (R2) + target_clip_max 接线
+  train/trainorico/traincoeff/eval_unified: 各 4 个 `if key in cfg` 守卫
+  configs: exp201-208 | tools/ckpt_forensics.py (诊断工具, 不入训练路径)
+  文档: B_AGGREGATION_AUDIT (Part 0-8), QMAX_DIVERGENCE_FORENSICS
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 2: 验证矩阵 (全部当日实跑)                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ① 语法/导入: py_compile 6 个改动文件 — 通过
+  ② B 默认路径字节回归: 1x3 同 seed 61 步 obs 流 sha256 = 63a0a84d…
+     与 git-HEAD 一致 (开关全关 ⇒ 原行为, 在 4 个开关全部加完后复测)
+  ③ A/T 默认路径字节回归 (新补, 之前只测过 B):
+     A: dca718e2… | T: 30008bd8… — 改动前后完全一致
+  ④ 开关组合矩阵: phase_state×downstream×lane_occ×awt_basis×slot_stats
+     = 32 组合 × 3 路口 × 6 步: 声明 observation_space 维度 == 实际
+     emit 长度, 且全有限 — 32/32 通过 (覆盖了此前从未测过的
+     perphase 路径)
+  ⑤ 开关语义 (当日早些时候已测, 此处汇总):
+     local: 同 seed 同动作下 count/queue 逐位不变, mean_awt 处处
+     ≤global, 剥离继承等待单点最大 1.665;
+     lane_copy: 共享车道独供槽 40/40 步完全相同拷贝, count×cap=车道
+     全车数; lane_occ: Dublin 共享 3 槽同值=物理占用 0.457=5/10.9
+  ⑥ R1/R2 单测: target_clip_max=None 与不传参 loss 逐位一致;
+     =0.0 (falsy 陷阱) 正确生效、目标全≤0; floor(-0.3)=-0.3,
+     floor(-50)=-10; 184 个现有 config 均不含任何新键
+  ⑦ 端到端微跑 (exp207 全开关, WANDB_MODE=disabled, 4 ep×300s):
+     [reward_floor] active 打印、4 ep 训练+2 次 eval 无崩溃、masked
+     reset/lane_occ 321 维全程无维度错。best.pth 未生成属预期
+     (best_eval_window=3, 2 次 eval 窗口未满) — 非 bug。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 3: 发现的 bug                                                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  BUG-1 (真 bug, 已修): T/Nb 族重写了 __call__, 有自己的 _vid_prio
+    valve 但没有我新加的 _awt_entry valve → awt_basis=local 的 T 族
+    长跑中 (vid,lane)→entry 字典无限增长 (估算 800 ep 可达 GB 级)。
+    修复: 两处 __call__ 各加 200k valve (observations.py ~1118/~1278)。
+    A/B 族本来就有 valve, 不受影响。
+  (测试脚本侧: ψ 块是字段优先布局而 φ 是优先级优先 — 当日 compare
+   脚本曾因此误报 26 个违例, 已修正; 实现本身无此问题。该布局差异
+   已是既有事实, 注意以后写解析脚本时勿再踩。)
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 4: 文档复核 (文档≠ground truth 的逐条核查结果)                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ✗→已改 teleport 声明 (forensics 3.0): 初稿只查了 sumocfg (无配置)
+    便推断"默认 300s 启用" —— 【错】。env.py:103 默认
+    time_to_teleport=-1 且显式传 --time-to-teleport 给 SUMO 命令行,
+    覆盖一切 ⇒ 全部训练/eval 中 teleport 一直【禁用】。rollout 0 次
+    瞬移的真因是禁用, 不是蠕行。两份文档已更正; D3 随之改判
+    "已显式决定" (见 Part 6)。
+  △ 共享车道计数口径注记: audit 文档 "36 条/78 槽" 是 obs 槽位口径;
+    按 to-edge 口径复核得 37/81 — 差异来自 U 形/合并 to-edge 的归并,
+    结论 (约三十余条、最坏 3 倍) 不变。两口径并记。
+  ✓ ε 公式与时刻: count 按 update 计 (agent.count+=1 / update),
+    updates 从 buffer>mini_size 起步; ε(ep20)≈0.060 复算一致。
+  ✓ "每决策步 1 次 update、18 条 transition": train.py 主循环复核一致。
+  ✓ obs 维度 309 (192) / 321 (203 系): 公式与 ckpt 实测一致。
+  ✗→已改 B_AGGREGATION_AUDIT Part 8 "203 是史上最健康" — 当时为真,
+    已被 forensics 推翻 (203 于 ep~130 起坍塌), 该节已加 supersede
+    注记指向 forensics 文档。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 5: B state 设计正确性 — 审计后终态判定                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  核心聚合 (审计确认正确):
+    分子意图归桶 (每车唯一槽, 实测 3+0+6=9) ✓ | 多车道 sum/sum=容量
+    加权 mean ✓ | is_green 经 _phase_serves ✓ | ψ 槽位/容量口径 ✓
+    | 8 维 std one-hot 经 std_action_map ✓ (Dublin rebind 链完整)
+  四个新开关语义按设计工作 (Part 2⑤), 默认全关=字节级原行为。
+  已知良性限制 (记录在案, 不修):
+    L1 _vid_slot 按 vid 记忆 — 同一路口被同车二次过境时意图过期
+       (当前路网无环线路由, 不触发);
+    L2 normalize=False 时 lane_occ 仍是比值 (无人使用该模式);
+    L3 lane_occ/awt_cap/slot_stats 是 B 族独有 — A/T config 误配会
+       在启动时 TypeError 大声失败 (好事, 不静默);
+    L4 reward_floor 只包训练器 (train.py), eval_unified 有意不包 —
+       事后评测跨臂可比; 训练内 eval 会被压缩 (config 注释已写);
+    L5 1x3 (无 rebind) 下 _awt_entry 跨 episode 复用同 vid — 自愈
+       基线 (acc<entry 重锚) 兜底, 语义为"重生车辆从 0 计"。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 6: Dublin 未考虑事项 (本次审计新增发现)                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  D1 【实质, 新发现】单一需求实现: 训练每个 episode 都用同一
+     seed(0) reset (train.py:226/363) 且 routes 文件固定 ⇒ 800 个
+     episode 是同一个世界的精确重放; eval 也只有 seed 123 一个实现。
+     含义: (a) 策略可能过拟合这一个小时的到达序列; (b) 论文结论目前
+     条件于单实现 — 多实现 rou (gen_routes 不同 seed) 的训练扰动与
+     eval 是必需项 (与 open item 呼应, 优先级应提高)。
+  D2 【实质, 新发现】插入积压不可观测且零成本: 固定配时下
+     DepartDelay 已 45s; 被堵在网外的车辆不出现在任何车道上 ⇒ 不进
+     state 也不进 reward (等待=0)。理论激励缺口: 把边界进口堵死可以
+     "洗掉"这部分等待。当前 boundary 进口多为生成边、policy 难以
+     直接利用, 但监控上应加 insertion-backlog 指标, 论文方法节应
+     声明该口径。【已落地 2026-06-12: train.py 每 episode 记
+     train/pending_veh、每次 eval 记 eval_system/pending_veh
+     (episode 末尾的 getPendingVehicles 计数; 仅日志, 零行为影响),
+     205-208 起所有 run 自带该指标。】
+  D3 【复核后改判: 已有显式决定】teleport 实为禁用 — env.py 默认
+     time_to_teleport=-1 并显式传 --time-to-teleport (覆盖 sumocfg)。
+     物理纯净、锁死不可逆 — 与 V2 标定 (0 teleports) 和全部 rollout
+     观测一致。维持 -1 即可, 无需改动; 唯一残余动作: 论文方法节写明。
+  D4 【已验证封口: 非问题, 且窗口有隐藏的正面作用】
+     waiting_time_memory=1000 (env.py:102 默认, 经 --waiting-time-
+     memory 传 SUMO; 各 config 未覆盖)。
+     验证 (ep800 锁死策略 3600s 全程复刻 reward 簿记, 含 3565s 级
+     等待): 负差额 0 次、reward>0 步数 0 — 担心的伪正贡献不发生。
+     SUMO 语义: 持续等待时 acc 在窗口长度处【饱和】而非回落, 最坏
+     只是低计。副发现: 该窗口给 reward 提供了天然下界
+     r ≥ −(Σp)·window/awt_scale ≈ −90/步 (实测 ep800 ≈−50/步与之
+     一致) — 它本身就是一个弱版 R2。结论: 维持 1000 不改; 若日后
+     调大到 3600 会使锁死 reward 加深 ~3.6 倍, 与稳定化方向相悖。
+     state 侧: 新 config 的 awt_cap=500 < 1000 先封顶, 窗口无感。
+  D5 18 路口共享单网 (forensics P6): 独立网络/独立输出头未对照 —
+     ep800 零流量路口 Q 同涨 +1.4e5 是干扰传播实证, 修复属架构臂。
+  D6 既有未动项: 02h/18h 场景、colight 协同臂 (194)、多实现 eval、
+     短车道上游扩展 (audit Part 7 Q2(b))。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  Part 7: 红线确认                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  "不影响之前的 config" 的证据链:
+    新键 0 出现于既有 184 个 config (grep 验证);
+    开关全关时 A/B/T 三族 obs 流与 git-HEAD 逐字节一致 (②③);
+    target_clip_max=None / reward_floor 缺省时 update()/reward_fn
+    路径与原版 loss 逐位一致 (⑥);
+    py_compile + 端到端微跑无回归 (①⑦)。
+
+================================================================================
+  复核工具: /tmp/obs_at_regress.py, /tmp/obs_awt_test.py (会话临时);
+  正式工具: experiments/tools/ckpt_forensics.py
+================================================================================

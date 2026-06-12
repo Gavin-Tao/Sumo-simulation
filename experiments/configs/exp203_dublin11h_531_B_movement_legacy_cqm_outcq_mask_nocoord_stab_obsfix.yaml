@@ -1,4 +1,4 @@
-name: exp192_dublin11h_531_B_movement_legacy_cqm_mask_nocoord
+name: exp203_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_stab_obsfix
 wandb_project: sumo-rl-dublin
 net_file: ../nets/dublin/dublin_8std.net.xml
 route_file: ../nets/dublin/weekday_11h/car_weekday_11h.rou.xml,../nets/dublin/weekday_11h/bus_weekday_11h.rou.xml,../nets/dublin/weekday_11h/amb_weekday_11h.rou.xml
@@ -9,6 +9,10 @@ obs_fields:
 - count
 - queue
 - mean_awt
+# ---- obs-side fixes (audit 2026-06-12, all measured defects) ----
+obs_awt_basis: local      # strip inherited wait -> stationary feature distribution
+obs_awt_cap: 500          # bound worst-case stuck-on-lane wait at feature 5.0
+obs_lane_occ: true        # shared-lane physical occupancy truth (+12 dims)
 priority_source:
   ambulance: 5
   bus: 3
@@ -27,9 +31,13 @@ gamma: 0.99
 epsilon: 0.1
 eps_start: 0.9
 eps_end: 0.01
-eps_decay: 5000
-target_update: 20
-capacity: 50000
+# ---- training-side stabilization (deadly-triad, exp200-validated recipe) ----
+eps_decay: 30000          # exploration tail ~ep80 instead of ep30
+target_update: 720        # sync once per episode (720 steps) -> quasi-fixed TD target
+capacity: 300000          # ~23 episodes in buffer instead of 3.8
+use_double: true          # kill max-operator overestimation feedback
+loss_fn: huber            # saturate gradients on exploding TD errors
+grad_clip: 1.0
 mini_size: 1000
 batch_size: 256
 seed: 0
@@ -39,11 +47,9 @@ runs: 1
 eval_interval: 5
 eval_seed: 123
 logging_mode: basic
-use_double: false
 use_per: false
 action_meta_file: ../nets/dublin/dublin_8std_meta.json
 obs_downstream: true
 obs_downstream_fields:
 - count
 - queue
-grad_clip: 1.0
