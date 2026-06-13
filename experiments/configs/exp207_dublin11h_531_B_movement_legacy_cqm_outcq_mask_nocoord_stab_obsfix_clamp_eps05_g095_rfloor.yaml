@@ -1,4 +1,4 @@
-name: exp207_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_stab_obsfix_allin_g095
+name: exp207_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_stab_obsfix_clamp_eps05_g095_rfloor
 wandb_project: sumo-rl-dublin
 net_file: ../nets/dublin/dublin_8std.net.xml
 route_file: ../nets/dublin/weekday_11h/car_weekday_11h.rou.xml,../nets/dublin/weekday_11h/bus_weekday_11h.rou.xml,../nets/dublin/weekday_11h/amb_weekday_11h.rou.xml
@@ -53,8 +53,12 @@ obs_downstream: true
 obs_downstream_fields:
 - count
 - queue
-# ---- all-in best bet: R1 clamp + R2 floor + R3 gamma + R4 eps-floor ----
-# (on top of the full exp203 package: DDQN + slow target + Huber + big buffer
-#  + grad clip + obs local/cap/lane_occ)
+# ---- R1 (forensics Part 7): TD target clamp at the domain bound Q<=0 ----
 target_clip_max: 0.0
+# ---- R2 on top of the STABLE gamma=0.95 recipe (forensics Part 11) ----
+# Question: does the floor help or hurt an already-stable run? The floor
+# only ever bites in gridlock-wave episodes (healthy exploration P1=-2.5,
+# worst -7.2 > floor): hypothesis-help = damps the rare waves' value shock
+# (e.g. 208's ep125 event); hypothesis-hurt = caps the deterrent against
+# near-gridlock states. Controlled pair vs exp208 (identical otherwise).
 reward_floor: -10.0

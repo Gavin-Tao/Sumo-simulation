@@ -141,7 +141,9 @@ class CoLightOrigDQN:
                  per_beta_end: float = 1.0,
                  per_beta_steps: int = 100_000,
                  per_eps: float = 1e-6,
-                 grad_clip: float = None):
+                 grad_clip: float = None,
+                 loss_fn: str = "mse",
+                 target_clip_max=None):
         self.obs_dim       = obs_dim
         self.action_dim    = action_dim
         self.gamma         = gamma
@@ -161,6 +163,11 @@ class CoLightOrigDQN:
         # (exp186 diagnosis: GAT on 125-dim B obs destabilises without it —
         # same remedy as the transformer R2 clip, configurable per run)
         self.grad_clip     = grad_clip
+        # loss_fn / target_clip_max (R1, forensics Part 7): same gated knobs
+        # as dqn_agent_txw — defaults reproduce original behaviour exactly.
+        assert loss_fn in ("mse", "huber"), loss_fn
+        self.loss_fn = loss_fn
+        self.target_clip_max = None if target_clip_max is None else float(target_clip_max)
         self.grad_norm     = None   # pre-clip total norm, set only when clipping
         self.start_train   = False
 
@@ -290,16 +297,24 @@ class CoLightOrigDQN:
                     tq = tq.masked_fill(~next_mask_t, -1e9)
                 max_next_q = tq.max(1)[0].view(-1, 1)
         q_targets  = rewards + self.gamma * max_next_q * (1 - dones)
+        if self.target_clip_max is not None:
+            q_targets = q_targets.clamp(max=self.target_clip_max)   # R1 锚
 
         # ── Loss: PER 用 IS 权重加权,否则原 MSE ──
         if 'weights' in transition_dict:
             weights = torch.tensor(transition_dict['weights'],
                                    dtype=torch.float32).view(-1, 1).to(self.device)
             td_errors_for_per = (q_targets - q_values).detach()
-            elementwise_sq    = (q_values - q_targets) ** 2
-            loss              = (weights * elementwise_sq).mean()
+            if self.loss_fn == "huber":
+                elementwise = F.smooth_l1_loss(q_values, q_targets, reduction='none')
+            else:
+                elementwise = (q_values - q_targets) ** 2
+            loss = (weights * elementwise).mean()
         else:
-            loss = F.mse_loss(q_values, q_targets)
+            if self.loss_fn == "huber":
+                loss = F.smooth_l1_loss(q_values, q_targets)
+            else:
+                loss = F.mse_loss(q_values, q_targets)
 
         self.loss = loss.item()
         self.optimizer.zero_grad()

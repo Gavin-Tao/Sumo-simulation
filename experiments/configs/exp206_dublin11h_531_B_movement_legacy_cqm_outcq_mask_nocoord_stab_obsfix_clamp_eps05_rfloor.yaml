@@ -53,6 +53,11 @@ obs_downstream: true
 obs_downstream_fields:
 - count
 - queue
-# ---- R1 + R2 (forensics Part 7) ----
+# ---- R1 + R2: rescue arm for exp205's deep-negative spiral ----
+# (forensics Part 11: with the clamp, gamma=0.99 fails DOWNWARD — gridlock
+#  waves drag the target chain toward its -9000 abyss. This arm = exp205 +
+#  reward_floor, which caps that abyss at -1000: the exact counterfactual
+#  for whether 205's death is purely about negative target depth.
+#  Launch when 205 is formally dead by the 3-consecutive-evals rule.)
 target_clip_max: 0.0
-reward_floor: -10.0    # bites only when weighted avg wait > 1000s (gridlock)
+reward_floor: -10.0

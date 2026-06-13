@@ -287,6 +287,8 @@ def train(cfg: dict, timestamp: str):
             device=device,
             use_noisy=cfg.get("use_noisy", False),
             use_double=cfg.get("use_double", False),
+            loss_fn=cfg.get("loss_fn", "mse"),
+            target_clip_max=cfg.get("target_clip_max", None),
             use_per=cfg.get("use_per", False),
             per_alpha=cfg.get("per_alpha", 0.6),
             per_beta_start=cfg.get("per_beta_start", 0.4),
@@ -428,6 +430,10 @@ def train(cfg: dict, timestamp: str):
                     for k, v in attn.items():
                         ep_log[f"train/gat_{k}"] = v
                 if ep_log:
+                    try:    # D2: insertion backlog (see train.py)
+                        ep_log["train/pending_veh"] = len(env.sumo.simulation.getPendingVehicles())
+                    except Exception:
+                        pass
                     wandb.log(ep_log, step=step_counter)
 
                 if episode % checkpoint_interval == 0:
@@ -516,6 +522,11 @@ def train(cfg: dict, timestamp: str):
                         mc_log = {}
                     eval_reward_log = {f"eval_{ts}/reward": eval_ts_reward[ts] for ts in env.ts_ids}
                     eval_reward_log["eval_system/mean_reward"] = eval_mean
+                    try:    # D2
+                        eval_reward_log["eval_system/pending_veh"] = len(
+                            env.sumo.simulation.getPendingVehicles())
+                    except Exception:
+                        pass
                     eval_reward_log["eval_system/best_reward"] = best_eval_reward
                     wandb.log({**mc_log, **eval_reward_log}, step=step_counter)
                 print(f"  → eval ep={episode}")
