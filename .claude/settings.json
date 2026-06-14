@@ -340,7 +340,20 @@
       "Bash(echo \"三量重采后台 PID $!\")",
       "Bash(python3 tools/edge_metric_plot.py speed)",
       "Bash(sed -n '/DROP_AMB/,/del data/p' tools/edge_metric_plot.py)",
-      "Bash(python3 -c \"from PIL import Image; Image.open\\('analysis/fig_edge_speed.png'\\).convert\\('RGB'\\).resize\\(\\(980,490\\)\\).save\\('/tmp/spd_final.jpg','JPEG',quality=80\\)\")"
+      "Bash(python3 -c \"from PIL import Image; Image.open\\('analysis/fig_edge_speed.png'\\).convert\\('RGB'\\).resize\\(\\(980,490\\)\\).save\\('/tmp/spd_final.jpg','JPEG',quality=80\\)\")",
+      "Bash(awk 'NR==2{print \"可用内存:\", $7\"G\"}')",
+      "Bash(awk '/[t]rain\\(orico\\)?\\\\.py --config/{print $2, substr\\($0,index\\($0,\"--config\"\\)+9,55\\)}')",
+      "Bash(ps -eo pid,rss,etime,cmd --sort=-rss)",
+      "Bash(awk 'NR==1 || /python|sumo/ {printf \"%-8s %6dMB %-10s %s\\\\n\",$1,$2/1024,$3,substr\\($0,index\\($0,$5\\),50\\)}')",
+      "Bash(sync)",
+      "Bash(nohup python3 trainorico.py --config configs/exp209_dublin11h_531_colightorig_B_movement_legacy_cqm_outcq_mask_stab_obsfix_clamp_eps05_g095.yaml)",
+      "Bash(echo \"exp209 PID $!\")",
+      "Bash(ps -p 126587 -o pid,etime,rss --no-headers)",
+      "Bash(awk '{print \"存活, 已运行\",$2,\", 内存\",$3/1024\"MB\"}')",
+      "Bash(awk 'NR==2{print \"系统可用:\",$7\"G\"}')",
+      "Bash(ps -p 126587 -o rss --no-headers)",
+      "Bash(awk '{print \"当前内存:\",$1/1024\"MB\"}')",
+      "Bash(awk '{print \"exp209存活 运行\",$2,\" 内存\",$3/1024\"MB\"}')"
     ],
     "additionalDirectories": [
       "/tmp",
