@@ -353,11 +353,19 @@
       "Bash(awk 'NR==2{print \"系统可用:\",$7\"G\"}')",
       "Bash(ps -p 126587 -o rss --no-headers)",
       "Bash(awk '{print \"当前内存:\",$1/1024\"MB\"}')",
-      "Bash(awk '{print \"exp209存活 运行\",$2,\" 内存\",$3/1024\"MB\"}')"
+      "Bash(awk '{print \"exp209存活 运行\",$2,\" 内存\",$3/1024\"MB\"}')",
+      "Bash(grep -iA3 \"install\\\\|\\\\.claude\\\\|skills/\\\\|cp \\\\|SKILL\" README.md)",
+      "Bash(cp -R /tmp/rpws_tmp/research-paper-writing ~/.claude/skills/)",
+      "Bash(rm -rf /tmp/rpws_tmp)",
+      "Bash(kpsewhich tikz.sty)",
+      "Bash(kpsewhich algpseudocode.sty)",
+      "Bash(git config *)",
+      "Bash(git remote *)"
     ],
     "additionalDirectories": [
       "/tmp",
-      "/home/xiaowen/sumo-rl/experiments/experiments/configs"
+      "/home/xiaowen/sumo-rl/experiments/experiments/configs",
+      "/home/xiaowen/68d2ae4195ae238a4db0cb95"
     ]
   }
 }
