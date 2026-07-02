@@ -33,7 +33,10 @@ CALIB = os.path.join(REPO, "nets", "dcc", "calibration_dcc")
 import sumolib  # noqa: E402
 TOOLS = os.path.join(os.path.dirname(os.path.dirname(sumolib.__file__)),
                      "sumo", "tools")
-BG_SHARE = 0.3            # L2 background volume as share of L1 (explicit knob)
+BG_SHARE = float(os.environ.get("DCC_BG_SHARE", 0.1))    # L2 share of L1
+DEMAND_SCALE = float(os.environ.get("DCC_DEMAND_SCALE", 0.5))  # capacity-feasible
+# scaling of SCATS counts (unscaled 11h gridlocks the fixed-time baseline:
+# 34% backlog / 15.5k teleports — spec V-b record). Both knobs recorded below.
 POOL_TRIPS = 120_000      # candidate pool size for routeSampler
 AMB_RATE = {2: 5.9, 11: 11.1, 18: 12.2}   # DFB citywide incidents/h (measured)
 
@@ -80,7 +83,7 @@ def gen_ambulances(net, hour, seed, out_path):
         cands = net.getNeighboringEdges(x, y, r=400)
         cands = [(d, e) for e, d in cands
                  if e.getFunction() != "internal" and e.allows("passenger")]
-        return min(cands)[1] if cands else None
+        return min(cands, key=lambda t: t[0])[1] if cands else None
 
     st_edges = [e for e in (nearest_edge(*p) for p in GR.STATIONS.values()) if e]
     ho_edges = [e for e in (nearest_edge(*p) for p in GR.HOSPITALS.values()) if e]
@@ -129,9 +132,10 @@ def main():
         sys.argv = ["gtfs_bus.py", str(hour)]
         gtfs_bus.main()
 
-    # [1] SCATS -> edge counts
+    # [1] SCATS -> edge counts (with capacity-feasible scale)
+    print(f"knobs: DEMAND_SCALE={DEMAND_SCALE} BG_SHARE={BG_SHARE}")
     run([sys.executable, os.path.join(_HERE, "scats_to_edgecounts.py"),
-         NET, META, CALIB, str(hour)])
+         NET, META, CALIB, str(hour), str(DEMAND_SCALE)])
     edgecounts = os.path.join(CALIB, f"edgecounts_{hour:02d}h.xml")
 
     # [2] candidate pool (built once, reused across hours)
@@ -149,11 +153,15 @@ def main():
 
     # [3] L1 routeSampler against SCATS counts
     l1 = os.path.join(scratch, f"l1_{hour:02d}h.rou.xml")
-    run([sys.executable, os.path.join(tools, "routeSampler.py"),
+    res = run([sys.executable, os.path.join(tools, "routeSampler.py"),
          "-r", pool_routes, "--edgedata-files", edgecounts, "-o", l1,
+         "--edgedata-attribute", "count",   # default is 'entered' — silent 0 otherwise
          "--attributes", 'type="car" departLane="best" departSpeed="max"',
          "--seed", str(seed), "--mismatch-output",
          os.path.join(CALIB, f"mismatch_{hour:02d}h.xml")])
+    for line in (res.stdout or "").splitlines():
+        if "achieving" in line or "GEH" in line:
+            print("  routeSampler:", line.strip())
     n_l1 = count_vehicles(l1)
 
     # [4] L2 background at BG_SHARE of L1 (uncovered-area prior; explicit knob)

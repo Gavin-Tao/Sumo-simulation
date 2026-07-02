@@ -23,6 +23,11 @@ import common  # noqa: E402
 def main():
     net_path, meta_path, calib_dir, hour = sys.argv[1:5]
     hour = int(hour)
+    # capacity-feasible scaling (spec V-b): SCATS counts reflect adaptive
+    # coordinated control; the uncoordinated fixed-time 8std baseline cannot
+    # absorb 100% (11h unscaled: 34% backlog, 15.5k teleports). The factor is
+    # explicit and recorded in the output filename comment.
+    scale = float(sys.argv[5]) if len(sys.argv) > 5 else 1.0
     net = common.load_net(os.path.abspath(net_path))
     meta = json.load(open(meta_path))["tls"]
     targets = json.load(open(os.path.join(calib_dir, "scats_targets.json")))
@@ -71,8 +76,10 @@ def main():
 
     out = os.path.join(calib_dir, f"edgecounts_{hour:02d}h.xml")
     with open(out, "w") as f:
+        f.write(f"<!-- demand_scale={scale} -->\n")
         f.write('<data>\n  <interval id="scats" begin="0" end="3600">\n')
         for e, v in sorted(counts.items()):
+            v *= scale
             if v >= 1:
                 f.write(f'    <edge id="{e}" count="{v:.0f}"/>\n')
         f.write("  </interval>\n</data>\n")
