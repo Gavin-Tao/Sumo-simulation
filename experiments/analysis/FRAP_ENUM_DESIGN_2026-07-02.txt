@@ -1,0 +1,356 @@
+================================================================================
+  FRAP_ENUM_DESIGN_2026-07-02
+  枚举相位 + 原版 FRAP 竞争网络: 完整设计/修改计划 (spec, 待用户批准)
+================================================================================
+
+  目标: 动作空间从"8 标准相位模板"换成"离线枚举的全部极大无冲突 movement
+  组合", 相位选择由原版 FRAP 式网络完成 (movement 编码 → 相位表征 →
+  相位对竞争 relation 模块 → Q)。
+  硬约束: 老 config (全部 exp1xx/exp2xx) 行为逐位不变; 不修改任何现有
+  文件的既有代码路径, 新功能全部走新增分支/新文件。
+
+  已确认的事实前提 (2026-07-02 枚举实测, 当日多轮修订):
+  • 用户硬约束 (2026-07-02 终裁, 覆盖当日一切早先讨论): 相位永远
+    protected-only —— 全部成员 'G', 相位内零冲突, merging 与 crossing
+    一律视为硬冲突, 永不使用 'g' 让行绿。曾提出的 permissive/并集菜单
+    方案作废, 不再复议。
+  • protected-only 口径下菜单 = 平均 3.7/路口 (2~11), 与 8std 有效动作
+    3.4 几乎相同, 14/18 路口相等 → 同网对照的"菜单效应"预期 ≈ 0。
+  • 本章的价值主张因此完全落在: ① movement 对决架构 (归纳偏置/样本
+    效率/优先级显式通路) ② held-out 路口 zero-shot 迁移 (主判决)。
+  • merge/crossing 二分 (实测 92 对冲突中 49% 纯 merge) 保留用途仅剩
+    一处: 对决模块的关系类别 (物理信息输入), 不影响枚举。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  0. 总览: 新增/修改清单                                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  新文件 (5):
+    experiments/tools/dublin/enum_phases.py      离线枚举工具
+    sumo_rl/agents/frap_agent.py                 FRAP 网络 + agent
+    experiments/configs/exp2XX_dublin11h_enumfrap.yaml   新实验配置
+    nets/dublin/dublin_enum.net.xml + dublin_enum_meta.json   (工具产物)
+    nets/dublin/weekday_{02,11,18}h/dublin_weekday_XXh_enum.sumocfg (产物)
+
+  修改文件 (1):
+    experiments/train.py    仅新增 "action_scheme: enum_frap" 分支;
+                            老 config 不含该 key, 一行都不会进新分支。
+
+  明确零修改 (回归验证覆盖):
+    sumo_rl/environment/{traffic_signal,env,observations,rewards}.py
+    sumo_rl/agents/dqn_agent_txw.py
+    所有既有 configs / nets / meta
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  1. 离线工具 enum_phases.py                                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  输入: nets/dublin/dublin_8action_demoted.net.xml
+        (与 8std 管线同源 → 降级/车道修复全保留, 现有 rou.xml 不用动)
+
+  每 TLS 流程:
+   a. link → (approach, turn) 指派: 复用 reindex_8std.py 的同一套函数
+      (import, 不复制代码), 保证 movement 定义与 obs 的 rebind_movements
+      口径完全一致。
+   b. 12×12 movement 关系矩阵: 对每对 movement 的每对 link 调
+      Node.areFoes; foe 对进一步分类 —— 全部 foe 链对汇入同一 to_edge
+      = merge (实测占冲突对 49%), 否则 = crossing。同臂 movement 非 foe。
+   c. 菜单枚举 (Bron-Kerbosch, n≤9 规模无忧, 无顺序先验):
+      protected-only 单一口径 (用户硬约束): crossing+merge 全为硬冲突,
+      枚举其下全部极大组合。实测 mean 3.7 / max 11。
+      菜单按 12 维 multi-hot 字典序排序 (可复现)。
+   d. 每相位 → 信号状态串: 成员 movement 的 link 全 'G', 非成员 'r'。
+      任何相位不含 'g' (工具硬断言)。写入 tlLogic (只写绿相位,
+      黄灯仍由运行时 _build_phases 自动生成, 机制不变)。
+   e. movement 关系类别 (供 FRAP 竞争模块, 2026-07-02 用户定案四类):
+      rel(m,n) ∈ {0:同臂, 1:兼容, 2:merge, 3:crossing}, 12×12 整型。
+      [设计决策: 竞争建模在 movement 层而非相位层 —— 原版相位对对决在
+       本网 13/18 路口的 2~3 相位菜单上退化; movement 对决 12×12 全网
+       定形, 且优先级语义显式。类别=冲突的物理类型学: 同臂有共享车道
+       耦合, merge 可让行共存, crossing 互斥。见 §2。]
+
+  meta JSON schema (dublin_enum_meta.json):
+    顶层: action_scheme:"enum_frap", n_actions:K_max(=11), source_net,
+          boundary(同 8std)
+    每 TLS: n_phases K_j
+            phase_movements: K_j×12 0/1 矩阵 (相位服务哪些 movement 槽)
+            movement_rel: 12×12 整型 (0 同臂/1 兼容/2 merge/3 crossing;
+                          不存在槽=-1。merge/crossing 之分仅供对决模块
+                          作物理信息, 枚举时二者同为硬冲突)
+            links: 与 8std meta 同 schema (供 obs turnmap)
+            mask: K_max 维 bool (前 K_j 位 True)
+
+  自检 (工具内置, 输出报告):
+    • 每相位内部任意 movement 对非 foe (硬断言)
+    • 槽内 foe 断言: 同槽 link 对互不为 foe (2026-07-02 实测全网 0 例,
+      混臂槽位亦 0 —— 12 槽抽象在本网完好; 断言保留为守卫)
+    • 极大性断言: 任何相位加任一非成员 movement 必产生冲突
+    • 菜单大小分布 vs 8std 有效动作数对照表 (预期复现 3.7 vs 3.4)
+    • netconvert 往返校验 connection 逐条不变 (沿用 demote_uncontested
+      的验证模式)
+    • sumocfg 生成: 复制三个小时目录的 sumocfg, net-file 指向 enum net
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  2. FRAP agent (sumo_rl/agents/frap_agent.py, 新文件)                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  网络 FRAPQNet — 保留原版竞争三要素 (两两对决 × relation 嵌入调制 ×
+  全参数共享), 对决层从"相位对"移到"movement 对" (适配依据见 §1e 注):
+
+   ① movement 编码 (原版 demand embedding):
+      obs 切片: [header | 12×slot_dim] → 每槽向量 (slot_dim = 5等级×字段
+      + is_green 位 + 可选下游块; 用 obs 的 perphase 布局, 见 §3)
+      共享 MLP: slot_dim → E 维嵌入 d_m   (E 默认 16, 可调)
+      优先级语义入口: 5 等级桶在 d_m 里, 后续 SF 的 ψ_m 也长在这层。
+
+   ② movement 对决 (原版 pairwise competition; 2026-07-02 二次修订):
+      只对冲突对建对决 (rel ∈ {merge, crossing}) —— 用户追问暴露
+      非冲突对决在 ④ 中从未被消费, 属死参数, 删除。
+      对每有序冲突对 (m,n): pair 特征 = FC([d_m, d_n]) ∈ R^k
+      relation 嵌入 R[rel] ∈ R^k, 仅 2 类 {merge, crossing}:
+      merge 对手共享下游出口 (与 obs 下游 CQM 耦合), crossing 正交
+      独享 —— 网络消费 2 嵌入; meta 仍存四值矩阵 (信息保全供 ablation)。
+      交互: h_mn = pair 特征 ⊙ R[rel(m,n)]; 非冲突对/不存在槽 mask。
+
+   ③ 对决得分: s_mn = FC_shared(h_mn) → 标量
+      语义 = "此刻服务 m 而压制 n 的相对收益"。
+
+   ④ 相位聚合 (菜单只在这层出现; 2026-07-02 审查后修订):
+      Q(p) = Σ_{m∈p} g(d_m)  +  Σ_{n∉p} max_{m∈p, rel(m,n)∈{merge,crossing}} s_mn
+      = 成员自需求项 + 每个被压制 movement 恰计一次的对决分。
+      (并集菜单下 n∉p 的对手判定含 merge: protected 相位压制的 n 可能
+       仅与成员 merge 冲突; 极大性按各自口径保证每个 n∉p 有对决可计。)
+      审查修订依据:
+      • 反重复计价: n 与多个成员冲突时旧式 (逐 m 求和) 把 n 计价多次,
+        引入相位间不可比偏置 → 改为对每个 n 取 max 恰计一次。
+      • 量纲稳定: max 聚合后压制项条数 = |菜单外 movement 数|, 同路口内
+        跨相位恒定; 配 LayerNorm(d_m) + grad clip (默认超参)。
+        旧式 (逐 m 求和) 降级为 ablation 轴。
+      padding 到 K_max=11, 无效相位 mask −∞。
+      可解释性红利: Q(p) 可按对决项分解, "amb 所在 movement 赢了哪几场"
+      可直接可视化 (论文 priority-aware selection 的图证)。
+
+  Agent 类 FRAPAgent — 接口对齐 DQN (take_action/update/buffer):
+    • 单 agent 全网共享 (与现状同); 每 TLS 的 (phase_movements, relation,
+      mask) 张量注册在 agent 内字典, forward 时按 tls key 取用。
+    • replay 转移: (s, a, r, s', mask', tls_key) —— 比现有 6 元组多存
+      tls_key (新 buffer 类, 在新文件内, 不碰现有 ReplayBuffer)。
+    • target 侧 masked Double-DQN max: 逐位复刻 dqn_agent_txw.update 的
+      数学 (同 mask 语义), 实现在新文件。
+    • ε-greedy: 有效相位内均匀随机 (mask), 同现有机制。
+    • 无 canonical/dedup 问题: 枚举天然无重复相位, 动作=相位索引,
+      anchor/std 映射层整体不存在, phase_to_green = 恒等。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  2.5 端到端 Pipeline (定稿汇总, protected-only)                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  [离线, 一次] enum_phases.py:
+    net (dublin_8action_demoted)
+      → 每 TLS: link→(approach,turn) 槽指派 (与 8std/obs 同口径)
+      → 12×12 movement 关系矩阵 (areFoes; foe 再分 merge/crossing)
+      → Bron-Kerbosch 枚举 "crossing+merge 全禁" 下的极大组合
+        = 菜单 (mean 3.7, max 11), 全 'G' 状态串, 零 'g'
+      → 产出 dublin_enum.net.xml (tlLogic=绿相位) + dublin_enum_meta.json
+        (phase_movements K_j×12, movement_rel 12×12 四类, mask, links)
+      → 自检: 相位内零 foe / 极大性 / 槽内 foe=0 / netconvert 往返
+
+  [环境启动, 每次 reset] 现有机制, 零修改:
+    _build_phases 读绿相位 → 自动生成 K×(K−1) 黄灯
+    trainer 读 meta → 每 TLS 张量注册 (phase_movements/rel/mask)
+    rebind_movements(links) → obs 12 槽与动作用同一套 movement 定义
+
+  [每决策步, 5s] FRAPQNet 前向:
+    obs (perphase: [min_green_ok, elapsed] + 12 槽×(5 级桶字段+is_green))
+      ① 槽特征 → 共享 MLP+LayerNorm → d_m (12 个嵌入)
+      ② 全对 (m,n): h_mn = FC([d_m,d_n]) ⊙ R[rel(m,n)]  (关系四类)
+      ③ s_mn = FC_shared(h_mn)  ("服务 m 压制 n 的相对收益")
+      ④ 对菜单每相位 p: Q(p) = Σ_{m∈p} g(d_m)
+                              + Σ_{n∉p} max_{m∈p, rel∈{merge,crossing}} s_mn
+      mask → ε-greedy/argmax → 相位索引直接进 env.step (无映射层)
+      → set_next_phase: 黄灯/min_green/max_green 现行机制
+
+  [训练] 单 agent 全网共享; 转移 (s,a,r,s',mask',tls_key) uniform replay;
+    masked Double-DQN target; reward = priority-avg-waiting (原样)。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  2.6 与原版 FRAP (Zheng et al., CIKM 2019) 差异对照                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  维度         原版 FRAP                      本设计
+  ──────────   ────────────────────────────   ─────────────────────────────────
+  场景         标准 4 臂路口, 固定 8 相位     Dublin 18 异构 TLS (2~9 movement,
+               (人工先验)                     左行, 单行道), 菜单变长 2~11
+  相位来源     数据集/先验给定                离线完备枚举极大 protected 组合
+                                              (areFoes 导出, 无模板先验)
+  安全口径     跟随数据集定义                 protected-only 硬约束 (用户裁定):
+                                              全 'G', 相位内零冲突含 merging
+  竞争粒度     相位对对决 (8×7 定形)          movement 对对决 (12×12 定形)
+               [变长小菜单下会退化 →          [跨路口张量定形, 小菜单不退化,
+                本网 13/18 路口仅 2~3 相位]    优先级通路落在对决上]
+  关系类别     相位间 {competing/partial/…}   movement 间 {同臂/兼容/merge/
+               按共享 movement 数             crossing} 按真实冲突几何
+  相位表征     固定 2-movement 之和           变长集合; Q=成员自需求 Σg(d_m)
+  与 Q 聚合    Q(p)=Σ_q 相位对分              + 每个被压制者恰计一次的
+                                              max 对决分 (反重复计价+量纲稳定)
+  状态输入     单类车 count + 当前相位        12 槽 × 5 优先级桶 ×
+                                              {count,queue,mean_awt} + is_green
+                                              + 下游 CQM (现有 obs 家族)
+  任务/reward  单类车队列长度                 priority-avg-waiting (等级 1-5
+                                              加权; amb/bus/car = 5/3/1)
+  跨路口泛化   旋转/翻转对称不变性            真异构迁移: 12 槽全网对齐 +
+               (同构标准路口之间)             内容评分; held-out 路口 zero-shot
+                                              为主判决实验 (M5)
+  训练         per-路口 Ape-X DQN             单共享 agent, masked Double-DQN,
+                                              uniform replay (PER 禁, exp153)
+  黄灯/安全    数据集相位表内置               环境层 N×(N−1) 自动黄灯 +
+                                              min/max_green (现有机制零修改)
+
+  论文表述建议: 不自称复刻 FRAP; 称 "movement-level competition network
+  over enumerated protected phases, adapting FRAP's phase-competition
+  principle"; 上表即 related-work 差异段落的素材。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  3. 观测与环境: 零修改, 靠既有开关                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  obs: 复用 PriorityMovement 家族, config 用 obs_phase_state: perphase
+       (observations.py 既有分支): header=[min_green_ok, elapsed/100],
+       每槽自带 is_green 位 —— movement 级灯态, 路口无关, 正是 FRAP
+       需要的输入; 不用 legacy 的相位 one-hot (序号语义, 迁移不友好)。
+       _phase_serves 从 net program 通用构建, 对枚举相位自动成立。
+  env/traffic_signal: _build_phases 读 enum net 的 K_j 个绿相位, 自动生成
+       K_j×(K_j−1) 黄灯 (最多 11×10=110), set_next_phase/min_green/
+       max_green 机制原样。
+  reward: priority-avg-waiting 原样 (盲区问题是已知独立事项, 不混入)。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  4. train.py 的新增分支 (唯一被修改的现有文件)                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  开关: cfg 里新 key  action_scheme: enum_frap  +  enum_meta_file: <path>
+  • 老 config 无此 key → cfg.get("action_scheme") 为 None → 全部原路径,
+    与 action_meta_file 机制互斥 (同时出现直接报错, fail-fast)。
+  • enum_frap 分支做四件事 (集中在一个新函数, train() 里只加一个 if):
+    1) 读 enum meta → 每 TLS 张量注册表 + turnmap
+    2) rebind_movements(turnmap) (复用现有 _masked_reset 模式)
+    3) 实例化 FRAPAgent (替代 DQN 分支)
+    4) act/replay 循环: action=相位索引直接进 env.step, buffer 多存
+       tls_key —— 循环体为 enum 分支单独小函数, 不改现有循环一行
+  • PER 与 enum_frap 互斥 (同现有 action_meta_file×PER 的 guard 模式)。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  5. 新实验配置 + 实验设计                                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  exp2XX_dublin11h_enumfrap.yaml: 复制 exp208 的 env/reward/训练超参,
+  改: action_scheme/enum_meta_file/net_file/cfg_file/实验名/
+      obs_phase_state: perphase; 新增 FRAP 超参 (embed_dim 16,
+      relation_dim 16, 其余沿用 lr/γ/ε 调度)。编号建议 exp211 (用户定)。
+
+  M4 同网对照 (用户启动训练; 2026-07-02 审查后改为三臂, 隔离混淆):
+      臂1 exp208 原样 (8std 菜单 + flat DQN + legacy obs)
+      臂2 enum 菜单 + flat DQN + perphase obs   ← 拆出"菜单效应"(预期≈0)
+      臂3 enum 菜单 + FRAP 对决网 + perphase obs ← 拆出"架构效应"(主主张)
+      同 seed 组; 诚实预期: 臂间终局打平~小赢, 看样本效率曲线。
+      场景化预期 (菜单实测): 13/18 路口菜单 2~3 且含 amb movement 的相位
+      常仅 1 个 → 优先级增益预期集中在大路口与迁移, 不在小路口终局。
+  M5 迁移主实验 (本 spec 只设计, 实现为二期):
+      config 新 key frozen_tls → 训练期 held-out 路口跑固定配时,
+      eval 期全 18 路口由 FRAP 控制 → zero-shot 指标。
+      held-out 分层抽样 (审查修订): 必含 cluster_135109528 (11 相位,
+      架构价值最能显形处) + 中型 2 + 小型 3; 全小路口的 held-out 会让
+      fixed-time 基线过强, 结果不可写。
+      第二迁移轴 (便宜的补充证据): 11h 训 → 02h/18h 测。
+      基线: fixed-time / MaxPressure / 臂2 flat-DQN (其索引语义在
+      held-out 路口无保证, 作为"序号索引不迁移"的对照证据)。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  6. 验证计划 (每步有断言, 不启动正式训练)                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  V1 工具级: §1 自检全过 + 菜单/冲突报告人工过目
+  V2 回归 (向后兼容的证明):
+     • exp208 config: 代码改动后 dry-run 30 决策步 (固定 seed),
+       动作序列/obs 维度/reward 值与改动前逐位一致
+     • 1x3 exp136 config: 同样 30 步逐位回归
+     • grep 断言: 老路径无一处读取 action_scheme/enum_meta_file
+  V3 冒烟 (无 wandb): enum_frap 配置跑 ~500 仿真步:
+     • 永不选出 mask 外相位 (运行断言)
+     • 黄灯过渡出现且时长=yellow_time; min_green 生效
+     • 状态串纯净断言: 运行期任何绿相位不含 'g' (protected-only 硬约束)
+     • loss 有限且下降趋势; K_j=2 与 K_j=11 路口各抽一验证 forward 形状
+  V4 正式训练: 用户启动, 我不碰 (含 wandb 的一切)。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  7. 风险与边界                                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  • movement 层对决是对原版 (固定 8 相位、相位对对决) 的场景适配:
+    本网菜单变长且 13/18 路口仅 2~3 相位, 相位对对决退化; movement 对决
+    12×12 定形、relation 来自真实冲突几何、优先级通路显式。论文表述为
+    "adapting FRAP's phase-competition principle to movement-level
+    dueling", 如实标注, 不自称复刻。
+  • ④ 的聚合形式 (自需求 + 冲突胜分) 是设计选择; 备选 (全部 n∉p 求和、
+    attention 聚合) 留作 ablation 轴, 不阻塞主线。
+  • 关系类别粒度 (2026-07-02 三轮复议定案): 对决仅建于冲突对, 类别仅
+    {merge, crossing} 2 类 —— 用户追问暴露非冲突对决从未被 ④ 消费
+    (死参数), 同臂/兼容类别随之退出网络 (meta 四值矩阵保留信息)。
+    保留 merge/crossing 之分的唯一硬理由 = 下游出口共享耦合 (配 obs
+    下游 CQM); 成本一行嵌入, 错则收敛退化。ablation 轴: 合并为单一
+    conflict 类; 训练后 R[merge] 与 R[crossing] 距离可作分析图。
+  • 训练稳定性: 乘性交互层 + 18 路口数据量, 若 loss 震荡, 后备手段=
+    降 E/k 维度、gradient clip (config 化, 不改代码结构)。
+  • amb 稀疏 × 对决模块 (场景化审查 2026-07-02): 11h 仅 4 amb/ep,
+    s_mn 的"5 级压制"通路样本极少。架构自带缓解: g/s/R 全网全 movement
+    参数共享, 任何路口的 amb 遭遇都训练同一套对决参数 (优于 flat DQN 的
+    per-action 权重)。对策: replay 保持 uniform (PER 禁用, exp153 教训);
+    H1 stratified replay 留作触发项 (若 amb 通路学不出来)。
+    优先级表 {amb:5,bus:3,car:1}: 等级 2/4 恒零列, 由 LayerNorm 吸收,
+    无需特殊处理 (保持 5 桶接口, 兼容未来 tram/动态等级)。
+  • 共享车道近似 (与 8std 同病, 非新引入): 同一进口车道上两个转向共用
+    车道时, per-link 信号不建模队首异向阻挡 —— 论文 limitation 一句话。
+  • protected-only 的代价 (用户知情接受): 菜单 3.7≈8std 3.4, 同网
+    "菜单效应"≈0; 本章价值 = 对决架构 + 迁移。换取: 相位内零冲突,
+    amb 走绿灯时绝无让行/合流干扰 —— 与论文的安全叙事一致。
+  • eval 工具链 (edge_waiting_collect 等) 绑定 DQN checkpoint 格式,
+    对 FRAP 实验需要新 eval 变体 —— 二期事项, 不在本次范围。
+  • out-of-scope 维持: 运行时动态补全、反饿死硬规则、1x3 适配、
+    SF/ψ 头 (未来长在 ① 的 movement 嵌入上, 接口已天然预留)。
+
+  实施顺序: M1 工具+产物 → V1 → M2 agent+trainer 分支 → V2/V3 →
+            提交给用户 review → M4 由用户启动。
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  IMPLEMENTATION STATUS 2026-07-02 (M1/M2/V1/V2/V3 全部完成)                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  产物 (全部已提交, 分支 dev):
+    experiments/tools/dublin/enum_phases.py     离线工具 (含 V1 自检)
+    nets/dublin/dublin_enum.net.xml             18 TLS, 897 相位串, 零 'g'
+    nets/dublin/dublin_enum_meta.json           K_max=11
+    nets/dublin/weekday_*/dublin_weekday_*_enum.sumocfg
+    sumo_rl/agents/frap_agent.py                FRAPQNet + FRAPAgent
+    experiments/frap_glue.py                    meta→张量 + agent 构造
+    experiments/train.py                        仅加法分支 (grep 可核)
+    experiments/configs/exp211_dublin11h_531_enumfrap.yaml
+    experiments/tests/test_{enum_phases,frap_agent}.py   13 测试
+    experiments/tools/frap/{regress_dryrun,smoke_enum}.py + 基线
+
+  实测数字:
+    菜单 = [2×6,3×4,4×5,6×2,11], mean 3.7, K_max=11 (与预演一致;
+      lane-merge 严格化未再裁剪 —— areFoes 在槽级已覆盖)
+    netconvert 往返 connection 逐条一致 (374 条)
+    V2 回归: exp208 digest 104db4.., exp136 digest 1866cc.. —— 代码
+      改动前后逐位一致 (30 决策步, 固定 seed, 两次复跑稳定)
+    V3 冒烟: 120 步 × 18 TLS = 2160 次选相位全部 mask 内; 106 次更新
+      loss 0.181→0.093, q_mean=-0.19 (符号正确, target_clip 生效);
+      obs 维度全网统一 326; net 绿相位数==meta 菜单数 (18/18)
+    与 exp208 的公平性: FRAPAgent 补齐 target_clip_max/huber/double/
+      grad_clip 全套稳定化包
+
+  启动训练 (用户操作, 本实现不启动):
+    cd experiments && python train.py --config configs/exp211_dublin11h_531_enumfrap.yaml
+  未实施 (按 spec 属二期): M4 臂2 (flat-DQN + enum 菜单)、M5 frozen_tls
+    迁移、eval 工具链的 FRAP checkpoint 适配 (edge_waiting_collect 等)。
+================================================================================
