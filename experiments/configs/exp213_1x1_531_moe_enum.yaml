@@ -1,0 +1,54 @@
+# exp213: MoE-Gcmu gate-DQN, L1 menu = enum, 1x1 NSamb (exp113 scenario)
+# 531 priority table; experts = depth-1 MPC rules (zero training).
+# Pair experiment: exp213(enum, 12 phases) vs exp214(8std, 7 phases).
+wandb_project: sumo-rl-1x1
+net_file: ../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/1x1amb_enum.net.xml
+route_file: ../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml
+cfg_file: ../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg
+observation_class: PriorityMovement
+obs_phase_state: perphase
+obs_fields:
+- count
+- queue
+- mean_awt
+obs_awt_basis: local
+obs_awt_cap: 500
+priority_source:
+  ambulance: 5
+  bus: 3
+  car: 1
+reward_fn: priority-avg-waiting
+action_scheme: moe
+moe_meta_file: ../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/1x1amb_enum_meta.json
+moe_lexicographic: false
+num_seconds: 1000
+delta_time: 5
+yellow_time: 2
+min_green: 5
+use_gui: false
+use_max_green: true
+max_green: 50
+hidden_dim: 128
+lr: 0.001
+gamma: 0.99
+epsilon: 0.1
+eps_start: 0.9
+eps_end: 0.01
+eps_decay: 5000
+target_update: 20
+capacity: 50000
+mini_size: 1000
+batch_size: 256
+use_double: true
+loss_fn: huber
+grad_clip: 1.0
+target_clip_max: 0.0
+seed: 0
+episodes: 5000
+checkpoint_interval: 50
+runs: 1
+eval_interval: 5
+eval_seed: 42
+logging_mode: basic
+use_per: false
+name: exp213_1x1_531_moe_enum

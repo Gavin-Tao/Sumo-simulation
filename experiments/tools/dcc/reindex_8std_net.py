@@ -37,13 +37,14 @@ def main():
     prefix = sys.argv[2]
     out_dir = os.path.dirname(net_path)
 
-    # sanity: same source export as dublin -> same netOffset -> SCATS/GTFS
-    # coordinate constants in common stay valid. Hard-fail if it differs.
+    # netOffset only matters for SCATS/GTFS coordinate logic (demand stage);
+    # reindexing itself is offset-free. Warn instead of failing so synthetic
+    # nets (1x1/1x3) can be reindexed too (2026-07-02, MoE menus).
     loc = ET.parse(net_path).getroot().find("location")
     off = tuple(float(x) for x in loc.get("netOffset").split(","))
-    assert off == common.NET_OFFSET, \
-        f"netOffset {off} != common.NET_OFFSET {common.NET_OFFSET} — " \
-        f"different source export; extend wrapper before proceeding"
+    if off != common.NET_OFFSET:
+        print(f"NOTE: netOffset {off} != dublin's — fine for reindexing, but "
+              f"do NOT run the SCATS demand pipeline against this net.")
 
     # override the dublin path constants for this run (originals untouched)
     common.OUT_DIR = out_dir

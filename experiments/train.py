@@ -258,8 +258,26 @@ def train(cfg: dict, timestamp: str):
     # every enum line below is skipped; mutually exclusive with action_meta_file.
     action_scheme = cfg.get("action_scheme")
     enum_tables = None
-    if action_scheme not in (None, "enum_frap"):
+    moe = None
+    if action_scheme not in (None, "enum_frap", "moe"):
         sys.exit(f"unknown action_scheme: {action_scheme}")
+    if action_scheme == "moe":
+        # MoE-Gcμ (RESEARCH_ROADMAP §A1): 6 rule experts + DQN gate.
+        # Menu (L1) is configurable: moe_meta_file may be an enum meta OR an
+        # 8std meta — moe_glue handles both schemas. Old configs lack the
+        # key and never reach this branch.
+        if action_meta_file:
+            sys.exit("action_scheme=moe is mutually exclusive with action_meta_file")
+        if cfg.get("use_per"):
+            sys.exit("moe + use_per not supported")
+        if cfg.get("agent_arch", "mlp") != "mlp":
+            sys.exit("moe gate uses the plain DQN; agent_arch must be absent/mlp")
+        from moe_glue import load_moe_tables
+        moe = load_moe_tables(cfg["moe_meta_file"])
+        moe_lex = bool(cfg.get("moe_lexicographic", False))
+        print(f"  → action_scheme=moe: {len(moe['tables'])} TLS, "
+              f"menus={sorted(len(t['phase_slots']) for t in moe['tables'].values())}, "
+              f"lexicographic={moe_lex}")
     if action_scheme == "enum_frap":
         if action_meta_file:
             sys.exit("action_scheme=enum_frap is mutually exclusive with action_meta_file")
@@ -297,6 +315,14 @@ def train(cfg: dict, timestamp: str):
                 _ts = _env.traffic_signals[_tid]
                 if hasattr(_ts.observation_fn, "rebind_movements"):
                     _ts.observation_fn.rebind_movements(enum_tables["turnmap"][_tid])
+                _ts.observation_space = _ts.observation_fn.observation_space()
+            _states = {_tid: _env.traffic_signals[_tid].observation_fn()
+                       for _tid in _env.ts_ids}
+        if moe is not None:
+            for _tid in _env.ts_ids:
+                _ts = _env.traffic_signals[_tid]
+                if hasattr(_ts.observation_fn, "rebind_movements"):
+                    _ts.observation_fn.rebind_movements(moe["turnmap"][_tid])
                 _ts.observation_space = _ts.observation_fn.observation_space()
             _states = {_tid: _env.traffic_signals[_tid].observation_fn()
                        for _tid in _env.ts_ids}
@@ -352,6 +378,11 @@ def train(cfg: dict, timestamp: str):
                       if "count" in obs_fn0.fields else None
             attn_diag = {"layout": layout, "amb_off": amb_off}
 
+        moe_experts = None
+        if moe is not None:
+            import moe_glue
+            moe_experts = moe_glue.build_experts(cfg, moe, env)
+            print(f"  → agent: DQN gate over {6} rule experts (MoE-Gcμ)")
         if enum_tables is not None:
             from frap_glue import build_frap_agent
             agent = build_frap_agent(cfg, enum_tables, env, device)
@@ -362,7 +393,9 @@ def train(cfg: dict, timestamp: str):
             starting_state=tuple(initial_states[last_ts_id]),
             state_space=env.observation_space.shape[0],
             hidden_dim=cfg.get("hidden_dim", 64),
-            action_space=(8 if action_meta_file else env.action_space.n),
+            # moe: gate over 6 experts; masked-8std: fixed std space; else native
+            action_space=(6 if moe is not None
+                          else (8 if action_meta_file else env.action_space.n)),
             learning_rate=cfg.get("lr", 0.01),
             gamma=cfg.get("gamma", 0.99),
             epsilon=cfg.get("epsilon", 0.1),
@@ -405,7 +438,20 @@ def train(cfg: dict, timestamp: str):
             try:
                 while not done["__all__"]:
                     # ── Act ───────────────────────────────────────────────────────
-                    if enum_tables is not None:
+                    if moe is not None:
+                        # MoE: gate picks WHICH expert; expert's argmin phase
+                        # (a dense green index) goes to the env.
+                        actions, moe_k = {}, {}
+                        import moe_glue as _mg
+                        for ts in env.ts_ids:
+                            _sumo = env.traffic_signals[ts].sumo
+                            _props, _lv = moe_experts.propose(
+                                ts, _sumo, env.traffic_signals[ts].green_phase)
+                            _m = _mg.gate_mask(_lv, moe_lex)
+                            _k = int(agent.take_action(initial_states[ts], mask=_m))  # type: ignore[call-arg]  # DQN here
+                            moe_k[ts] = _k
+                            actions[ts] = int(_props[_k])
+                    elif enum_tables is not None:
                         # enum_frap: action IS the dense green-phase index (identity)
                         actions = {ts: agent.take_action(initial_states[ts], ts)
                                    for ts in env.ts_ids}
@@ -436,7 +482,21 @@ def train(cfg: dict, timestamp: str):
                         ts_reward = r[ts]  # type: ignore[index]
                         ts_next_state = tuple(s[ts])  # type: ignore[index]
                         ts_done = done[ts]  # type: ignore[index]
-                        if enum_tables is not None:
+                        if moe is not None:
+                            # MoE: the gate's action is the CHOSEN expert k —
+                            # min_green holds are env dynamics (the expert WAS
+                            # consulted). next_mask = L4 mask of s' (all-ones
+                            # in pure mode; presence-scan in lexicographic).
+                            import moe_glue as _mg
+                            _nm = (_mg.gate_mask(moe_experts.presence(
+                                       ts, env.traffic_signals[ts].sumo), True)
+                                   if moe_lex else np.ones(6, dtype=bool))
+                            agent.replay_buffer.add(
+                                initial_states[ts], moe_k[ts],
+                                ts_reward, ts_next_state, ts_done,
+                                next_mask=_nm,
+                            )
+                        elif enum_tables is not None:
                             # enum_frap: executed dense green index == action;
                             # transition carries its junction id (tensor lookup)
                             agent.replay_buffer.add(
@@ -564,7 +624,17 @@ def train(cfg: dict, timestamp: str):
                 attn_ent: list = []; attn_mx: list = []; attn_amb: list = []
                 while not eval_done["__all__"]:
                     eval_mc.collect_step(env.sumo)
-                    if enum_tables is not None:
+                    if moe is not None:
+                        import moe_glue as _mg
+                        eval_actions = {}
+                        for ts in env.ts_ids:
+                            _props, _lv = moe_experts.propose(
+                                ts, env.traffic_signals[ts].sumo,
+                                env.traffic_signals[ts].green_phase)
+                            _m = _mg.gate_mask(_lv, moe_lex)
+                            _k = int(agent.take_action(eval_obs[ts], mask=_m))  # type: ignore[call-arg]
+                            eval_actions[ts] = int(_props[_k])
+                    elif enum_tables is not None:
                         eval_actions = {ts: agent.take_action(eval_obs[ts], ts)
                                         for ts in env.ts_ids}
                     elif action_meta_file:
