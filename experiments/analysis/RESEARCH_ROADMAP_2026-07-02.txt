@@ -124,12 +124,27 @@
        3000,3001 (全 3600s) → K2 各 target steps 200 → K4 --seeds 多种子。
      与 A1 叠加: gate 换 KAN 头 = 可解释调度规则。与 A2 共享"换头"手术。
 
-  B2. [喜欢] LLM→BNF 政策编译器
-     BNF 表小、语义化、改表即改行为 → 自然语言政策的完美编译目标
-     ("救护车绝对优先; 公交晚点超 5 分钟才优先" → 条件表+约束)。
-     与 KAN 闭环: KAN 提规则 → LLM 讲给管理者 → NL 改政策 → 编译回表
-     = "可解释↔可配置"回路。定位: LLM 当编译器、RL 当执行器
-     (比"LLM 当控制器"流派站得住)。
+  B2. [喜欢] LLM→BNF 政策编译器 —— 管线已实施 (2026-07-03, c01f70d)
+     定位: "policy-as-code for traffic" — LLM 只在政策变更时刻离线编译,
+     控制环里零 LLM (与 LLMLight 族划界)。
+     实施支点: 派生 vType 改型 (bus@l4 + 表扩展) 让动态等级穿透 obs/
+     reward/专家的静态查表, "入网即分类"语义下 vid memo 全部保持有效
+     → M1-M4 零改动现有代码 (行程中途变级=v2, 才需 memo 失效钩子)。
+     工具 (experiments/tools/llm/, 全部端到端验证):
+       policy_dsl.py — IR schema+确定性校验器 (等级界/兜底强制/遮蔽告警;
+         负例 3/3 拒绝) | compile_policy.py — NL→IR, 三 provider (manual/
+         openai/ollama), 校验重试环, 拒猜→澄清对象 | level_resolver.py —
+         谓词白名单 {type,时窗,区域,随机份额}; sched_delay=phase-2 |
+         policy_runtime.py — 改型守护 | verify_policy.py — KPI 断言→
+         离线 eval (fixed 或 FRAP 控制器, 复用 kan env), *_degradation
+         对基线双跑 | benchmark/ 12 金标 (三档双语)+语义等价判分
+         (自检 12/12) | explain_policy.py — 接地 markdown 报告
+         (每个数字必引真实指标键, 可接 KAN α 读数)。
+     E2E 冒烟: Dublin+exp211 FRAP, "bus→5"政策 vs 基线: 1 bus 改型
+       bus@l5, KPI 评估, PASS, 报告渲染 ✓。
+     待做: 金标扩到 ~50 | 真 LLM 编译正确率测量 (ollama/API) |
+       sched_delay 谓词 (GTFS 侧车) | 带政策训练的 train.py 加法键 |
+       与 KAN α 报告闭环 demo (等 K2 全量产物)。
 
   B3. [喜欢] 多模态: Luas 电车进场
      网内现成 Harcourt Luas 街道+时刻表。电车=不能变道/不让路的模态,
