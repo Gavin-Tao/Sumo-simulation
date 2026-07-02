@@ -128,6 +128,42 @@
   [P4] 若做 M4 arm2 (flat-DQN-on-enum), 关注它是否复现"失稳后 amb
        不可逆漂移" — 若 FRAP 结构特有, 是分析素材。
 
+§8 追加 (2026-07-03): "exp211 work 了吗 / 按优先级了吗" — vs exp208 同口径
+
+  口径: 两跑同为 800ep、同 eval_seed=123、同滑窗3 best 准则; 末 150ep
+  (ep650-800) 窗口, MAD 剔尾 mean / raw median, MWU 窗口级检验
+  (exp208 = tq04equ5, exp211 = cqmihwfl)。单训练 seed、单 eval seed,
+  最终判决仍待 §6a 多 seed 复评。
+
+  指标 (末150ep)                 exp208           exp211          p
+  mean_reward                 -18.50/-19.06    -17.29/-16.97    0.048  211 好
+  car  per_visit stopped       4.74/4.57        2.51/2.51      <1e-4   211 好 −45%
+  car  xts stopped             3.02/3.00        2.46/2.47      <1e-4   211 好
+  car  speed                   4.97             5.68           <1e-4   211 好 +14%
+  bus  per_visit stopped       1.28/1.26        1.06/1.04      <1e-4   211 好
+  bus  xts stopped             1.75/1.83        1.86/1.83       0.32   持平
+  amb  per_visit stopped       0.89/0.63        0.98/0.94       0.21   持平(ns)
+  amb  xts stopped             1.02/0.94        1.36/1.35       0.030  208 好
+  amb  speed                   6.30/6.40        6.10/6.14       0.041  208 略好
+  best_reward (滑窗3)          -14.88 (ep240)   -13.71 (ep215)         211 好
+  崩盘 eval (<-100) 全程          7                5
+  末150ep pending max           383               1                    211 稳定得多
+
+  优先级序实现 (末150ep 逐 eval, per_visit): bus<car 两跑都是 100%;
+  amb<bus: exp208 77%, exp211 63%; 完整序 amb<bus<car 同上。
+  amb 各自最优窗口 ([300-500]): exp211 xts 0.62 / pv 0.51 优于
+  exp208 的 0.89 / 0.83 — FRAP-enum 有能力把 amb 做得更好, 是 §2 的
+  失稳漂移把这部分让了回去。
+
+  结论: (a) 作为算法, exp211 work 了 — reward、car、bus per_visit、
+  best、末段抗 gridlock (pending 1 vs 383) 全面优于 208。
+  (b) 优先级语义定性成立 (三跑序 amb<bus<car 的 median 序全程保持,
+  bus<car 逐 eval 100%), 但末段 amb 专项劣于 208 (xts +45%, p=0.03,
+  amb 速度 −0.2m/s) — 与 §4/§5 的失稳后 car-偏好漂移一致。
+  (c) 论文口径: "FRAP-enum 大幅改善低优先级层同时保持优先级序,
+  amb 专项在训练后期出现可归因于一次瞬态失稳的回吐; best.pth
+  (ep215, 失稳前) 是否保住 amb 优势待 §6a 多 seed 复评。"
+
   (本档所有数字可由 scratchpad/exp211_history.pkl 复算; 提取脚本
    口径: eval 行 = eval_system/mean_reward 非空, ep = train/episode
    ffill 对齐; MAD 剔尾 k=3.5, scale 1.4826。)
