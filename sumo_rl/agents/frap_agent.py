@@ -100,7 +100,7 @@ class FRAPAgent:
                  epsilon, target_update, capacity, mini_size, batch_size,
                  eps_start, eps_end, eps_decay, device, embed_dim=16,
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
-                 grad_clip=1.0):
+                 grad_clip=1.0, target_clip_max=None):
         self.device = torch.device(device)
         self.q_net = FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim,
                               k_max).to(self.device)
@@ -113,6 +113,9 @@ class FRAPAgent:
         self.mini_size, self.batch_size = mini_size, batch_size
         self.eps_start, self.eps_end, self.eps_decay = eps_start, eps_end, eps_decay
         self.use_double, self.loss_fn, self.grad_clip = use_double, loss_fn, grad_clip
+        # R1 stabilization parity with DQN (dqn_agent_txw.py): clamp TD target
+        # at the domain bound (all-negative rewards -> true Q <= 0).
+        self.target_clip_max = None if target_clip_max is None else float(target_clip_max)
         self.use_per, self.start_train = False, False
         self.loss = None
         self.grad_norm = None
@@ -169,6 +172,8 @@ class FRAPAgent:
                 tq = self.target_q_net(next_states, pm, rel, exist).masked_fill(~mask, NEG)
                 mnq = tq.max(1)[0].view(-1, 1)
         tgt = rewards + self.gamma * mnq * (1 - dones)
+        if self.target_clip_max is not None:
+            tgt = tgt.clamp(max=self.target_clip_max)
         loss = F.smooth_l1_loss(q, tgt) if self.loss_fn == "huber" else F.mse_loss(q, tgt)
         self.loss = loss.item()
         with torch.no_grad():

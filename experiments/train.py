@@ -253,6 +253,25 @@ def train(cfg: dict, timestamp: str):
                     _g2s[_s2g[_a]] = _a
             green2std[_tid] = _g2s
 
+    # ── enum_frap (spec FRAP_ENUM_DESIGN_2026-07-02): enumerated protected
+    # phases + movement-duel agent. Old configs lack action_scheme -> None ->
+    # every enum line below is skipped; mutually exclusive with action_meta_file.
+    action_scheme = cfg.get("action_scheme")
+    enum_tables = None
+    if action_scheme not in (None, "enum_frap"):
+        sys.exit(f"unknown action_scheme: {action_scheme}")
+    if action_scheme == "enum_frap":
+        if action_meta_file:
+            sys.exit("action_scheme=enum_frap is mutually exclusive with action_meta_file")
+        if cfg.get("use_per"):
+            sys.exit("enum_frap + use_per not supported (uniform replay by design)")
+        if cfg.get("agent_arch", "mlp") != "mlp":
+            sys.exit("enum_frap defines its own network; agent_arch must be absent/mlp")
+        from frap_glue import load_enum_tables
+        enum_tables = load_enum_tables(cfg["enum_meta_file"])
+        print(f"  → action_scheme=enum_frap: K_max={enum_tables['k_max']}, "
+              f"{len(enum_tables['tls'])} TLS")
+
     def _masked_reset(_env, _seed):
         """env.reset + (masked mode) stash green->std maps on the freshly
         recreated TrafficSignal objects and recompute obs so the legacy
@@ -270,6 +289,14 @@ def train(cfg: dict, timestamp: str):
                     _ts.observation_fn.rebind_movements(ts_turnmap[_tid])
                 # TrafficSignal caches observation_space at __init__ (pre-
                 # stash, K-dim one-hot) — refresh to the 8-dim std space
+                _ts.observation_space = _ts.observation_fn.observation_space()
+            _states = {_tid: _env.traffic_signals[_tid].observation_fn()
+                       for _tid in _env.ts_ids}
+        if enum_tables is not None:
+            for _tid in _env.ts_ids:
+                _ts = _env.traffic_signals[_tid]
+                if hasattr(_ts.observation_fn, "rebind_movements"):
+                    _ts.observation_fn.rebind_movements(enum_tables["turnmap"][_tid])
                 _ts.observation_space = _ts.observation_fn.observation_space()
             _states = {_tid: _env.traffic_signals[_tid].observation_fn()
                        for _tid in _env.ts_ids}
@@ -325,7 +352,13 @@ def train(cfg: dict, timestamp: str):
                       if "count" in obs_fn0.fields else None
             attn_diag = {"layout": layout, "amb_off": amb_off}
 
-        agent = DQN(
+        if enum_tables is not None:
+            from frap_glue import build_frap_agent
+            agent = build_frap_agent(cfg, enum_tables, env, device)
+            print(f"  → agent: FRAPAgent (movement-duel), obs_dim="
+                  f"{env.observation_space.shape[0]}")
+        else:
+            agent = DQN(
             starting_state=tuple(initial_states[last_ts_id]),
             state_space=env.observation_space.shape[0],
             hidden_dim=cfg.get("hidden_dim", 64),
@@ -372,7 +405,11 @@ def train(cfg: dict, timestamp: str):
             try:
                 while not done["__all__"]:
                     # ── Act ───────────────────────────────────────────────────────
-                    if action_meta_file:
+                    if enum_tables is not None:
+                        # enum_frap: action IS the dense green-phase index (identity)
+                        actions = {ts: agent.take_action(initial_states[ts], ts)
+                                   for ts in env.ts_ids}
+                    elif action_meta_file:
                         actions = {ts: int(std2green[ts][agent.take_action(
                             initial_states[ts], mask=ts_mask[ts])]) for ts in env.ts_ids}
                     else:
@@ -399,7 +436,14 @@ def train(cfg: dict, timestamp: str):
                         ts_reward = r[ts]  # type: ignore[index]
                         ts_next_state = tuple(s[ts])  # type: ignore[index]
                         ts_done = done[ts]  # type: ignore[index]
-                        if action_meta_file:
+                        if enum_tables is not None:
+                            # enum_frap: executed dense green index == action;
+                            # transition carries its junction id (tensor lookup)
+                            agent.replay_buffer.add(
+                                initial_states[ts], actual_action,
+                                ts_reward, ts_next_state, ts_done, ts,
+                            )
+                        elif action_meta_file:
                             # buffer stores the executed CANONICAL STD action
                             actual_action = int(green2std[ts][actual_action])
                             agent.replay_buffer.add(
@@ -422,8 +466,11 @@ def train(cfg: dict, timestamp: str):
                             + (agent.eps_start - agent.eps_end)
                             * math.exp(-1.0 * agent.count / agent.eps_decay)
                         )
+                        # enum_frap: agent samples its own (tls-keyed) batch
+                        if enum_tables is not None:
+                            agent.learn_step()  # type: ignore[attr-defined]  # FRAPAgent
                         # PER: sample with current beta, get weights + indices
-                        if agent.use_per:
+                        elif agent.use_per:
                             b_s, b_a, b_r, b_ns, b_d, b_w, b_idx = \
                                 agent.replay_buffer.sample(agent.batch_size, beta=agent.current_beta)  # type: ignore[call-arg]
                             agent.update({
@@ -517,7 +564,10 @@ def train(cfg: dict, timestamp: str):
                 attn_ent: list = []; attn_mx: list = []; attn_amb: list = []
                 while not eval_done["__all__"]:
                     eval_mc.collect_step(env.sumo)
-                    if action_meta_file:
+                    if enum_tables is not None:
+                        eval_actions = {ts: agent.take_action(eval_obs[ts], ts)
+                                        for ts in env.ts_ids}
+                    elif action_meta_file:
                         eval_actions = {ts: int(std2green[ts][agent.take_action(
                             eval_obs[ts], mask=ts_mask[ts])]) for ts in env.ts_ids}
                     else:
