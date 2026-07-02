@@ -62,3 +62,58 @@ def test_gradients_flow():
             rel.unsqueeze(0).expand(3, -1, -1), exist.unsqueeze(0).expand(3, -1))
     q[:, :2].sum().backward()
     assert x.grad is not None and torch.isfinite(x.grad).all()
+
+
+# ---- Task 5: FRAPAgent ----
+import numpy as np  # noqa: E402
+from sumo_rl.agents.frap_agent import FRAPAgent  # noqa: E402
+
+
+def _agent(eps=0.0):
+    rel, pm, exist = _toy()
+    tls = {"J": {"pm": np.vstack([pm.numpy(), np.zeros((2, 12), dtype=np.float32)]),
+                 "rel": rel.numpy(), "exist": exist.numpy(),
+                 "mask": np.array([True, True, False, False])}}
+    ag = FRAPAgent(obs_dim=2 + 12 * 7, header_dim=2, slot_dim=7, tls_tensors=tls,
+                   lr=1e-3, gamma=0.95, epsilon=eps, target_update=5, capacity=500,
+                   mini_size=8, batch_size=8, eps_start=eps, eps_end=eps, eps_decay=1,
+                   device="cpu", k_max=4)
+    return ag, tls
+
+
+def test_take_action_always_valid():
+    ag, _ = _agent(eps=1.0)                       # pure exploration
+    s = np.random.randn(2 + 12 * 7).astype(np.float32)
+    for _ in range(50):
+        assert ag.take_action(s, "J") in (0, 1)
+    ag.epsilon = 0.0
+    for _ in range(10):
+        assert ag.take_action(s, "J") in (0, 1)   # greedy also masked
+
+
+def test_update_finite_and_counting():
+    torch.manual_seed(0)
+    np.random.seed(0)
+    ag, _ = _agent()
+    for k in range(64):
+        s = np.random.randn(2 + 12 * 7).astype(np.float32)
+        ns = np.random.randn(2 + 12 * 7).astype(np.float32)
+        ag.replay_buffer.add(s, k % 2, -1.0, ns, False, "J")
+    losses = []
+    for _ in range(30):
+        ag.learn_step()
+        losses.append(ag.loss)
+    assert all(math.isfinite(l) for l in losses)
+    assert ag.q_mean is not None and ag.count == 30 and ag.start_train
+    assert np.mean(losses[-5:]) <= np.mean(losses[:5]) * 2 + 1.0   # not exploding
+
+
+def test_dqn_compatible_surface():
+    ag, _ = _agent()
+    for attr in ("q_net", "target_q_net", "optimizer", "epsilon", "eps_start",
+                 "eps_end", "eps_decay", "count", "loss", "grad_norm", "q_mean",
+                 "q_abs_max", "start_train", "use_per", "replay_buffer",
+                 "mini_size", "batch_size"):
+        assert hasattr(ag, attr), attr
+    assert ag.use_per is False
+    assert ag.replay_buffer.size() == 0
