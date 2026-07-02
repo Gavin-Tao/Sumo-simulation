@@ -196,6 +196,9 @@ def main():
     print(f"cars: L1(calibrated)={n_l1} + L2(background)={count_vehicles(bg)} "
           f"-> {len(vehs)} total; wrote {car_out}")
 
+    # [5.5] depart smoothing + origin dispersal (spawn-flood cap at source)
+    run([sys.executable, os.path.join(_HERE, "smooth_departs.py"), NET, car_out])
+
     # [6] ambulances
     net = common.load_net(NET)
     gen_ambulances(net, hour, seed, os.path.join(out_dir, f"amb_weekday_{hour:02d}h.rou.xml"))
