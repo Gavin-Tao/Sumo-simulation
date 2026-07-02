@@ -102,6 +102,12 @@ def main():
     gen_routes.main()
 
     cfg_dir = os.path.join(out_dir, f"weekday_{hour:02d}h")
+    # gen_routes.py emits its own dublin-named sumocfg pointing at
+    # ../dublin_8std.net.xml — broken outside the dublin tree; remove it so
+    # only the valid {prefix}-named cfg remains (user hit this 2026-07-02).
+    stray = os.path.join(cfg_dir, f"dublin_weekday_{hour:02d}h.sumocfg")
+    if os.path.exists(stray):
+        os.remove(stray)
     cfg_path = os.path.join(cfg_dir, f"{prefix}_weekday_{hour:02d}h.sumocfg")
     with open(cfg_path, "w") as f:
         f.write(SUMOCFG.format(net_base=os.path.basename(net_path), h=hour))
