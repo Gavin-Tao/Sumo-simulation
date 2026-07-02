@@ -360,7 +360,8 @@
       "Bash(kpsewhich tikz.sty)",
       "Bash(kpsewhich algpseudocode.sty)",
       "Bash(git config *)",
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(python3 /tmp/claude-1000/-home-xiaowen-sumo-rl/13de5482-0d0e-4edb-bbc7-75a87c841e02/scratchpad/edge_forensics.py)"
     ],
     "additionalDirectories": [
       "/tmp",
