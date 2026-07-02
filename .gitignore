@@ -47,3 +47,5 @@ Thumbs.db
 nets/**/output/
 dublin_sumo_files/bus/shapes.txt
 dublin_sumo_files/bus/stop_times.txt
+/model/
+experiments/model/

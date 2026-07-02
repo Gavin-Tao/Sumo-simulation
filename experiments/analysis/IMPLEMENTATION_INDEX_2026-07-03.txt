@@ -1,0 +1,80 @@
+================================================================================
+  IMPLEMENTATION_INDEX_2026-07-03 — 2026-07-02/03 大批次交付的组件索引
+  (每项: 入口 | 验证证据 | 运行方式。设计依据见各自 spec/roadmap 章节。)
+================================================================================
+
+  硬纪律 (全批次统一, 每次 train.py 改动后均重验):
+  * 老 config 逐位不变 — 回归基线 experiments/tools/frap/regress_baseline.json
+    (exp208=104db4.., exp136=1866cc..), 复核命令:
+    python experiments/tools/frap/regress_dryrun.py <老config>
+  * 现有核心文件零修改 (traffic_signal/env/observations/rewards/dqn_agent_txw);
+    唯一可改文件 = train.py, 只加互斥分支 (action_scheme 键控)。
+  * pytest 全套: python -m pytest experiments/tests/ (当前 16 通过)。
+
+╔══ 1. FRAP-enum (exp211, 已训完 800ep) ══════════════════════════════════════╗
+  spec: FRAP_ENUM_DESIGN_2026-07-02.txt | 菜单: enum_phases.py →
+  dublin_enum.net.xml/meta (K_max=11) | 网络: sumo_rl/agents/frap_agent.py
+  (movement 对决, 精确分解测试) | 接入: frap_glue.py + train.py
+  action_scheme: enum_frap | ckpt: models/exp211_*/2026-07-02T17-30-29/best.pth
+  训练: cd experiments && python train.py --config configs/exp211_*.yaml
+
+╔══ 2. PPO 通用 trainer (exp212 运行中 / exp216=colight 待跑) ═══════════════╗
+  experiments/train_ppo_dublin.py — 1x1/1x3/Dublin 一个文件; meta 可选
+  (无 meta = 恒等 mask); coordination: colight_orig (GATLayer 复用,
+  ≤cat_feat 参数量与 CoLightOrigQNet 逐一相等 125824)。
+  DQN 协议全对齐: eval_seed 贪心 eval / 滑窗 best (best.zip) / basic 键过滤
+  / 接缝断言 (eval 插入不污染训练流, 逐位验证)。
+  configs: exp212(=exp205 换算法) exp216(=exp209 换算法, 原名 exp213 已让号)
+
+╔══ 3. MoE-Gcμ (exp213/214/215 已排队) ═══════════════════════════════════════╗
+  设计: RESEARCH_ROADMAP §A1 (深度-1 MPC 专家终版)
+  专家: sumo_rl/agents/moe_experts.py — Δ_k(p) 一步预测 (队尾修正/黄灯成本/
+    分级 ETA/平局保持), intent 精确逐车计数 (与 obs slot_stats=intent 同款
+    getRoute 路径, 用户指正后升级); 行为级单测 = 手算分数对照
+    (experiments/tests/test_moe_experts.py: expert-5 为未停 amb 提前开门)。
+  胶水: experiments/moe_glue.py — L1 菜单可配置: enum meta 或 8std meta
+    自动识别; L4 presence 字典序 mask (moe_lexicographic 键)。
+  接入: train.py action_scheme: moe (gate=现有 DQN, action_space=6)。
+  configs: exp213(1x1 enum 12相位) exp214(1x1 8std 7相位) exp215(Dublin enum,
+    exp208 配方)。调度: 212完→213+214并行→215 (监视器自动)。
+  已声明近似: 容量侧共享车道 | 黄灯期新相位参照 | 恒速外推粒度。
+
+╔══ 4. KAN 蒸馏 (experiments/tools/kan/) ═════════════════════════════════════╗
+  FRAP 线 (公式级): K1 extract_frap_targets.py (27 维命名轴, amb 分层) →
+    K2/K3 kan_distill.py (--core16 | --shared-levels: α=有效优先权重读出 |
+    --prune --symbolic) → K4 kan_swap_eval.py (蒸馏件回插冻结聚合,
+    按 rel 类批量前向, 一致率+闭环)。exp211 best.pth 上全链验证。
+  8std 线 (结构检验): extract_dqn8std_targets.py (legacy 26 维, A=served
+    incidence 从 meta) + kan_factorized_8std.py
+    (Q_k≈ΣA·g+b·滞回, 有效动作中心化损失=成对Q差消V(s);
+     --mode factorized|flat 三格对照)。exp208 best.pth 上双模式验证。
+  已排程: exp215 结束后自动 K1 全量 + K2 四拟合 (监视器)。
+  注意: pykan 会在 cwd 写 ./model/ 检查点目录 (已 gitignore)。
+
+╔══ 5. LLM 政策即代码 (experiments/tools/llm/) ═══════════════════════════════╗
+  支点: 派生 vType 改型 (bus@l4 + 扩展表) + 入网即分类 → 动态等级穿透
+  所有既有消费者的静态查表, 零改动 obs/reward/专家 (中途变级=v2 才碰 memo)。
+  policy_dsl.py (IR schema+校验; 负例 3/3 拒) | compile_policy.py
+  (manual/openai/ollama, 校验重试环, 拒猜→澄清) | level_resolver.py
+  (谓词白名单; sched_delay=phase-2) | policy_runtime.py (改型守护) |
+  verify_policy.py (KPI 断言→离线 eval, fixed/frap 控制器, *_degradation
+  对基线双跑) | benchmark/ 12 金标+语义等价判分 (自检 12/12) |
+  explain_policy.py (接地报告; 待加 --lang)。
+  E2E: Dublin+exp211, bus→5 政策 vs 基线, 1 辆改型 bus@l5, KPI PASS。
+  待办: 金标扩 50 | 真 LLM 正确率 | dqn8std 控制器 | sched_delay 谓词。
+
+╔══ 6. 新网管线 (experiments/tools/dcc/) ═════════════════════════════════════╗
+  reindex_8std_net.py / enum_phases_net.py — 任意网双菜单 (1x1amb: enum 12
+  vs 8std 7; dcc 893/1044; 1x6 5/6) | retype_rbl.py (185 rbl→priority) |
+  prune_unreachable.py (ratio 图语义: U-turn 除非被迫) | gen_demand_net.py
+  (Dublin 管线常量覆写复用; load_net 默认参绑定 bug 已修) |
+  gen_demand_dcc.py + scats_to_edgecounts.py + smooth_departs.py
+  (混合校准: routeSampler 贴 406 SCATS 行 + 背景层 + 逐时段容量缩放
+  02h@1.0/11h@0.35/18h@0.25 + 发车限流 6/分/车道 + depart 重排序修复)。
+  场景: nets/1x6/ 与 nets/dcc/ 各三时段 (目录已分家防覆盖)。
+
+  运行实况 (2026-07-03 凌晨): exp211 ✓完 | exp212 PPO 运行中 |
+  213/214/215/KAN全量 在自动链上。事故账: GPU 驱动崩溃 (重启修复) |
+  pgrep 自匹配 (v2 修复) | routeSampler entered/count 属性 | depart 乱序
+  静默丢车 — 全部入 commit message 与各 spec。
+================================================================================
