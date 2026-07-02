@@ -80,3 +80,54 @@ def movement_rel(mov, nodes, st):
                 all_merge = all(_edge_share(mov, i, j) for i, j in evid)
                 rel[ka][kb] = 2 if all_merge else 3
     return rel
+
+
+def enumerate_menu(rel, st):
+    """All maximal conflict-free slot sets (conflict = rel>=2), sorted by
+    12-bit multi-hot tuple for reproducibility. No ordering prior — complete."""
+    exist = sorted(SLOT_IDX[s] for s in st)
+    res = []
+
+    def grow(cur, cand):
+        ext = [c for c in cand if all(rel[c][x] < 2 for x in cur)]
+        if not ext:
+            if cur:
+                res.append(frozenset(cur))
+            return
+        for k, c in enumerate(ext):
+            grow(cur | {c}, ext[k + 1:])
+    grow(set(), exist)
+    maximal = [s for s in set(res) if not any(s < r for r in res if r != s)]
+    key = lambda p: tuple(1 if m in p else 0 for m in range(12))  # noqa: E731
+    return sorted(maximal, key=key)
+
+
+def phase_state(mov, st, members, n_state):
+    state = ["r"] * n_state
+    inv = {SLOT_IDX[s]: idxs for s, idxs in st.items()}
+    for m in members:
+        for i in inv[m]:
+            state[i] = "G"
+    return "".join(state)
+
+
+def verify_phase(mov, nodes, state):
+    """Hard verifier (spec §6 V1): protected-only, zero foe, zero lane-merge."""
+    if "g" in state:
+        raise RuntimeError("protected-only violated: 'g' present")
+    gset = [i for i in sorted(mov["links"]) if state[i] == "G"]
+    for a in range(len(gset)):
+        for b in range(a + 1, len(gset)):
+            i, j = gset[a], gset[b]
+            if not same_arm(mov, i, j) and are_foes(mov, nodes, i, j):
+                raise RuntimeError(f"foe conflict {i},{j} in {state}")
+            if _lane_share(mov, i, j):
+                raise RuntimeError(f"merge conflict {i},{j} in {state}")
+    for i in gset:                                    # shared-index self merge
+        here = set()
+        for c in mov["links"][i]:
+            key = (c["to_edge"], c["to_lane"])
+            if key in here:
+                raise RuntimeError(f"shared-index merge {i}->{key}")
+            here.add(key)
+    return True

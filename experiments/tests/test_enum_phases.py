@@ -46,3 +46,42 @@ def test_no_intra_slot_conflict():
     for tid in META8:
         mov = common.tls_movements(NET, tid)
         assert EP.intra_slot_conflicts(mov, mov["nodes"], EP.slot_tables(mov)) == []
+
+
+# ---- Task 2: menu enumeration + phase strings ----
+
+def _menu(tid):
+    mov = common.tls_movements(NET, tid)
+    st = EP.slot_tables(mov)
+    rel = EP.movement_rel(mov, mov["nodes"], st)
+    return mov, st, rel, EP.enumerate_menu(rel, st)
+
+
+def test_menu_maximality_and_conflictfree():
+    for tid in META8:
+        mov, st, rel, menu = _menu(tid)
+        exist = [EP.SLOT_IDX[s] for s in st]
+        assert len(menu) >= 1, tid
+        for p in menu:
+            for m in p:
+                for n in p:
+                    assert rel[m][n] < 2, (tid, m, n)          # zero conflict inside
+            for n in exist:                                     # maximality
+                if n not in p:
+                    assert any(rel[m][n] >= 2 for m in p), (tid, n)
+
+
+def test_every_movement_served():
+    for tid in META8:
+        _, st, _, menu = _menu(tid)
+        for s in st:
+            assert any(EP.SLOT_IDX[s] in p for p in menu), (tid, s)
+
+
+def test_phase_state_protected_only():
+    for tid in META8:
+        mov, st, rel, menu = _menu(tid)
+        for p in menu:
+            state = EP.phase_state(mov, st, p, mov["n_links"])
+            assert "g" not in state and "G" in state
+            EP.verify_phase(mov, mov["nodes"], state)           # raises on violation
