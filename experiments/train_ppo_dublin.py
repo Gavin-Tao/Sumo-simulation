@@ -34,7 +34,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "experiments"))
 
 from sb3_contrib import MaskablePPO
 from stable_baselines3.common.vec_env import VecNormalize
-from gym import spaces
+from gymnasium import spaces  # sb3>=2.x requires gymnasium spaces, not gym
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.environment import observations as obsmod
@@ -156,6 +156,11 @@ class DublinVecEnv(SumoVecEnv):
         if method_name == "action_masks":       # get_action_masks() protocol
             return [self.ts_mask[ts] for ts in self.ts_ids]
         return super().env_method(method_name, *args, indices=indices, **kwargs)
+
+    def get_attr(self, attr_name, indices=None):
+        if attr_name == "action_masks":         # is_masking_supported() probe
+            return [self.ts_mask[ts] for ts in self.ts_ids]
+        return super().get_attr(attr_name, indices=indices)
 
 
 # ── Callback: maskable rollout-buffer patch ────────────────────────────────────
