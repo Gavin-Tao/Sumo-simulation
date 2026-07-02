@@ -85,3 +85,30 @@ def test_phase_state_protected_only():
             state = EP.phase_state(mov, st, p, mov["n_links"])
             assert "g" not in state and "G" in state
             EP.verify_phase(mov, mov["nodes"], state)           # raises on violation
+
+
+def test_written_artifacts_row_correspondence():
+    """The load-bearing contract: net tlLogic green order == meta
+    phase_movements row order, per link, per phase (action k -> phase k ->
+    Q row k must be the same phase). Verifies the WRITTEN files."""
+    import xml.etree.ElementTree as ET
+    meta_p = os.path.join(common.OUT_DIR, "dublin_enum_meta.json")
+    net_p = os.path.join(common.OUT_DIR, "dublin_enum.net.xml")
+    if not os.path.exists(meta_p):
+        import pytest
+        pytest.skip("enum artifacts not generated")
+    meta = json.load(open(meta_p))
+    root = ET.parse(net_p).getroot()
+    for tl in root.findall("tlLogic"):
+        tid = tl.get("id")
+        t = meta["tls"][tid]
+        greens = [p.get("state") for p in tl.findall("phase")
+                  if "y" not in p.get("state")]
+        assert len(greens) == t["n_phases"], tid
+        link_slot = {int(i): EP.SLOT_IDX[(c[0]["approach"], c[0]["turn"])]
+                     for i, c in t["links"].items()}
+        for k, state in enumerate(greens):
+            assert "g" not in state
+            for i, s in link_slot.items():
+                assert (state[i] == "G") == (t["phase_movements"][k][s] == 1), \
+                    (tid, k, i)
