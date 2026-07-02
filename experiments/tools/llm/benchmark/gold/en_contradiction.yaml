@@ -1,0 +1,4 @@
+nl: Buses should be level 4 at all times and also level 2 at all times.
+ir:
+  clarification_needed: Buses cannot be unconditionally level 4 and level 2 simultaneously
+    — which applies, or under what condition?

@@ -1,0 +1,13 @@
+nl: 救护车5级, 公交3级, 其他车辆1级。
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: bus
+    level: 3
+  - match:
+      type: '*'
+    level: 1

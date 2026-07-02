@@ -1,0 +1,18 @@
+nl: 'Run a pilot: half of the buses (random 50%) get level 4, the rest stay at 3.
+  Ambulances 5, cars 1.'
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: bus
+      share_lt: 0.5
+    level: 4
+  - match:
+      type: bus
+    level: 3
+  - match:
+      type: '*'
+    level: 1

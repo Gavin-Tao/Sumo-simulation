@@ -1,0 +1,19 @@
+nl: 前1800秒内货车提为3级(夜间配送), 之后1级; 救护车5, 公交3。
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: truck
+      time_window:
+      - 0
+      - 1800
+    level: 3
+  - match:
+      type: bus
+    level: 3
+  - match:
+      type: '*'
+    level: 1

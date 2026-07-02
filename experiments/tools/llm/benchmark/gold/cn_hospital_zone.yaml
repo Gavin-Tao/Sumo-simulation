@@ -1,0 +1,15 @@
+nl: 医院区内救护车5级、小汽车压到1级; 区外公交3级、其他默认1级。
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: bus
+    level: 3
+  - match:
+      type: '*'
+    level: 1
+  regions:
+    hospital_zone: []

@@ -1,0 +1,12 @@
+nl: Ambulances get absolute priority, guaranteed strictly; everything else ordinary.
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: '*'
+    level: 1
+  guarantees:
+    lexicographic_min_level: 5

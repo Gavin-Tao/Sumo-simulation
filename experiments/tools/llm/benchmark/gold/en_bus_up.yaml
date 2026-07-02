@@ -1,0 +1,13 @@
+nl: Raise buses to level 4; ambulances remain top at 5; cars ordinary.
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: bus
+    level: 4
+  - match:
+      type: '*'
+    level: 1

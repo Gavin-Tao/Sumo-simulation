@@ -1,0 +1,16 @@
+nl: 新加入的电车按4级对待; 救护车5, 公交3, 其余1。
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: tram
+    level: 4
+  - match:
+      type: bus
+    level: 3
+  - match:
+      type: '*'
+    level: 1

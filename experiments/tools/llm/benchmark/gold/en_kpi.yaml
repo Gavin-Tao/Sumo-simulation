@@ -1,0 +1,21 @@
+nl: 'Buses level 4, ambulances 5, rest 1. Requirement: bus P90 waiting under 40 seconds
+  and car mean waiting must not degrade more than 10 percent.'
+ir:
+  version: 1
+  assignments:
+  - match:
+      type: ambulance
+    level: 5
+  - match:
+      type: bus
+    level: 4
+  - match:
+      type: '*'
+    level: 1
+  kpis:
+  - metric: bus_wait_p90
+    op: <
+    value: 40
+  - metric: car_wait_mean_degradation
+    op: <
+    value: 0.1
