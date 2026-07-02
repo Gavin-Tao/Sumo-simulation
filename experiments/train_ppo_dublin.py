@@ -147,11 +147,12 @@ class MaskedSumoVecEnv(SumoVecEnv):
     last_actual_actions returned in STD space (rollout patch stores them)."""
 
     def __init__(self, sumo_env, ts_mask, std2green, green2std, turnmap,
-                 neighbor_map=None):
+                 neighbor_map=None, training_seed=0):
         self.ts_mask, self.std2green = ts_mask, std2green
         self.green2std, self.turnmap = green2std, turnmap
         self.neighbor_map = neighbor_map
-        sumo_env.reset(sumo_env.sumo_seed)
+        self.training_seed = int(training_seed)   # every training episode resets
+        sumo_env.reset(self.training_seed)        # with THIS seed (train.py parity)
         self._rebind(sumo_env)
         super().__init__(sumo_env)
         n_std = len(next(iter(ts_mask.values())))
@@ -187,7 +188,13 @@ class MaskedSumoVecEnv(SumoVecEnv):
         return np.stack(rows)
 
     def reset(self):
-        states = self.sumo_env.reset(self.sumo_env.sumo_seed)
+        return self.reset_with_seed(self.training_seed)
+
+    def reset_with_seed(self, seed):
+        """Explicit-seed reset + rebind + fresh obs (mirrors train.py's
+        _masked_reset(env, seed)). Used with training_seed for training
+        episodes and eval_seed for the DQN-parity eval episodes."""
+        self.sumo_env.reset(int(seed))
         self._rebind(self.sumo_env)
         states = {tid: self.sumo_env.traffic_signals[tid].observation_fn()
                   for tid in self.sumo_env.ts_ids}
@@ -257,6 +264,127 @@ class CoLightGATExtractor(BaseFeaturesExtractor):
 # ── Callback: maskable rollout-buffer patch ────────────────────────────────────
 
 class DublinMetricsCallback(SumoMetricsCallback):
+    """Adds the DQN trainer's eval protocol on top of the uni-script callback:
+    every eval_interval episodes a GREEDY (deterministic) eval episode on
+    eval_seed, EpisodeMetricsCollector with train.py's exact wandb keys and
+    basic-mode filter, best checkpoint by sliding-window mean (B2 criterion),
+    best_metrics.json snapshot. Everything mirrors train.py:506-660 so
+    eval_system/* curves ARE directly comparable with the DQN runs."""
+
+    _BASIC = {"avg_stopped_time", "avg_stop_events", "avg_speed",
+              "avg_stopped_time_per_visit", "avg_stop_events_per_visit",
+              "xts_avg_stopped_time", "xts_avg_stop_events", "xts_avg_speed"}
+    _BASIC_SYS = _BASIC | {"completion_rate"}
+
+    def __init__(self, *args, eval_interval=0, eval_seed=42,
+                 best_eval_window=3, **kw):
+        super().__init__(*args, **kw)
+        self.eval_interval = int(eval_interval)
+        self.eval_seed = int(eval_seed)
+        self.best_eval_window = int(best_eval_window)
+        self.best_eval_hist = []
+        self.best_eval_reward = -float("inf")
+
+    def _on_episode_end(self):
+        ended = self.episode          # episode that just finished
+        super()._on_episode_end()     # train logs + periodic ckpt + counters
+        if self.logging_mode != "none":
+            try:  # D2 parity: end-of-episode insertion backlog
+                wandb.log({"train/pending_veh": len(
+                    self.sumo_env.sumo.simulation.getPendingVehicles())},
+                    step=self.num_timesteps)
+            except Exception:
+                pass
+        if self.eval_interval > 0 and ended % self.eval_interval == 0:
+            self._run_eval(ended)
+
+    def _run_eval(self, episode):
+        from sumo_rl.environment.metrics import EpisodeMetricsCollector
+        env = self.base_env
+        obs = env.reset_with_seed(self.eval_seed)
+        mc = EpisodeMetricsCollector(self.ts_lane_map,
+                                     delta_time=self.sumo_env.delta_time,
+                                     excluded_lanes=self.always_green)
+        ts_reward = {ts: 0.0 for ts in env.ts_ids}
+        masks = env.action_masks()
+        done = False
+        while not done:
+            mc.collect_step(self.sumo_env.sumo)
+            actions, _ = self.model.predict(obs, action_masks=masks,
+                                            deterministic=True)
+            action_dict = {ts: int(env.std2green[ts][int(actions[i])])
+                           for i, ts in enumerate(env.ts_ids)}
+            states, rewards, dones, _ = self.sumo_env.step(action=action_dict)
+            for ts in env.ts_ids:
+                ts_reward[ts] += rewards[ts]
+            obs = env._stack(states)
+            done = bool(dones["__all__"])
+        mc.collect_step(self.sumo_env.sumo)
+        mc.finalize(self.sumo_env.sumo)
+        eval_mean = sum(ts_reward.values()) / len(env.ts_ids)
+
+        # B2 criterion — sliding mean of the last K evals (train.py:596-608)
+        self.best_eval_hist.append(eval_mean)
+        if len(self.best_eval_hist) > self.best_eval_window:
+            del self.best_eval_hist[:len(self.best_eval_hist) - self.best_eval_window]
+        sliding = sum(self.best_eval_hist) / len(self.best_eval_hist)
+        if len(self.best_eval_hist) == self.best_eval_window \
+                and sliding > self.best_eval_reward:
+            self.best_eval_reward = sliding
+            os.makedirs(self.model_dir, exist_ok=True)
+            self.model.save(os.path.join(self.model_dir, "best"))
+            if self.norm_env is not None:
+                self.norm_env.save(os.path.join(self.model_dir, "best_vecnorm.pkl"))
+            best_metrics = {"_meta": {
+                "episode": episode,
+                "eval_mean_reward": float(self.best_eval_reward),
+                "eval_last_reward": float(eval_mean),
+                "best_criterion": f"sliding{self.best_eval_window}",
+                "ckpt_filename": "best.zip"},
+                "metrics": mc.summary()}
+            with open(os.path.join(self.model_dir, "best_metrics.json"), "w") as f:
+                json.dump(best_metrics, f, indent=2, default=float)
+            print(f"  → best ckpt updated (sliding{self.best_eval_window}="
+                  f"{self.best_eval_reward:.4f}, last={eval_mean:.4f})", flush=True)
+
+        if self.logging_mode != "none":  # train.py:625-653 key/filter parity
+            all_mc = {k.replace("eval/", "eval_", 1): v
+                      for k, v in mc.to_flat_dict(prefix="eval").items()}
+            if self.logging_mode == "full":
+                mc_log = all_mc
+            elif self.logging_mode == "basic":
+                mc_log = {k: v for k, v in all_mc.items()
+                          if (k.startswith("eval_system/")
+                              and k.split("/")[-1] in self._BASIC_SYS)
+                          or (not k.startswith("eval_system/")
+                              and k.split("/")[-1] in self._BASIC)}
+            else:
+                mc_log = {}
+            log = {f"eval_{ts}/reward": ts_reward[ts] for ts in env.ts_ids}
+            log["eval_system/mean_reward"] = eval_mean
+            log["eval_system/best_reward"] = self.best_eval_reward
+            try:
+                log["eval_system/pending_veh"] = len(
+                    self.sumo_env.sumo.simulation.getPendingVehicles())
+            except Exception:
+                pass
+            wandb.log({**mc_log, **log}, step=self.num_timesteps)
+        print(f"  → eval ep={episode}  mean_reward={eval_mean:.4f}", flush=True)
+
+        # restore the training stream: deterministic reset with training seed
+        restored = env.reset_with_seed(env.training_seed)
+        # seam assertion: at the terminal step SB3 holds the post-reset obs in
+        # the local `new_obs` (written to _last_obs only AFTER this callback);
+        # our restore must reproduce it bit-for-bit, proving the eval insertion
+        # cannot contaminate the training rollout. NOTE: the eval loop drives
+        # sumo_env DIRECTLY (not the VecEnv), so last_actual_actions is not
+        # clobbered before SB3's buffer.add of the terminal transition (which
+        # also runs after this callback).
+        expected = self.locals.get("new_obs")
+        if expected is not None:
+            assert np.allclose(np.asarray(expected, dtype=np.float32), restored,
+                               atol=1e-6), "eval seam broke training-stream determinism"
+
     def _patch_rollout_buffer(self) -> None:
         """Maskable variant of the uni script's executed-action patch: add()
         carries action_masks, and the log-prob re-evaluation must pass the
@@ -326,7 +454,8 @@ def train(cfg, timestamp, gpu):
         assert neighbor_map, "coordination: colight_orig requires neighbor_map"
 
     base_env = MaskedSumoVecEnv(sumo_env, ts_mask, std2green, green2std,
-                                turnmap, neighbor_map=neighbor_map)
+                                turnmap, neighbor_map=neighbor_map,
+                                training_seed=cfg.get("seed", 0))
     norm_env = VecNormalize(base_env, norm_obs=False, norm_reward=True,
                             clip_reward=cfg.get("clip_reward", 10.0),
                             gamma=cfg.get("gamma", 0.99))
@@ -338,7 +467,10 @@ def train(cfg, timestamp, gpu):
         base_env=base_env, norm_env=norm_env, cfg=cfg, model_dir=model_dir,
         logging_mode=logging_mode,
         metrics_interval=cfg.get("metrics_interval", 50),
-        checkpoint_interval=cfg.get("checkpoint_interval", 50))
+        checkpoint_interval=cfg.get("checkpoint_interval", 50),
+        eval_interval=cfg.get("eval_interval", 0),
+        eval_seed=cfg.get("eval_seed", 42),
+        best_eval_window=cfg.get("best_eval_window", 3))
 
     policy_kwargs = {}
     if coordination:
