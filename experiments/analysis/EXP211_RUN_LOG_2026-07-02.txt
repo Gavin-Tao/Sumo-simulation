@@ -1,0 +1,41 @@
+================================================================================
+  EXP211_RUN_LOG_2026-07-02 — enum_frap 首次正式训练 (关键数据记录, 供后续分析)
+================================================================================
+
+  启动: 2026-07-02 17:10:56 (本地), PID 45758, GPU 0 (RTX 3060 Ti)
+  命令: cd experiments && nohup python train.py \
+          --config configs/exp211_dublin11h_531_enumfrap.yaml --gpu 0 \
+          > logs/exp211_nohup.log 2>&1 &
+  wandb: project sumo-rl-dublin, group exp211_dublin11h_531_enumfrap,
+         run qk1p1344 (exp211_dublin11h_531_enumfrap_2026-07-02T17-10-56)
+         https://wandb.ai/taoxw19-/sumo-rl-dublin/runs/qk1p1344
+  checkpoints: experiments/models/exp211_dublin11h_531_enumfrap/2026-07-02T17-10-56/
+         每 50 ep 一存 + best.pth (末 3 次 eval 滑动均值判据, B2 口径)
+  日志: experiments/logs/exp211_nohup.log (nohup, stdout 块缓冲, 更新有延迟)
+
+  ── 配置快照 (与 exp208 的全部差异) ──────────────────────────────────────────
+  action_scheme: enum_frap | enum_meta_file: dublin_enum_meta.json (K_max=11)
+  net/cfg: dublin_enum.net.xml / dublin_weekday_11h_enum.sumocfg
+  obs_phase_state: legacy → perphase (obs dim 326, 全网统一)
+  frap: embed_dim 16, pair_dim 16
+  其余逐项与 exp208 相同: 531 优先表, priority-avg-waiting, seed 0,
+  eval_seed 123, ep 800, eps_decay 30000, target_update 720, capacity 300k,
+  double+huber+grad_clip 1.0+target_clip_max 0.0, batch 256, mini 1000
+
+  ── 后续分析要点 (预注册, 防事后挑数) ────────────────────────────────────────
+  1. 对照对象: exp208 (8std+DQN, 同 seed 同稳定化包)。主指标 =
+     eval_system 系列 (train.py 内置 EpisodeMetricsCollector) + train/loss
+     收敛速度 (样本效率是 FRAP 归纳偏置的预期兑现处)。
+  2. 诚实预期 (spec 前言): 同网终局打平~小赢; 菜单效应≈0 (3.7 vs 3.4)。
+     若明显更差 → 先查 train/q_abs_max 与 grad_norm (乘性交互层稳定性,
+     spec §7 已备后备: 降 E/k、调 clip)。
+  3. amb 指标永不引用单次 eval (underpowered, 1x3 教训); 用末段多 eval
+     聚合 + 与 exp208 同窗对比。
+  4. ep800 判据沿用 R-campaign 口径 (dublin-stability-campaign)。
+  5. 训完要画边级图 → 需先做 eval 工具链 FRAP 适配 (二期, 未实施)。
+  6. 崩盘/异常处置: 先保 log + wandb 曲线截图再动任何东西;
+     forensics 文档是 ground truth 的惯例不变。
+
+  基线兜底: 老 config 回归基线 experiments/tools/frap/regress_baseline.json
+  (exp208 104db4.., exp136 1866cc..) — 任何人再改 train.py 都必须重跑对账。
+================================================================================
