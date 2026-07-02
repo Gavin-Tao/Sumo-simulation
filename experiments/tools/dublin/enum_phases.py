@@ -131,3 +131,85 @@ def verify_phase(mov, nodes, state):
                 raise RuntimeError(f"shared-index merge {i}->{key}")
             here.add(key)
     return True
+
+
+def main():
+    demoted = os.path.join(common.OUT_DIR, "dublin_8action_demoted.net.xml")
+    src = sys.argv[1] if len(sys.argv) > 1 else demoted
+    print("source net:", src)
+    net = common.load_net(src)
+    tree = ET.parse(src)
+    root = tree.getroot()
+    tls_ids = [tl.get("id") for tl in root.findall("tlLogic")]
+    all_meta, programs, kmax = {}, {}, 0
+    for tid in tls_ids:
+        mov = common.tls_movements(net, tid)
+        nodes = mov["nodes"]
+        st = slot_tables(mov)
+        bad = intra_slot_conflicts(mov, nodes, st)
+        if bad:
+            sys.exit(f"V1 FAIL {tid}: intra-slot conflicts {bad}")
+        rel = movement_rel(mov, nodes, st)
+        menu = enumerate_menu(rel, st)
+        greens = []
+        for p in menu:
+            s = phase_state(mov, st, p, mov["n_links"])
+            verify_phase(mov, nodes, s)
+            greens.append(s)
+        kmax = max(kmax, len(menu))
+        phases = []
+        for k, s in enumerate(greens):
+            phases.append((GREEN_DUR, s))
+            y = yellow_between(s, greens[(k + 1) % len(greens)])
+            if "y" in y:
+                phases.append((YELLOW_DUR, y))
+        programs[tid] = phases
+        all_meta[tid] = {
+            "n_phases": len(menu),
+            "phase_movements": [[1 if m in p else 0 for m in range(12)] for p in menu],
+            "movement_rel": rel,
+            "links": {str(i): mov["links"][i] for i in sorted(mov["links"])},
+        }
+    for m in all_meta.values():                       # pad masks to global K_max
+        m["mask"] = [k < m["n_phases"] for k in range(kmax)]
+    for tl in root.findall("tlLogic"):
+        tid = tl.get("id")
+        tl.set("programID", "enum")
+        tl.set("offset", "0")
+        tl.set("type", "static")
+        for p in list(tl):
+            tl.remove(p)
+        for dur, s in programs[tid]:
+            ET.SubElement(tl, "phase", duration=dur, state=s)
+    tree.write(NET_ENUM, encoding="UTF-8", xml_declaration=True)
+    entries, exits = common.boundary_edges(net)
+    json.dump({"action_scheme": "enum_frap", "n_actions": kmax,
+               "source_net": os.path.relpath(src, common.REPO),
+               "boundary": {"entries": sorted(e.getID() for e in entries),
+                            "exits": sorted(e.getID() for e in exits)},
+               "tls": all_meta}, open(META_ENUM, "w"), indent=1)
+    sizes = sorted(m["n_phases"] for m in all_meta.values())
+    print(f"TLS: {len(all_meta)}  K_max={kmax}  menu sizes={sizes}  "
+          f"mean={sum(sizes) / len(sizes):.1f}")
+    res = subprocess.run(["sumo", "-n", NET_ENUM, "--no-step-log", "-e", "0"],
+                         capture_output=True, text=True)
+    bad_lines = [l for l in (res.stderr or "").splitlines() if "Error" in l]
+    if res.returncode != 0 or bad_lines:
+        print(res.stderr)
+        sys.exit("V1 FAIL: sumo cannot load the enum net")
+    warn = [l for l in (res.stderr or "").splitlines() if "Warning" in l]
+    print(f"sumo load: OK ({len(warn)} warnings)")
+    for w in warn[:8]:
+        print("  ", w)
+    print(f"wrote {NET_ENUM}\nwrote {META_ENUM}")
+    for h in ("02", "11", "18"):
+        src_cfg = os.path.join(common.OUT_DIR, f"weekday_{h}h", f"dublin_weekday_{h}h.sumocfg")
+        dst_cfg = src_cfg.replace(".sumocfg", "_enum.sumocfg")
+        txt = open(src_cfg).read().replace("dublin_8std.net.xml", "dublin_enum.net.xml")
+        assert "dublin_enum.net.xml" in txt, src_cfg
+        open(dst_cfg, "w").write(txt)
+        print(f"wrote {dst_cfg}")
+
+
+if __name__ == "__main__":
+    main()
