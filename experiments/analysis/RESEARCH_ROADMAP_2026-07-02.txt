@@ -39,6 +39,27 @@
        (队尾修正)/未知车型(DEFAULT_PRIORITY) 全覆盖。
      消融轴: ETA 项有无 (预期差异集中于 amb 是否停车) | L4 开关 |
        ③分级 vs 全等级。移植成本声明: 新城市 = 枚举工具一跑 + 一张表。
+
+     ── A1 实施状态 (2026-07-02 深夜, 已完成并提交 a375d60) ──────────────
+     文件: sumo_rl/agents/moe_experts.py (Δ 公式: 队尾修正/黄灯成本/
+       分级ETA/平局保持, 6 专家向量化) | experiments/moe_glue.py
+       (enum 与 8std 双 meta schema 自动识别 → L1 菜单纯配置化;
+       L4 presence 字典序 mask) | experiments/tools/dcc/enum_phases_net.py
+       (任意网枚举菜单) | train.py 加法分支 action_scheme: moe
+       (gate = 现有 DQN action_space=6, mask/replay/update 零新代码)。
+     验证: 老 config 回归 digest 逐位不变 (104db4../1866cc..); 单元检查
+       (W 矩阵/gate_mask); 四冒烟 (1x1 enum 12相位 / 1x1 8std 7相位 /
+       字典序模式 / Dublin) 全过。
+     实验: exp213(1x1 enum) exp214(1x1 8std) exp215(Dublin enum, exp208
+       配方), 调度链: exp212 完 → 213+214 并行 → 215。
+       [编号注: 原 exp213 ppocolight 已改名 exp216。]
+     记录在案的近似: ① 共享车道双计 (同车道两转向 → 车入两槽队列;
+       与 obs 槽统计同族近似, 方向保守) ② 黄灯期 green_phase 已指向
+       新相位 → 专家切换成本以新相位为参照 (单周期边际近似)。
+     事故记录: 调度器 v1 的 pgrep -f 自匹配险情 (监视器命令文本含
+       config 路径) — v2 改为仅认真实 python 进程, 教训入脚本注释。
+     待做: 专家行为可视化探针 (expert-5 服务 amb 槽的定性验证图,
+       首批训练结果出来时一并做)。
      卖点四件套: 结构性可解释 (决策=服务哪个等级) | 字典序硬保证一行实现
        (5 级在场 → gate mask 到 expert-5, 接住 G1/GUARANTEE 层) |
        全网统一 5 维动作空间 (跨路口/跨城迁移比内容评分更直接) |
