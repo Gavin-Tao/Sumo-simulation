@@ -101,12 +101,27 @@
 ║  B. 用户认可、排队中的维度                                                    ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-  B1. [喜欢] KAN 可解释性 / 规则蒸馏
-     FRAP-enum 的 Q 设计上可分解 (Σg + 对决分), g/s 头换 KAN → 样条长在
-     "每等级排队/等待"的人类可读轴上 → 剪枝+符号化 → 接近闭式的规则。
-     三层交付: 保真度 | 规则发现 (是否重新发明 max-pressure/Webster/
-     preemption 阈值?) | 可认证性 (样条单调性 → "Q 对 amb 排队单调"证书)。
-     安全叙事: 应急优先是安全关键系统, 可解释是部署准入不是装饰。
+  B1. [喜欢] KAN 可解释性 / 规则蒸馏 —— 管线已实施 (2026-07-03, c1b653b)
+     核心结构红利: FRAP-enum 的聚合 Q=Σg+Σmax对决 是冻结数学, 黑盒只有
+     G(27维槽特征)→自需求分 与 S(x_m,x_n,rel)→对决分 两个标量函数 —
+     蒸出它们 = 整个控制器闭式化。
+     工具三件套 (experiments/tools/kan/, 全部端到端验证过):
+       K1 extract_frap_targets.py — eval 协议 rollout 采集 (轴名精确:
+          is_green|等级主序 cnt/que/awt×5|down_cnt×5|down_que×5|lane_occ);
+          amb 富集靠分层种子 (300s 冒烟片段 10/16 维零方差 → 全量采集
+          必须多种子×整集+ε 覆盖, 已诊断记录)
+       K2/K3 kan_distill.py — pykan 拟合 + amb 过采样 + --core16;
+          --shared-levels 结构检验: G≈b+w·is_green+Σα_l·φ(共享样条)
+          → α 即策略内化的有效优先权重 (对账 5:3:1 的 money 实验);
+          prune/auto_symbolic; 存 state_dict bundle (pykan lambda 不可 pickle)
+       K4 kan_swap_eval.py — 蒸馏件塞回冻结聚合, 按 rel 类批量前向
+          (静态冲突对预计算), 动作一致率 + 闭环 reward
+     四问预注册: awt 样条凸性(Gcμ 再发现?) | 下游折价(spillback 意识?) |
+       merge vs crossing 公式差(四类之争的实证答案) | is_green 滞回。
+     后端决策: pykan (剪枝/符号/画图工具链=交付物本身); efficient-KAN
+       留给训练内 KAN 头 (MoE gate 直训, Option A) — 用户问询后定案。
+     全量运行命令 (等训练链空闲): K1 --seeds 123,2000-2009 --eps-seeds
+       3000,3001 (全 3600s) → K2 各 target steps 200 → K4 --seeds 多种子。
      与 A1 叠加: gate 换 KAN 头 = 可解释调度规则。与 A2 共享"换头"手术。
 
   B2. [喜欢] LLM→BNF 政策编译器
