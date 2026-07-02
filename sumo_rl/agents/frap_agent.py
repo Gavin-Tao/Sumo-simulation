@@ -150,8 +150,9 @@ class FRAPAgent:
         return int(q.argmax().item())
 
     def learn_step(self):
-        """Sample + one gradient step (no-op until buffer > mini_size)."""
-        if self.replay_buffer.size() <= self.mini_size:
+        """Sample + one gradient step. No-op until the buffer holds both
+        mini_size (warm-up convention) AND batch_size (sampling feasibility)."""
+        if self.replay_buffer.size() <= max(self.mini_size, self.batch_size):
             return
         self.start_train = True
         s, a, r, ns, d, tids = self.replay_buffer.sample(self.batch_size)
