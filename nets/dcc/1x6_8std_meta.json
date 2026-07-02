@@ -1,0 +1,1358 @@
+{
+ "source_net": "nets/dcc/1x6.net.xml",
+ "boundary": {
+  "entries": [
+   "-36819764",
+   "-370154352#0",
+   "-4287295#2",
+   "-4934446#6",
+   "-4934501#8",
+   "-4934591",
+   "-8111025",
+   "10575471#2",
+   "13873181#0",
+   "228373543#3",
+   "2294449#0",
+   "4926004#0",
+   "4934592"
+  ],
+  "exits": [
+   "-10575471#2",
+   "-13873181#1",
+   "-228373543#7",
+   "-4926004#2",
+   "-4934593",
+   "33854576",
+   "36819764",
+   "370154352#0",
+   "37883349#0",
+   "4287295#0",
+   "4934446#3",
+   "4934501#5",
+   "8111025"
+  ]
+ },
+ "skipped_tls": {
+  "9100868": "9100868: never-green links [3]"
+ },
+ "tls": {
+  "29396438": {
+   "n_links": 10,
+   "n_state": 10,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "mask": [
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "3": 2,
+    "4": 3,
+    "5": 4,
+    "6": 5,
+    "7": 6
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "rrrGGGrrGG"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGrrrrGGrr"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrGGrrrrGr"
+    },
+    "a4": {
+     "valid": true,
+     "state": "rrrGGGGrGr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GrrGrrrrGG"
+    },
+    "a6": {
+     "valid": true,
+     "state": "GGGGrrrrrr"
+    },
+    "a7": {
+     "valid": true,
+     "state": "GrrrrrGGGr"
+    }
+   },
+   "arms": {
+    "N": {
+     "edges": [
+      "238334895#0"
+     ],
+     "bearing": 4.5
+    },
+    "E": {
+     "edges": [
+      "44398171#0"
+     ],
+     "bearing": 88.6
+    },
+    "S": {
+     "edges": [
+      "-4287295#2"
+     ],
+     "bearing": 183.5
+    },
+    "W": {
+     "edges": [
+      "-4934501#4"
+     ],
+     "bearing": 268.3
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "29396438",
+      "junction_index": 0,
+      "from_edge": "44398171#0",
+      "from_lane": 0,
+      "to_edge": "4287295#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "29396438",
+      "junction_index": 1,
+      "from_edge": "44398171#0",
+      "from_lane": 0,
+      "to_edge": "4934501#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "29396438",
+      "junction_index": 2,
+      "from_edge": "44398171#0",
+      "from_lane": 0,
+      "to_edge": "-13866426",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "29396438",
+      "junction_index": 3,
+      "from_edge": "238334895#0",
+      "from_lane": 0,
+      "to_edge": "-44398171#1",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "29396438",
+      "junction_index": 4,
+      "from_edge": "238334895#0",
+      "from_lane": 0,
+      "to_edge": "4287295#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "29396438",
+      "junction_index": 5,
+      "from_edge": "238334895#0",
+      "from_lane": 1,
+      "to_edge": "4287295#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "29396438",
+      "junction_index": 6,
+      "from_edge": "-4934501#4",
+      "from_lane": 0,
+      "to_edge": "-13866426",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "29396438",
+      "junction_index": 7,
+      "from_edge": "-4934501#4",
+      "from_lane": 0,
+      "to_edge": "-44398171#1",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "29396438",
+      "junction_index": 8,
+      "from_edge": "-4287295#2",
+      "from_lane": 0,
+      "to_edge": "4934501#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "29396438",
+      "junction_index": 9,
+      "from_edge": "-4287295#2",
+      "from_lane": 0,
+      "to_edge": "-13866426",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "29400040": {
+   "n_links": 9,
+   "n_state": 9,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "mask": [
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 1
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "4": 2,
+    "5": 3,
+    "6": 4
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGrrGGGrr"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GrGGrrrGG"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": true,
+     "state": "GrrrGGGGr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GGGrGrrrr"
+    },
+    "a6": {
+     "valid": true,
+     "state": "GrGGGrrGr"
+    },
+    "a7": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GrGGrrrGG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "4926189#9"
+     ],
+     "bearing": 66.8
+    },
+    "S": {
+     "edges": [
+      "-33854575#1"
+     ],
+     "bearing": 143.9
+    },
+    "W": {
+     "edges": [
+      "-4926209#1"
+     ],
+     "bearing": 249.5
+    },
+    "N": {
+     "edges": [
+      "153341565#0"
+     ],
+     "bearing": 322.8
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "29400040",
+      "junction_index": 0,
+      "from_edge": "-33854575#1",
+      "from_lane": 0,
+      "to_edge": "4926209#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "29400040",
+      "junction_index": 1,
+      "from_edge": "-33854575#1",
+      "from_lane": 1,
+      "to_edge": "-4315737",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "29400040",
+      "junction_index": 2,
+      "from_edge": "4926189#9",
+      "from_lane": 0,
+      "to_edge": "33854575#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "29400040",
+      "junction_index": 3,
+      "from_edge": "4926189#9",
+      "from_lane": 0,
+      "to_edge": "4926209#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "29400040",
+      "junction_index": 4,
+      "from_edge": "153341565#0",
+      "from_lane": 0,
+      "to_edge": "-4926189#10",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "29400040",
+      "junction_index": 5,
+      "from_edge": "153341565#0",
+      "from_lane": 0,
+      "to_edge": "33854575#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "29400040",
+      "junction_index": 6,
+      "from_edge": "153341565#0",
+      "from_lane": 1,
+      "to_edge": "33854575#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "29400040",
+      "junction_index": 7,
+      "from_edge": "-4926209#1",
+      "from_lane": 0,
+      "to_edge": "-4315737",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "29400040",
+      "junction_index": 8,
+      "from_edge": "-4926209#1",
+      "from_lane": 0,
+      "to_edge": "-4926189#10",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ]
+   }
+  },
+  "32335036": {
+   "n_links": 15,
+   "n_state": 15,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGGrrrrrGGGrrrr"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrrrGGGrrrrGGGr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "GrrGGrrrGrrGrrr"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrrrGrrGGrrGrrG"
+    },
+    "a4": {
+     "valid": true,
+     "state": "GrrrrrrrGGGGrrr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GGGGGrrrGrrrrrr"
+    },
+    "a6": {
+     "valid": true,
+     "state": "rrrrGGGGGrrGrrr"
+    },
+    "a7": {
+     "valid": true,
+     "state": "GrrrGrrrrrrGGGG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "-4934446#0"
+     ],
+     "bearing": 60.2
+    },
+    "S": {
+     "edges": [
+      "-129068838"
+     ],
+     "bearing": 156.8
+    },
+    "W": {
+     "edges": [
+      "4934444#6"
+     ],
+     "bearing": 241.5
+    },
+    "N": {
+     "edges": [
+      "4926004#0"
+     ],
+     "bearing": 315.4
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "32335036",
+      "junction_index": 0,
+      "from_edge": "-129068838",
+      "from_lane": 0,
+      "to_edge": "-4934444#6",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "32335036",
+      "junction_index": 1,
+      "from_edge": "-129068838",
+      "from_lane": 0,
+      "to_edge": "-4926004#2",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "32335036",
+      "junction_index": 2,
+      "from_edge": "-129068838",
+      "from_lane": 1,
+      "to_edge": "-4926004#2",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "32335036",
+      "junction_index": 3,
+      "from_edge": "-129068838",
+      "from_lane": 1,
+      "to_edge": "4934446#0",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "32335036",
+      "junction_index": 4,
+      "from_edge": "-4934446#0",
+      "from_lane": 0,
+      "to_edge": "129068838",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "32335036",
+      "junction_index": 5,
+      "from_edge": "-4934446#0",
+      "from_lane": 0,
+      "to_edge": "-4934444#6",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "32335036",
+      "junction_index": 6,
+      "from_edge": "-4934446#0",
+      "from_lane": 1,
+      "to_edge": "-4934444#6",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "32335036",
+      "junction_index": 7,
+      "from_edge": "-4934446#0",
+      "from_lane": 1,
+      "to_edge": "-4926004#2",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "32335036",
+      "junction_index": 8,
+      "from_edge": "4926004#0",
+      "from_lane": 0,
+      "to_edge": "4934446#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "32335036",
+      "junction_index": 9,
+      "from_edge": "4926004#0",
+      "from_lane": 0,
+      "to_edge": "129068838",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "10": [
+     {
+      "tl_index": 10,
+      "junction": "32335036",
+      "junction_index": 10,
+      "from_edge": "4926004#0",
+      "from_lane": 1,
+      "to_edge": "129068838",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "11": [
+     {
+      "tl_index": 11,
+      "junction": "32335036",
+      "junction_index": 11,
+      "from_edge": "4934444#6",
+      "from_lane": 0,
+      "to_edge": "-4926004#2",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "12": [
+     {
+      "tl_index": 12,
+      "junction": "32335036",
+      "junction_index": 12,
+      "from_edge": "4934444#6",
+      "from_lane": 0,
+      "to_edge": "4934446#0",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "13": [
+     {
+      "tl_index": 13,
+      "junction": "32335036",
+      "junction_index": 13,
+      "from_edge": "4934444#6",
+      "from_lane": 1,
+      "to_edge": "4934446#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "14": [
+     {
+      "tl_index": 14,
+      "junction": "32335036",
+      "junction_index": 14,
+      "from_edge": "4934444#6",
+      "from_lane": 1,
+      "to_edge": "129068838",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "32335290": {
+   "n_links": 11,
+   "n_state": 11,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "mask": [
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "canonical": {
+    "0": 0,
+    "1": 1,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "0": 0,
+    "1": 1,
+    "3": 2,
+    "4": 3,
+    "5": 4,
+    "6": 5,
+    "7": 6
+   },
+   "actions": {
+    "a0": {
+     "valid": true,
+     "state": "GGrrrGGGrrr"
+    },
+    "a1": {
+     "valid": true,
+     "state": "rrGGrGrrGGr"
+    },
+    "a2": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a3": {
+     "valid": true,
+     "state": "GrGrGGrrrrG"
+    },
+    "a4": {
+     "valid": true,
+     "state": "GrrrrGGGGrr"
+    },
+    "a5": {
+     "valid": true,
+     "state": "GGGrrGrrrrr"
+    },
+    "a6": {
+     "valid": true,
+     "state": "rrGGGGrrrrr"
+    },
+    "a7": {
+     "valid": true,
+     "state": "GrGrrGrrGGG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "-4934444#0"
+     ],
+     "bearing": 61.2
+    },
+    "S": {
+     "edges": [
+      "-8111025"
+     ],
+     "bearing": 135.9
+    },
+    "W": {
+     "edges": [
+      "25466631#4"
+     ],
+     "bearing": 243.8
+    },
+    "N": {
+     "edges": [
+      "4934592"
+     ],
+     "bearing": 316.5
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "32335290",
+      "junction_index": 0,
+      "from_edge": "-8111025",
+      "from_lane": 0,
+      "to_edge": "-25466631#6",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "32335290",
+      "junction_index": 1,
+      "from_edge": "-8111025",
+      "from_lane": 1,
+      "to_edge": "-4934593",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "32335290",
+      "junction_index": 2,
+      "from_edge": "-4934444#0",
+      "from_lane": 0,
+      "to_edge": "8111025",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "32335290",
+      "junction_index": 3,
+      "from_edge": "-4934444#0",
+      "from_lane": 0,
+      "to_edge": "-25466631#6",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "32335290",
+      "junction_index": 4,
+      "from_edge": "-4934444#0",
+      "from_lane": 1,
+      "to_edge": "-4934593",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "32335290",
+      "junction_index": 5,
+      "from_edge": "4934592",
+      "from_lane": 0,
+      "to_edge": "4934444#0",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "32335290",
+      "junction_index": 6,
+      "from_edge": "4934592",
+      "from_lane": 0,
+      "to_edge": "8111025",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "32335290",
+      "junction_index": 7,
+      "from_edge": "4934592",
+      "from_lane": 1,
+      "to_edge": "8111025",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "32335290",
+      "junction_index": 8,
+      "from_edge": "25466631#4",
+      "from_lane": 0,
+      "to_edge": "-4934593",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "32335290",
+      "junction_index": 9,
+      "from_edge": "25466631#4",
+      "from_lane": 0,
+      "to_edge": "4934444#0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "10": [
+     {
+      "tl_index": 10,
+      "junction": "32335290",
+      "junction_index": 10,
+      "from_edge": "25466631#4",
+      "from_lane": 0,
+      "to_edge": "8111025",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ]
+   }
+  },
+  "32471791": {
+   "n_links": 8,
+   "n_state": 8,
+   "controlled_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "mask": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true
+   ],
+   "canonical": {
+    "1": 1,
+    "2": 2,
+    "4": 2,
+    "6": 1,
+    "7": 7
+   },
+   "std_to_green_index": {
+    "1": 0,
+    "2": 1,
+    "7": 2
+   },
+   "actions": {
+    "a0": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a1": {
+     "valid": true,
+     "state": "GGGGrrrr"
+    },
+    "a2": {
+     "valid": true,
+     "state": "rrrGGGrr"
+    },
+    "a3": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a4": {
+     "valid": false,
+     "reason": "dup-of-a2",
+     "state": "rrrGGGrr"
+    },
+    "a5": {
+     "valid": false,
+     "reason": "empty-core"
+    },
+    "a6": {
+     "valid": false,
+     "reason": "dup-of-a1",
+     "state": "GGGGrrrr"
+    },
+    "a7": {
+     "valid": true,
+     "state": "GGrrrGGG"
+    }
+   },
+   "arms": {
+    "E": {
+     "edges": [
+      "-4934446#6"
+     ],
+     "bearing": 60.8
+    },
+    "W": {
+     "edges": [
+      "4934446#2"
+     ],
+     "bearing": 241.5
+    },
+    "N": {
+     "edges": [
+      "10575471#2"
+     ],
+     "bearing": 329.5
+    }
+   },
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "32471791",
+      "junction_index": 0,
+      "from_edge": "-4934446#6",
+      "from_lane": 0,
+      "to_edge": "-4934446#2",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "32471791",
+      "junction_index": 1,
+      "from_edge": "-4934446#6",
+      "from_lane": 1,
+      "to_edge": "-4934446#2",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "32471791",
+      "junction_index": 2,
+      "from_edge": "-4934446#6",
+      "from_lane": 1,
+      "to_edge": "-10575471#2",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "32471791",
+      "junction_index": 3,
+      "from_edge": "10575471#2",
+      "from_lane": 0,
+      "to_edge": "4934446#3",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "32471791",
+      "junction_index": 4,
+      "from_edge": "10575471#2",
+      "from_lane": 0,
+      "to_edge": "-4934446#2",
+      "to_lane": 1,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "32471791",
+      "junction_index": 5,
+      "from_edge": "4934446#2",
+      "from_lane": 0,
+      "to_edge": "-10575471#2",
+      "to_lane": 0,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "32471791",
+      "junction_index": 6,
+      "from_edge": "4934446#2",
+      "from_lane": 0,
+      "to_edge": "4934446#3",
+      "to_lane": 0,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "32471791",
+      "junction_index": 7,
+      "from_edge": "4934446#2",
+      "from_lane": 1,
+      "to_edge": "4934446#3",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ]
+   }
+  }
+ }
+}
