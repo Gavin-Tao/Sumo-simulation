@@ -123,6 +123,17 @@
      全量运行命令 (等训练链空闲): K1 --seeds 123,2000-2009 --eps-seeds
        3000,3001 (全 3600s) → K2 各 target steps 200 → K4 --seeds 多种子。
      与 A1 叠加: gate 换 KAN 头 = 可解释调度规则。与 A2 共享"换头"手术。
+     ── 8std 扩展 (2026-07-03, a2539fc): 结构检验三格对照 ──
+     用户定式: Q_k ?≈ Σ_m A_km·g(φ_m) + b·1[k==当前] — A(8×12) 是 8std
+     meta 的已知常量 (逐路口), 无需 FRAP teacher; 损失用有效动作内
+     中心化 Q (=成对 Q 差, 消掉整块网的 V(s) 基线); b = 声明的唯一
+     形式外自由度 (滞回读数)。
+     工具: extract_dqn8std_targets.py (legacy 26 维槽布局) +
+     kan_factorized_8std.py (--mode factorized|flat)。已在 exp208
+     best.pth 上双模式冒烟。判读: factorized 保真高 → 整块 DQN 隐式
+     组合化; 低 → 可解释性必须架构期购买 (为 FRAP 设计辩护的实证)。
+     三格: FRAP 公式级 | 8std 约束蒸馏 | 8std 自由蒸馏基线。
+     待办小件: verify_policy 加 dqn8std 控制器 | explain_policy --lang。
 
   B2. [喜欢] LLM→BNF 政策编译器 —— 管线已实施 (2026-07-03, c01f70d)
      定位: "policy-as-code for traffic" — LLM 只在政策变更时刻离线编译,
