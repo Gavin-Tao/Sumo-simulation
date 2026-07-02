@@ -22,6 +22,9 @@ BNF weight convention. No per-network tuning knobs by design.
 
 Data access: direct per-vehicle traci reads on the menu's incoming lanes —
 the same access class the reward function uses; NO new obs features.
+Vehicle-to-movement assignment is INTENT-EXACT (route lookup, memoized),
+mirroring the B-family obs convention (slot_stats="intent", the exp209
+default): each vehicle counts once, under its actual turning movement.
 """
 from __future__ import annotations
 
@@ -58,6 +61,8 @@ class MoEExperts:
         self.W = weight_matrix()
         self._lane_len = {}          # lane_id -> length (cached once)
         self._vid_level = {}         # vid -> level memo (type is immutable)
+        self._vid_slot = {}          # (vid, from_edge) -> slot memo (route is
+        #                              fixed; from_edge pins the junction)
 
     def _level(self, sumo, vid):
         lv = self._vid_level.get(vid)
@@ -76,33 +81,50 @@ class MoEExperts:
             self._lane_len[lane] = L
         return L
 
+    def _slot(self, sumo, vid, from_edge, by_edges):
+        """Intent-exact movement of vid (obs _vehicle_slot convention):
+        next route edge -> (from_edge, next) -> slot; -1 = uncontrolled."""
+        key = (vid, from_edge)
+        s = self._vid_slot.get(key)
+        if s is None:
+            route = sumo.vehicle.getRoute(vid)
+            idx = sumo.vehicle.getRouteIndex(vid)
+            nxt = route[idx + 1] if idx + 1 < len(route) else None
+            s = by_edges.get((from_edge, nxt), -1)
+            self._vid_slot[key] = s
+            if len(self._vid_slot) > 50000:
+                self._vid_slot.clear()
+        return s
+
     def propose(self, ts_id, sumo, current_phase):
         """Returns (proposals (N_EXPERTS,) int array of green-phase indices,
         levels_present set)."""
         tab = self.tables[ts_id]
         phase_slots = tab["phase_slots"]
-        # ---- one pass over all incoming lanes of the menu's movements ----
+        by_edges = tab["movement_by_edges"]
+        # ---- ONE pass over the unique incoming lanes; each vehicle counted
+        # once, under its intent-exact movement (route-based, like the obs) --
         queued = {}      # slot -> list of (dist_to_stop, level), near first
         arriving = {}    # slot -> list of (eta, level), eta < dt
         n_c = np.zeros(len(LEVELS))
-        for slot, lanes in tab["slot_lanes"].items():
-            q, arr = [], []
-            for lane in lanes:
-                L = self._length(sumo, lane)
-                for vid in sumo.lane.getLastStepVehicleIDs(lane):
-                    lv = self._level(sumo, vid)
-                    n_c[lv - 1] += 1
-                    speed = sumo.vehicle.getSpeed(vid)
-                    dist = max(0.0, L - sumo.vehicle.getLanePosition(vid))
-                    if speed < STOP_SPEED:
-                        q.append((dist, lv))
-                    elif lv in ETA_LEVELS:
-                        eta = dist / max(speed, STOP_SPEED)
-                        if eta < self.dt:
-                            arr.append((eta, lv))
+        for lane, from_edge in tab["lanes"].items():
+            L = self._length(sumo, lane)
+            for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                slot = self._slot(sumo, vid, from_edge, by_edges)
+                if slot < 0:          # no controlled next movement here
+                    continue
+                lv = self._level(sumo, vid)
+                n_c[lv - 1] += 1
+                speed = sumo.vehicle.getSpeed(vid)
+                dist = max(0.0, L - sumo.vehicle.getLanePosition(vid))
+                if speed < STOP_SPEED:
+                    queued.setdefault(slot, []).append((dist, lv))
+                elif lv in ETA_LEVELS:
+                    eta = dist / max(speed, STOP_SPEED)
+                    if eta < self.dt:
+                        arriving.setdefault(slot, []).append((eta, lv))
+        for q in queued.values():
             q.sort()
-            queued[slot] = q
-            arriving[slot] = arr
         levels_present = {LEVELS[i] for i in range(len(LEVELS)) if n_c[i] > 0}
         inv_n = 1.0 / np.maximum(n_c, 1.0)
 
@@ -144,8 +166,7 @@ class MoEExperts:
     def presence(self, ts_id, sumo):
         """Light scan: which levels are present (for L4 next-state masks)."""
         levels = set()
-        for lanes in self.tables[ts_id]["slot_lanes"].values():
-            for lane in lanes:
-                for vid in sumo.lane.getLastStepVehicleIDs(lane):
-                    levels.add(self._level(sumo, vid))
+        for lane in self.tables[ts_id]["lanes"]:
+            for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                levels.add(self._level(sumo, vid))
         return levels

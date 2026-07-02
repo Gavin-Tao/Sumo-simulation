@@ -26,7 +26,10 @@ def load_moe_tables(meta_path):
                         for i, c in links.items()}
         link_slot = {i: SLOT_IDX[(c[0]["approach"], c[0]["turn"])]
                      for i, c in links.items()}
-        slot_lanes = {}
+        slot_lanes = {}          # slot -> lanes (for discharge-capacity count)
+        lanes = {}               # unique lane_id -> from_edge (single scan set)
+        by_edges = {}            # (from_edge, to_edge) -> slot (intent lookup,
+        #                          same convention as obs _movement_by_edges)
         for i, conns in links.items():
             s = link_slot[i]
             for c in conns:
@@ -34,6 +37,8 @@ def load_moe_tables(meta_path):
                 slot_lanes.setdefault(s, [])
                 if lane not in slot_lanes[s]:
                     slot_lanes[s].append(lane)
+                lanes[lane] = c["from_edge"]
+                by_edges[(c["from_edge"], c["to_edge"])] = s
         if "phase_movements" in t:                      # enum meta
             phase_slots = [frozenset(m for m in range(12) if row[m])
                            for row in t["phase_movements"]]
@@ -48,7 +53,8 @@ def load_moe_tables(meta_path):
                                    if i < len(state) and state[i] == "G")
                 phase_slots.append(served)
         assert phase_slots, tid
-        tables[tid] = {"phase_slots": phase_slots, "slot_lanes": slot_lanes}
+        tables[tid] = {"phase_slots": phase_slots, "slot_lanes": slot_lanes,
+                       "lanes": lanes, "movement_by_edges": by_edges}
     return {"tables": tables, "turnmap": turnmap}
 
 
