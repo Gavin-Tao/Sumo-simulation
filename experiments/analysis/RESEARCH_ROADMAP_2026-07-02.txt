@@ -13,18 +13,32 @@
 ║  A. 已选定的两条主线                                                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-  A1. [选定] MoE-Gcμ: 规则专家 + 学习 gate (用户原创 idea, 2026-07-02 定型)
-     架构: 5 个(+1 效率兜底)零训练规则专家, expert-k 优先 k 级
-       (系数 5:1); gate = 小网络 (action_space=5/6), 用 BNF 定义的
-       priority-avg-waiting 学"此刻该轮到哪个等级"。
-     专家规则 (定型, 替代被否的 max-pressure):
-       score_k(p) = Σ_c w_c^(k) · [p 服务的 movement 上等级 c 排队车
-                    累积等待总和] / n_c,   选 argmax
-       = expert-k 自己那版 avg-waiting reward 的一步贪心梯度;
-       分母 n_c 使稀疏高等级免疫车流量碾压 (max-pressure 的致命伤,
-       count 型压力 1 辆 amb×5 < 20 辆 car×1; 加权重路线 exp157 已证死)。
-       理论锚: Van Mieghem generalized-cμ (凸延误成本渐近最优) 的
-       discrete-review 版。输入 = φ 已有的逐桶 mean_awt×count, 零新特征。
+  A1. [选定] MoE-Gcμ: 规则专家 + 学习 gate (用户原创 idea; 终版定稿
+      2026-07-02 深夜 = "深度-1 MPC 专家", 经三轮迭代收敛)
+     部署输入只有两个: net.xml + BNF 表; 其余全为系统常数/物理推导
+     ("任意路口任意工况"的 generic 声明, 五条不变性: 拓扑/尺度/负载/
+     车种/常数)。
+     L1 菜单: enum_phases 极大无冲突组合 (拓扑无关; 菜单无关性: 8std/
+       原生相位表同样适用)。
+     L2 专家 (6 个, 零训练零参数): expert-k 对每相位 p 算一步预测增量
+       选 argmin:
+       Δ_k(p) = Σ_c w_c^(k)/max(n_c,1) · [ ①排队∉p: +Δt
+         + ②排队∈p 且队位>⌊s·Δt⌋×lanes: +Δt (队尾修正: 绿≠清空)
+         + ③行驶中 ETA<Δt (默认仅 c≥4): 红→(Δt−ETA)⁺ 绿→0
+           (amb 不停车的来源; /n_c 结构使 car 项可忽略 → 分级是推导) ]
+         + ④切相位则新绿前 yellow_time 按红计 (防抖内生, 无滞回参数);
+       平局→保持现相位。度量 = time-loss (蠕行也计, amb 正确口径)。
+       数据 = traci 逐车直读 (与 reward 同类访问, 零新特征)。
+       理论锚: Van Mieghem generalized-cμ 的 discrete-review 一步前瞻版;
+       max-pressure 被否原因存档: count 型压力被车流量碾压 (exp157 佐证)。
+     L3 gate: 动作空间=6 全网固定词表 (跨路口/跨城迁移之根), obs=现有 φ,
+       超参整套继承 exp208, 全网共享。
+     L4 保证: presence 触发 (count>0 含行驶中) → mask 至最高在场等级
+       专家; 开=字典序硬保证(G1), 关=纯学习; 消融轴。
+     退化完备性: 等级缺席(max(n_c,1))/空路口(平局规则)/单相位/过饱和
+       (队尾修正)/未知车型(DEFAULT_PRIORITY) 全覆盖。
+     消融轴: ETA 项有无 (预期差异集中于 amb 是否停车) | L4 开关 |
+       ③分级 vs 全等级。移植成本声明: 新城市 = 枚举工具一跑 + 一张表。
      卖点四件套: 结构性可解释 (决策=服务哪个等级) | 字典序硬保证一行实现
        (5 级在场 → gate mask 到 expert-5, 接住 G1/GUARANTEE 层) |
        全网统一 5 维动作空间 (跨路口/跨城迁移比内容评分更直接) |
