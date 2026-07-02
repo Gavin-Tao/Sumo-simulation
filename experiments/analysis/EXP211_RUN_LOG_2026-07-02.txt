@@ -38,4 +38,15 @@
 
   基线兜底: 老 config 回归基线 experiments/tools/frap/regress_baseline.json
   (exp208 104db4.., exp136 1866cc..) — 任何人再改 train.py 都必须重跑对账。
+
+  ── 事故记录 #1 (2026-07-02 ~17:19): GPU 驱动崩溃, 首次启动作废 ─────────────
+  时间线: 17:10 启动 (nvidia-smi 正常, RTX 3060 Ti) → ~8 min 无任何
+  episode 完成 (exp208 稳态 24s/ep, 异常) → nvidia-smi "Unknown Error",
+  新进程 torch.cuda.is_available()=False → 判定驱动崩溃, 训练进程 (45758)
+  在内核态自旋, SIGKILL 无效 (不可杀, 烧一核), 仅重启机器可清除。
+  wandb run qk1p1344 作废 (零数据点)。日志留存:
+  logs/exp211_nohup_gpucrash.log + exp211_gpu_crash_tail.log。
+  处置: 待用户重启机器恢复驱动后重新启动; 若 GPU 再崩 (不能排除本次
+  负载触发驱动 bug 的可能), 回退 --gpu -1 纯 CPU 训练 (网络极小,
+  瓶颈在 SUMO, CPU 速度可接受)。
 ================================================================================
