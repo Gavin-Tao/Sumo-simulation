@@ -1,15 +1,28 @@
-"""MaskablePPO trainer for the Dublin masked-8std setup (exp205-family).
+"""Universal MaskablePPO trainer: 1x1 / 1x3 / Dublin, optional CoLight-orig
+GAT coordination (exp209-style). New file — train.py / train_ppo_uni.py /
+trainorico.py stay byte-identical; SumoVecEnv/SumoMetricsCallback and the
+CoLight GATLayer are imported and reused, not copied.
 
-New file — train_ppo_uni.py and train.py stay byte-identical. Reuses the
-uni script's SumoVecEnv + SumoMetricsCallback and adds the Dublin machinery
-that the old PPO trainer predates:
-  * PriorityMovement (B-family) obs + obs_* kwargs plumbing   (as train.py)
-  * priority-avg-waiting reward factory + reward_scale/floor  (as train.py)
-  * action_meta_file: per-TLS 8-std masks, std<->green maps, movement rebind
-    on every reset                                            (as train.py)
-  * MaskablePPO (sb3-contrib): the policy samples only valid std actions;
-    rollout buffer stores the EXECUTED std action (min_green may override),
-    with log-probs re-evaluated under the mask.
+Modes (all combinations valid):
+  * action_meta_file present  -> masked fixed 8-std action space, std<->green
+    maps, per-reset movement rebind            (mirrors train.py/trainorico M3)
+  * action_meta_file absent   -> plain uniform action space (1x1/1x3 nets),
+    masks all-valid (MaskablePPO degenerates to PPO)
+  * coordination: colight_orig -> per-junction obs = [own || 4 neighbors]
+    (zero rows = missing, neighbor_map order up/down/left/right as trainorico);
+    policy features extractor reproduces CoLightOrigQNet exactly up to the
+    cat_feat layer (GATLayer imported; Q-head replaced by SB3 pi/vf heads).
+
+DQN-parity guarantees (checked against train.py / trainorico.py):
+  * rollout buffer stores the EXECUTED canonical std action (min_green may
+    override the sampled one), log-probs re-evaluated UNDER THE MASK;
+  * neighbor obs snapshot = same decision step, same as trainorico's nb_obs;
+  * reward factory / scale / floor identical to train.py.
+Known protocol differences vs the DQN trainers (accepted, PPO-standard):
+  * VecNormalize(norm_reward=True) — PPO trains on normalised rewards; raw
+    episode reward is logged as train/ep_raw_reward (uni-script convention);
+  * no periodic greedy eval episodes — compare via raw-reward curves +
+    offline eval, not against DQN's eval_system series.
 
 Usage:
   cd experiments && python train_ppo_dublin.py --config configs/exp212_dublin11h_531_ppo.yaml [--gpu 0]
@@ -24,6 +37,8 @@ from datetime import datetime
 from pathlib import Path
 
 import numpy as np
+import torch
+import torch.nn.functional as F
 import yaml
 import wandb
 
@@ -32,21 +47,31 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "experiments"))
 
-from sb3_contrib import MaskablePPO
-from stable_baselines3.common.vec_env import VecNormalize
 from gymnasium import spaces  # sb3>=2.x requires gymnasium spaces, not gym
+from sb3_contrib import MaskablePPO
+from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
+from stable_baselines3.common.vec_env import VecNormalize
 
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.environment import observations as obsmod
+from sumo_rl.agents.colight_orig.dqn_colight_orig import GATLayer
 from train_ppo_uni import SumoVecEnv, SumoMetricsCallback
 
+NB_SLOTS = 4  # neighbor_map order: up, down, left, right (trainorico contract)
 
-# ── Dublin plumbing (mirrors train.py) ─────────────────────────────────────────
+
+# ── Config plumbing (mirrors train.py) ─────────────────────────────────────────
+
+OBS_REGISTRY = {  # superset of the names used by dublin/1x3 configs
+    "Priority": "PriorityObservationFunction",
+    "PriorityBCA": "PriorityBCAObservationFunction",
+    "PriorityMovement": "PriorityMovementObservationFunction",
+    "PriorityPhase": "PriorityPhaseObservationFunction",
+}
+
 
 def build_obs_class(cfg):
-    obs_class = {
-        "PriorityMovement": obsmod.PriorityMovementObservationFunction,
-    }[cfg["observation_class"]]
+    obs_class = getattr(obsmod, OBS_REGISTRY[cfg["observation_class"]])
     kw = {}
     for src, dst in [("obs_fields", "fields"), ("obs_phase_state", "phase_state"),
                      ("priority_source", "priority_source"),
@@ -102,28 +127,45 @@ def load_meta(path):
     return ts_mask, std2green, green2std, turnmap
 
 
-# ── VecEnv with std-action masking ─────────────────────────────────────────────
+def identity_meta(sumo_env):
+    """No-meta mode (1x1/1x3): uniform action space, all actions valid."""
+    n = sumo_env.action_space.n
+    ident = np.arange(n, dtype=int)
+    ts_mask = {ts: np.ones(n, dtype=bool) for ts in sumo_env.ts_ids}
+    std2green = {ts: ident for ts in sumo_env.ts_ids}
+    green2std = {ts: ident for ts in sumo_env.ts_ids}
+    return ts_mask, std2green, green2std, None
 
-class DublinVecEnv(SumoVecEnv):
-    """Actions live in the fixed 8-dim STD space; masks come from the meta.
 
-    step: std -> dense green index before SumoEnvironment.step;
-    last_actual_actions: executed green -> canonical STD (the rollout-buffer
-    patch stores these, so they must be in the policy's action space);
-    reset: rebind obs movements + refresh obs spaces (TrafficSignal objects
-    are recreated each episode)."""
+# ── VecEnv: masked std actions, optional neighbor-concat obs ───────────────────
 
-    def __init__(self, sumo_env, ts_mask, std2green, green2std, turnmap):
+class MaskedSumoVecEnv(SumoVecEnv):
+    """Actions in a fixed std space (8 with meta, env-native without);
+    obs optionally concatenated with the 4 neighbors' obs (colight mode).
+
+    DQN-parity: rebind on EVERY reset (TrafficSignal objects are recreated);
+    last_actual_actions returned in STD space (rollout patch stores them)."""
+
+    def __init__(self, sumo_env, ts_mask, std2green, green2std, turnmap,
+                 neighbor_map=None):
         self.ts_mask, self.std2green = ts_mask, std2green
         self.green2std, self.turnmap = green2std, turnmap
-        # rebind BEFORE snapshotting spaces: legacy one-hot must be 8-dim std
+        self.neighbor_map = neighbor_map
         sumo_env.reset(sumo_env.sumo_seed)
         self._rebind(sumo_env)
         super().__init__(sumo_env)
-        self.action_space = spaces.Discrete(8)
-        self.observation_space = sumo_env.traffic_signals[self.ts_ids[0]].observation_space
+        n_std = len(next(iter(ts_mask.values())))
+        self.action_space = spaces.Discrete(n_std)
+        own_dim = int(np.prod(
+            sumo_env.traffic_signals[self.ts_ids[0]].observation_space.shape))
+        self.own_dim = own_dim
+        obs_dim = own_dim * (1 + NB_SLOTS) if neighbor_map else own_dim
+        self.observation_space = spaces.Box(-np.inf, np.inf, (obs_dim,),
+                                            dtype=np.float32)
 
     def _rebind(self, env):
+        if self.turnmap is None:
+            return
         for tid in env.ts_ids:
             ts = env.traffic_signals[tid]
             ts.std_action_map = self.green2std[tid]
@@ -131,22 +173,47 @@ class DublinVecEnv(SumoVecEnv):
                 ts.observation_fn.rebind_movements(self.turnmap[tid])
             ts.observation_space = ts.observation_fn.observation_space()
 
+    def _stack(self, states):
+        own = {ts: np.asarray(states[ts], dtype=np.float32) for ts in self.ts_ids}
+        if not self.neighbor_map:
+            return np.stack([own[ts] for ts in self.ts_ids])
+        zeros = np.zeros(self.own_dim, dtype=np.float32)
+        rows = []
+        for ts in self.ts_ids:
+            nbs = self.neighbor_map.get(ts) or [None] * NB_SLOTS
+            row = [own[ts]] + [own[nb] if nb is not None and nb in own else zeros
+                               for nb in nbs[:NB_SLOTS]]
+            rows.append(np.concatenate(row))
+        return np.stack(rows)
+
     def reset(self):
-        self.sumo_env.reset(self.sumo_env.sumo_seed)
+        states = self.sumo_env.reset(self.sumo_env.sumo_seed)
         self._rebind(self.sumo_env)
         states = {tid: self.sumo_env.traffic_signals[tid].observation_fn()
                   for tid in self.sumo_env.ts_ids}
-        return np.array([states[ts] for ts in self.ts_ids], dtype=np.float32)
+        return self._stack(states)
 
     def step_wait(self):
-        std = {ts: int(self._actions[i]) for i, ts in enumerate(self.ts_ids)}
-        self._actions = np.array(
-            [int(self.std2green[ts][std[ts]]) for ts in self.ts_ids])
-        obs, rews, done_arr, infos = super().step_wait()
-        # executed green -> canonical std (buffer patch consumes this)
+        action_dict = {ts: int(self.std2green[ts][int(self._actions[i])])
+                       for i, ts in enumerate(self.ts_ids)}
+        states, rewards, dones, _ = self.sumo_env.step(action=action_dict)
+        obs = self._stack(states)
+        rews = np.array([rewards[ts] for ts in self.ts_ids], dtype=np.float32)
+        self.last_raw_rews[:] = rews
+        # executed green -> canonical std (the rollout-buffer patch stores these)
         self.last_actual_actions = np.array(
-            [float(self.green2std[ts][int(self.last_actual_actions[i])])
-             for i, ts in enumerate(self.ts_ids)], dtype=np.float32)
+            [float(self.green2std[ts][
+                int(self.sumo_env.traffic_signals[ts].last_executed_action)])
+             for ts in self.ts_ids], dtype=np.float32)
+        all_done = bool(dones["__all__"])
+        done_arr = np.full(self.num_envs, all_done, dtype=bool)
+        infos = [{} for _ in self.ts_ids]
+        if all_done:
+            for hook in self.pre_reset_hooks:
+                hook()
+            for i in range(self.num_envs):
+                infos[i]["terminal_observation"] = obs[i]
+            obs = self.reset()
         return obs, rews, done_arr, infos
 
     def action_masks(self):
@@ -163,13 +230,39 @@ class DublinVecEnv(SumoVecEnv):
         return super().get_attr(attr_name, indices=indices)
 
 
+# ── CoLight-orig features extractor (mirror of CoLightOrigQNet ≤ cat_feat) ─────
+
+class CoLightGATExtractor(BaseFeaturesExtractor):
+    """Reproduces CoLightOrigQNet.forward exactly up to cat_feat: n_heads
+    GATLayers (imported, identical math incl. zero-row missing mask) + own
+    encoder, output = concat[own_feat, head aggs] of dim hidden*(n_heads+1).
+    The DQN's q_head is replaced by SB3's policy/value heads."""
+
+    def __init__(self, observation_space, own_dim, hidden_dim=128, n_heads=2):
+        super().__init__(observation_space, hidden_dim * (n_heads + 1))
+        self.own_dim = own_dim
+        self.heads = torch.nn.ModuleList(
+            [GATLayer(own_dim, hidden_dim) for _ in range(n_heads)])
+        self.own_enc = torch.nn.Linear(own_dim, hidden_dim)
+
+    def forward(self, obs):
+        own = obs[:, : self.own_dim]
+        nbs = obs[:, self.own_dim:].reshape(-1, NB_SLOTS, self.own_dim)
+        mask = (nbs.abs().sum(dim=-1, keepdim=True) == 0)   # zero rows = missing
+        aggs = [head(own, nbs, mask)[0] for head in self.heads]
+        own_feat = F.relu(self.own_enc(own))
+        return torch.cat([own_feat] + aggs, dim=-1)
+
+
 # ── Callback: maskable rollout-buffer patch ────────────────────────────────────
 
 class DublinMetricsCallback(SumoMetricsCallback):
     def _patch_rollout_buffer(self) -> None:
-        """Maskable variant of the uni script's executed-action patch: the
-        buffer add() carries action_masks, and log-prob re-evaluation must
-        pass the masks to the maskable policy."""
+        """Maskable variant of the uni script's executed-action patch: add()
+        carries action_masks, and the log-prob re-evaluation must pass the
+        masks to the maskable policy (min_green may override the sampled
+        action — storing the executed one keeps the gradient unbiased,
+        identical rationale to the DQN trainers storing executed actions)."""
         import torch as th
         ppo = self.model
         if getattr(ppo.rollout_buffer.add, "_sumo_patched", False):
@@ -221,8 +314,19 @@ def train(cfg, timestamp, gpu):
         reward_fn=build_reward_fn(cfg), observation_class=build_obs_class(cfg),
         sumo_seed=cfg.get("seed", 0), sumo_warnings=False)
 
-    ts_mask, std2green, green2std, turnmap = load_meta(cfg["action_meta_file"])
-    base_env = DublinVecEnv(sumo_env, ts_mask, std2green, green2std, turnmap)
+    if cfg.get("action_meta_file"):
+        ts_mask, std2green, green2std, turnmap = load_meta(cfg["action_meta_file"])
+    else:
+        ts_mask, std2green, green2std, turnmap = identity_meta(sumo_env)
+
+    coordination = cfg.get("coordination")
+    assert coordination in (None, "colight_orig"), coordination
+    neighbor_map = cfg.get("neighbor_map") if coordination else None
+    if coordination:
+        assert neighbor_map, "coordination: colight_orig requires neighbor_map"
+
+    base_env = MaskedSumoVecEnv(sumo_env, ts_mask, std2green, green2std,
+                                turnmap, neighbor_map=neighbor_map)
     norm_env = VecNormalize(base_env, norm_obs=False, norm_reward=True,
                             clip_reward=cfg.get("clip_reward", 10.0),
                             gamma=cfg.get("gamma", 0.99))
@@ -236,6 +340,15 @@ def train(cfg, timestamp, gpu):
         metrics_interval=cfg.get("metrics_interval", 50),
         checkpoint_interval=cfg.get("checkpoint_interval", 50))
 
+    policy_kwargs = {}
+    if coordination:
+        policy_kwargs = dict(
+            features_extractor_class=CoLightGATExtractor,
+            features_extractor_kwargs=dict(
+                own_dim=base_env.own_dim,
+                hidden_dim=cfg.get("hidden_dim", 128),
+                n_heads=cfg.get("n_heads", 2)))
+
     model = MaskablePPO(
         policy="MlpPolicy", env=norm_env, verbose=0,
         device=(f"cuda:{gpu}" if gpu >= 0 else "cpu"),
@@ -243,7 +356,8 @@ def train(cfg, timestamp, gpu):
         batch_size=cfg.get("batch_size", 720), n_epochs=cfg.get("n_epochs", 10),
         gamma=cfg.get("gamma", 0.99), gae_lambda=cfg.get("gae_lambda", 0.95),
         clip_range=cfg.get("clip_range", 0.2), ent_coef=cfg.get("ent_coef", 0.01),
-        vf_coef=cfg.get("vf_coef", 0.5),
+        vf_coef=cfg.get("vf_coef", 0.5), max_grad_norm=cfg.get("max_grad_norm", 0.5),
+        policy_kwargs=policy_kwargs,
         tensorboard_log=f"./logs/ppo/{exp_name}" if logging_mode != "none" else None)
 
     model.learn(total_timesteps=total_timesteps, callback=[cb], progress_bar=True)
@@ -258,7 +372,7 @@ def train(cfg, timestamp, gpu):
 
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser(description="Dublin MaskablePPO trainer")
+    p = argparse.ArgumentParser(description="Universal MaskablePPO trainer (1x1/1x3/Dublin, optional CoLight coordination)")
     p.add_argument("--config", required=True)
     p.add_argument("--gpu", type=int, default=0)
     args = p.parse_args()
