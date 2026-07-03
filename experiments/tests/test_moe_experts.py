@@ -83,8 +83,8 @@ def test_v2_hand_computed_plan_cost():
     min(4,6)+min(6,6)=10; A waits 3*6=18 -> 28. Expert-0 keeps phase0."""
     ex, sumo = _sim_two_queues(3, 2, current=0)
     tab = ex.tables['J']
-    queued, arriving, n_c = ex._scan(tab, sumo)
-    mass = ex._mass_v2(tab, queued, arriving, 0)
+    queued, lane_q, arriving, n_c = ex._scan(tab, sumo)
+    mass = ex._mass_v2(tab, lane_q, arriving, 0)
     assert abs(mass[0, 0] - 24.0) < 1e-9, mass[:, 0]
     assert abs(mass[0, 1] - 28.0) < 1e-9, mass[:, 1]
     props, _ = ex.propose('J', sumo, current_phase=0)
@@ -102,6 +102,39 @@ def test_v2_hysteresis_no_thrash():
     ex2, sumo2 = _sim_two_queues(2, 12, current=0)
     props2, _ = ex2.propose('J', sumo2, current_phase=0)
     assert props2[0] == 1, "must release once the rival clearly dominates"
+
+
+def test_shared_lane_fifo_blocking():
+    """Exact shared-lane physics: one lane hosts T(slot0)+L(slot1), queue
+    front-first [L, T, T]. Phase0 serves T only -> head L blocks the lane,
+    NOTHING discharges (all pay H). Phase1 serves both -> serial 2+4+6.
+    (The old pooled-capacity model would let the two T cars 'pass through'
+    the blocked head — this test pins the fix.)"""
+    tab = {'J': {'phase_slots': [frozenset({0}), frozenset({0, 1})],
+                 'slot_lanes': {0: ['sh_0'], 1: ['sh_0']},
+                 'lanes': {'sh_0': 'sh'},
+                 'movement_by_edges': {('sh', 'outT'): 0, ('sh', 'outL'): 1}}}
+    ex = MoEExperts(tab, delta_time=5, yellow_time=2,
+                    prio_of_type={'car': 1}, default_level=1,
+                    design=2, max_green=50)
+    sumo = MagicMock()
+    sumo.lane.getLength.return_value = 100.0
+    sumo.lane.getLastStepVehicleIDs.return_value = ['L1', 'T1', 'T2']
+    sumo.vehicle.getTypeID.return_value = 'car'
+    sumo.vehicle.getSpeed.return_value = 0.0
+    sumo.vehicle.getLanePosition.side_effect = \
+        lambda v: {'L1': 95, 'T1': 88, 'T2': 81}[v]
+    sumo.vehicle.getRoute.side_effect = \
+        lambda v: ('sh', 'outL') if v == 'L1' else ('sh', 'outT')
+    sumo.vehicle.getRouteIndex.return_value = 0
+    # current = phase1 (serves both) -> per-slot delays all 0 for both plans
+    queued, lane_q, arriving, n_c = ex._scan(ex.tables['J'], sumo)
+    mass = ex._mass_v2(ex.tables['J'], lane_q, arriving, 1)
+    # H = clip(max(0, 6), 5, 50) = 6
+    assert abs(mass[0, 0] - 18.0) < 1e-9, mass[:, 0]   # blocked: 3 * H
+    assert abs(mass[0, 1] - 12.0) < 1e-9, mass[:, 1]   # serial: 2+4+6
+    props, _ = ex.propose('J', sumo, current_phase=1)
+    assert props[0] == 1, "efficiency expert must keep the unblocking phase"
 
 
 def test_presence_intent_filter():

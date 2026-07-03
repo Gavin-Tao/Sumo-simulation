@@ -125,6 +125,8 @@ class MoEExperts:
         scorer applies its own (ETA_LEVELS, Δt) filter."""
         by_edges = tab["movement_by_edges"]
         queued = {}      # slot -> list of (dist_to_stop, level), near first
+        lane_q = {}      # lane -> list of (dist, level, slot) — the PHYSICAL
+        #                  FIFO on each approach lane (shared-lane exactness)
         arriving = {}    # slot -> list of (eta, level)
         n_c = np.zeros(len(LEVELS))
         for lane, from_edge in tab["lanes"].items():
@@ -139,13 +141,16 @@ class MoEExperts:
                 dist = max(0.0, L - sumo.vehicle.getLanePosition(vid))
                 if speed < STOP_SPEED:
                     queued.setdefault(slot, []).append((dist, lv))
+                    lane_q.setdefault(lane, []).append((dist, lv, slot))
                 else:
                     eta = dist / max(speed, STOP_SPEED)
                     if eta < self.mg:
                         arriving.setdefault(slot, []).append((eta, lv))
         for q in queued.values():
             q.sort()
-        return queued, arriving, n_c
+        for q in lane_q.values():
+            q.sort()
+        return queued, lane_q, arriving, n_c
 
     # ---- v1 scorer (verbatim exp213/214/215 semantics; forensics only) ----
     def _score_v1(self, tab, queued, arriving, n_c, current_phase):
@@ -179,8 +184,16 @@ class MoEExperts:
         return scores
 
     # ---- v2 scorer: clearance-horizon plan cost, per level ----
-    def _mass_v2(self, tab, queued, arriving, current_phase):
-        """-> (n_levels, n_phases) predicted additional waiting per level."""
+    def _mass_v2(self, tab, lane_q, arriving, current_phase):
+        """-> (n_levels, n_phases) predicted additional waiting per level.
+
+        Discharge model = EXACT per-physical-lane FIFO walk (intent, position
+        and level are all exactly known): a vehicle discharges only if its
+        movement is served AND every vehicle ahead of it on the lane has
+        discharged; the first unserved vehicle blocks the rest of the lane.
+        On dedicated lanes this reduces to the plain saturation model; on
+        shared lanes (55% of Dublin approaches) it prices interleaving and
+        head-of-lane blocking exactly instead of double-counting capacity."""
         phase_slots = tab["phase_slots"]
         n_phases = len(phase_slots)
         cur_served = (phase_slots[current_phase]
@@ -192,26 +205,37 @@ class MoEExperts:
         # zero start delay; only newly-green slots wait out the yellow.
         def _delay(p, slot):
             return 0.0 if (p == current_phase or slot in cur_served) else self.yt
-        # common accounting horizon H (see module docstring)
+
+        def _walk(p, served, on_veh=None):
+            """FIFO walk of every lane under plan p; returns t_clear.
+            on_veh(t_or_None, lv): t = discharge time, None = never (blocked
+            or unserved) — only supplied on the accumulation pass."""
+            t_clear = 0.0
+            for lane, q in lane_q.items():
+                k, blocked = 0, False
+                for _, lv, slot in q:
+                    if not blocked and slot in served:
+                        t = _delay(p, slot) + (k + 1) * SAT_HEADWAY
+                        k += 1
+                        t_clear = max(t_clear, t)
+                        if on_veh:
+                            on_veh(t, lv)
+                    else:
+                        blocked = True
+                        if on_veh:
+                            on_veh(None, lv)
+            return t_clear
+
+        # pass 1: common accounting horizon H (see module docstring)
         h_max = 0.0
         for p, served in enumerate(phase_slots):
-            for slot, q in queued.items():
-                if slot in served:
-                    n_lanes = max(1, len(tab["slot_lanes"][slot]))
-                    h_max = max(h_max, _delay(p, slot)
-                                + math.ceil(len(q) / n_lanes) * SAT_HEADWAY)
+            h_max = max(h_max, _walk(p, served))
         H = min(max(h_max, self.dt), self.mg)
+        # pass 2: accumulate predicted waiting
         for p, served in enumerate(phase_slots):
-            for slot, q in queued.items():
-                if slot in served:
-                    d0 = _delay(p, slot)
-                    n_lanes = max(1, len(tab["slot_lanes"][slot]))
-                    for j, (_, lv) in enumerate(q):
-                        t_j = d0 + (j // n_lanes + 1) * SAT_HEADWAY
-                        mass[lv - 1, p] += min(t_j, H)
-                else:
-                    for _, lv in q:
-                        mass[lv - 1, p] += H
+            def on_veh(t, lv, _p=p):
+                mass[lv - 1, _p] += H if t is None else min(t, H)
+            _walk(p, served, on_veh)
             for slot, arr in arriving.items():
                 for eta, lv in arr:
                     if slot in served:
@@ -225,7 +249,7 @@ class MoEExperts:
         levels_present set)."""
         tab = self.tables[ts_id]
         n_phases = len(tab["phase_slots"])
-        queued, arriving, n_c = self._scan(tab, sumo)
+        queued, lane_q, arriving, n_c = self._scan(tab, sumo)
         levels_present = {LEVELS[i] for i in range(len(LEVELS)) if n_c[i] > 0}
         cur = int(current_phase) if 0 <= int(current_phase) < n_phases else 0
 
@@ -239,7 +263,7 @@ class MoEExperts:
                 proposals[k] = best
             return proposals, levels_present
 
-        mass = self._mass_v2(tab, queued, arriving, cur)
+        mass = self._mass_v2(tab, lane_q, arriving, cur)
         total = mass.sum(axis=0)
         for k in range(N_EXPERTS):
             if k == 0:
