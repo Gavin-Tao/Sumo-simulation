@@ -168,6 +168,41 @@
   预登记判据: F1 后 amb stopped 应回 ≤2.5s 带且不随 ep 漂移;
   car stopped 允许 ≤10% 回吐。
 
+§7 presence mask 设计审查 (2026-07-03, 上线前全面自查)
+
+  已验证无问题:
+  * Double-DQN masked target 正确: online 网先 masked_fill 再 argmax,
+    target 网按该动作取值 (dqn_agent_txw.py L186-190) — 不会从被 mask
+    的专家 bootstrap。
+  * buffer all-or-none next_mask 约束满足 (moe 分支恒存 mask)。
+  * 空路口: mask=[仅expert-0], expert-0 全零分数走 tie-keep — 无死锁。
+  * train act / eval act / store next_mask 三处同一 gate_mask 调用。
+  * 双臂并行 (abstain 14-16-32/14-18-03 vs presence 17-07-02): 各自
+    timestamp 目录与 wandb run 独立; 运行中进程不受后续代码编辑影响,
+    models/<name>/<ts>/config.yaml 快照记录各自语义。
+
+  发现并已修复 (D1, 上线前拦下):
+    act mask 的 levels 来自 propose() (意图过滤 slot>=0), 而 next_mask
+    来自 presence() (无过滤) → next_mask ⊋ 下一步真实 act mask, TD 目标
+    从下一步不可选的专家上取 max — 价值上偏。1x1 影响≈0 (路线不在进口
+    边终止), Dublin 影响实在 (大量行程网内终止)。修复: presence() 加
+    同款意图过滤 (memo 共享, 开销不变) + 单测 test_presence_intent_filter
+    锁死两口径一致。exp215 尚未启动, 自动带修复; 17-07-02 两跑在 1x1
+    语义与修复后逐位相同, 无需重启。
+
+  已知非致命边角 (记录在案, 数据触发再处理):
+  C1 远端焦点车微型 hold: 焦点车在进口道远端 (eta≥max_green) 时专家
+     可选但 mass≈0 → tie-keep ≈ 保持键。受进口道长度物理限制
+     (~100-200m, 常规车速 eta≪50s), 频率低; 若 presence 版仍现 hold
+     剥削形态, 第一嫌疑人是它 (升级项: mask 判据从 presence 收紧到
+     "焦点 stake>0")。
+  C2 amb 交易激励仍在 reward 侧 (§6 预登记判据不变)。
+  C3 共享车道放行容量重复计 (v1 起声明的近似, 延续)。
+  C4 max_green 强制换相计入所存专家动作的转移 — 环境动力学, 与
+     208/211 同构, 全 arm 一致故不影响公平。
+  验证: 单测 21/21 (新增 presence 意图过滤测试) | regress digest
+  exp208/exp136 逐位一致 | 4ep 冒烟 (前一 commit) 通过。
+
   (复算: scratchpad/exp{213,214,215,113}_history.pkl +
    scratchpad/exp{213v2,214v2,exp169}_history.pkl + probe_moe_213.py
    + probe_moe_v2.py + probe_baseline.py + probe_gate_shift.py)

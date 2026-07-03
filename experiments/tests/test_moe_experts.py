@@ -104,6 +104,19 @@ def test_v2_hysteresis_no_thrash():
     assert props2[0] == 1, "must release once the rival clearly dominates"
 
 
+def test_presence_intent_filter():
+    """presence() must use the same slot>=0 criterion as propose(): a
+    vehicle whose route ends here (no controlled next movement) must not
+    make its level 'present' in the next-state mask."""
+    ex, sumo = _sim()
+    # a1's route now terminates on eB -> slot -1 -> level 5 NOT present
+    sumo.vehicle.getRoute.side_effect = \
+        lambda v: ('eA', 'out1') if v.startswith('c') else ('eB',)
+    assert ex.presence('J', sumo) == {1}
+    props, levels = ex.propose('J', sumo, current_phase=0)
+    assert levels == {1}, "propose must agree with presence"
+
+
 def test_presence_mask():
     """Structural validity mask: absent-level experts unselectable;
     expert-0 always valid; lexicographic still dominates when stacked."""

@@ -256,9 +256,18 @@ class MoEExperts:
         return proposals, levels_present
 
     def presence(self, ts_id, sumo):
-        """Light scan: which levels are present (for L4 next-state masks)."""
+        """Light scan: which levels are present, INTENT-FILTERED (slot>=0)
+        exactly like propose()'s levels_present — the next-state mask must
+        use the same validity criterion as the act-time mask, or the TD
+        target bootstraps from experts that are unselectable at the next
+        decision (superset bias; matters on Dublin where many trips end on
+        approach edges). Route lookups hit the same memo as propose()."""
+        tab = self.tables[ts_id]
+        by_edges = tab["movement_by_edges"]
         levels = set()
-        for lane in self.tables[ts_id]["lanes"]:
+        for lane, from_edge in tab["lanes"].items():
             for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                if self._slot(sumo, vid, from_edge, by_edges) < 0:
+                    continue
                 levels.add(self._level(sumo, vid))
         return levels
