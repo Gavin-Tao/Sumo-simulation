@@ -274,8 +274,43 @@
   注意: 17-07-02 两条 presence 跑不含 G3 (启动早于本 commit),
   自动成为 "presence 无 G3" 中间臂; exp215 未启动, 将带 G3。
 
+§9 215(v2终版)@ep158 vs exp207 — 完整性体检 + bus/car 分解 + 行为指纹
+   (2026-07-03 深夜; 207 = 208配方+reward_floor, 唯一环境差异 = TLS
+    相位程序 enum vs 8std, demand/时长/seed 全同)
+
+  完整性 (排除"少算车所以好看"): completion 全类逐位打平 (all 0.971
+  vs 0.970 / bus 0.956=0.956 / amb 1.000=1.000); pending: 215 max 1
+  vs 207 max 578 (末窗 270); all avg_speed 6.40 vs 5.61。仿真正确,
+  优势非口径假象。207 的 mean_reward 有 floor 压缩, 等待类指标才可比。
+
+  bus"比 car 差"的分解 (整程 = 每路口 × 穿越路口数):
+    215: car 2.40 = 1.11 × 2.2 | bus 3.08 = 0.84 × 3.7
+    207: car 5.20 = 2.88 × 1.8 | bus 3.78 = 1.11 × 3.4
+  → 每路口口径 bus(0.84) 优于 car(1.11), 优先级正确; bus 整程更高纯因
+    穿越 3.7 vs 2.2 个路口 (GTFS 长走廊)。207 里 bus 整程 < car 只是
+    因为它 car 做得太差; 215 的 bus 每路口其实比 207 好 24%。
+
+  行为指纹 (probe_behavior.py, 同 seed 贪心整集):
+    exp207 best.pth:  switch_rate 0.443 (每 2.3 决策一换), 绿灯保持
+      p50=10s p90=15s max=95s — "节拍器"策略; 黄灯过渡开销
+      ≈ 0.443×2s/5s ≈ 17.7% 通行能力。
+    exp215 ckpt150:   switch_rate 0.123 (3.6× 更少), 保持 p50=15s
+      p90=75s max=3145s — "清空为止"策略 (FIFO 清空模型的行为签名);
+      黄灯开销 ≈ 4.9%。长尾 3145s 为真实长绿 (ts.py keep 分支每步
+      重申状态, max_green 程序时长对两臂同等失效 — 既有语义非本批
+      引入), 发生在侧向需求≈0 的路口, completion/car 指标证明无饿死。
+    gate 分工 (ep150): expert0 72% / expert1 21% / expert3 7% /
+      expert5 22 步 (≈amb 在场时刻) / 2,4 号 0 (presence 正确)。
+  → 好这么多的机制排序: ① 换相频率 3.6× 之差 = 结构性黄灯开销差
+    (~13 个百分点通行能力); ② enum 组合相位菜单; ③ gate 的选择性
+    委托 (超过 expert0 固定地板 -15.6 的部分)。207 的 DQN 学到的是
+    短周期轮转 (TD 没有显式换相成本模型, 价值面推着它每 10-15s 翻面);
+    215 的规则显式给换相定价, 行为差异的根子在这里。
+  照例: 215 仅 ep158, 终审待 800ep + §6a 多 seed 协议。
+
   (复算: scratchpad/exp{213,214,215,113}_history.pkl +
-   scratchpad/exp{213v2,214v2,exp169,213pm}_history.pkl + probe_moe_213.py
-   + probe_moe_v2.py + probe_baseline.py + probe_gate_shift.py
-   + probe_amb_forensics.py + probe_st_queue.py)
+   scratchpad/exp{213v2,214v2,exp169,213pm,exp215new,exp207}_history.pkl
+   + probe_moe_213.py + probe_moe_v2.py + probe_baseline.py
+   + probe_gate_shift.py + probe_amb_forensics.py + probe_st_queue.py
+   + probe_behavior.py)
 ================================================================================
