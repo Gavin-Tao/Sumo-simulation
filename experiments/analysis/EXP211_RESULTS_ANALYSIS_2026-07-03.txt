@@ -109,6 +109,56 @@
   功效提醒: amb ≈1.1 辆/eval → 每 50ep 窗口 ~11 辆, [650-800] 窗口
   ~33 辆。窗口级 p=0.0005 可引用, 任何单次 eval 的 amb 数字不可引用。
 
+§5a 追加 (2026-07-03 深夜): amb 逐车机制取证 + obs 致盲反事实 — H1 从假设
+    升级为有因果证据 (用户三连质疑驱动: 为什么比bus/207差 / 是不是被
+    前车挡 / 绿灯方向有没有车)
+
+  口径更正 (用户指出, 先于取证): reward = -(Σ_p p×avg_wait(级p))/100
+  (rewards.py:896) 是逐类先平均再加权 — 单步定价上 1 辆 amb 的等待
+  不被 car 数量稀释 (1s amb 均值 = 5s car 均值, 与车数无关)。§5 的
+  "权重×出现频次"论述仅对整集回报质量成立 (在场步稀少), 不是单步
+  定价问题 — "reward 定价太便宜"不成立, 病灶在学习侧。
+
+  A. 停车机制分类 (probe_amb_mech.py, eval seed=123, best.pth, 5s 采样,
+     分类: denied_green/green_blocked/green_head/mid_queue):
+     两臂同 4 辆 amb。共同地板: amb_0 卡合流溢流带 (非信控车道
+     mid_queue, 207: 21步 / 211: 24步, max_wait 均 54s) — 路网瓶颈,
+     与信号无关。211 的增量劣势全在 amb_2: 207 里零停车, 211 里
+     4 步 denied_green (两路口, 各 5-7s) + 3 步 mid_queue。
+     green_blocked = 0 步 — 213pm(§8 MoE 文档) 的"绿灯被残队挡"机制
+     在 211 不存在, 211 是纯信号拒绝。
+  B. 拒绝时绿灯方向占用 (追加字段 green_lanes_veh/moving):
+     s539 绿灯方向 0 辆车 (空放绿灯压 amb, 无可辩护); s557/s563/s564
+     绿灯方向仅 1-3 辆在动 — 按逐类平均 reward 全是亏本交易。
+     四次拒绝无一次 reward-最优 → 策略错误, 非目标函数所迫。
+  C. obs 致盲反事实 (probe_ambblind.py: 仅 obs 的优先表 amb 5→1,
+     reward/metrics 表不动, 即"策略看不见 amb"; per-visit stops/s):
+       207 best.pth: amb 0.083/0.833 → 盲 0.163/1.062 (差2×)
+         → 207 的 amb 反应真实且有用 ("节拍器副产品"理论被证伪)。
+       211 best.pth(≈ep215): amb 0.188/1.250 → 盲 0.083/0.833 (反而好)
+         → 该 vintage 的 amb 反应是伪相关且有害。
+       211 ckpt_ep350(谷底): amb 0.083/0.417 → 盲 0.275/1.938 (塌4.6×,
+         car/bus 几乎不动: 2.406→2.389 / 1.312→1.075)
+         → 谷底学到过比 207 更好的真让行 (base 与 wandb 谷底分箱
+           0.365-0.625 吻合)。
+     判决: 差异不在"能不能学会"而在"能不能记住" — ep215 学反 /
+     ep350 学对 / ep500+ 丢失 (§4 漂移), 207 则 800ep 保持。H1
+     (car 主导梯度覆写稀有 amb 特征) 获得直接因果证据; FRAP 共享
+     movement embedding 使 amb 特征与主流类同参数空间, 比 207 的
+     MLP 更易被磨 (结构性怀疑, 未单独证)。
+  注记: 单集确定性仿真有蝴蝶效应 (211 盲后 car 亦动 18%), 数字只定
+  方向不定效应量; amb 指标为 1/12 格点量子化 (4 辆×~12 过口);
+  S3a 多 seed 复评仍是终审前置。H2 被削弱但未排除 — ep350 致盲
+  塌陷证明反应真实, 但"对该 seed 到达序列特化"仍需多 seed 分辨。
+  改进含义 (非 MoE 线): ① 零重训 — best 选点判据改复合 (reward 达标
+  且 amb 窗口坏率达标), 好策略已在轨迹里 (ep350 段), 现 best.pth 恰
+  选中学反的 vintage; ② 保持力 — PER/分层重放 (enum_frap 现与 PER
+  互斥, 解锁需改代码)、G2 尾部定价、multihead per-level heads
+  (梯度隔离)。
+  (探针存档: probe_amb_mech.py / probe_ambblind.py / probe_v350_*.py,
+   本会话 scratchpad; 211 行为指纹: switch_rate 0.355, hold p50=10
+   p90=20 max=450s, ep_return -13.01, teleports 0)
+
 §6 best.pth 与"用什么对比才公平"
 
   best_reward 最后一次提升: ep215 (最终 best = -13.707; 滑窗3 来源
