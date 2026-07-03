@@ -1,30 +1,49 @@
-"""MoE-Gcμ rule experts — depth-1 MPC on weighted avg time-loss.
+"""MoE-Gcμ rule experts.
 
-Design: RESEARCH_ROADMAP_2026-07-02.txt §A1 (final generic version).
-Six zero-training experts; expert-k uses weights w_c = 5 (c==k) else 1,
-expert-0 is all-ones (efficiency fallback). For every phase p in the
-junction's menu the expert scores the PREDICTED time-loss increment over
-the next control interval and picks argmin:
+v2 (default, 2026-07-03) — clearance-horizon MPC with FOCAL experts.
+Post-mortem of exp213/214/215 (EXP213-215_MOE_RESULTS_ANALYSIS_2026-07-03)
+showed two design failures in v1:
+  M-A  all six experts share one mass vector and differ only by a weight
+       row -> identical argmins on 96% of steps (gate has no leverage);
+  M-B  the depth-1 (one Δt) horizon cannot price abandoning a discharging
+       queue -> phase thrash (96 switches / 199 steps).
+v2 removes both with zero new tuning knobs:
 
-  Δ_k(p) = Σ_c w_c^(k)/max(n_c,1) · [
-      ① queued on a movement NOT served by p ............ +Δt each
-      ② queued on a served movement beyond the discharge
-         capacity ⌊Δt_eff/headway⌋ × n_lanes (queue tail) . +Δt each
-      ③ moving, ETA < Δt (levels in eta_levels only —
-         the /n_c structure makes low-level terms negligible):
-         red → (Δt−ETA)+ ; green-after-switch → (yellow−ETA)+
-      ④ p ≠ current phase → Δt_eff = Δt − yellow  (transition cost) ]
-  tie → keep current phase (second anti-thrash guard, derived not tuned)
+  * FOCAL experts: expert-k scores phases by level-k vehicles ONLY
+    (expert-0 = all vehicles, the efficiency expert). No level-k vehicle
+    at the junction -> the expert abstains (proposes keep-current), so
+    proposals genuinely diverge whenever more than one class is present.
+  * CLEARANCE horizon: score(p) = predicted additional waiting of the
+    focal vehicles under the plan "switch to p now (pay yellow if p≠cur),
+    hold, discharge at saturation", accounted over a COMMON horizon H so
+    plans with different clearance lengths are comparable (a per-plan
+    horizon biases toward short/empty phases — freeze risk, caught by
+    hand-computed tests). Hysteresis EMERGES: mid-discharge the current
+    phase's residual work is small, so finishing it dominates — no
+    commitment timer needed.
 
-Every quantity is a system constant (Δt, yellow), physics (ETA = distance/
-speed), an engineering standard (saturation headway ≈ 2 s/veh/lane) or the
-BNF weight convention. No per-network tuning knobs by design.
+    delay0    = yellow_time if p != current else 0
+    t_j       = delay0 + (j // n_lanes + 1) * SAT_HEADWAY    (queue pos j)
+    T_clear(p)= delay0 + max over served slots of ceil(q/n_lanes)*headway
+    H         = clip(max_p T_clear(p), delta_time, max_green) (env consts)
+    served queued j ........ min(t_j, H)
+    unserved queued ........ H
+    served arriving  ....... (delay0 − ETA)+
+    unserved arriving ...... (H − ETA)+
+    tie -> keep current phase.
+
+Every quantity is a system constant (Δt, yellow, max_green), physics
+(ETA = distance/speed), or the engineering saturation headway (≈2 s/veh/
+lane). No per-network knobs; menu (enum or 8std), junction size and class
+mix are all free — genericity by construction.
+
+v1 (design=1) is kept verbatim for forensic reruns of exp213/214/215
+(depth-1 weighted time-loss; see the analysis doc for why it fails).
 
 Data access: direct per-vehicle traci reads on the menu's incoming lanes —
 the same access class the reward function uses; NO new obs features.
 Vehicle-to-movement assignment is INTENT-EXACT (route lookup, memoized),
-mirroring the B-family obs convention (slot_stats="intent", the exp209
-default): each vehicle counts once, under its actual turning movement.
+mirroring the B-family obs convention (slot_stats="intent").
 """
 from __future__ import annotations
 
@@ -35,11 +54,12 @@ import numpy as np
 N_EXPERTS = 6            # 0 = equal-weight efficiency, 1..5 = priority levels
 LEVELS = (1, 2, 3, 4, 5)
 SAT_HEADWAY = 2.0        # s/veh/lane discharge headway (≈1800 veh/h/lane)
-ETA_LEVELS = (4, 5)      # anticipation only where /n_c leaves signal (design §A1)
+ETA_LEVELS = (4, 5)      # v1 only: anticipation where /n_c leaves signal
 STOP_SPEED = 0.1         # SUMO waiting convention
 
 
 def weight_matrix():
+    """v1 weight rows (kept for design=1)."""
     W = np.ones((N_EXPERTS, len(LEVELS)), dtype=np.float64)
     for k in range(1, N_EXPERTS):
         W[k, k - 1] = 5.0
@@ -52,10 +72,12 @@ class MoEExperts:
     prio_of_type: vehicle type -> level (BNF table), with default level."""
 
     def __init__(self, tables, delta_time, yellow_time, prio_of_type,
-                 default_level=1):
+                 default_level=1, design=2, max_green=60.0):
         self.tables = tables
         self.dt = float(delta_time)
         self.yt = float(yellow_time)
+        self.mg = float(max_green)
+        self.design = int(design)
         self.prio = dict(prio_of_type)
         self.default_level = int(default_level)
         self.W = weight_matrix()
@@ -96,16 +118,14 @@ class MoEExperts:
                 self._vid_slot.clear()
         return s
 
-    def propose(self, ts_id, sumo, current_phase):
-        """Returns (proposals (N_EXPERTS,) int array of green-phase indices,
-        levels_present set)."""
-        tab = self.tables[ts_id]
-        phase_slots = tab["phase_slots"]
+    def _scan(self, tab, sumo):
+        """ONE pass over the unique incoming lanes; each vehicle counted
+        once, under its intent-exact movement (route-based, like the obs).
+        arriving collects ALL levels with ETA < max_green horizon; the v1
+        scorer applies its own (ETA_LEVELS, Δt) filter."""
         by_edges = tab["movement_by_edges"]
-        # ---- ONE pass over the unique incoming lanes; each vehicle counted
-        # once, under its intent-exact movement (route-based, like the obs) --
         queued = {}      # slot -> list of (dist_to_stop, level), near first
-        arriving = {}    # slot -> list of (eta, level), eta < dt
+        arriving = {}    # slot -> list of (eta, level)
         n_c = np.zeros(len(LEVELS))
         for lane, from_edge in tab["lanes"].items():
             L = self._length(sumo, lane)
@@ -119,16 +139,18 @@ class MoEExperts:
                 dist = max(0.0, L - sumo.vehicle.getLanePosition(vid))
                 if speed < STOP_SPEED:
                     queued.setdefault(slot, []).append((dist, lv))
-                elif lv in ETA_LEVELS:
+                else:
                     eta = dist / max(speed, STOP_SPEED)
-                    if eta < self.dt:
+                    if eta < self.mg:
                         arriving.setdefault(slot, []).append((eta, lv))
         for q in queued.values():
             q.sort()
-        levels_present = {LEVELS[i] for i in range(len(LEVELS)) if n_c[i] > 0}
-        inv_n = 1.0 / np.maximum(n_c, 1.0)
+        return queued, arriving, n_c
 
-        # ---- score every phase for all 6 experts at once ----
+    # ---- v1 scorer (verbatim exp213/214/215 semantics; forensics only) ----
+    def _score_v1(self, tab, queued, arriving, n_c, current_phase):
+        phase_slots = tab["phase_slots"]
+        inv_n = 1.0 / np.maximum(n_c, 1.0)
         n_phases = len(phase_slots)
         scores = np.zeros((N_EXPERTS, n_phases))
         for p, served in enumerate(phase_slots):
@@ -139,27 +161,97 @@ class MoEExperts:
             for slot, q in queued.items():
                 if slot in served:
                     cap = cap_lane * max(1, len(tab["slot_lanes"][slot]))
-                    for _, lv in q[cap:]:          # ② queue tail
+                    for _, lv in q[cap:]:          # queue tail
                         mass[lv - 1] += self.dt
                 else:
-                    for _, lv in q:                # ① unserved queue
+                    for _, lv in q:                # unserved queue
                         mass[lv - 1] += self.dt
-            for slot, arr in arriving.items():     # ③ anticipation
+            for slot, arr in arriving.items():     # anticipation (v1 filter)
                 for eta, lv in arr:
+                    if lv not in ETA_LEVELS or eta >= self.dt:
+                        continue
                     if slot in served:
                         loss = max(0.0, self.yt - eta) if switch else 0.0
                     else:
                         loss = max(0.0, self.dt - eta)
                     mass[lv - 1] += loss
             scores[:, p] = self.W @ (mass * inv_n)
+        return scores
+
+    # ---- v2 scorer: clearance-horizon plan cost, per level ----
+    def _mass_v2(self, tab, queued, arriving, current_phase):
+        """-> (n_levels, n_phases) predicted additional waiting per level."""
+        phase_slots = tab["phase_slots"]
+        n_phases = len(phase_slots)
+        cur_served = (phase_slots[current_phase]
+                      if 0 <= current_phase < n_phases else frozenset())
+        mass = np.zeros((len(LEVELS), n_phases))
+        # per-slot start delay matches the ACTUAL transition semantics of
+        # traffic_signal._build_phases: yellow is per-link (G->r only), so a
+        # slot green in BOTH cur and p keeps its green through the switch —
+        # zero start delay; only newly-green slots wait out the yellow.
+        def _delay(p, slot):
+            return 0.0 if (p == current_phase or slot in cur_served) else self.yt
+        # common accounting horizon H (see module docstring)
+        h_max = 0.0
+        for p, served in enumerate(phase_slots):
+            for slot, q in queued.items():
+                if slot in served:
+                    n_lanes = max(1, len(tab["slot_lanes"][slot]))
+                    h_max = max(h_max, _delay(p, slot)
+                                + math.ceil(len(q) / n_lanes) * SAT_HEADWAY)
+        H = min(max(h_max, self.dt), self.mg)
+        for p, served in enumerate(phase_slots):
+            for slot, q in queued.items():
+                if slot in served:
+                    d0 = _delay(p, slot)
+                    n_lanes = max(1, len(tab["slot_lanes"][slot]))
+                    for j, (_, lv) in enumerate(q):
+                        t_j = d0 + (j // n_lanes + 1) * SAT_HEADWAY
+                        mass[lv - 1, p] += min(t_j, H)
+                else:
+                    for _, lv in q:
+                        mass[lv - 1, p] += H
+            for slot, arr in arriving.items():
+                for eta, lv in arr:
+                    if slot in served:
+                        mass[lv - 1, p] += max(0.0, _delay(p, slot) - eta)
+                    else:
+                        mass[lv - 1, p] += max(0.0, H - eta)
+        return mass
+
+    def propose(self, ts_id, sumo, current_phase):
+        """Returns (proposals (N_EXPERTS,) int array of green-phase indices,
+        levels_present set)."""
+        tab = self.tables[ts_id]
+        n_phases = len(tab["phase_slots"])
+        queued, arriving, n_c = self._scan(tab, sumo)
+        levels_present = {LEVELS[i] for i in range(len(LEVELS)) if n_c[i] > 0}
+        cur = int(current_phase) if 0 <= int(current_phase) < n_phases else 0
 
         proposals = np.empty(N_EXPERTS, dtype=int)
-        cur = int(current_phase) if 0 <= int(current_phase) < n_phases else 0
+        if self.design == 1:
+            scores = self._score_v1(tab, queued, arriving, n_c, cur)
+            for k in range(N_EXPERTS):
+                best = int(np.argmin(scores[k]))
+                if scores[k, cur] <= scores[k, best] + 1e-9:
+                    best = cur              # tie-break: keep current phase
+                proposals[k] = best
+            return proposals, levels_present
+
+        mass = self._mass_v2(tab, queued, arriving, cur)
+        total = mass.sum(axis=0)
         for k in range(N_EXPERTS):
-            best = int(np.argmin(scores[k]))
-            # tie-break: keep current phase when it is (near-)optimal
-            if scores[k, cur] <= scores[k, best] + 1e-9:
-                best = cur
+            if k == 0:
+                row = total                          # efficiency: everyone
+            elif n_c[k - 1] > 0:
+                row = mass[k - 1]                    # focal: level-k only
+            else:
+                proposals[k] = cur                   # abstain: no focal veh
+                continue
+            best = int(np.argmin(row))
+            if row[cur] <= row[best] + 1e-9:
+                best = cur                  # tie-break: keep current phase
             proposals[k] = best
         return proposals, levels_present
 

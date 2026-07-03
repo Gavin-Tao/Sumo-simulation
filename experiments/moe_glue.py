@@ -64,7 +64,9 @@ def build_experts(cfg, moe, env):
     prio = load_priority_table(cfg.get("priority_source"))
     return MoEExperts(moe["tables"], delta_time=cfg.get("delta_time", 5),
                       yellow_time=cfg.get("yellow_time", 2),
-                      prio_of_type=prio, default_level=int(DEFAULT_PRIORITY))
+                      prio_of_type=prio, default_level=int(DEFAULT_PRIORITY),
+                      design=int(cfg.get("moe_expert_version", 2)),
+                      max_green=float(cfg.get("max_green", 60)))
 
 
 def gate_mask(levels_present, lexicographic, lex_min=5, n_experts=6):

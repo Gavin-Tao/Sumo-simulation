@@ -82,5 +82,44 @@
   四拟合重启中 (kan_k2_retry.log)。213/214/215 的 best.pth 无分析
   价值 (策略僵死), 不进 §6a 复评矩阵。exp216 维持不跑。
 
-  (复算: scratchpad/exp{213,214,215,113}_history.pkl + probe_moe_213.py)
+§5 v2 修复 (2026-07-03 实施, 用户授权"看着改, 要 generic")
+
+  实现 = S1+S2 合并进一个零旋钮模型 (sumo_rl/agents/moe_experts.py,
+  design=2 为默认; v1 原样保留 moe_expert_version: 1 供法证复跑):
+  * 聚焦专家 (治 M-A): expert-k 只按 level-k 车辆计分, 场上无该级
+    车辆 → 弃权(提保持); expert-0 = 全车效率专家。
+  * 清空视界计划成本 (治 M-B): score(p) = 在公共视界
+    H = clip(max_p T_clear(p), Δt, max_green) 内, "切到 p 并按饱和
+    流率放行"下焦点车辆的预测新增等待 (排队第 j 车 min(t_j,H); 未
+    服务 H; 到达车 (H−ETA)+)。迟滞自然涌现: 放行中的队列剩余工作
+    量小, 弃坑代价高。
+  * per-slot 换相延迟对齐 ts.py 真实语义 (黄灯按 link, G→r 才变黄):
+    cur 与 p 共有的绿 slot 换相零延迟, 仅新绿 slot 付 yellow。
+  * 全部量为环境常量 (Δt/yellow/max_green) + 物理 (ETA) + 工程标准
+    (饱和车头时距 2s) — 任意路口/菜单/场景零调参。
+  两次设计迭代被手算单测当场抓住并修正: (i) 每计划各自视界不可比
+  → 偏向短/空相位有冻结风险 → 改公共视界 H; (ii) 全 slot 计黄灯
+  延迟与 ts.py per-link 黄灯不符 → 改 per-slot。
+
+  验证 (全零训练, 规则裸跑, 同网同 reward 同 seed 夹逼):
+    1x1 enum (exp213 场景, eval_seed 42, 200 步):
+      v1 expert0     -299.6  (提案一致率 96.5%, 换相率 0.48)
+      随机相位        -219.9
+      循环定时(10s)   -150.8
+      v2 expert0     -159.2  (一致率 1%, 换相率 0.47)
+      v2 随机gate    -129.2  ← 混合专家已胜所有哑基线; gate 有真杠杆
+    1x1 8std (exp214 场景): v2 expert0 -109.7 (菜单无关性 ✓)
+    Dublin (exp215 场景, eval_seed 123, 720 步, 18 TLS):
+      v2 expert0 裸规则 ep_return = -25.0 (换相率 0.12)
+      对照: v1 训练 800ep 后 -308; exp208 训练后 eval median -19.1
+      → 零训练规则已到训练 DQN 的邻域, v1→v2 改善 12 倍。
+    注: exp113 的 -35 不可作靶 (原始 4 相位网 + 5-2-1 reward, 不同口径)。
+  工程验证: 单测 5/5 (新增迟滞/弃权/手算成本三测) | 全套 pytest 19/19
+  | 回归 digest exp208/exp136 逐位一致 (老 config 零影响) | exp213
+  config 4ep 集成冒烟通过 (gate 训练路径完好)。
+  未做: 重训 exp213/214/215 (等指令; 建议沿用原 config 原名重跑,
+  v2 已是默认, 配置零改动)。
+
+  (复算: scratchpad/exp{213,214,215,113}_history.pkl + probe_moe_213.py
+   + probe_moe_v2.py + probe_baseline.py)
 ================================================================================
