@@ -317,9 +317,23 @@
     的真实杠杆 ≈1.1% 的步, 全部落在类别冲突时刻。v1 的病是"冲突
     时也一致", v2 是"仅无冲突时一致" — 分歧恰好长在该长的地方。
 
+  "好太多不正常?"审计 (用户质疑 2026-07-03 深夜, 三层证伪全过):
+    ① teleport 检查 (最大嫌疑: 默认 300s 瞬移会截断等待): sumocfg
+       未禁用 → 实测两臂 teleports = 0/0 — 无一辆车被瞬移, 通道关闭。
+    ② max_green 红利检查 (次大嫌疑: 3145s 长绿是部署不可能的自由度):
+       给 expert0 规则加"绿满 50s 强制让位"重跑 (probe_maxgreen_cap.py)
+       — ep_return -15.63 → -13.89, 558 次强制让位, 优势不降反升。
+       长绿不是优势来源; 现实 max_green 语义下结论存活。
+    ③ 机制账目: 黄灯开销 17.7%→4.9% (~13pp 通行能力) + enum 组合
+       相位 (一次 ~6 movement vs 8std 2-3) — 效应量与机制量级匹配。
+    文献背景: 规则控制器 (max-pressure/SOTL 族) 胜 vanilla DQN 是
+    常态, 不反常; 真正的发现是 DQN 家族为何留这么多在桌上 —
+    节拍器吸引子 (§9 前文, v1 短视规则 0.48 ≈ DQN 学出 0.443 的
+    互证)。残余保留项: 单 seed 训练曲线, §6a 多 seed 复评前不终审。
+
   (复算: scratchpad/exp{213,214,215,113}_history.pkl +
    scratchpad/exp{213v2,214v2,exp169,213pm,exp215new,exp207}_history.pkl
    + probe_moe_213.py + probe_moe_v2.py + probe_baseline.py
    + probe_gate_shift.py + probe_amb_forensics.py + probe_st_queue.py
-   + probe_behavior.py)
+   + probe_behavior.py + probe_prop_agreement.py + probe_maxgreen_cap.py)
 ================================================================================
