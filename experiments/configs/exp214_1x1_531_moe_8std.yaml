@@ -21,6 +21,7 @@ reward_fn: priority-avg-waiting
 action_scheme: moe
 moe_meta_file: ../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_100-0-99-1-Bus-Car-Amb_WEstr_only_NSamb/1x1amb_8std_meta.json
 moe_lexicographic: false
+moe_presence_mask: true   # 不存在该级车辆的专家不可选 (结构有效性, doc §6)
 num_seconds: 1000
 delta_time: 5
 yellow_time: 2

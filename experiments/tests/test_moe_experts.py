@@ -104,6 +104,21 @@ def test_v2_hysteresis_no_thrash():
     assert props2[0] == 1, "must release once the rival clearly dominates"
 
 
+def test_presence_mask():
+    """Structural validity mask: absent-level experts unselectable;
+    expert-0 always valid; lexicographic still dominates when stacked."""
+    sys.path.insert(0, os.path.join(REPO, "experiments"))
+    from moe_glue import gate_mask
+    m = gate_mask({1, 3}, lexicographic=False, presence=True)
+    assert m.tolist() == [True, True, False, True, False, False]
+    m = gate_mask(set(), lexicographic=False, presence=True)
+    assert m.tolist() == [True, False, False, False, False, False]
+    m = gate_mask({1, 5}, lexicographic=True, presence=True)
+    assert m.tolist() == [False, False, False, False, False, True]
+    m = gate_mask({1, 3}, lexicographic=False, presence=False)
+    assert m.all()
+
+
 def test_v2_focal_divergence_and_abstain():
     """Anti-M-A: car queue on slot0, ONE amb queued on slot1, cur=1.
     Expert-1 (cars) wants phase0, expert-5 (amb) keeps phase1, experts of

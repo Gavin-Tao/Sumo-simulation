@@ -275,6 +275,9 @@ def train(cfg: dict, timestamp: str):
         from moe_glue import load_moe_tables
         moe = load_moe_tables(cfg["moe_meta_file"])
         moe_lex = bool(cfg.get("moe_lexicographic", False))
+        # structural validity mask: absent-level experts are not selectable
+        # (undefined delegation; prevents the free-hold exploit, doc §6)
+        moe_presence = bool(cfg.get("moe_presence_mask", False))
         print(f"  → action_scheme=moe: {len(moe['tables'])} TLS, "
               f"menus={sorted(len(t['phase_slots']) for t in moe['tables'].values())}, "
               f"lexicographic={moe_lex}")
@@ -447,7 +450,7 @@ def train(cfg: dict, timestamp: str):
                             _sumo = env.traffic_signals[ts].sumo
                             _props, _lv = moe_experts.propose(
                                 ts, _sumo, env.traffic_signals[ts].green_phase)
-                            _m = _mg.gate_mask(_lv, moe_lex)
+                            _m = _mg.gate_mask(_lv, moe_lex, presence=moe_presence)
                             _k = int(agent.take_action(initial_states[ts], mask=_m))  # type: ignore[call-arg]  # DQN here
                             moe_k[ts] = _k
                             actions[ts] = int(_props[_k])
@@ -488,9 +491,12 @@ def train(cfg: dict, timestamp: str):
                             # consulted). next_mask = L4 mask of s' (all-ones
                             # in pure mode; presence-scan in lexicographic).
                             import moe_glue as _mg
-                            _nm = (_mg.gate_mask(moe_experts.presence(
-                                       ts, env.traffic_signals[ts].sumo), True)
-                                   if moe_lex else np.ones(6, dtype=bool))
+                            _nm = (_mg.gate_mask(
+                                       moe_experts.presence(
+                                           ts, env.traffic_signals[ts].sumo),
+                                       moe_lex, presence=moe_presence)
+                                   if (moe_lex or moe_presence)
+                                   else np.ones(6, dtype=bool))
                             agent.replay_buffer.add(
                                 initial_states[ts], moe_k[ts],
                                 ts_reward, ts_next_state, ts_done,
@@ -631,7 +637,7 @@ def train(cfg: dict, timestamp: str):
                             _props, _lv = moe_experts.propose(
                                 ts, env.traffic_signals[ts].sumo,
                                 env.traffic_signals[ts].green_phase)
-                            _m = _mg.gate_mask(_lv, moe_lex)
+                            _m = _mg.gate_mask(_lv, moe_lex, presence=moe_presence)
                             _k = int(agent.take_action(eval_obs[ts], mask=_m))  # type: ignore[call-arg]
                             eval_actions[ts] = int(_props[_k])
                     elif enum_tables is not None:

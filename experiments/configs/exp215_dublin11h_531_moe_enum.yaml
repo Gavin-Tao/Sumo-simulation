@@ -53,4 +53,5 @@ target_clip_max: 0.0
 action_scheme: moe
 moe_meta_file: ../nets/dublin/dublin_enum_meta.json
 moe_lexicographic: false
+moe_presence_mask: true   # 不存在该级车辆的专家不可选 (结构有效性, doc §6)
 obs_lane_occ: true

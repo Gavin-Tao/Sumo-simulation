@@ -69,10 +69,23 @@ def build_experts(cfg, moe, env):
                       max_green=float(cfg.get("max_green", 60)))
 
 
-def gate_mask(levels_present, lexicographic, lex_min=5, n_experts=6):
-    """L4: presence-triggered lexicographic mask over the 6 experts.
-    lexicographic off -> all-valid (pure learning mode)."""
+def gate_mask(levels_present, lexicographic, lex_min=5, n_experts=6,
+              presence=False):
+    """Valid-expert mask over the 6 experts.
+
+    presence=True (structural validity, generic): expert-k is selectable
+    only if level-k vehicles are present; expert-0 (efficiency) is always
+    valid. Rationale (analysis doc §6): absent-level experts abstain to
+    keep-current, which the gate learns to exploit as a free unaccountable
+    "hold" button — masking undefined delegations removes that action,
+    same principle as the masked-8std M3 structural mask.
+    lexicographic=True (L4 GUARANTEE tier): presence-triggered hard
+    dominance — the highest present level >= lex_min gets the ONLY slot.
+    Both off -> all-valid (pure learning mode)."""
     m = np.ones(n_experts, dtype=bool)
+    if presence:
+        for k in range(1, n_experts):
+            m[k] = (k in levels_present)
     if lexicographic:
         top = max((l for l in levels_present if l >= lex_min), default=0)
         if top:
