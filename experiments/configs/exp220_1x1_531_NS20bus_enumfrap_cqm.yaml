@@ -1,0 +1,68 @@
+# exp220: exp217 同场景同设置, 唯一变量 = action 侧换 enum_frap (2026-07-03, 用户指定).
+# Base: exp217 (exp177 逐位复制 + 5-3-1). Deltas (与 exp211←exp208 的改法同构):
+#   net/cfg  -> *_enum 变体 (12 个受保护组合相位, 生成器 tools/dcc/enum_phases_net.py)
+#   action_meta 无 -> action_scheme: enum_frap + enum_meta_file + frap 块
+#   obs_phase_state legacy -> perphase: 同一份信息、不同摆法 (信息内容不变)。
+#     legacy   = [当前相位号 one-hot(K维)+min_green] + 12slot×φ(15)      (217: 4+1+180=185维)
+#     perphase = [min_green, phase_elapsed] + 12slot×[本slot是否绿灯+φ(15)] (2+192=194维)
+#     FRAP 网络按 movement 切 obs 成 12 段、每段自包含地做两两对决, 单段必须带
+#     "自己绿不绿"这 1 位; legacy 的前置相位编号无法告诉单个 slot 这一点,
+#     故 frap_glue.py:46 硬断言 perphase (exp211←exp208 同款强制 delta)。
+# 其余全部不变: 场景/demand/obs 字段/reward/DQN 超参 (vanilla, 无 Double 无 PER)/seed/eval 协议。
+name: "exp220_1x1_531_NS20bus_enumfrap_cqm"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"
+obs_fields:        ["count", "queue", "mean_awt"]
+reward_fn:         "5-3-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
+action_scheme:  "enum_frap"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum_meta.json"
+frap:
+  embed_dim: 16
+  pair_dim:  16
+
+# DQN hyperparameters (exp217 逐位: tuned, same as exp142/exp113)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER (exp217 同款)
+use_double: false
+use_per:    false
