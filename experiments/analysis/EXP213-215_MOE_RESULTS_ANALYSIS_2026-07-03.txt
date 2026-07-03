@@ -120,6 +120,55 @@
   未做: 重训 exp213/214/215 (等指令; 建议沿用原 config 原名重跑,
   v2 已是默认, 配置零改动)。
 
-  (复算: scratchpad/exp{213,214,215,113}_history.pkl + probe_moe_213.py
-   + probe_moe_v2.py + probe_baseline.py)
+§6 v2 重跑中期分析 (2026-07-03, 213v2/214v2 跑到 ~ep1300; vs exp169)
+
+  数据: wandb oysvhdrb(213v2) rn07ddvk(214v2) 2p27if7j(exp169)。
+  可比性警示 (169 不是同口径靶):
+    exp169 = 原始 4 相位网 + PriorityBCA obs + reward 5-3-1-ambmax
+    (显式 amb 最大等待惩罚项!) + eval_seed 123 (213/214 是 42)。
+    它的 amb 好是目标函数直接买来的, 不能证明 MoE 结构差。
+
+  确认的三个观察 (窗口 median, eval_seed 42, n=39-80/窗):
+  a) 213v2 全程优于 214v2: mean_reward 末窗 -54.7 vs -75.0;
+     amb stops 0.5 vs 1.0, amb speed 7.0 vs 6.6 → enum 菜单继续赢。
+  b) amb 劣于 169: 169 amb speed 9.0-11.2 / stops 0-0.5 / stopped 0-2.5;
+     213v2 后期 speed ~7.0 / stops 0.5-0.75 / stopped 7.5。
+  c) "前好后差"为真且与 211 同构: 213v2 amb stopped 2.5(ep0-600) →
+     7.5(ep600+), speed 8.7→7.0, 拐点 ep400-600; 同期 car stopped
+     50.6→41.1 单调变好, mean_reward -75.6→-54.7 单调变好。
+     排除项: epsilon ep200 已到底 0.01, 晚 400ep 的退化与探索衰减无关。
+
+  机制 (checkpoint 探针 probe_gate_shift.py, 贪心 eval, 直接证据):
+    ckpt      ep_return  amb在场步的专家选择        跟随amb专家率
+    ep200     -52.3      {5:5, 4:2, 2:1} /8         87.5%
+    ep500     -56.7      {5:7} /7                   100%
+    ep1300    -56.2      {5:4, 4:4, 2:4} /12        66.7%
+  → gate 在 ep500 时"amb 在场必委托 expert-5"; ep1300 时 1/3 的 amb
+    时刻改选 2/4 号弃权专家 (=按住当前相位不动) — 部分遗忘了让行规则。
+    全程 k 直方图同证: expert-4 (本场景无 level-4 车, 永远弃权=保持键)
+    从 30/200 涨到 61/200 — gate 发现弃权专家是免费的"hold"按钮,
+    用它保 car 流。reward (5-3-1 均值加权) 允许这笔交易: amb 只在
+    ~8-12/200 步在场, car 项统治其余步。amb_steps 8→12 也自证
+    (amb 过路口变慢, 在场时间变长)。
+  功效注: 每 eval 仅 ~2 辆 amb, 单点不可引; 上表为整 episode 逐步
+  统计 + 窗口 median (n≥39) 双口径一致。
+
+  解决方案 (按推荐序, 均不改代码):
+  F1 moe_lexicographic: true — L4 GUARANTEE 层, 本来就是为这个失效
+     模式设计的: amb 在场 → mask 强制 expert-5, 训练与 eval 同时生效,
+     gate 无法再学出"无视 amb"。零代码, 改一行 config。代价: amb 在场
+     步让渡 car 优化空间 (~5% 的步), 论文叙事恰好需要这个 GUARANTEE
+     vs HELP 对照。
+  F2 目标对齐: 若对比靶就是 169, 加一条 reward_fn:
+     5-3-1-avg-waiting-time-ambmax 的 MoE arm — 用目标函数而非
+     动作约束保 amb 尾部。与 F1 正交, 可做 2×2。
+  F3 反事实加密 (需小加法代码): 加速 gate 对稀疏 amb 信号的学习,
+     但不改变最优解本身 — 最优解就是要交易 amb, 所以 F3 单用无效,
+     只作 F1/F2 的陪跑增强。
+  预登记判据: F1 后 amb stopped 应回 ≤2.5s 带且不随 ep 漂移;
+  car stopped 允许 ≤10% 回吐。
+
+  (复算: scratchpad/exp{213,214,215,113}_history.pkl +
+   scratchpad/exp{213v2,214v2,exp169}_history.pkl + probe_moe_213.py
+   + probe_moe_v2.py + probe_baseline.py + probe_gate_shift.py)
 ================================================================================
