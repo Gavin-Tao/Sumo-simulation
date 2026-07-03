@@ -253,6 +253,27 @@
      周期要求清队。零旋钮。工作量小, 与 G2 正交。
   预登记: G2/G3 后判据 = ep>200 窗口坏率回落到 ≤30% 且不随 ep 上行。
 
+  G3 已实施 (2026-07-03 夜, commit 后述) — 用户"优先级影子继承"直觉的
+  物理实现: 到达车按 eta 插入所在车道 FIFO 队尾一起推演, 专家从此
+  精确预见"mover 将落在残余队列后" (对排队车, FIFO 本来就是影子
+  继承: 放行 amb 的必要成本自动包含放行挡它的前车, 且比标签继承
+  更对 — 跨 movement 阻挡不会被标错)。声明近似 #2 消除, 剩余近似
+  仅: 恒速 ETA + 饱和车头时距常数。
+  设计问答存档 (用户三问): 系数≠5 的问题在 v2 已不存在 (专家无系数,
+  定价问题在 reward 侧 → G2 尾部, 拒绝均值权重通胀/C1); pressure
+  被再次否决 (类内聚焦无 count 淹没问题, 且 pressure 看不见共享道
+  队头阻挡); 影子继承 = FIFO 物理版, G3 补齐 mover 半边。
+  G3 验证: 单测 23/23 (新增 test_g3_arrival_behind_queue 手算:
+  amb eta=8 落 5 车队尾 → 服务相位下 added wait = 12-8 = 4, 此前
+  记 0); digest 逐位一致; 规则裸跑:
+    Dublin expert0: -21.5 → -15.63 — 零训练超过 exp208 训练后
+    (-19.1), 逼近 exp211 (-17.0)。换相率 0.122 不变。
+    1x1: expert0 -159→-176 (饱和玩具场景的 keep/switch 平衡移动,
+    单专家地板小幅回退), 随机 gate 地板 -129.1 不变, 提案多样性
+    微升 (一致率 1%→0.5%) — gate 可学空间不受损。
+  注意: 17-07-02 两条 presence 跑不含 G3 (启动早于本 commit),
+  自动成为 "presence 无 G3" 中间臂; exp215 未启动, 将带 G3。
+
   (复算: scratchpad/exp{213,214,215,113}_history.pkl +
    scratchpad/exp{213v2,214v2,exp169,213pm}_history.pkl + probe_moe_213.py
    + probe_moe_v2.py + probe_baseline.py + probe_gate_shift.py

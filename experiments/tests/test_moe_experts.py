@@ -83,8 +83,8 @@ def test_v2_hand_computed_plan_cost():
     min(4,6)+min(6,6)=10; A waits 3*6=18 -> 28. Expert-0 keeps phase0."""
     ex, sumo = _sim_two_queues(3, 2, current=0)
     tab = ex.tables['J']
-    queued, lane_q, arriving, n_c = ex._scan(tab, sumo)
-    mass = ex._mass_v2(tab, lane_q, arriving, 0)
+    queued, lane_q, lane_arr, arriving, n_c = ex._scan(tab, sumo)
+    mass = ex._mass_v2(tab, lane_q, lane_arr, 0)
     assert abs(mass[0, 0] - 24.0) < 1e-9, mass[:, 0]
     assert abs(mass[0, 1] - 28.0) < 1e-9, mass[:, 1]
     props, _ = ex.propose('J', sumo, current_phase=0)
@@ -128,8 +128,8 @@ def test_shared_lane_fifo_blocking():
         lambda v: ('sh', 'outL') if v == 'L1' else ('sh', 'outT')
     sumo.vehicle.getRouteIndex.return_value = 0
     # current = phase1 (serves both) -> per-slot delays all 0 for both plans
-    queued, lane_q, arriving, n_c = ex._scan(ex.tables['J'], sumo)
-    mass = ex._mass_v2(ex.tables['J'], lane_q, arriving, 1)
+    queued, lane_q, lane_arr, arriving, n_c = ex._scan(ex.tables['J'], sumo)
+    mass = ex._mass_v2(ex.tables['J'], lane_q, lane_arr, 1)
     # H = clip(max(0, 6), 5, 50) = 6
     assert abs(mass[0, 0] - 18.0) < 1e-9, mass[:, 0]   # blocked: 3 * H
     assert abs(mass[0, 1] - 12.0) < 1e-9, mass[:, 1]   # serial: 2+4+6
@@ -178,3 +178,38 @@ def test_v2_focal_divergence_and_abstain():
     assert props[2] == 1 and props[3] == 1 and props[4] == 1, \
         "absent-level experts must abstain (keep current)"
     assert set(np.unique(props[[1, 5]])) == {0, 1}, "proposals must diverge"
+
+
+def test_g3_arrival_behind_queue():
+    """G3 (shadow inheritance for movers): amb arriving at eta=8 on a lane
+    with 5 queued cars ahead, SAME movement (slot0). Under the serving
+    phase (cur) the amb's FIFO discharge is max(8, (5+1)*2)=12 -> added
+    wait 4 — the expert now SEES the residual-queue landing (pre-G3 it
+    paid 0). Under the non-serving phase it pays (H-8)+."""
+    tab = {'J': {'phase_slots': [frozenset({0}), frozenset({1})],
+                 'slot_lanes': {0: ['eA_0'], 1: ['eB_0']},
+                 'lanes': {'eA_0': 'eA', 'eB_0': 'eB'},
+                 'movement_by_edges': {('eA', 'out1'): 0, ('eB', 'out2'): 1}}}
+    ex = MoEExperts(tab, delta_time=5, yellow_time=2,
+                    prio_of_type={'amb': 5, 'car': 1}, default_level=1,
+                    design=2, max_green=50)
+    sumo = MagicMock()
+    cars = [f'c{j}' for j in range(5)]
+    sumo.lane.getLength.return_value = 200.0
+    sumo.lane.getLastStepVehicleIDs.side_effect = \
+        lambda lane: cars + ['a1'] if lane == 'eA_0' else []
+    sumo.vehicle.getTypeID.side_effect = lambda v: 'amb' if v == 'a1' else 'car'
+    sumo.vehicle.getSpeed.side_effect = lambda v: 10.0 if v == 'a1' else 0.0
+    sumo.vehicle.getLanePosition.side_effect = \
+        lambda v: 120.0 if v == 'a1' else 195.0 - 7.5 * int(v[1:])
+    sumo.vehicle.getRoute.return_value = ('eA', 'out1')
+    sumo.vehicle.getRouteIndex.return_value = 0
+    queued, lane_q, lane_arr, arriving, n_c = ex._scan(ex.tables['J'], sumo)
+    mass = ex._mass_v2(ex.tables['J'], lane_q, lane_arr, 0)
+    # H = clip(max(t_clear), 5, 50): serving plan clears 5 cars (2..10) then
+    # amb at max(8, 12)=12 -> H=12
+    assert abs(mass[4, 0] - 4.0) < 1e-9, mass[:, 0]    # amb: 12-8 = 4
+    assert abs(mass[4, 1] - 4.0) < 1e-9, mass[:, 1]    # unserved: H-8 = 4
+    assert abs(mass[0, 0] - 30.0) < 1e-9                # cars: 2+4+6+8+10
+    props, _ = ex.propose('J', sumo, current_phase=0)
+    assert props[5] == 0, "amb expert keeps the flushing phase"
