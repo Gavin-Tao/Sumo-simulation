@@ -1,0 +1,89 @@
+================================================================================
+  MULTIHEAD_BNF_DESIGN_2026-07-03 — B 线多头分级价值 + 决策时 BNF 加权
+  (用户裁定 2026-07-03: "我想要的肯定是比例语义, 要不然 BNF 没用了,
+   我想要衡量多么大的优先差异" — 词典序仅留作对照选项, 比例为主线)
+================================================================================
+
+§1 动机 (证据链)
+
+  标量 5-3-1 训练把 BNF 权重"烤"进共享梯度, 稀疏类别被稠密类别稀释:
+  KAN α 读出 (exp211): 名义 l3=3/l5=5, 有效 l3=4.11/l5=3.29 —
+  bus 过度内化, amb 欠内化; 行为侧三条独立证据同向 (exp211 后期 amb
+  回吐、amb xts 劣于 208、MoE gate 的 amb 交易)。
+  结论: "让网络自己学会 5 倍"这条路结构性走样。修法 = 训练时解耦
+  (每级一个头, 只吃本级 reward 通道), 决策时把 BNF 权重显式相乘:
+      a* = argmax_a Σ_l w_l·Q_l(s,a),  w = BNF 表本身
+  "5 倍"由公式保证, 不再是学习目标 — 比例语义构造性成立。
+
+§2 数学要点
+
+  a) 通道分解 (恒等式, 单测锁死):
+     原 reward = -(Σ_l l·avg_wait_l)/100;  vec[l-1] = -avg_wait_l/100
+     ⇒ scalar ≡ Σ_l l·vec[l-1]。默认决策权重 = bucket 值 [1..5] 时,
+     复合 Σ w_l Q_l 估计的正是标量 B 线的同一目标 — 锚定性质:
+     exp218 与 exp208 优化同一目标, 仅估计方式解耦。
+  b) 联合策略一致 target (正确性纪律, 与 presence-mask D1 同类):
+     y_l = r_l + γ·Q_l^target(s', a*),  a* = 加权分数在 s' 上的
+     masked argmax (double: online 网选 a*, target 网逐头取值) —
+     所有头 evaluate 同一个 a*, 各头各取 max 会学到不同策略的价值,
+     决策时求和无意义。
+  c) 固定 5 头 (PRIORITY_LEVELS 零样本不变量): 缺席等级 reward 恒 0,
+     头学成常数, 不影响加权 argmax — 任意 BNF 表零改动。
+  d) 换表零重训的诚实边界: 决策立即精确执行新权重, 但头价值是旧
+     联合策略下学的 — 小幅换表≈零样本可用, 大幅换表需短暂微调
+     (用户已接受微调路线; GPI 多策略维持否决)。
+
+§3 实现 (2026-07-03, 全部通过验证)
+
+  新文件 (核心零修改):
+  * sumo_rl/agents/dqn_multihead_agent.py — MultiHeadQnet (同款单隐层
+    trunk, 输出 (B,5,A)); DQNMultiHead 镜像 DQN 接口 (take_action(state,
+    mask)/update(dict)/replay_buffer(复用 dqn_agent_txw.ReplayBuffer)/
+    eps 调度字段/loss/grad_norm/q_mean/q_abs_max 诊断, q_mean/q_abs_max
+    用复合分数, 量纲与标量线可比); _targets() 独立成方法供手算单测。
+    不支持 PER/q_net_factory (显式声明)。
+  * experiments/multihead_glue.py — make_priority_avg_waiting_reward_vec:
+    逐行镜像 rewards.py 单趟算法 (env.vehicles 跨车道修正/vid memo/
+    同序累加), 返回同一标量 + cache[ts_id]=向量; build_multihead_agent。
+  train.py (互斥分支, 三处):
+  * reward 解析前: agent_arch==multihead 守卫 (要求 priority-avg-waiting;
+    禁 use_per/reward_scale≠1/reward_floor — 标量侧包装会与存储向量
+    脱钩), 构造 vec reward + cache;
+  * agent 创建: multihead 分支 (masked-8std 与 plain 动作空间都支持);
+  * store: ts_reward 被 cache 向量覆盖 (仅 multihead; 标量 r[ts] 继续
+    进日志)。act/eval/update/checkpoint 路径零改动 (接口镜像 +
+    ReplayBuffer 6 元组 next_mask 通道原样复用)。
+  配置: exp218_dublin11h_531_multihead_bnf.yaml = exp208 逐位克隆
+  + agent_arch (diff 验证仅 name/agent_arch 两处)。可选键
+  multihead_weights: [..] 供权重扫描。
+
+§4 验证记录
+
+  * 单测 5/5 (test_multihead_agent.py): 加权 argmax+mask 手算;
+    double/vanilla 联合 a* target 手算 (含 mask 翻转 a*、done 断
+    bootstrap、per-head clip); 端到端 update (向量 reward + next_mask
+    经真 buffer); 向量分解恒等式手算 (mock 路口)。
+  * 全套 pytest 28/28。
+  * 活体等值探针 (probe_mh_reward_eq.py): exp208 配方 Dublin, 固定
+    循环策略双跑 60 步 × 18 TLS — 原标量 vs 向量版标量
+    max|diff| = 0.0 (逐位相等)。
+  * 回归 digest exp208/exp136 逐位一致 (老 config 零影响)。
+  * 集成冒烟: exp208 配方 + multihead 3 集 (batch 修正后) 训练+eval
+    无错误。
+  已知护栏: mini_size 必须 > batch_size (冒烟时踩到的既有采样约束,
+  非本批引入; exp208/218 的 1000>256 满足)。
+
+§5 预登记分析方案 (跑 exp218 之后)
+
+  P1 锚定检验: exp218 (默认权重) vs exp208 — 同目标不同估计;
+     若 exp218 的 amb 窗口坏率显著低于 208 ⇒ "解耦修内化"成立。
+  P2 KAN 复检: 对 exp218 的每个头蒸馏 — 检验点从"权重腌没腌对"
+     (α vs 名义) 移到"每类价值估得准不准" (逐头 R²/校准)。
+  P3 权重扫描 (BNF 灵活性主图): 固定 ckpt, 决策权重 w_amb ∈
+     {1,3,5,10,20} 离线多 seed eval → amb 等待 vs car 等待权衡曲线
+     — "每单位 BNF 权重买多少 amb 改善"的定量图。
+  P4 换表零样本: 5-3-1 训练 ckpt 上直接执行 5-4-1/词典序化权重,
+     对照重训版 — 量化 §2d 的零样本边界。
+  运行注意: 未启动任何训练 (等指令); exp218 与 exp208 的对比沿用
+  §6a 协议 (同准则 best.pth + 多 seed 复评)。
+================================================================================

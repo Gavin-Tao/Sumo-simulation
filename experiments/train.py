@@ -172,6 +172,29 @@ def train(cfg: dict, timestamp: str):
     # Table-driven reward (reward-side dual of φ): resolve to a callable here —
     # it needs this experiment's priority table, so it can't live in the registry.
     reward_fn = cfg["reward_fn"]
+    # ── agent_arch: multihead — B-line per-level value heads with decision-
+    # time BNF weighting (MULTIHEAD_BNF_DESIGN doc). The vector reward glue
+    # returns the IDENTICAL scalar (env/logging unchanged) and caches the
+    # per-level decomposition for the replay buffer. Mutually exclusive with
+    # enum_frap/moe (their guards require agent_arch mlp) and transformer.
+    multihead = cfg.get("agent_arch", "mlp") == "multihead"
+    mh_reward_cache = None
+    if multihead:
+        if cfg["reward_fn"] != "priority-avg-waiting":
+            sys.exit("agent_arch=multihead requires reward_fn: "
+                     "priority-avg-waiting (exact per-level decomposition)")
+        if cfg.get("use_per"):
+            sys.exit("multihead + use_per not supported")
+        if float(cfg.get("reward_scale", 1.0)) != 1.0 \
+                or cfg.get("reward_floor") is not None:
+            sys.exit("multihead v1 excludes reward_scale/reward_floor "
+                     "(scalar-only wrappers would desync the stored vector)")
+        from multihead_glue import make_priority_avg_waiting_reward_vec
+        from sumo_rl.environment.priority_map import load_priority_table
+        reward_fn, mh_reward_cache = make_priority_avg_waiting_reward_vec(
+            load_priority_table(cfg.get("priority_source")))
+        print("  → agent_arch=multihead: 5 per-level heads, "
+              "decision-time BNF weights")
     if reward_fn == "priority-avg-waiting":
         from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
         from sumo_rl.environment.priority_map import load_priority_table
@@ -386,7 +409,17 @@ def train(cfg: dict, timestamp: str):
             import moe_glue
             moe_experts = moe_glue.build_experts(cfg, moe, env)
             print(f"  → agent: DQN gate over {6} rule experts (MoE-Gcμ)")
-        if enum_tables is not None:
+        if multihead:
+            from multihead_glue import build_multihead_agent
+            agent = build_multihead_agent(
+                cfg,
+                starting_state=tuple(initial_states[last_ts_id]),
+                state_space=env.observation_space.shape[0],
+                action_space=(8 if action_meta_file else env.action_space.n),
+                device=device)
+            print(f"  → agent: DQNMultiHead (5 heads × {agent.action_space}), "
+                  f"decision weights={agent.weights.tolist()}")
+        elif enum_tables is not None:
             from frap_glue import build_frap_agent
             agent = build_frap_agent(cfg, enum_tables, env, device)
             print(f"  → agent: FRAPAgent (movement-duel), obs_dim="
@@ -483,6 +516,11 @@ def train(cfg: dict, timestamp: str):
                     for ts in env.ts_ids:
                         actual_action = env.traffic_signals[ts].last_executed_action
                         ts_reward = r[ts]  # type: ignore[index]
+                        if mh_reward_cache is not None:
+                            # multihead: store the per-level vector; the
+                            # scalar r[ts] (identical composite) stays in
+                            # the episode logs untouched
+                            ts_reward = mh_reward_cache[ts]
                         ts_next_state = tuple(s[ts])  # type: ignore[index]
                         ts_done = done[ts]  # type: ignore[index]
                         if moe is not None:
