@@ -85,9 +85,9 @@ def main():
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
     data_dir = args.data if os.path.isabs(args.data) else os.path.join(_REPO, args.data)
-    out = args.out or os.path.join(data_dir, f"fit8_{args.mode}")
+    out = os.path.abspath(args.out or os.path.join(data_dir, f"fit8_{args.mode}"))
     os.makedirs(out, exist_ok=True)
-    os.chdir(out)
+    os.chdir(out)     # abs BEFORE chdir (same crash class as kan_distill K2)
 
     d = np.load(os.path.join(data_dir, "dqn8std_targets.npz"))
     manifest = json.load(open(os.path.join(data_dir, "manifest.json")))

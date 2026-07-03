@@ -107,7 +107,10 @@ def main():
     ap.add_argument("--shared-levels", action="store_true")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
-    out = args.out or args.data
+    # absolutize BEFORE chdir — a relative out re-resolves under itself at
+    # save time (2026-07-03 K2 crash: all four fits trained fully, then
+    # died at torch.save with "Parent directory does not exist")
+    out = os.path.abspath(args.out or args.data)
     os.makedirs(out, exist_ok=True)
     os.chdir(out)                              # pykan writes ./model ckpts here
 
