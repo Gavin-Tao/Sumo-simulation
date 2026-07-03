@@ -1,0 +1,68 @@
+# exp219: exp177 场景的多头 BNF 版 — 与 exp217 (同场景 5-3-1 标量) 配对,
+# 唯一实验变量 = 估计方式 (标量把权重腌进梯度 vs 分级头 + 决策时精确乘权重)。
+# 设计: MULTIHEAD_BNF_DESIGN_2026-07-03.txt; 锚定性质保证两臂优化同一目标。
+#
+# 与 exp217 的两处已记录的实现差异 (均不构成目标差异):
+#  1) reward 走 priority-avg-waiting + 表 {amb:5,bus:3,car:1} — 与 exp217 的
+#     legacy 字符串 "5-3-1-avg-waiting-time" 数值等价 (同单趟累加, ≤1e-12);
+#  2) 显式 priority_source 令 obs 的 bus 桶从默认表的 l4 迁到 l3 —
+#     "bucket 即权重"对齐规则的要求 (向量通道按 level 索引), 对 MLP 是
+#     信息保持的输入重排。
+# 决策权重默认 = bucket 值 [1,2,3,4,5]; 权重扫描用 multihead_weights 覆盖。
+name: "exp219_1x1_531_NS20bus_multihead_bnf"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment (= exp177/217 except reward plumbing, see header)
+observation_class: "PriorityMovement"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:
+  ambulance: 5
+  bus: 3
+  car: 1
+reward_fn:         "priority-avg-waiting"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Agent: multihead (5 per-level heads, decision-time BNF weights)
+agent_arch: "multihead"
+
+# DQN hyperparameters (bit-identical to exp177/217)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla targets — same as exp177/217 (no Double, no PER)
+use_double: false
+use_per:    false
