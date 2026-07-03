@@ -209,7 +209,52 @@
   验证: 单测 21/21 (新增 presence 意图过滤测试) | regress digest
   exp208/exp136 逐位一致 | 4ep 冒烟 (前一 commit) 通过。
 
+§8 presence 版 amb 后期再退化 — 逐车取证 (2026-07-03 夜, 213pm 至 ep331)
+
+  现象 (wandb lpqzvdy2, 逐点 eval): amb stops 的"变差"不是水平漂移而是
+  坏 eval 频率上升 — ep140-230: ~25% 的 eval 有 stops≥0.5; ep235-331:
+  ~75% (n=2 amb/eval, 指标以 0.5 量子跳变)。amb_stopped 坏点 5-20s。
+  同期 mean_reward 仍缓慢变好, car 持平。
+
+  探针可信度: probe 与训练 eval 逐位同值 (ep150: -79.62==-79.62;
+  ep300: -68.72==-68.72)。probe 每 5s 采样, 停车计数比 metrics 的逐秒
+  采样偏少 — 停车判定以 wandb metrics 为准, 机制判读以 probe 为准。
+
+  机制 (ckpt150/250/300 逐车+聚合取证, 与 §6 的 abstain 剥削不同):
+  a) presence mask 在岗且有效: mask=[1,1,0,1,0,1] (2/4 号被禁),
+     gate 在 amb 在场步大多仍选 k=5, 未再出现"选弃权专家无视 amb"。
+  b) amb 的停顿发生在自己的相位已经绿灯时 (ckpt150 s61 / ckpt300 s50:
+     green=1 服务 ST, amb 仍 v≈0) → 不是不给绿, 是 amb 到场时落在
+     尚未放完的 car 残余队列后面 (declared 近似#2 的现实版本)。
+  c) eval_seed=42 固定 → 两辆 amb 永远在 s48/s58 到场; 它们停不停
+     取决于到场瞬间 ST 队列深度 (取证: 1-5 辆波动) 与相位周期的对齐
+     — 一步之差 (队列 2 vs 5) 翻转 0↔1。gate 在 car 主导的 reward 上
+     持续微调 → episode 前段的相位周期漂移 → 固定到场时刻的对齐
+     系统性变差 (ep235 前后坏率 25%→75%)。
+  d) 聚合面无大变化: ST 绿灯份额 0.23/0.24/0.23, 队深 mean 5.1/4.0/5.2
+     — 不是"饿死 NS", 是边缘对齐问题。另见 ckpt300 首见 amb 时 gate
+     先选了一步 k=0 再转 k=5 (Q 差仅 0.2) — 5s 的预开门延迟在
+     边缘情形正好致命。
+
+  结论: 这是 reward 侧交易激励 (§6 C2) 的残余表现 + n=2 固定到场
+  时刻的量子化测量 — presence mask 已把结构性剥削关掉, 剩下的
+  不是动作空间问题。前好后差 = gate 向 car 最优微调时, 固定到场
+  对齐从"多数幸运"漂到"多数不幸"。
+
+  处置建议 (维持 generic):
+  G1 测量侧 (先行): 任何 amb 结论改用窗口坏率 (stops≥0.5 的 eval
+     占比) 而非 median; 终审走 S3a 多 seed 离线复评 (n=2 固定到场
+     的单 seed 序列不具备终审资格)。
+  G2 目标侧 (F2, 推荐落地): ambmax reward arm — 尾部惩罚直接给
+     "amb 停 10s" 定价, gate 才有动机把边缘对齐买回来。与 169 同款,
+     BNF 目标选择而非场景旋钮, generic 成立。
+  G3 专家侧 (声明近似#2 的精确化): 到达车按 eta 插入车道 FIFO 推演
+     — expert-5 的提案将精确预见"amb 将落在 5 车队尾", 提前一个
+     周期要求清队。零旋钮。工作量小, 与 G2 正交。
+  预登记: G2/G3 后判据 = ep>200 窗口坏率回落到 ≤30% 且不随 ep 上行。
+
   (复算: scratchpad/exp{213,214,215,113}_history.pkl +
-   scratchpad/exp{213v2,214v2,exp169}_history.pkl + probe_moe_213.py
-   + probe_moe_v2.py + probe_baseline.py + probe_gate_shift.py)
+   scratchpad/exp{213v2,214v2,exp169,213pm}_history.pkl + probe_moe_213.py
+   + probe_moe_v2.py + probe_baseline.py + probe_gate_shift.py
+   + probe_amb_forensics.py + probe_st_queue.py)
 ================================================================================
