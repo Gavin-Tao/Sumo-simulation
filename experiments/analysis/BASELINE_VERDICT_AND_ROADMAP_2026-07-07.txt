@@ -530,22 +530,31 @@
                效率 — 能否打赢 do-nothing 是经验问题。启用判据: 需要
                榨取换约残余效率, 或重排微调 (227c 型) 现稳定性问题时,
                实现 ③ 并与 do-nothing 对照定谳。
-               [③ 设计定稿 v3 — 最终版 (2026-07-08, 用户两次纠偏后收敛:
-                v1 分档=场景旋钮被否, v2 G-FT 梯度分诊=过度设计被否):
-                **永远冻结 FRAP 层, 只调头 — 一套做法, 不分档不判断**。
-                冻结 = enc + pair_fc + rel_emb (路口物理与特征提取,
-                ~96% 参数, 对任何换约都冻); 可训 = g_head + s_head
-                (34 参数, 价值定标层)。重排的语义重映射由 obs 桶交换
-                在输入侧完成 (227c 式), 故 enc 可放心永久冻结;
-                数值变更 obs 不动 (227a 式) — obs 走法是 227 已定事项。
-                实施: train.py finetune_heads_only 键 ~20 行 (要求与
-                init_checkpoint 同用; 冻后重建 optimizer 只含可训参数;
-                lr 可回 1e-3), 单测: 冻结参数 learn_step 后逐位不变。
-                实验 exp228 (1x1, 300ep): a=heads-only 4-2-1 /
-                b=reward_scale 9/7 / c=a+b / d=heads-only 3-5-1 vs
-                227c 全参。预登记判决 = 末窗打败 do-nothing 锚点
-                (4-2-1 刻度 -30.2 / J 39.7), 否则判负归档 (干净结论:
-                5-3-1 策略即 4-2-1 近似最优); 全参微调留作 fallback。]
+               [③ 设计定稿 v4 — 终版 (2026-07-08, 用户第三次纠偏: "为啥
+                不是 T2 冻法" — 正确, v3 的"enc 可永久冻结"论证与
+                w421b/swap351 自证矛盾: 桶交换只换标签不换幅度统计,
+                新住户的幅度重校准只能发生在 enc, head 无法重校准
+                "l5 桶 count=8 意味着什么"):
+                **physics-frozen 单一配方: 永久冻结 pair_fc + rel_emb
+                (movement 对 merge/crossing 交互 = 纯路口物理, 由构造
+                保证任何契约下不变); enc + g/s 头放开 (~640/900 参数)。
+                一套做法不分档** — 数值换约时 enc 输入分布未变, 梯度
+                天然≈0 自己安静 (数据决定, 无需机制); 重排时 enc 有
+                真实梯度自己适应。只冻"构造上契约无关"的, 其余交给
+                数据。代价: churn 面 640 > heads-only 的 34, 227a 式
+                劣化防护变弱 — 但该 case 正解本就是不训练, 起点锚定
+                验收兜底。
+                实施: train.py freeze_modules: ["pair_fc","rel_emb"]
+                (~20 行, 与 init_checkpoint 绑定, 冻后重建 optimizer),
+                单测: 冻结参数 learn_step 后逐位不变。
+                实验 exp228 (1x1, 300ep): a=physics-frozen 4-2-1 /
+                b=reward_scale 9/7 / c=a+b / d=physics-frozen 3-5-1
+                vs 227c 全参 / e=heads-only 4-2-1 (消融: 验证 enc 在
+                数值换约下自己安静 — 若 a≈e 则配方自洽)。预登记判决
+                不变 = 末窗打败 do-nothing 锚点 (-30.2 / J 39.7),
+                否则判负归档; 全参微调 fallback。
+                版本史: v1 三档(场景旋钮,否) → v2 梯度分诊(过度设计,
+                否) → v3 heads-only(enc 论证与实验矛盾,否) → v4。]
                相位使用面同日判定无需改进 (PHASE_USAGE_ANALYSIS);
                相位方案选型定论 (用户问 8std vs frap): 跟拓扑走 —
                1x1 用 std/原生 (217 赢 + 菜单简并轮转证据), Dublin 用
