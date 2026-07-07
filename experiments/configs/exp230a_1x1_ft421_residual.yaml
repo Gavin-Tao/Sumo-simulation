@@ -1,0 +1,64 @@
+# exp230a: 换约方案② 实证 — 残差头 Q=Q_frozen+Δ (零初始化头), 4-2-1, obs 固定。
+# 构造保底: 首评应逐位=do-nothing(-30.2/J39.7)。判据: 末窗是否守住/超越起点。
+name: "exp230a_1x1_ft421_residual"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"
+obs_fields:        ["count", "queue", "mean_awt"]
+reward_fn:         "priority-avg-waiting"
+priority_source:     {ambulance: 4, bus: 2, car: 1}              # 新价格 (reward)
+obs_priority_source: {ambulance: 5, bus: 4, truck: 2, car: 1}    # 训练桶位 (obs 不动)
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
+action_scheme:  "enum_frap"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum_meta.json"
+frap:
+  embed_dim: 16
+  pair_dim:  16
+
+# DQN hyperparameters (exp217 逐位: tuned, same as exp142/exp113)
+hidden_dim:    128
+lr:            0.0001    # 微调降档
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.05      # 从近贪心起步
+eps_end:       0.01
+eps_decay:     1000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+init_checkpoint: "models/exp220_1x1_531_NS20bus_enumfrap_cqm/2026-07-03T23-26-15/best.pth"
+
+residual_head: true
+# Training
+seed:                0
+episodes:            300
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER (exp217 同款)
+use_double: false
+use_per:    false

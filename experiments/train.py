@@ -93,6 +93,21 @@ def set_seed(seed: int):
     np.random.seed(seed)
 
 
+class ResidualQNet(torch.nn.Module):
+    """exp230 (re-contract ②): Q = Q_base(frozen) + Δ(trainable, zero-init
+    output heads) — the start policy is preserved by construction (Δ≡0 at
+    step 0), adaptation capacity lives entirely in Δ. Same forward signature
+    as the wrapped net, so FRAPAgent's take_action/learn_step/target sync
+    work unchanged."""
+
+    def __init__(self, base: torch.nn.Module, delta: torch.nn.Module):
+        super().__init__()
+        self.base, self.delta = base, delta
+
+    def forward(self, *args, **kw):
+        return self.base(*args, **kw) + self.delta(*args, **kw)
+
+
 def resolve_obs_priority_table(cfg: dict):
     """obs bucket table: obs_priority_source (exp227 fine-tune line, decouples
     obs wiring from reward re-pricing) wins over the legacy shared key;
@@ -479,6 +494,34 @@ def train(cfg: dict, timestamp: str):
             print(f"  → warm-start: policy loaded from {init_ckpt} "
                   f"(source ep {_ck.get('episode', '?')}); "
                   f"replay/epsilon/optimizer fresh")
+
+        # ── exp230 (re-contract ②): residual adaptation head. Freezes the
+        # warm-started net as Q_base and trains a zero-init Δ copy on top;
+        # first eval reproduces do-nothing exactly. Mutually exclusive with
+        # freeze_modules; requires init_checkpoint. Key absent -> legacy.
+        if cfg.get("residual_head"):
+            if not init_ckpt:
+                sys.exit("residual_head requires init_checkpoint")
+            if cfg.get("freeze_modules"):
+                sys.exit("residual_head and freeze_modules are mutually exclusive")
+            import copy as _copy
+            _base = _copy.deepcopy(agent.q_net)
+            for _p in _base.parameters():
+                _p.requires_grad_(False)
+            _delta = _copy.deepcopy(agent.q_net)
+            for _h in ("g_head", "s_head"):   # zero the Δ output heads -> Δ≡0
+                _m = getattr(_delta, _h)
+                torch.nn.init.zeros_(_m.weight)
+                torch.nn.init.zeros_(_m.bias)
+            agent.q_net = ResidualQNet(_base, _delta).to(device)
+            agent.target_q_net = _copy.deepcopy(agent.q_net)
+            agent.optimizer = torch.optim.Adam(
+                (p for p in agent.q_net.parameters() if p.requires_grad),
+                lr=cfg.get("lr", 0.001),
+                weight_decay=float(cfg.get("residual_weight_decay", 0.0)))
+            _n = sum(p.numel() for p in agent.q_net.parameters() if p.requires_grad)
+            print(f"  → residual_head: Δ trainable {_n} params (zero-init heads), "
+                  f"base frozen; weight_decay={cfg.get('residual_weight_decay', 0.0)}")
 
         # ── exp228 fine-tune recipe (design v4, physics-frozen): freeze the
         # named q_net submodules (contract-invariant junction physics), tune

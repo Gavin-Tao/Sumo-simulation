@@ -181,3 +181,39 @@ def test_freeze_heads_only_learn_step():
     n_train = sum(p.numel() for p in a.q_net.parameters() if p.requires_grad)
     assert n_train == sum(p.numel() for p in named["g_head"].parameters()) \
                     + sum(p.numel() for p in named["s_head"].parameters())
+
+
+# ── residual_head contract (exp230 recipe ②) ────────────────────────────────
+
+def test_residual_zero_init_and_base_frozen():
+    import numpy as np
+    import copy
+    from train import ResidualQNet
+    a = _toy_frap()
+    base = copy.deepcopy(a.q_net)
+    for p in base.parameters():
+        p.requires_grad_(False)
+    delta = copy.deepcopy(a.q_net)
+    for h in ("g_head", "s_head"):
+        m = getattr(delta, h)
+        torch.nn.init.zeros_(m.weight); torch.nn.init.zeros_(m.bias)
+    ref = copy.deepcopy(a.q_net)
+    a.q_net = ResidualQNet(base, delta)
+    a.target_q_net = copy.deepcopy(a.q_net)
+    a.optimizer = torch.optim.Adam(
+        (p for p in a.q_net.parameters() if p.requires_grad), lr=1e-2)
+    x = torch.randn(3, 86)
+    i = 0
+    pm, rel, ex = a.PM[i:i+1].expand(3,-1,-1), a.REL[i:i+1].expand(3,-1,-1), a.EXIST[i:i+1].expand(3,-1)
+    assert torch.allclose(a.q_net(x, pm, rel, ex), ref(x, pm, rel, ex), atol=1e-6)  # Δ≡0
+    base0 = [p.detach().clone() for p in a.q_net.base.parameters()]
+    rng = np.random.default_rng(2)
+    for _ in range(8):
+        a.replay_buffer.add(tuple(rng.random(86)), 0, -1.0, tuple(rng.random(86)), False, "t0")
+    for _ in range(3):
+        a.learn_step()
+    assert a.loss is not None
+    for old, new in zip(base0, a.q_net.base.parameters()):
+        assert torch.equal(old, new), "frozen base moved"
+    moved = any(p.grad is not None and p.requires_grad for p in a.q_net.delta.parameters())
+    assert moved
