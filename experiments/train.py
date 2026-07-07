@@ -93,6 +93,15 @@ def set_seed(seed: int):
     np.random.seed(seed)
 
 
+def resolve_obs_priority_table(cfg: dict):
+    """obs bucket table: obs_priority_source (exp227 fine-tune line, decouples
+    obs wiring from reward re-pricing) wins over the legacy shared key;
+    None -> observation class built-in default table."""
+    if "obs_priority_source" in cfg:
+        return cfg["obs_priority_source"]
+    return cfg.get("priority_source")
+
+
 def save_checkpoint(agent: DQN, episode: int, model_dir: str, filename: str = None) -> str:
     os.makedirs(model_dir, exist_ok=True)
     checkpoint = {
@@ -147,8 +156,9 @@ def train(cfg: dict, timestamp: str):
         obs_kwargs["fields"] = tuple(cfg["obs_fields"])
     if "obs_phase_state" in cfg:
         obs_kwargs["phase_state"] = cfg["obs_phase_state"]
-    if "priority_source" in cfg:
-        obs_kwargs["priority_source"] = cfg["priority_source"]
+    _obs_prio = resolve_obs_priority_table(cfg)
+    if _obs_prio is not None:
+        obs_kwargs["priority_source"] = _obs_prio
     if "obs_downstream" in cfg:      # ψ downstream block (E1b) — B family
         obs_kwargs["include_downstream"] = bool(cfg["obs_downstream"])
     if "obs_downstream_fields" in cfg:   # ψ field ablation: subset of (count, queue)
@@ -455,6 +465,20 @@ def train(cfg: dict, timestamp: str):
             q_net_factory=q_net_factory,
             grad_clip=cfg.get("grad_clip", None),
         )
+
+        # ── warm-start (exp227 fine-tune line): policy weights only; target
+        # synced to policy; optimizer/replay/epsilon start fresh under THIS
+        # config's schedule. Key absent -> cold start, bit-identical legacy.
+        init_ckpt = cfg.get("init_checkpoint")
+        if init_ckpt:
+            if not os.path.isfile(init_ckpt):
+                sys.exit(f"init_checkpoint not found: {init_ckpt}")
+            _ck = torch.load(init_ckpt, map_location=device, weights_only=False)
+            agent.q_net.load_state_dict(_ck["policy_state_dict"])
+            agent.target_q_net.load_state_dict(agent.q_net.state_dict())
+            print(f"  → warm-start: policy loaded from {init_ckpt} "
+                  f"(source ep {_ck.get('episode', '?')}); "
+                  f"replay/epsilon/optimizer fresh")
 
         step_counter = 0
         best_eval_reward = -float("inf")
