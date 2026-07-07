@@ -480,6 +480,30 @@ def train(cfg: dict, timestamp: str):
                   f"(source ep {_ck.get('episode', '?')}); "
                   f"replay/epsilon/optimizer fresh")
 
+        # ── exp228 fine-tune recipe (design v4, physics-frozen): freeze the
+        # named q_net submodules (contract-invariant junction physics), tune
+        # the rest. Requires a warm start (freezing random init is meaningless).
+        # Optimizer is rebuilt over trainable params only.
+        freeze = cfg.get("freeze_modules")
+        if freeze:
+            if not init_ckpt:
+                sys.exit("freeze_modules requires init_checkpoint")
+            _named = dict(agent.q_net.named_children())
+            _bad = [m for m in freeze if m not in _named]
+            if _bad:
+                sys.exit(f"freeze_modules unknown {_bad}; have {sorted(_named)}")
+            for _m in freeze:
+                for _p in _named[_m].parameters():
+                    _p.requires_grad_(False)
+            agent.optimizer = torch.optim.Adam(
+                (p for p in agent.q_net.parameters() if p.requires_grad),
+                lr=cfg.get("lr", 0.001))
+            _n_train = sum(p.numel() for p in agent.q_net.parameters()
+                           if p.requires_grad)
+            _n_all = sum(p.numel() for p in agent.q_net.parameters())
+            print(f"  → freeze_modules: {freeze}; trainable "
+                  f"{_n_train}/{_n_all} params, optimizer rebuilt")
+
         step_counter = 0
         best_eval_reward = -float("inf")
         best_eval_hist: list = []   # sliding window for the best-ckpt criterion (B2 fix)
