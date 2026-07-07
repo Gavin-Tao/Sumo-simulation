@@ -28,3 +28,4 @@ Dublin 批次 (EXP211_RESULTS_ANALYSIS §5a; BASELINE §3)
   probe_215_emptyswitch.py 215 空进口道切相位计数 (结果: 4843 空步 0 切换)
   probe_behavior.py        行为指纹 (dqn8std|frap|moe): 换相率/保持分布
   probe_phasefreq.py       相位选择频率 {217|220|207|211}: share/熵/top1/死相位 (PHASE_USAGE_ANALYSIS_2026-07-07)
+  probe_mpc_recontract.py  I1 契约MPC探针 {421|351}×{top2|all}: FIFO清空代价重排 220 的 Q 提名 (RECONTRACT_REVIEW I1)
