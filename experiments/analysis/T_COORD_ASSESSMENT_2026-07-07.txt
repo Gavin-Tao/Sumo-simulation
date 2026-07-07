@@ -1,0 +1,74 @@
+================================================================================
+  T 线 (lane-token Transformer) 协同设计复审 — 现状/缺口/复活路线 (2026-07-07)
+  触发: 用户问 "B-12movement 之外, Transformer 设计考虑协同的完整形态;
+        现设计要不要改; 有无 bug/致命伤; 代码是否已做"
+  关联: AB_TRANSFORMER_STATE_DESIGN_2026-06-10 (T 架构/R1/R2/容量悖论)
+        ABT_T_BOUNDARY_TOKEN_COORD_2026-06-11 (边界 token 选型+设计)
+        ABT_1X3_RESULTS_2026-06-11 §3.4 (Tnb 负结果)
+        BASELINE_VERDICT_AND_ROADMAP_2026-07-07 (multihead/presence 组件池)
+================================================================================
+
+§1 已实现盘点 (答"代码是否已做")
+
+  ✓ 路口内 T: PriorityLaneToken* 家族 (φ+is_green+phase_service 身份位=R1 修复)
+    + LaneTokenTransformerQNet (CLS, 2层4头FF256, dropout=0 确定性)
+    + attn 诊断 (cls_attn_entropy/max/on_amb) + R2 grad_clip 可用。
+  ✓ 协同已实现: PriorityLaneTokenNbObservationFunction (Tnb, 边界 token) —
+    邻居入口道 = 本路口出口链路, 作为 remote token 带完整 φ 进同一
+    attention (amb 以 p5 桶粒度跨界可见); is_remote 位; 全网 max 均匀
+    padding; obs 层完成, 无 neighbor_map, plain train.py 可跑。
+    选型论证完整 (vs concat/Coeff/GAT-on-CLS, 见 COORD 文档 Part 0)。
+  ✓ 实验: exp182/183 (1x1 T), exp185 (1x3 T), exp188 (1x3 Tnb) 各 2000ep 完。
+  ✗ 未做: FRAP-scorer 头 (spec 9.T 自荐终态; 现为 fixed-K CLS 头);
+    own-lane padding+mask; T×multihead 组合; exp196 (Dublin Tnb) 配置
+    在库从未启动。
+
+§2 关键实测事实 (复活决策的前置)
+
+  F1 1x3 Tnb 负结果: exp188 car 49.6 vs exp185 纯 T 44.2 (差 5.4s) —
+     边界 token 协同没赚反亏 (单 seed, 文档自注建议 3-seed 复核)。
+  F2 容量悖论实测: T 高效率但倒挂放大 (1x1 attn_on_amb≈0.05, 倒挂倾向;
+     CoLight 倒挂放大器实测) — T 裸配加权标量 reward 不可发布。
+  F3 Coeff 两次实测死亡 (β→0), 对 T 永久排除。
+
+§3 bug/致命伤排查 (2026-07-07 本轮)
+
+  致命伤 (挡 Dublin/协同, 结构性, 互相关联):
+    A. fixed-K CLS 头绑死相位数 — 异构路口无法共享;
+    B. 无 own-lane padding + attention mask — n_tokens=本路口车道数,
+       Dublin 各路口不同 → 共享 agent obs 维度不一致。exp196 从未跑
+       的最可能原因。qnet.forward 无 mask 支持。
+  查过无问题:
+    - Tnb remote cap 查表安全 (ts.lanes_length 覆盖 lanes+out_lanes,
+      traffic_signal.py:119);
+    - remote_slots = 全网 max, 构造期一次算好, 各 TS 一致;
+    - cls_attention 诊断与 norm_first=False (torch 默认) 匹配 —
+      若未来改 norm_first/升级 torch 语义需复核 (记录性风险);
+    - dropout=0 ⇒ 不依赖 train/eval 模式切换。
+  历史已修: R1 身份混叠 (phase_service), R2 无梯度裁剪。
+
+§4 考虑协同的完整设计 (四层蓝图)
+
+  L1 路口内: 现有 encoder; 建议恢复静态几何最小集 (length/cap 2 维) —
+     "无静态块"是 1x1 语境的用户决定, 跨路口时车道可交换性变劣势。
+  L2 协同: 边界 token 主推 (已有)。复活前置: ① F1 的 3-seed 复核;
+     ② 免费诊断 — 用 exp188 现成 ckpt 跑 cls_attention, 看 remote 列
+     注意力质量 (区分"实现对但网络不用" vs "假设错")。GAT-on-CLS 只做
+     对照臂; Coeff 排除。
+  L3 动作头: FRAP-scorer 替换 fixed-K — Q_k = MLP(h_int, pool(served(k)
+     的 token)) + own-lane padding/mask。一次解决: 可变 K / 可变车道数 /
+     跨路口共享; 且与 enum 菜单线 (220) 会师 (enum 相位×token 池化天然
+     兼容)。
+  L4 优先级保障: T-state × multihead 分级头 × presence 门控 (2026-07
+     已验证组件移植) 治倒挂放大器; 稳定化包 double/huber/clip 默认带
+     (colight+B 失稳前科)。训练协议: CTDE 共享参数 + 本地 reward。
+  判决协议: BASELINE_VERDICT §6.6 六层卡片; T 线的效率/优先级双维必须
+     分开报 (F2 的教训)。
+
+§5 建议与定位
+
+  P-A 主线 (multihead 换约) 不依赖 T。T = 独立第二篇故事 ("一网控任意
+  路口 + 协同", zero-shot 跨拓扑), 复活成本 = L3 两个中等工程件 +
+  F1 复核。排序建议: exp227 判决后再决定; 若启动, 第一步是 §4-L2 的
+  零成本 attention 诊断, 不是写代码。
+================================================================================
