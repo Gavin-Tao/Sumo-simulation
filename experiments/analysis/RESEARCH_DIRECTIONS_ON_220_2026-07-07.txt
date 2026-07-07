@@ -1,0 +1,211 @@
+================================================================================
+  基于 exp220 (enum-FRAP, 12-movement) 的研究方向总设计 (2026-07-07)
+  触发: 用户两问 — ① 锚定 220, Transformer×协同的完整设计/缺口/致命伤/
+        代码现状; ② 八个外部方向 (diffusion/fuzzy/contrastive/cooperation/
+        训练方式/LLM/VLA/world model) 逐个具体化, 全部以 220 栈为基线。
+  锚点: exp220 = enum 受保护相位菜单 + FRAPAgent (movement-duel) +
+        perphase obs (2+12×16) + 5-3-1 契约。Dublin 同构版 = exp211。
+  关联: T_COORD_ASSESSMENT_2026-07-07 (lane-token T 线复审)
+        BASELINE_VERDICT_AND_ROADMAP_2026-07-07 (§6 SLA / exp221-227 队列)
+        ABT_T_BOUNDARY_TOKEN_COORD_2026-06-11 (Tnb 选型)
+        EXP211_RESULTS_ANALYSIS §5a (H1 保持力因果链)
+        EXP213-215_MOE §7-§9 (FIFO 清空模型 = 皇冠资产)
+================================================================================
+
+§1 Transformer × 协同, 锚定 220 的完整设计 (重答 2026-07-07)
+
+  1.1 先看清 220 已经是什么
+    FRAPQNet (frap_agent.py:28-71) 三段:
+      encode:  obs[2+12×16] → 12 个 movement token 嵌入 (B,12,E)   ← 已是 token 化
+      duel:    手工单跳成对交互 — pair_fc(cat(e_i,e_j)) × rel_emb
+               ({merge,crossing} 关系嵌入调制), 非冲突对屏蔽        ← "带关系先验
+                                                                      的 1 层图网络"
+      head:    相位分 = Σ成员 g + Σ被压制对手的 duel max, 经 pm/EXIST
+               掩码池化 → 变 K 菜单原生支持                          ← 跨路口接口
+    → 220 与 Transformer 的距离只有一段: 把手工单跳 duel 换成可学的
+      多跳注意力。不需要 lane-token 线的任何东西。
+
+  1.2 完整设计: MTT (Movement-Token Transformer)
+    保留 encode 与 phase-pooling 头, 中段替换:
+      2 层 self-attention over 12 movement tokens,
+      attention bias = movement_rel 的类别嵌入 (−1不存在/0同臂/1兼容/
+        2合流/3交叉 → 每 head 一个加性标量偏置; 关系先验保留, 交互权重
+        改为可学);
+      EXIST 作 key_padding_mask (不存在槽不参与);
+      头部: q_self 同现状; q_sup 的"被压制对手"项可保留 (显式让行代价)
+        或由注意力吸收 (消融决定)。
+    参数量 ~100k 级, d_model=embed_dim 升到 64 即可。
+    为什么 MTT 优于旧 lane-token T (T_COORD_ASSESSMENT 的两个致命伤):
+      致命伤A fixed-K CLS 头   → 不存在: 头随菜单变 K (220 现成)
+      致命伤B 车道数异构无 padding → 不存在: movement 槽全网规范 12 个,
+        EXIST mask 现成 — Dublin 18 路口零适配
+    容量悖论警戒 (T 线实测遗产): MTT 容量↑ ⇒ 倒挂放大风险, 发布必须按
+      §6.6 卡片效率/优先级双维分报, 且优先与 2.5(a) 分位头同批上。
+
+  1.3 协同层 (全部 obs 级, plain train.py, 与 MTT 或原 FRAP 头都兼容)
+    (a) [主推] amb 路由预告 token — 事件驱动、定向:
+        amb 上路后, 沿其 route (route 查表 = intent-exact 已有机制) 给
+        未来 ≤H 个路口注入 1 个 token: [is_anticip 位, 来向 slot one-hot,
+        ETA/η̂, level one-hot]。下游提前一个周期清走廊 = MoE G3 影子
+        继承的跨路口版。直接打击 Dublin amb 的真实地板 mid_queue
+        (§5a: 21-24 步卡合流溢流, 现有任何协同都看不见它来)。
+        1x1 上无意义 (单路口), 实验场 = Dublin (exp211 配方替换)。
+    (b) remote movement tokens — Tnb 从 lane 移植到 movement:
+        邻居入口 movement 的 φ 作 remote token (+is_remote 位), 全网
+        max 均匀 padding。被动感受野; 1x3 Tnb 负结果 (car 49.6 vs
+        44.2, 单 seed) 未定谳 → 移植前先 3-seed 复核 + 用注意力诊断
+        判"没用还是没学"。
+    (c) G4 下游容量项进 FIFO 模型 (已登记, 数据触发)。
+    否决沿用: Coeff (β→0 两次实测死亡), GAT-on-CLS 仅对照。
+
+  1.4 现状/缺口/bug (答"代码是否已做")
+    已有 ✓: 12-token 化 (encode)、movement_rel 矩阵、EXIST/pm 掩码、
+      变 K 菜单头、稳定化包 (double/huber/clip)、注意力诊断思路
+      (cls_attention 可移植成 token-attention 诊断)、Tnb 的 padding
+      配方、route 查表。
+    缺 ✗: MTT 模块本身 (~60 行新 qnet 类, 接口与 FRAPQNet.forward
+      (x,pm,rel,exist) 逐位相同 → FRAPAgent 零改动可换); train.py:323
+      的 enum_frap×agent_arch 互斥门放开一个白名单值; 预告 token 的
+      obs 子类 (~40 行, Tnb 同皮)。
+    bug/致命伤排查: 220 栈本轮已审 (BASELINE §2, warm-start 审计),
+      无新发现; 旧 lane-token T 线与 220 不兼容 (fixed-K CLS 头 +
+      guard), 其资产中可搬的只有 padding 配方与诊断思路。
+    验收: 1x1 220-MTT vs 220 (效率不应劣于; 分离不应塌), Dublin
+      exp211 配方换 qnet + (a) 预告 token 消融; 判据走 §6.6 卡片。
+
+--------------------------------------------------------------------------------
+§2 八方向逐个具体化 (锚定 220; 每项: 判决/结合方式/最小落地/验收/风险)
+
+  2.1 Diffusion — 判决: 有搞头, 但角色是需求生成器, 不是策略
+    结合: 动作空间离散 4-12 相位 argmax, diffusion policy 无缝合点。
+      正确缝合点 = SLA 协议 §6.6 Step5 需求包络目前无生成机制:
+      用 Dublin SCATS 计数训条件扩散 (条件 = 时段×检测器, 输出 =
+      到达率场/OD 扰动), 采样 rou.xml → ① 评价包络扫描 (P-B 实验件),
+      ② 220 鲁棒性微调的场景增广, ③ amb 到达模式条件生成 (治固定
+      seed 对齐彩票)。
+    最小落地: 纯工具层 (tools/demandgen/), 不碰训练栈; 输出直接喂
+      现有 eval/probe harness。
+    验收: L6 包络曲线 (220 vs 217 在 ±20% 流量/构成扰动下的 J 与
+      合规保持域)。
+    风险: SCATS 仅 4 天 → 模型要小、条件要强; 否则退化为参数化
+      bootstrap (也够用, 先 bootstrap 后 diffusion)。
+
+  2.2 Fuzzy — 判决: 否决 (进否决清单)
+    理由: 隶属函数 = 成组手调旋钮, 与零旋钮 generic 铁律冲突 (pressure
+      两次被否的同款理由); 契约灰度需求已被 crisp 的翻转边界证书
+      (§6.6 Step1) 更优雅覆盖。
+    若坚持的最小形态: 推理层 fuzzy 绿延长 guard (guard-probe 现成
+      harness 可收割), 仅作对照注脚; 不入主线, 不配论文故事。
+
+  2.3 Contrastive — 判决: 有搞头, 对症 H1 保持力
+    结合: 211 (=220 的 Dublin 同构) 的已定谳病 = 稀有 amb 特征被 car
+      梯度覆写 (学会→忘掉, §5a 因果链)。加辅助 InfoNCE 锚定判别性:
+      正对 = 同状态增广 (φ 噪声/时间相邻的 amb 在场步), 负对 = 无 amb
+      步; 挂在 FRAP encode 输出 (movement embedding) 或池化表征上,
+      L = L_TD + λ·L_con (λ 固定 0.1 级, 不调参承诺)。
+      机制: TD 不给稀有类的梯度质量, 对比目标持续补 — 与 PER (重放
+      已有) / multihead (结构隔离) 正交, 三者可消融成 P-C 方法矩阵。
+    最小落地: FRAPAgent.learn_step ~30 行 + buffer 记 amb-presence 位。
+    验收: 训练全程致盲 gap 曲线 (blind-gap 不随 ep 塌 = 保持力修复),
+      amb 末窗坏率; 探针 probe_ambblind 现成。
+    风险: 1x1-220 无此病 (2000ep 无漂移) — 实验场必须是 Dublin;
+      辅助损失与 TD 的冲突需 grad-norm 监控。
+
+  2.4 Cooperation — 判决: 有搞头, 首选"有因果方向的协同"
+    (a) amb 路由预告 token (主推): 见 §1.3(a)。
+    (b) remote movement tokens: 见 §1.3(b), 3-seed 复核 Tnb 负结果后再投。
+    (c) G4 下游容量: 已登记。
+    最小落地: (a) 仅 obs 子类 + Dublin 重训一臂; 与 MTT 无耦合 (原
+      FRAP 头即可先测)。
+    验收: probe_amb_mech 分类前后对比 — mid_queue 步数 (21-24) 是否
+      被上游预清显著压缩; amb 整程等待窗口统计。
+    风险: 预告 token 打开"为 1 辆 amb 预扰动整条走廊"的代价面 —
+      car 回退幅度必须同报 (§6.6 双维)。
+
+  2.5 训练方式 — 判决: 三个增量, 按 A2 主线优先
+    (a) Quantile×FRAP (主推, A2 落地): g_head/s_head 输出 N 分位
+        (QR-DQN 式), 相位分布化; 决策时 CVaR_α 合成替代均值 argmax。
+        一石三鸟: A2 风险主线 / L4 尾部门从事后统计变决策目标 /
+        分布式损失对 219 型震荡的已知稳定收益。
+        最小落地: FRAPQNet 两个头 ×N 输出 + quantile Huber, ~50 行;
+        兼容 MTT。验收: amb 尾部坏率 vs 均值版, J 不劣; 219 型稳定
+        性指标。
+    (b) Contract adapters (227 的延伸): 冻结 220 主干, 每契约一个
+        低秩 adapter (~1% 参数); 有限契约空间 (1-5 整数) → 可枚举
+        adapter 库 = 单契约训练哲学下的全契约覆盖。
+        最小落地: FRAPAgent 加 LoRA 包装 (~60 行) + 227 同款判据。
+        验收: adapter-421/351 vs 227a/c 全参微调的集数与终点。
+    (c) 反事实引导固化: 用致盲探针定位 amb 反应关键参数 (对 blind-gap
+        的梯度归因), EWC 惩罚只护该子空间 — 诊断工具变修复工具。
+        排 (a)(b) 之后, 研究味最浓。
+    已登记不重复: F1 复合选点 / F2 稳定包 / F3 PER 解锁。
+
+  2.6 LLM — 判决: 有搞头, 半条线已在库
+    现状: tools/llm/verify_policy.py 已有 policy IR + KPI 断言 +
+      retyping daemon, 且 --controller frap 直接吃 211/220 栈 ckpt;
+      priority_map.load_priority_table 留有 .bnf Phase-2 钩子。
+    结合 (补全闭环): NL 需求 ("高峰公交优先, 救护车绝对优先, 但公交
+      不得让 car 恶化 >20%") --LLM--> {BNF 权重表 + SLO 门集 (§6.6
+      G2-G6 阈值) + 翻转证书请求} --> 227 微调 / 2.5(b) adapter 换约
+      --> SLA 卡片 --LLM--> 面向运营者的解释报告。
+      LLM 只做编译与解释, 控制与验证全在既有栈 — 不是"LLM 调 API"
+      灌水, 壁垒 = 契约形式化+换约机制+验证套件三件自有资产。
+    最小落地: 编译 prompt + JSON schema 校验 (~1 天) + verify_policy
+      对接; 端到端 demo 一条命令。
+    验收: 编译正确率 (NL→表+门的人工金标), 端到端换约后 SLA 卡合规。
+
+  2.7 VLA — 判决: 否决
+    baseline 输入是检测器计数 (SCATS 现实), 无视觉模态; 为 VLA 给
+    SUMO 造相机是造问题。感知前端属于另一领域论文, 与 220 无缝合点。
+
+  2.8 World model — 判决: 搞头最大, 皇冠资产现成
+    资产: MoE 线遗留的解析世界模型 — per-lane FIFO 清空推演 + ETA
+      到达插队 (moe_experts._mass_v2, 精确共享道阻挡; expert0 零训练
+      -15.6 打平训练过的 208 = 模型规划强度实证)。
+    三步, 全兼容 220:
+    (a) FIFO + 神经残差: 残差网学 FIFO 漏掉的 (下游溢流/变速/饱和流
+        波动), 物理先验兜底。数据 = 现有 rollout 日志, 监督学习,
+        不碰控制栈。
+    (b) Dyna 稀有类增广: 用模型往真实状态虚拟注入 amb, 生成想象转移
+        喂 220/211 的 replay — H1 的"样本太稀"从数据侧根治 (PER 重放
+        已有的, Dyna 制造没有的); 与 2.3 对比消融。
+    (c) 契约条件 MPC (终局, 第三种换约机制): 决策时对 220 的 top-2
+        Q 候选相位做 1-2 步 FIFO+残差 lookahead, 代价 = 当前契约
+        权重加权预测等待 → 换约 = 换规划代价函数, 零训练零微调,
+        天然支持任意重排 (3-5-1 在规划器里不存在"头尺度偏置")。
+        与 227 微调 / 2.5(b) adapter 构成 学习派 vs 规划派 对照。
+    最小落地: (c) 的雏形今天就能探针验证 — probe_maxgreen_cap 同皮:
+      载 220 best.pth, 对 Q top-2 用 _mass_v2 重排, 换三张契约表各
+      跑一集, 看排序/效率 (零代码进主栈)。
+    验收: (c) 探针三契约下的排序合规 + J vs 227a/b/c 微调终点;
+      (b) 用 §5a 致盲曲线; (a) 用预测误差 + 下游溢流场景回放。
+    风险: MPC 推理延迟 (每步 2×12 槽 FIFO walk, 实测 MoE 线可承受);
+      残差模型的分布外预测需保守化 (回退纯 FIFO)。
+
+--------------------------------------------------------------------------------
+§3 优先级与论文组装 (与 exp221-227 队列的关系)
+
+  第一梯队 (各命中一个已定谳失败模式, 资产复用最高):
+    2.8(c) 契约条件 MPC (先探针后工程) | 2.5(a) Quantile×FRAP (A2)
+    | 2.4(a) amb 预告 token (mid_queue 地板)
+  第二梯队 (方法/系统件, 依赖第一梯队判决):
+    2.3 contrastive 保持力 | 2.5(b) adapters | 2.6 LLM 编译闭环
+    | §1.2 MTT (Transformer 正名之战, 带分位头同批上)
+  工具层: 2.1 diffusion 需求生成 (服务 P-B 包络)
+  否决: 2.2 fuzzy | 2.7 VLA (理由各自条目内)
+  论文组装建议: 2.8(c)+2.5(a)+2.4(a) = "契约条件的模型规划交通控制:
+    一个世界模型, 任意优先级契约" (P-A 续作/替代); 2.3+2.5(c)+§5a
+    = P-C 机制篇; 2.6+SLA = P-B 系统篇的 demo 层。
+  执行顺序不变: 先等 exp227 判决 (微调基线定标), 再启动第一梯队;
+    2.8(c) 探针无依赖可随时做。
+
+--------------------------------------------------------------------------------
+§4 复算与引用
+  代码锚点: frap_agent.py:28-71 (FRAPQNet 三段) | train.py:323 (guard)
+  | moe_experts.py:192-268 (_mass_v2 FIFO) | observations.py:1206
+  (Tnb padding 配方) | tools/llm/verify_policy.py (IR+KPI 断言)
+  | priority_map.py:45 (.bnf 钩子)
+  实证锚点: expert0 -15.6 (MoE §8 G3) | Tnb 1x3 负结果 (ABT_1X3 §3.4)
+  | H1 因果链 (EXP211 §5a) | mid_queue 21-24 步 (同上 A 节)
+  | 倒挂放大器 (ABT_1X1/COORD 实测) | 219 震荡 (BASELINE §2.4)
+================================================================================
