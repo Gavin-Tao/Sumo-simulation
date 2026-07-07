@@ -555,6 +555,23 @@
                 否则判负归档; 全参微调 fallback。
                 版本史: v1 三档(场景旋钮,否) → v2 梯度分诊(过度设计,
                 否) → v3 heads-only(enc 论证与实验矛盾,否) → v4。]
+               [exp228 结果 2026-07-07 深夜 (六臂 300ep 完, wandb
+                sumo-rl-1x1; J=按各自契约的 per-visit 加权; do-nothing
+                锚 J=39.7):
+                4-2-1 侧: a=v4冻结 65.0±8.1 / b=rscale 68.3 /
+                c=冻结+scale 65.9 / e=v3头only 73.0 且末10排序过门率
+                0% (amb 7.5>bus 6.1 漂入倒挂) — 全部未打败 do-nothing
+                锚 → 同序数值换约"微调无益"终审成立; M1 尺度冲击假说
+                被 b 臂证伪 (rscale 对 J 无改善)。
+                3-5-1 侧: d=v4冻结 J 75.5±6.9 (car 32.1/bus 5.2/
+                amb 5.8, 均值序正确, 末10严格逐评过门 40% = amb 量子化
+                边缘) — **显著优于 227c 全参 (100.9) 与零训练交换
+                (≈105)**; f=v3头only 灾难 (J 564±289, amb 164.5s,
+                冻死的 enc 背 OOD 嵌入不可恢复)。
+                终审: v4 physics-frozen 双侧胜出 (用户 T2 直觉获实验
+                背书); v3 heads-only 判负归档; 重排换约推荐配方定稿 =
+                obs 桶交换 + physics-frozen 微调 (75.5), 全参降级
+                fallback。]
                相位使用面同日判定无需改进 (PHASE_USAGE_ANALYSIS);
                相位方案选型定论 (用户问 8std vs frap): 跟拓扑走 —
                1x1 用 std/原生 (217 赢 + 菜单简并轮转证据), Dublin 用
