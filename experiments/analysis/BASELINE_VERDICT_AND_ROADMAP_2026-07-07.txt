@@ -530,6 +530,24 @@
                效率 — 能否打赢 do-nothing 是经验问题。启用判据: 需要
                榨取换约残余效率, 或重排微调 (227c 型) 现稳定性问题时,
                实现 ③ 并与 do-nothing 对照定谳。
+               [③ 设计定稿 2026-07-08 (待批实施): 冻结档位跟契约变更
+                类型走 — FRAPQNet ~900 参数五模块 (enc 304 / g_head 17
+                / pair_fc 528 / rel_emb 32 / s_head 17):
+                T1 head-only (34 可训: g+s 头; 冻 enc/pair/rel) 配同序
+                数值换约 — 交易阈值在头层幅度, churn 面最小, lr 可回
+                1e-3; T2 physics-frozen (冻 pair_fc/rel_emb, 训 enc+
+                双头 ~640) 配重排 — 桶→语义映射在 enc, merge/crossing
+                关系是契约无关物理; T3 全参兜底 (=227 现状)。
+                实施: train.py freeze_modules 键 ~20 行 (要求与
+                init_checkpoint 同用; named_children 校验; 冻后必须
+                重建 optimizer, 只含 requires_grad 参数; target/LN 无
+                特殊处理), 单测: 冻结参数 learn_step 后逐位不变 +
+                可训参数已变 + regress 逐位。实验 exp228 (1x1 各
+                300ep): a=T1 / b=reward_scale 9/7 / c=T1+scale (M1
+                拆解), 预登记判决 = 末窗打败 do-nothing 锚点 (4-2-1
+                刻度 -30.2 / J 39.7), 否则 ③ 判负归档 — 那也是干净
+                结论: 5-3-1 策略即 4-2-1 的近似最优; 可选 d=T2 vs
+                227c 全参 (谁先饱和 + blind-gap 稳定性)。]
                相位使用面同日判定无需改进 (PHASE_USAGE_ANALYSIS);
                相位方案选型定论 (用户问 8std vs frap): 跟拓扑走 —
                1x1 用 std/原生 (217 赢 + 菜单简并轮转证据), Dublin 用
