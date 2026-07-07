@@ -7,6 +7,10 @@
 
 §0 判决先行
 
+  术语: 本文"效率" = 系统总通行代价 (5-3-1 加权 mean_reward 与
+  car/bus 绝对等待, 量大类主导); "优先级质量" = 排序合规/分离度/
+  高优类尾部。两者可以也确实分道扬镳 (217 效率赢, 220 优先级赢)。
+
   1x1 (同场景同 demand 同 eval_seed=123, 5-3-1):
     exp217 vanilla-DQN/4相位   系统效率赢家: 末窗 reward -32.96, 全程稳
     exp220 enum-FRAP/12相位    优先级赢家: amb 最强 (best.pth 0 停车,
@@ -119,6 +123,9 @@
     207: 3.09 / 1.27 / 0.93   amb bad-rate 0.89 (末 50 点 ep555-800)
     211: 2.43 / 1.05 / 0.97   bad-rate 0.98; amb-bus 频率平手 (p=0.71)
     215: 1.08 / 0.85 / 0.65   bad-rate 0.52 (ep120-265, 未完)
+    排序核查 (末窗逐 eval 配对): 207 六配对全对 (p≤0.0067);
+    211 唯一软肋 = amb-bus 频率平手 (51%, p=0.71), 时长向对 (p=0.085);
+    215 bus>car 频率平手 (63%, p=0.148) = 路线构成地板, 强度序全对。
   用户 guard 探针 (空进口→保持, 外挂在推理层, 单集配对):
     207/211 的 car 均不动, bus/amb 方向性改善 (207 amb -62%);
     215 结构内生同款行为 (12960 步中 4843 空步, 空切相位 0 次)。
@@ -227,6 +234,7 @@
     [1,2,3,4,5]  默认(训练点)     29.2       4.75      5.0       68.5
     [5,4,3,2,1]  车倾            24.9      10.9       7.5       94.1*
     [1,2,3,4,15] 裸 amb 升权     97.8       5.75      7.5      152.6 (退化)
+    [1,2,3,4,50] 裸 amb 升权     141.0     58.6      30.0      466 (全面崩坏)
     [1,2,3,4,15]+presence 门控   32.3       7.1       0.0       53.7
     [5,2,3,4,10]+presence 门控   26.4      12.5       5.0       88.9*
     (*bus 权重按 5-3-1 契约计; 退化机制: amb 头在 amb 不在场步输出
@@ -458,11 +466,9 @@
 
   wandb: vfojpy4x / ro0iaxxy / a9ykq0ym / m258ma2j / tq04equ5 /
          cqmihwfl / tuuyu94u / 4fr5ugh0
-  scratchpad (本会话): pull_1x1.py, exp{217,219,220}_pervisit.pkl,
-    probe_1x1.py (217/219/220 × base/blind), probe_219_sweep.py,
-    probe_219_sweep_gated.py, window 统计内联脚本;
-    前会话: probe_amb_mech.py / probe_ambblind.py / probe_v350_*.py
-    / probe_guard_metrics.py / probe_215_emptyswitch.py。
+  复算脚本已全部入库: experiments/tools/probes_priority_eval_2026-07/
+    (17 个脚本 + README 索引; pkl 数据不入库, 按 pull_*.py 从 wandb
+    重拉)。变体说明: probe_1x1.py 支持 base/blind/w421b/swap351。
   文档交叉引用: EXP211_RESULTS_ANALYSIS_2026-07-03.txt (§4b/§5/§5a/§8),
     EXP212_RESULTS_ANALYSIS, EXP213-215_MOE_RESULTS_ANALYSIS (§9),
     MULTIHEAD_BNF_DESIGN_2026-07-03.txt, RESEARCH_ROADMAP_2026-07-02.txt。
