@@ -164,16 +164,29 @@ def main():
         from kan import KAN
         model = KAN(width=[X.shape[1], args.width, 1], grid=args.grid, k=3, seed=0)
         model.fit(ds, steps=args.steps, lamb=args.lamb)
+
+        def _stage_r2(tag):
+            # staged fidelity ledger (2026-07-08): keep a citable R² after
+            # every destructive stage so a collapsed final formula can't
+            # silently erase the earlier evidence (fit_g_core postmortem).
+            with torch.no_grad():
+                yh = model(ds["test_input"]).numpy()[:, 0]
+            metrics[f"r2_test_{tag}"] = r2(ds["test_label"].numpy()[:, 0], yh)
+            print(f"  [stage {tag}] r2_test = {metrics[f'r2_test_{tag}']:.4f}")
+
+        _stage_r2("fit")
         if args.prune:
             try:
                 model = model.prune()
                 model.fit(ds, steps=max(20, args.steps // 4), lamb=args.lamb)
+                _stage_r2("prune")
             except Exception as e:
                 print("prune failed (pykan API):", e)
         if args.symbolic:
             try:
                 model.auto_symbolic()
                 model.fit(ds, steps=20, lamb=0.0)
+                _stage_r2("symbolic")
                 formula = model.symbolic_formula()
                 metrics["formula"] = str(formula[0][0])
                 print("symbolic:", metrics["formula"][:400])
