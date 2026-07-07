@@ -530,24 +530,33 @@
                效率 — 能否打赢 do-nothing 是经验问题。启用判据: 需要
                榨取换约残余效率, 或重排微调 (227c 型) 现稳定性问题时,
                实现 ③ 并与 do-nothing 对照定谳。
-               [③ 设计定稿 2026-07-08 (待批实施): 冻结档位跟契约变更
-                类型走 — FRAPQNet ~900 参数五模块 (enc 304 / g_head 17
-                / pair_fc 528 / rel_emb 32 / s_head 17):
-                T1 head-only (34 可训: g+s 头; 冻 enc/pair/rel) 配同序
-                数值换约 — 交易阈值在头层幅度, churn 面最小, lr 可回
-                1e-3; T2 physics-frozen (冻 pair_fc/rel_emb, 训 enc+
-                双头 ~640) 配重排 — 桶→语义映射在 enc, merge/crossing
-                关系是契约无关物理; T3 全参兜底 (=227 现状)。
-                实施: train.py freeze_modules 键 ~20 行 (要求与
-                init_checkpoint 同用; named_children 校验; 冻后必须
-                重建 optimizer, 只含 requires_grad 参数; target/LN 无
-                特殊处理), 单测: 冻结参数 learn_step 后逐位不变 +
-                可训参数已变 + regress 逐位。实验 exp228 (1x1 各
-                300ep): a=T1 / b=reward_scale 9/7 / c=T1+scale (M1
-                拆解), 预登记判决 = 末窗打败 do-nothing 锚点 (4-2-1
-                刻度 -30.2 / J 39.7), 否则 ③ 判负归档 — 那也是干净
-                结论: 5-3-1 策略即 4-2-1 的近似最优; 可选 d=T2 vs
-                227c 全参 (谁先饱和 + blind-gap 稳定性)。]
+               [③ 设计定稿 v2 = G-FT 梯度分诊微调 (2026-07-08, 用户
+                否决 v1 分档设计 — 档位需人工判断换约类型 = 场景旋钮,
+                违 generic 铁律, v1 存档为被否变体):
+                原理: 契约只经 reward/obs 表进入系统, 换约后哪些模块
+                需要可塑性由新契约的 TD 梯度自己暴露, 不做人工预判。
+                流程 (任意换约同一套): warm-start → 探测趟 (replay 填
+                至 mini_size 后 M=50 个 batch 只反传不 step, 按
+                named_children 粒度累计梯度能量 g_m) → param groups
+                按能量分配 lr_m = base_lr × g_m/max(g) (连续软冻结,
+                无阈值无档位) → 起点锚定验收兜底。
+                自证: 4-2-1 应测得能量集中 g/s 头 (自动 T1 形态),
+                3-5-1 应测得 enc 占比上升 (自动 T2 形态) — 档位从
+                人的先验变成测量结果, 预判若与测量不符则以测量为准。
+                旋钮审计: M=50 与 named_children 粒度为固定工程常数
+                (SAT_HEADWAY 性质, 全实验统一不按场景调), max 归一
+                无自由参数, base_lr 为既有键 — 零新增旋钮。
+                诚实风险: 起点梯度能量≈M1 尺度冲击映像, 头部可能
+                恒占大头; Adam 逐参自适应会部分中和模块间差异 —
+                G-FT 是待验证假设。实施: train.py ~35 行 (探测趟 +
+                param-group 构建, 要求与 init_checkpoint 同用) +
+                单测 (能量分配再现性/低能量模块参数近不动) + regress。
+                实验 exp228 (1x1 各 300ep): a=G-FT / b=reward_scale
+                9/7 / c=G-FT+scale, 预登记判决不变 = 末窗打败
+                do-nothing 锚点 (4-2-1 刻度 -30.2 / J 39.7), 否则
+                判负归档 (干净结论: 5-3-1 策略即 4-2-1 近似最优);
+                d=G-FT on 3-5-1 vs 227c 全参 (能量分布是否自动移向
+                enc + 谁先饱和)。]
                相位使用面同日判定无需改进 (PHASE_USAGE_ANALYSIS);
                相位方案选型定论 (用户问 8std vs frap): 跟拓扑走 —
                1x1 用 std/原生 (217 赢 + 菜单简并轮转证据), Dublin 用
