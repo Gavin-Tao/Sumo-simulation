@@ -27,3 +27,4 @@ Dublin 批次 (EXP211_RESULTS_ANALYSIS §5a; BASELINE §3)
   probe_v350_base.py / probe_v350_blind.py   211 ckpt_ep350 谷底配对
   probe_215_emptyswitch.py 215 空进口道切相位计数 (结果: 4843 空步 0 切换)
   probe_behavior.py        行为指纹 (dqn8std|frap|moe): 换相率/保持分布
+  probe_phasefreq.py       相位选择频率 {217|220|207|211}: share/熵/top1/死相位 (PHASE_USAGE_ANALYSIS_2026-07-07)
