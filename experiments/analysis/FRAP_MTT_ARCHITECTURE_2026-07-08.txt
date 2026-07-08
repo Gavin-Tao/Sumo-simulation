@@ -1,0 +1,168 @@
+================================================================================
+  架构说明书 — B+FRAP / MTT无协同+FRAP / MTT协同+FRAP 的机制与 pipeline
+  (2026-07-08; 教学式, 每组件标注输入→输出; 基于实际代码非通用论文)
+  代码锚点: sumo_rl/agents/frap_agent.py (FRAPQNet/MTTQNet/MTTCoLightQNet/
+    FRAPAgent/MTTCoLightAgent), experiments/frap_glue.py, experiments/train.py
+  实验对应: B+FRAP = exp211(Dublin)/exp220(1x1); MTT-only = exp233/exp231;
+    MTT+CoLight = exp232(Dublin)
+================================================================================
+
+§0 术语厘清 (两个正交维度, 别混)
+  "B" = 状态方案 (movement-level obs): 车按 12 个转向槽 + 优先桶组织。
+  "FRAP" = 动作/打分方案: 把相位分拆成 per-movement 贡献再合成打分。
+  三个变体只动"打分网络中段", 状态方案(B)与动作契约(enum菜单)全程不变:
+    B+FRAP           手工单跳对决         (exp211/220)
+    MTT无协同+FRAP   路口内多跳自注意力   (exp233/231)   ← 换掉中段的对决
+    MTT协同+FRAP     + 跨路口邻居 GAT     (exp232)       ← 再加协同
+
+--------------------------------------------------------------------------------
+§1 全景: 每步在决定什么
+  每路口每 5s(delta_time) 选一个绿灯相位 = 一组同时放行的 movement。
+  路口有 12 个 movement 槽 = 4 进口(N/E/S/W) × 3 转向(L/T/R)。
+  FRAP 核心: 不直接给相位打分, 而是分拆成"每个 movement 的贡献"再合成 →
+  相位数可变、跨路口权重可共享。
+
+--------------------------------------------------------------------------------
+§2 静态输入: enum meta (路口的"相位菜单 + 冲突图", 训练全程不变)
+  frap_glue.load_enum_tables 从 dublin_enum_meta.json 读出每路口:
+  ┌─ pm  (phase_movements)  K×12 bool  每相位放行哪些 movement
+  │    例(1x1 相位0): [0,0,1,0,0,1,0,0,1,1,1,1] → 放槽 2,5,8,9,10,11
+  ├─ rel (movement_rel)     12×12 int  每对 movement 关系
+  │    取值: -1 不存在 / 0 同臂 / 1 兼容 / 2 合流 / 3 交叉  (2,3 = 冲突)
+  ├─ mask                   K bool     哪些相位本路口合法 (1x1=12全合法;
+  │                                    Dublin 各口 2-11 不等)
+  └─ exist                  12 float   哪些槽真实存在 (= rel 对角 ≥ 0)
+  这是"物理"——路口几何决定, 与优先级/车流无关。
+
+--------------------------------------------------------------------------------
+§3 动态输入: obs (每步车流快照, perphase 编码)
+  布局: [header(2)] + 12 槽 × (is_green + φ [+ ψ] [+ occ])
+    header(2)   = [min_green_ok, phase_elapsed]  最小绿是否满足 + 当前相位持续
+    is_green(1) = 本槽当前是否在放行 (perphase 特有, 逐槽自带)
+    φ (15)      = 5 优先级 × [count, queue, mean_awt]   本进口道等待车 (上游)
+    ψ (10)      = 5 优先级 × [count, queue]   下游出口车道 (仅 Dublin, 溢流压力)
+    occ (1)     = 共享道物理占用 (仅 Dublin)
+  每槽维度: 1x1 = 16 (is_green+φ15);  Dublin = 27 (is_green+φ15+ψ10+occ1)
+  obs_dim:  1x1 = 2+12×16 = 194;  Dublin = 2+12×27 = 326
+  关键: 车按"优先级桶"进 obs, 不按车型 (amb→l5桶, bus→l3, car→l1); 表由
+  priority_source 决定 → 换优先级 = 换桶, 零改架构。(ψ 详见 §3 与下游压力
+  的关系; 1x1 无 ψ/occ 因单路口无溢流/共享道问题。)
+
+================================================================================
+  变体 1: B+FRAP  —  FRAPQNet (exp211 Dublin / exp220 1x1)
+================================================================================
+§4 打分网络三段式 (forward(x, pm, rel, exist) → Q(K))
+
+  ① encode: obs → 12 个 movement 嵌入
+     输入 x(obs_dim); 取 header 后 reshape (12, slot_dim);
+     Linear(slot_dim→16)+ReLU+LayerNorm → d (12, 16)
+     输出: 每槽一个 16 维向量 d_m。
+
+  ② 双打分头 (FRAP 的两个通道):
+     g_head:  Linear(16→1)      d → g (12,)       每槽"自需求分"(我多想被放行)
+     duel_scores: d,rel → s (12,12)               每对冲突槽"对决分"(m 压 n 值不值)
+       s(m,n) = s_head( pair_fc(cat(d_m,d_n)) × rel_emb(关系) )  标量;
+       非冲突对(rel<2) 填 -1e9。rel_emb 只区分 {2 合流, 3 交叉}。
+
+  ③ 聚合成相位分 (pm/exist 掩码):
+     Q(相位k) = q_self + q_sup
+       q_self = Σ_{m: pm[k,m]=1} g_m                     服务方向自需求之和
+       q_sup  = Σ_{n: 未放行 ∧ 存在 ∧ 与某放行者冲突} max_{m∈k} s(m,n)
+                                                          压制对手的"让行代价"
+     输出 Q(K); 训练/决策前用 mask 填 -1e9 再 argmax。
+  直觉: "放这相位 = 服务方向多想走(q_self) + 压住的对手多委屈(q_sup)"。
+  参数: embed_dim=16, pair_dim=16。encode/g_head/pair_fc/rel_emb/s_head 五件。
+
+================================================================================
+  变体 2: MTT无协同+FRAP  —  MTTQNet(FRAPQNet) (exp233 Dublin / exp231 1x1)
+  frap.arch = mtt
+================================================================================
+§5 只换 §4 的"中段", encode 与 ③ 聚合逐字不变
+  动机: §4-② 的 duel 是"手工单跳"两两交互(pair_fc 固定形式)。MTT 用可学的
+  多跳自注意力替代, 让 movement 嵌入在打分前先互相"看"一遍。
+
+  改动: 在 encode 之后、g/duel 打分之前, 插一层 relation-biased self-attention:
+     refine(d, rel, exist):
+       每层: a = MultiheadAttention(d,d,d, attn_mask); d = LN(d+a); d = LN(d+FF(d))
+       attn_mask (B,H,12,12) = rel_bias(rel) 逐头加性偏置        ← 关系先验保留
+                              + padded key(-inf, exist<0.5)      ← 不存在槽屏蔽
+       2 层 4 头; rel_bias 零初始化 (起步=普通注意力)。
+     然后 g = g_head(d精炼后), s = duel_scores(d精炼后, rel), ③ 聚合完全同 §4。
+  输入输出: forward(x, pm, rel, exist) → Q(K)  签名与 FRAPQNet 完全一致 →
+    对 FRAPAgent 是 drop-in。
+  不变量: 对决单元仍是 12 movement, 与相位定义对齐; FRAP 的变K头/跨路口
+    共享/Q≤0 全保。只是"两两交互"从固定单跳升级成可学多跳。
+  代码: MTTQNet 子类化 FRAPQNet, 只加 rel_bias/attn 层; FRAPQNet 字节不变
+    (regress digest 104db49 逐位)。
+
+================================================================================
+  变体 3: MTT协同+FRAP  —  MTTCoLightQNet (exp232 Dublin)
+  frap.arch = mtt_colight
+================================================================================
+§6 在变体2基础上加"跨路口邻居协同", 打分聚合仍不变
+  动机: 单路口只看自己; 多路口要看邻居(下一个路口的状态影响我该放谁)。
+  沿用已验证的 CoLightQNet 模式: own 摘要 attend 最多 4 个邻居摘要。
+
+  forward(own_obs, neighbors, pm, rel, exist):   neighbors (B,4,own_obs_dim)
+    ① d = refine(encode(own_obs), rel, exist)         本路口 12 token (同变体2)
+    ② 邻居协同 context:
+         h_own = 对 present token 做掩码均值 → (B,16)  本路口摘要
+         nb_feat = ReLU(nb_encoder(neighbors)) → (B,4,16)  4 邻居各编码
+         score_j = attn_score(cat(h_own, nb_feat_j));
+         缺失邻居(全零行) 填 -inf; softmax; nan_to_num(全缺失→0)
+         c = Σ_j 权重_j · nb_feat_j → (B,16)           协同上下文
+    ③ 注入: d = LayerNorm(d + c)   context 加到每个 own token
+    ④ g/duel/聚合 完全同 §4。
+  输入: own_obs + 4 邻居 obs (邻居 = neighbor_map 给的 [上,下,左,右], 缺失填0)。
+  输出: Q(K), 签名多一个 neighbors 参数。
+  邻居从哪来: train.py 用 neighbor_map(nets/dublin/calibration/neighbor_map.yaml)
+    每步现取邻居当前 obs; replay 存 (own, action, r, next_own, done, ts_id,
+    nb_obs, next_nb_obs) — 逐路口存邻居快照, 学习时可重算协同, 无需网络快照。
+  新增参数: nb_encoder/attn_score/ctx_ln; MTTQNet/FRAPQNet 不变。
+
+--------------------------------------------------------------------------------
+§7 三变体对比 (消融阶梯)
+  变体            中段交互              协同        新增参数        exp
+  B+FRAP          手工单跳对决          无          —              211/220
+  MTT无协同+FRAP  可学多跳自注意力      无          rel_bias/attn  233/231
+  MTT协同+FRAP    多跳自注意力          +邻居 GAT   +nb/attn/ctx   232
+  干净消融: 211(单跳) → 233(MTT路口内) → 232(MTT+跨路口), 逐级加一件,
+  量化"MTT 值多少 + 协同再值多少"。三者 encode 与 ③ 聚合逐字相同 → 差异
+  纯来自中段/协同, 可归因。风险: MTT/协同容量↑ → 倒挂放大器(T线前科),
+  发布须效率/优先级双维分报 + 稳定包(exp232 已带 double/huber/clip)。
+
+--------------------------------------------------------------------------------
+§8 训练与微调 pipeline (FRAPAgent / MTTCoLightAgent)
+  take_action(state, tls_id[, nb_obs]): obs→q_net→mask填-1e9→argmax→相位idx;
+    ε 概率 mask 内随机。
+  replay (逐路口): 每步每路口存一条; 存路口 id (学习时查静态表, 省内存)。
+  learn_step: 采 batch(混路口混时刻) → 按 id 查 pm/rel/exist/mask →
+    q=q_net(...).gather(执行相位); y=r+γ·maxQ(next) [masked Double-DQN];
+    y=min(0,y) [Q≤0 钳位: reward 恒负→最优Q≤0, 砍发散]; Huber+grad_clip+慢target。
+  reward = -Σ_p p·平均等待(级p)/100  (逐类平均再按级加权)。
+
+  换约微调 (在训好的 FRAP/MTT 上换优先级契约, 加法式新键):
+    init_checkpoint     热启动: 载 policy 权重, target 同步, replay/优化器/ε 全新
+    obs_priority_source 解耦 obs 桶表 vs reward 表:
+       · 改价(如5-3-1→4-2-1): reward 换表, obs 桶钉住训练位(挪桶=拆输入)
+       · 重排(如5-3-1→3-5-1): obs+reward 同表换(bus 搬进 l5 桶继承贵宾起点)
+    freeze_modules      v4 physics-frozen: 冻 pair_fc+rel_emb(契约无关物理),
+                        训 enc+双头(契约相关语义) — 重排微调最优配方
+    residual_head       Q=Q_frozen+Δ(零初始化头), 构造上首评=原策略
+  实测结论(1x1, 详见 FINETUNE_VERDICT_CARD): 改价→不训练(do-nothing)最优;
+    重排→桶交换+v4 微调最优。
+
+--------------------------------------------------------------------------------
+§9 文件与代码锚点
+  sumo_rl/agents/frap_agent.py:
+    FRAPQNet (§4)  MTTQNet (§5)  MTTCoLightQNet (§6)
+    FRAPAgent (§8)  MTTCoLightAgent + MTTCoLightReplayBuffer (§6/§8)
+  experiments/frap_glue.py: load_enum_tables / build_frap_agent /
+    build_mtt_colight_agent / load_neighbor_map
+  experiments/train.py: enum_frap 分支 + colight_nb 加法式接线 + colight_nb_obs
+    + freeze_modules/init_checkpoint/residual_head 微调块
+  obs: sumo_rl/environment/observations.py PriorityMovementObservationFunction
+  meta 生成: experiments/tools/dublin/enum_phases.py, tools/dcc/enum_phases_net.py
+  单测: experiments/tests/test_mtt_qnet.py (MTT/MTTCoLight), test_frap_agent.py
+  回归: experiments/tools/frap/regress_dryrun.py (改 train.py 必对账 104db49)
+================================================================================
