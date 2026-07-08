@@ -211,7 +211,11 @@ def main():
         bundle = {"kind": "shared_g", "grid": args.grid,
                   "state_dict": model.state_dict()}
     else:
-        bundle = {"kind": "kan", "width": [X.shape[1], args.width, 1],
+        # store the ACTUAL (post-prune) hidden width, not the args width —
+        # prune changes topology and a stale width breaks load_bundle/K4
+        # (2026-07-08). act_fun.0.coef is (in, hidden, n_coef).
+        _hidden = int(model.state_dict()["act_fun.0.coef"].shape[1])
+        bundle = {"kind": "kan", "width": [X.shape[1], _hidden, 1],
                   "grid": args.grid, "k": 3, "state_dict": model.state_dict()}
     bundle.update({"dims": (CORE16 if (args.core16 or args.shared_levels)
                             else list(range(X.shape[1] if args.target == "g"

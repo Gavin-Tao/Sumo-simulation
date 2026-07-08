@@ -47,16 +47,26 @@ def build(cfg):
     from sumo_rl.environment import observations as obsmod
     from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
     from sumo_rl.environment.priority_map import load_priority_table
-    obs_class = functools.partial(
-        obsmod.PriorityMovementObservationFunction,
+    # Key resolution mirrors train.py: obs_priority_source > priority_source >
+    # None (-> built-in default table); awt_cap/basis only passed when present
+    # (obs class defaults None/global). Lets the extractor run on any enum_frap
+    # config, not just exp211-style ones with every key spelled out.
+    obs_prio = (cfg.get("obs_priority_source")
+                if "obs_priority_source" in cfg else cfg.get("priority_source"))
+    obs_kwargs = dict(
         fields=tuple(cfg["obs_fields"]), phase_state=cfg["obs_phase_state"],
-        priority_source=cfg["priority_source"],
+        priority_source=obs_prio,
         include_downstream=bool(cfg.get("obs_downstream", False)),
         downstream_fields=tuple(cfg.get("obs_downstream_fields", ())),
-        include_lane_occ=bool(cfg.get("obs_lane_occ", False)),
-        awt_cap=float(cfg["obs_awt_cap"]), awt_basis=cfg["obs_awt_basis"])
+        include_lane_occ=bool(cfg.get("obs_lane_occ", False)))
+    if "obs_awt_cap" in cfg:
+        obs_kwargs["awt_cap"] = float(cfg["obs_awt_cap"])
+    if "obs_awt_basis" in cfg:
+        obs_kwargs["awt_basis"] = cfg["obs_awt_basis"]
+    obs_class = functools.partial(obsmod.PriorityMovementObservationFunction,
+                                  **obs_kwargs)
     reward_fn = make_priority_avg_waiting_reward(
-        load_priority_table(cfg["priority_source"]))
+        load_priority_table(cfg.get("priority_source")))
     env = SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"],
         cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False,
         num_seconds=cfg["num_seconds"], min_green=cfg["min_green"],
