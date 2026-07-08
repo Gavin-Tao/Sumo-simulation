@@ -101,15 +101,23 @@ class MTTQNet(FRAPQNet):
         torch.nn.init.zeros_(self.rel_bias.weight)   # start = plain attention
 
     def refine(self, d, rel, exist):
+        # Single float attn_mask carrying BOTH the per-head relation bias and
+        # a -inf block on absent-movement KEY columns. Folding the padding into
+        # the float mask (instead of a separate bool key_padding_mask) keeps the
+        # two mask types identical — avoids torch's mismatched-mask deprecation
+        # path and is future-proof; verified equivalent (batch/padded isolation
+        # tests). A real query always sees >=1 present key (its own), so no row
+        # is fully -inf; nan_to_num guards the degenerate all-absent case only.
         B = d.shape[0]
         bias = self.rel_bias(rel + 1).permute(0, 3, 1, 2)          # (B,H,12,12)
+        key_block = torch.zeros_like(exist).masked_fill(
+            exist < 0.5, float("-inf"))                            # (B,12)
+        bias = bias + key_block.view(B, 1, 1, 12)                  # mask pad keys
         attn_mask = bias.reshape(B * self.n_heads, 12, 12)
-        kpm = exist < 0.5                                           # (B,12) pad
         for L in self.layers:
-            a, _ = L["attn"](d, d, d, attn_mask=attn_mask,
-                             key_padding_mask=kpm, need_weights=False)
-            a = torch.nan_to_num(a)      # fully-masked (padded) query rows -> 0;
-            d = L["ln1"](d + a)          # they are ignored downstream by pm/exist
+            a, _ = L["attn"](d, d, d, attn_mask=attn_mask, need_weights=False)
+            a = torch.nan_to_num(a)      # degenerate all-absent query -> 0;
+            d = L["ln1"](d + a)          # ignored downstream by pm/exist anyway
             d = L["ln2"](d + L["ff"](d))
         return d
 
