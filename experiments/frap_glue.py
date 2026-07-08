@@ -60,4 +60,7 @@ def build_frap_agent(cfg, tables, env, device):
         pair_dim=int(fp.get("pair_dim", 16)), k_max=tables["k_max"],
         use_double=cfg.get("use_double", True), loss_fn=cfg.get("loss_fn", "huber"),
         grad_clip=cfg.get("grad_clip", 1.0),
-        target_clip_max=cfg.get("target_clip_max", None))
+        target_clip_max=cfg.get("target_clip_max", None),
+        arch=str(fp.get("arch", "frap")),        # "frap" (default) | "mtt"
+        mtt_heads=int(fp.get("mtt_heads", 4)),
+        mtt_layers=int(fp.get("mtt_layers", 2)))

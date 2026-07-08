@@ -70,6 +70,64 @@ class FRAPQNet(torch.nn.Module):
         return q_self + q_sup                                 # (B,K)
 
 
+class MTTQNet(FRAPQNet):
+    """Movement-Token Transformer variant (arch: mtt). Inserts a
+    relation-biased self-attention refinement over the 12 movement tokens
+    between encode() and the UNCHANGED FRAP phase-scoring aggregation, so the
+    multi-hop movement context feeds both the self-demand (g) and duel (s)
+    heads while the phase-competition structure and the forward signature are
+    preserved (drop-in for FRAPAgent). Relation type is an additive per-head
+    attention bias (the FRAP relation prior, made soft/learnable); absent
+    movements are key-masked. FRAPQNet stays byte-for-byte unchanged; the only
+    new parameters are the attention block.
+    """
+
+    def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16,
+                 k_max=11, n_heads=4, n_layers=2):
+        super().__init__(header_dim, slot_dim, embed_dim, pair_dim, k_max)
+        self.n_heads = n_heads
+        self.layers = torch.nn.ModuleList([
+            torch.nn.ModuleDict({
+                "attn": torch.nn.MultiheadAttention(
+                    embed_dim, n_heads, batch_first=True),
+                "ln1": torch.nn.LayerNorm(embed_dim),
+                "ff": torch.nn.Sequential(
+                    torch.nn.Linear(embed_dim, 2 * embed_dim), torch.nn.ReLU(),
+                    torch.nn.Linear(2 * embed_dim, embed_dim)),
+                "ln2": torch.nn.LayerNorm(embed_dim),
+            }) for _ in range(n_layers)])
+        # rel in {-1..3} -> +1 -> {0..4}; per-head additive attention bias
+        self.rel_bias = torch.nn.Embedding(5, n_heads)
+        torch.nn.init.zeros_(self.rel_bias.weight)   # start = plain attention
+
+    def refine(self, d, rel, exist):
+        B = d.shape[0]
+        bias = self.rel_bias(rel + 1).permute(0, 3, 1, 2)          # (B,H,12,12)
+        attn_mask = bias.reshape(B * self.n_heads, 12, 12)
+        kpm = exist < 0.5                                           # (B,12) pad
+        for L in self.layers:
+            a, _ = L["attn"](d, d, d, attn_mask=attn_mask,
+                             key_padding_mask=kpm, need_weights=False)
+            a = torch.nan_to_num(a)      # fully-masked (padded) query rows -> 0;
+            d = L["ln1"](d + a)          # they are ignored downstream by pm/exist
+            d = L["ln2"](d + L["ff"](d))
+        return d
+
+    def forward(self, x, pm, rel, exist):
+        d = self.refine(self.encode(x), rel, exist)
+        g = self.g_head(d).squeeze(-1)
+        s = self.duel_scores(d, rel)
+        q_self = (g.unsqueeze(1) * pm).sum(-1)
+        cand = pm.unsqueeze(-1) * (rel >= 2).float().unsqueeze(1)
+        masked = s.unsqueeze(1).masked_fill(cand == 0, NEG)
+        duel_max = masked.max(dim=2).values
+        suppressed = (cand.max(dim=2).values > 0).float() \
+            * (1.0 - pm) * exist.unsqueeze(1)
+        q_sup = (torch.where(suppressed > 0, duel_max,
+                             torch.zeros_like(duel_max)) * suppressed).sum(-1)
+        return q_self + q_sup
+
+
 class FRAPReplayBuffer:
     """Uniform FIFO buffer; transitions carry the junction id so update can
     gather that junction's phase/relation tensors (PER deliberately absent —
@@ -100,12 +158,20 @@ class FRAPAgent:
                  epsilon, target_update, capacity, mini_size, batch_size,
                  eps_start, eps_end, eps_decay, device, embed_dim=16,
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
-                 grad_clip=1.0, target_clip_max=None):
+                 grad_clip=1.0, target_clip_max=None, arch="frap",
+                 mtt_heads=4, mtt_layers=2):
         self.device = torch.device(device)
-        self.q_net = FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim,
-                              k_max).to(self.device)
-        self.target_q_net = FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim,
-                                     k_max).to(self.device)
+        # arch: "frap" (default, unchanged) | "mtt" (movement-token transformer,
+        # same forward contract). Absent key -> "frap" -> byte-identical legacy.
+        def _mk():
+            if arch == "mtt":
+                return MTTQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
+                               n_heads=mtt_heads, n_layers=mtt_layers)
+            if arch != "frap":
+                raise ValueError(f"unknown frap arch: {arch!r}")
+            return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max)
+        self.q_net = _mk().to(self.device)
+        self.target_q_net = _mk().to(self.device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())
         self.optimizer = torch.optim.Adam(self.q_net.parameters(), lr=lr)
         self.gamma, self.epsilon = gamma, epsilon
