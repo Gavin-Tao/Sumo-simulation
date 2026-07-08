@@ -34,12 +34,26 @@ import numpy as np
 import torch
 import yaml
 
-FEATURE_NAMES = (["is_green"]
-                 + [f"{f}_l{p}" for p in range(1, 6)
-                    for f in ("cnt", "que", "awt")]
+_CORE16 = (["is_green"]
+           + [f"{f}_l{p}" for p in range(1, 6)
+              for f in ("cnt", "que", "awt")])          # is_green + 15 φ
+FEATURE_NAMES = (_CORE16
                  + [f"down_cnt_l{p}" for p in range(1, 6)]
                  + [f"down_que_l{p}" for p in range(1, 6)]
-                 + ["lane_occ"])          # exp211 perphase slot layout (27)
+                 + ["lane_occ"])          # full 27-dim (exp211 Dublin layout)
+
+
+def feature_names_for(slot_dim):
+    """Slot layouts vary by config: 16 = is_green + 15 φ (no downstream/occ,
+    e.g. exp220/228d 1x1), 27 = + downstream(10) + occupancy(1) (exp211
+    Dublin). The shared-levels α fit only reads the first 16 either way, so a
+    16-dim config is fully supported."""
+    if slot_dim == 16:
+        return list(_CORE16)
+    if slot_dim == 27:
+        return list(FEATURE_NAMES)
+    raise ValueError(f"unsupported slot_dim {slot_dim} "
+                     "(expected 16 = φ-only or 27 = +downstream+occ)")
 
 
 def build(cfg):
@@ -116,7 +130,7 @@ def main():
         ckpt, map_location="cpu", weights_only=False)["policy_state_dict"])
     agent.q_net.eval()
     net, hd, sd = agent.q_net, agent.q_net.header_dim, agent.q_net.slot_dim
-    assert sd == len(FEATURE_NAMES), (sd, len(FEATURE_NAMES))
+    feat_names = feature_names_for(sd)   # 16 (φ-only) or 27 (Dublin)
 
     G_X, G_y = [], []
     S_Xm, S_Xn, S_rel, S_y = [], [], [], []
@@ -169,7 +183,7 @@ def main():
         ctx_obs=np.asarray(CTX_obs, np.float32),
         ctx_ts=np.asarray(CTX_ts, np.int16), ctx_act=np.asarray(CTX_act, np.int16))
     manifest = {"config": cfg_path, "ckpt": ckpt, "runs": runs,
-                "feature_names": FEATURE_NAMES,
+                "feature_names": feat_names,
                 "n_g": len(G_y), "n_s": len(S_y), "n_ctx": len(CTX_act),
                 "amb_rows_g": int(amb_flag.sum()),
                 "s_rel_counts": {int(k): int(v) for k, v in
