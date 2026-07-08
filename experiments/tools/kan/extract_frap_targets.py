@@ -103,6 +103,8 @@ def main():
     args = ap.parse_args()
 
     cfg_path = os.path.abspath(args.config)
+    if args.ckpt:
+        args.ckpt = os.path.abspath(args.ckpt)     # absolutize BEFORE chdir too
     args.out = os.path.abspath(args.out)           # absolutize BEFORE chdir —
     # else a relative out re-resolves under experiments/ (2026-07-08: all
     # extractions landed in experiments/experiments/... and the fit couldn't
