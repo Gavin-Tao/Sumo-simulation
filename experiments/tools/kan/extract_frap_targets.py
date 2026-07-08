@@ -103,6 +103,10 @@ def main():
     args = ap.parse_args()
 
     cfg_path = os.path.abspath(args.config)
+    args.out = os.path.abspath(args.out)           # absolutize BEFORE chdir —
+    # else a relative out re-resolves under experiments/ (2026-07-08: all
+    # extractions landed in experiments/experiments/... and the fit couldn't
+    # find them). Same fix as kan_distill's out handling.
     os.chdir(os.path.join(_REPO, "experiments"))   # config paths convention
     cfg = yaml.safe_load(open(cfg_path))
     if args.num_seconds:
