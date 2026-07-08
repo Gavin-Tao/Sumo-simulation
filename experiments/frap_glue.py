@@ -64,3 +64,47 @@ def build_frap_agent(cfg, tables, env, device):
         arch=str(fp.get("arch", "frap")),        # "frap" (default) | "mtt"
         mtt_heads=int(fp.get("mtt_heads", 4)),
         mtt_layers=int(fp.get("mtt_layers", 2)))
+
+
+def load_neighbor_map(path, n_neighbors=4):
+    """Load a {ts_id: [nb1..nbN]} map (null = missing). Pads/truncates each
+    junction's neighbour list to exactly n_neighbors. Used only by the
+    mtt_colight arch; absent -> the caller stays on the plain per-junction path."""
+    import yaml
+    raw = yaml.safe_load(open(path))
+    nbm = raw.get("neighbor_map", raw) if isinstance(raw, dict) else {}
+    out = {}
+    for t, nbs in nbm.items():
+        nbs = list(nbs or [])[:n_neighbors]
+        nbs += [None] * (n_neighbors - len(nbs))
+        out[str(t)] = [None if n in (None, "null", "") else str(n) for n in nbs]
+    return out
+
+
+def build_mtt_colight_agent(cfg, tables, env, device, n_neighbors=4):
+    """MTTCoLightAgent from the same enum tables as build_frap_agent, plus the
+    neighbour count. Neighbour lookup is done in train.py (via neighbor_map);
+    the agent only needs n_neighbors for its qnet."""
+    from sumo_rl.agents.frap_agent import MTTCoLightAgent
+    obs_dim = env.observation_space.shape[0]
+    header_dim = 2
+    assert cfg.get("obs_phase_state") == "perphase", \
+        "mtt_colight requires obs_phase_state: perphase"
+    slot_dim, rem = divmod(obs_dim - header_dim, 12)
+    assert rem == 0, f"obs dim {obs_dim} is not header(2) + 12*slot_dim"
+    fp = cfg.get("frap", {}) or {}
+    return MTTCoLightAgent(
+        obs_dim=obs_dim, header_dim=header_dim, slot_dim=slot_dim,
+        tls_tensors=tables["tls"],
+        lr=cfg.get("lr", 1e-3), gamma=cfg.get("gamma", 0.95),
+        epsilon=cfg.get("epsilon", 0.1), target_update=cfg.get("target_update", 10),
+        capacity=cfg.get("capacity", 10000), mini_size=cfg.get("mini_size", 500),
+        batch_size=cfg.get("batch_size", 256), eps_start=cfg.get("eps_start", 0.5),
+        eps_end=cfg.get("eps_end", 0.01), eps_decay=cfg.get("eps_decay", 1000),
+        device=device, embed_dim=int(fp.get("embed_dim", 16)),
+        pair_dim=int(fp.get("pair_dim", 16)), k_max=tables["k_max"],
+        use_double=cfg.get("use_double", True), loss_fn=cfg.get("loss_fn", "huber"),
+        grad_clip=cfg.get("grad_clip", 1.0),
+        target_clip_max=cfg.get("target_clip_max", None),
+        mtt_heads=int(fp.get("mtt_heads", 4)), mtt_layers=int(fp.get("mtt_layers", 2)),
+        n_neighbors=n_neighbors)

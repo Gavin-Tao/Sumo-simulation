@@ -41,3 +41,70 @@ def test_mtt_extra_params_only():
     m = set(dict(MTTQNet(2, 7, 16, 16, 2).named_parameters()))
     assert f.issubset(m), "MTT dropped/renamed a FRAP parameter"
     assert any(k.startswith("layers.") or k.startswith("rel_bias") for k in m - f)
+
+
+# ── MTTCoLightQNet + agent (arch: mtt_colight) ──────────────────────────────
+
+def _toy_cl(B=3, own_dim=2 + 12 * 7):
+    x, pm, rel, exist = _toy(B)
+    nb = torch.randn(B, 4, own_dim)
+    return x, nb, pm, rel, exist
+
+
+def test_mttcolight_forward_finite_and_shape():
+    from sumo_rl.agents.frap_agent import MTTCoLightQNet
+    net = MTTCoLightQNet(2, 7, 16, 16, k_max=2, n_neighbors=4)
+    x, nb, pm, rel, exist = _toy_cl()
+    q = net(x, nb, pm, rel, exist)
+    assert q.shape == (3, 2) and torch.isfinite(q).all()
+
+
+def test_mttcolight_all_missing_neighbors_no_nan():
+    from sumo_rl.agents.frap_agent import MTTCoLightQNet
+    net = MTTCoLightQNet(2, 7, 16, 16, k_max=2, n_neighbors=4)
+    x, _, pm, rel, exist = _toy_cl(B=1)
+    zeros = torch.zeros(1, 4, 2 + 12 * 7)          # all neighbours absent
+    q = net(x, zeros, pm, rel, exist)
+    assert torch.isfinite(q).all(), "all-missing neighbours -> NaN"
+
+
+def test_mttcolight_coordination_active():
+    from sumo_rl.agents.frap_agent import MTTCoLightQNet
+    net = MTTCoLightQNet(2, 7, 16, 16, k_max=2, n_neighbors=4)
+    x, _, pm, rel, exist = _toy_cl(B=1)
+    zeros = torch.zeros(1, 4, 2 + 12 * 7)
+    real = torch.randn(1, 4, 2 + 12 * 7)
+    assert (net(x, zeros, pm, rel, exist)
+            - net(x, real, pm, rel, exist)).abs().max() > 1e-3, "neighbours ignored"
+
+
+def test_mttcolight_agent_learn_gradients():
+    import numpy as np
+    torch.manual_seed(0); np.random.seed(0)   # deterministic: no cross-test RNG leak
+    from sumo_rl.agents.frap_agent import MTTCoLightAgent
+    rel = np.full((12, 12), -1, np.int64)
+    for i in range(4):
+        rel[i, i] = 0
+    rel[0, 1] = rel[1, 0] = 3
+    pm = np.zeros((2, 12), np.float32); pm[0, 0] = pm[0, 2] = 1; pm[1, 1] = 1
+    exist = (rel.diagonal() >= 0).astype(np.float32)
+    tt = {"A": {"pm": pm, "rel": rel, "exist": exist, "mask": np.array([True, True])}}
+    od = 2 + 12 * 7
+    ag = MTTCoLightAgent(od, 2, 7, tt, 1e-2, 0.95, 0.0, 5, 200, 8, 8,
+                         0, 0, 1, "cpu", embed_dim=16, pair_dim=16, k_max=2)
+    rng = np.random.default_rng(0)
+    for _ in range(20):
+        ag.replay_buffer.add(rng.standard_normal(od).astype(np.float32), 0, -1.0,
+                             rng.standard_normal(od).astype(np.float32), False, "A",
+                             rng.standard_normal((4, od)).astype(np.float32),
+                             rng.standard_normal((4, od)).astype(np.float32))
+    # accumulate "ever received a nonzero gradient" across steps (robust to a
+    # single step's batch happening to zero one param's grad)
+    ever = {}
+    for _ in range(5):
+        ag.learn_step()
+        for n, p in ag.q_net.named_parameters():
+            if ("nb_encoder" in n or "attn_score" in n) and p.grad is not None:
+                ever[n] = ever.get(n, False) or (p.grad.abs().sum().item() > 0)
+    assert ag.loss is not None and np.isfinite(ag.loss)
+    assert ever and all(ever.values()), f"coordination path not trained: {ever}"

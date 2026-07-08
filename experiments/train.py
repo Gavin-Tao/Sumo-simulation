@@ -108,6 +108,19 @@ class ResidualQNet(torch.nn.Module):
         return self.base(*args, **kw) + self.delta(*args, **kw)
 
 
+def colight_nb_obs(ts_id, states, neighbor_map, obs_dim, n):
+    """[n, obs_dim] neighbour observations (zeros for a missing/absent
+    neighbour), in the neighbor_map's order. Used only by the mtt_colight
+    arch; mirrors traincoeff's get_aug_obs neighbour packing."""
+    row = []
+    for nb in neighbor_map.get(ts_id, [None] * n):
+        if nb is not None and nb in states:
+            row.append(np.asarray(states[nb], dtype=np.float32))
+        else:
+            row.append(np.zeros(obs_dim, dtype=np.float32))
+    return np.stack(row)
+
+
 def resolve_obs_priority_table(cfg: dict):
     """obs bucket table: obs_priority_source (exp227 fine-tune line, decouples
     obs wiring from reward re-pricing) wins over the legacy shared key;
@@ -307,6 +320,8 @@ def train(cfg: dict, timestamp: str):
     action_scheme = cfg.get("action_scheme")
     enum_tables = None
     moe = None
+    colight_nb = None      # mtt_colight neighbour_map; None -> plain per-junction path
+    n_neighbors = None              # n_neighbors, read from cfg[frap][n_neighbors] on the colight path
     if action_scheme not in (None, "enum_frap", "moe"):
         sys.exit(f"unknown action_scheme: {action_scheme}")
     if action_scheme == "moe":
@@ -444,6 +459,21 @@ def train(cfg: dict, timestamp: str):
                 device=device)
             print(f"  → agent: DQNMultiHead (5 heads × {agent.action_space}), "
                   f"decision weights={agent.weights.tolist()}")
+        elif enum_tables is not None and \
+                str((cfg.get("frap", {}) or {}).get("arch", "frap")) == "mtt_colight":
+            from frap_glue import build_mtt_colight_agent, load_neighbor_map
+            if "neighbor_map" not in cfg:
+                sys.exit("frap.arch=mtt_colight requires a neighbor_map path")
+            n_neighbors = int((cfg.get("frap", {}) or {}).get("n_neighbors", 4))
+            colight_nb = load_neighbor_map(cfg["neighbor_map"], n_neighbors)
+            _miss = [t for t in env.ts_ids if t not in colight_nb]
+            if _miss:
+                sys.exit(f"neighbor_map missing {len(_miss)} junction(s), "
+                         f"e.g. {_miss[:3]}")
+            agent = build_mtt_colight_agent(cfg, enum_tables, env, device, n_neighbors)
+            print(f"  → agent: MTTCoLightAgent (movement-duel + neighbour GAT), "
+                  f"{len(colight_nb)} junctions mapped, obs_dim="
+                  f"{env.observation_space.shape[0]}")
         elif enum_tables is not None:
             from frap_glue import build_frap_agent
             agent = build_frap_agent(cfg, enum_tables, env, device)
@@ -578,6 +608,13 @@ def train(cfg: dict, timestamp: str):
                             _k = int(agent.take_action(initial_states[ts], mask=_m))  # type: ignore[call-arg]  # DQN here
                             moe_k[ts] = _k
                             actions[ts] = int(_props[_k])
+                    elif enum_tables is not None and colight_nb is not None:
+                        # mtt_colight: pass each junction's neighbour observations
+                        _od = env.observation_space.shape[0]
+                        actions = {ts: agent.take_action(
+                            initial_states[ts], ts,
+                            colight_nb_obs(ts, initial_states, colight_nb, _od, n_neighbors))
+                            for ts in env.ts_ids}
                     elif enum_tables is not None:
                         # enum_frap: action IS the dense green-phase index (identity)
                         actions = {ts: agent.take_action(initial_states[ts], ts)
@@ -630,6 +667,17 @@ def train(cfg: dict, timestamp: str):
                                 initial_states[ts], moe_k[ts],
                                 ts_reward, ts_next_state, ts_done,
                                 next_mask=_nm,
+                            )
+                        elif enum_tables is not None and colight_nb is not None:
+                            # mtt_colight: bundle own + neighbour snapshots at
+                            # s (initial_states) and s' (s) so the coordination
+                            # context is recomputable at learn time
+                            _od = env.observation_space.shape[0]
+                            agent.replay_buffer.add(
+                                initial_states[ts], actual_action,
+                                ts_reward, ts_next_state, ts_done, ts,
+                                colight_nb_obs(ts, initial_states, colight_nb, _od, n_neighbors),
+                                colight_nb_obs(ts, s, colight_nb, _od, n_neighbors),
                             )
                         elif enum_tables is not None:
                             # enum_frap: executed dense green index == action;
