@@ -132,6 +132,36 @@
   发布须效率/优先级双维分报 + 稳定包(exp232 已带 double/huber/clip)。
 
 --------------------------------------------------------------------------------
+§7.5 pipeline 示意图 (ASCII; 等宽字体看)
+
+【共同数据流 — 三变体首尾逐字一致, 仅中段《》不同】
+
+   obs  ──encode──▶  d  ──《中段》──▶  d★  ──┬── g_head ──▶  g (12,)
+ (194/326)        (12×16)          (12×16)  └── duel ─────▶  s (12,12)
+                                                  │
+    聚合[pm,rel,exist]:  Q(k) = Σ_{m∈相位k} g_m  +  Σ_{n被压制} max_m s(m,n)
+                                                  │
+                    Q (K,) ──mask 填 -1e9──▶  argmax  ──▶  绿灯相位
+
+【中段《》三变体 — 输入 d(12×16), 输出 d★(12×16)】
+
+ ① B+FRAP        d ─────────────────────────────────▶ d★ = d
+    exp211/220     无中段; d 直接打分。duel = 手工单跳 pair_fc(d_m,d_n)×rel_emb
+
+ ② MTT无协同     d ──▶[ self-attn ×2层4头 ]──▶ d★
+    exp233/231     12 token 两两互看; rel 逐头加性偏置(关系先验);
+                   不存在槽 key 屏蔽; rel_bias 零初始化(起步=普通注意力)
+
+ ③ MTT协同       d ──▶[ self-attn ]──▶ d′ ──▶[ 注入邻居 context ]──▶ d★
+    exp232                                       ▲
+                   邻居 obs ×4 ──nb_encoder──▶ 摘要 ×4              │
+                   own 摘要 attend 邻居 (缺失邻居屏蔽) ─▶ context c ┘
+                   d★ = LayerNorm(d′ + c)
+
+  递进: ①→② 只换中段(单跳对决 → 多跳自注意力); ②→③ 再加跨路口协同。
+  首尾(encode / 聚合 / mask / argmax) 三者逐字相同 → 差异纯来自中段, 可归因。
+
+--------------------------------------------------------------------------------
 §8 训练与微调 pipeline (FRAPAgent / MTTCoLightAgent)
   take_action(state, tls_id[, nb_obs]): obs→q_net→mask填-1e9→argmax→相位idx;
     ε 概率 mask 内随机。
