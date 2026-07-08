@@ -817,6 +817,13 @@ def train(cfg: dict, timestamp: str):
                             _m = _mg.gate_mask(_lv, moe_lex, presence=moe_presence)
                             _k = int(agent.take_action(eval_obs[ts], mask=_m))  # type: ignore[call-arg]
                             eval_actions[ts] = int(_props[_k])
+                    elif enum_tables is not None and colight_nb is not None:
+                        # mtt_colight: eval also needs neighbour observations
+                        _od = env.observation_space.shape[0]
+                        eval_actions = {ts: agent.take_action(
+                            eval_obs[ts], ts,
+                            colight_nb_obs(ts, eval_obs, colight_nb, _od, n_neighbors))
+                            for ts in env.ts_ids}
                     elif enum_tables is not None:
                         eval_actions = {ts: agent.take_action(eval_obs[ts], ts)
                                         for ts in env.ts_ids}
