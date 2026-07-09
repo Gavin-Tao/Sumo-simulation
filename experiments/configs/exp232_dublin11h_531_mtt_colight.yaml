@@ -38,7 +38,9 @@ eps_start: 0.9
 eps_end: 0.05
 eps_decay: 30000
 target_update: 720
-capacity: 300000
+capacity: 100000   # [09] 300k→100k: CoLight replay 每条存 own2+邻8 份 obs,
+                   # 300k≈3.9GB 触 OOM (07-09 09:13 被杀); 100k≈1.3GB 安全。
+                   # 与 211/233 (300k) 的可比性注记: 回放窗 ~23集→~8集
 use_double: true
 loss_fn: huber
 grad_clip: 1.0
