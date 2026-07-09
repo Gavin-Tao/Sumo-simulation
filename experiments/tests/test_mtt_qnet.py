@@ -76,7 +76,8 @@ def test_mtt_pure_no_duel_dependence_but_attention_active():
         net.s_head.weight.add_(100.0)
     assert torch.allclose(net(x, pm, rel, exist), q0), "duel params leaked into Q"
     with torch.no_grad():
-        net.rel_bias.weight[3, 0] += 3.0     # crossing rel, head 0 only
+        net.rel_bias.weight[3, 0] += 3.0     # merge rel (2+1=3), head 0 only —
+        # non-uniform across rel classes AND heads, so softmax can't absorb it
     assert (net(x, pm, rel, exist) - q0).abs().max() > 1e-4, \
         "rel-biased attention inactive"
 
@@ -120,9 +121,15 @@ def test_mtt_pure_via_frap_agent_factory():
                              rng.standard_normal(od).astype(np.float32), False, "A")
     a = ag.take_action(rng.standard_normal(od).astype(np.float32), "A")
     assert a in (0, 1)
+    duel_before = {n: p.detach().clone() for n, p in ag.q_net.named_parameters()
+                   if n.startswith(("pair_fc", "rel_emb", "s_head"))}
     for _ in range(3):
         ag.learn_step()
     assert ag.loss is not None and np.isfinite(ag.loss)
+    # optimizer must leave the unused duel params byte-identical (no decay drift)
+    for n, p in ag.q_net.named_parameters():
+        if n in duel_before:
+            assert torch.equal(p, duel_before[n]), f"optimizer moved duel param {n}"
 
 
 # ── MTTCoLightQNet + agent (arch: mtt_colight) ──────────────────────────────
