@@ -89,7 +89,15 @@
   │            │ 灾难丢失监测 (g-α_amb)       │ 通道定位 g vs s        │
   └────────────┴──────────────────────────────┴────────────────────────┘
   = exp211 配方 (Dublin) / exp220 配方 (1x1, 同栈无ψ/occ) + 09 复核后的
-  换约手册。1x1 注: 217 是效率赢家, 但本项目北极星是优先级 → 220。
+  换约手册。
+  1x1 注 [09 per-visit 复核修正]: per-visit 口径下 1x1 价格冠军是 217
+  (J531 71.9 vs 220 的 77.7; bus 5.68/0.71 vs 7.55/0.88, all 29.8 vs
+  31.2) — 220 的冠军头衔只在优先级质量维 (amb<bus 分离 p=4.6e-11 vs
+  217 的 0.045, amb 强度 4.5<4.75, 训练最稳), 与 07-07 文档原判一致,
+  勿再简化为"220 全面赢"。Dublin 无此分裂 (211 对 208 per-visit 全维
+  碾压) → enum-FRAP 的钱在异构相位菜单挣 (13/18 路口 2-3 相位);
+  对称 1x1 上 8std 模板已近优, enum 多付 ~5% 效率换优先级分离。
+  设计选型不受影响: 部署目标是 Dublin。
   论文表述: "FRAP-spirit movement-duel scorer over enumerated maximal
   non-conflicting phases, with priority-bucketed observations and
   contract-weighted reward" — 简单组件 + 强先验赢了两个更大容量的
