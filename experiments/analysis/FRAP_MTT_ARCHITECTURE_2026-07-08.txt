@@ -73,6 +73,36 @@
   直觉: "放这相位 = 服务方向多想走(q_self) + 压住的对手多委屈(q_sup)"。
   参数: embed_dim=16, pair_dim=16。encode/g_head/pair_fc/rel_emb/s_head 五件。
 
+  §4.1 三点澄清 (2026-07-09, 答"规则还是学习/英文名/为什么要 g")
+  (a) 规则 vs 学习的分工:
+      · 结构 = 规则: "谁跟谁冲突"由 enum 几何离线定死 (rel 矩阵), 非冲突对
+        (rel<2) 硬 mask -1e9 永不参与——冲突图 100% 规则, 从未交给学习。
+      · 强度 = 学习: 给定这对确实冲突, 合流/交叉两类冲突对"压制代价"的
+        调制应不同 (合流=汇入同一出口可让行共存; 交叉=轨迹相交互斥),
+        但差多少先验不知 → rel_emb=Embedding(2,16) 仅两行 (merge/crossing
+        各一个可学 16 维调制向量, 乘在 pair 特征上)。-1/0/1 的对第一步已被
+        mask, 故表只需 2 行——这就是"只区分{2,3}"的含义。
+      一句话: 规则划定竞技场, 学习决定裁判尺度。
+  (b) 英文名 (论文/代码用):
+      g      = movement self-demand score   (g_head = demand head)
+      s(m,n) = pairwise duel / competition score
+               (pair_fc + rel_emb + s_head = duel head)
+      q_self = self-demand term;  q_sup = suppression term
+      rel_emb = relation (conflict-type) embedding
+      对应原版 FRAP: g ↔ demand modeling; s ↔ phase competition (下沉到
+      movement 对)。
+  (c) 为什么 s 不够、必须有 g:
+      s 是条件分——"给定 m,n 都在冲突场里, m 压 n 值不值", 只在冲突对上有
+      定义。致命场景: 相位 k 的成员没有存在的冲突对手 (Dublin 2-3 相位
+      菜单常见) → q_sup(k)=0; 若无 g 则 Q(k)≡0, 服务 20 辆长队的相位和
+      服务空方向的相位分数相同——需求失明。
+      概念: s = 相对/序数 (仲裁: 都想要时谁赢); g = 绝对/基数 (出价: 我多
+      想要)。拍卖只有仲裁规则没有出价, 无人竞争的标的无法定价。
+      实证 (KAN 线): 两通道确实学到不同东西——Dublin exp211 的 amb 优先级
+      住在 g 通道 (g-α amb 3.28), s 里没有; 1x1 重排 3-5-1 的信号却出现在
+      s 通道 (bus |coef| 0.03→0.12)。分工真实互补; 砍 g 则绝对需求只能
+      塞进成对分——更难学, KAN 也读不出 α。
+
 ================================================================================
   变体 2: MTT无协同+FRAP  —  MTTQNet(FRAPQNet) (exp233 Dublin / exp231 1x1)
   frap.arch = mtt
