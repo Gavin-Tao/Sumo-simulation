@@ -43,6 +43,88 @@ def test_mtt_extra_params_only():
     assert any(k.startswith("layers.") or k.startswith("rel_bias") for k in m - f)
 
 
+# ── MTTPureQNet (arch: mtt_pure, replace-variant) ───────────────────────────
+
+def test_mtt_pure_q_formula_is_sum_of_member_g():
+    # Lock the replace semantics: Q(k) == sum of member g on refined tokens,
+    # byte-for-byte (no hidden suppression term).
+    from sumo_rl.agents.frap_agent import MTTPureQNet
+    torch.manual_seed(0)
+    net = MTTPureQNet(2, 7, 16, 16, k_max=2)
+    x, pm, rel, exist = _toy()
+    q = net(x, pm, rel, exist)
+    with torch.no_grad():
+        d = net.refine(net.encode(x), rel, exist)
+        g = net.g_head(d).squeeze(-1)
+        q_manual = (g.unsqueeze(1) * pm).sum(-1)
+    assert torch.allclose(q, q_manual, atol=0, rtol=0), "Q != sum of member g"
+
+
+def test_mtt_pure_no_duel_dependence_but_attention_active():
+    # Duel params (pair_fc/rel_emb/s_head) must be OUT of the graph: perturbing
+    # them cannot change Q. Attention must be IN: a NON-uniform rel_bias
+    # perturbation (softmax is shift-invariant — uniform shifts are a no-op)
+    # must change Q.
+    from sumo_rl.agents.frap_agent import MTTPureQNet
+    torch.manual_seed(0)
+    net = MTTPureQNet(2, 7, 16, 16, k_max=2)
+    x, pm, rel, exist = _toy()
+    q0 = net(x, pm, rel, exist)
+    with torch.no_grad():
+        net.pair_fc.weight.add_(100.0)
+        net.rel_emb.weight.add_(100.0)
+        net.s_head.weight.add_(100.0)
+    assert torch.allclose(net(x, pm, rel, exist), q0), "duel params leaked into Q"
+    with torch.no_grad():
+        net.rel_bias.weight[3, 0] += 3.0     # crossing rel, head 0 only
+    assert (net(x, pm, rel, exist) - q0).abs().max() > 1e-4, \
+        "rel-biased attention inactive"
+
+
+def test_mtt_pure_gradient_routing():
+    # Backward must reach enc/g_head/attention and must NOT reach duel params.
+    from sumo_rl.agents.frap_agent import MTTPureQNet
+    torch.manual_seed(0)
+    net = MTTPureQNet(2, 7, 16, 16, k_max=2)
+    x, pm, rel, exist = _toy()
+    net(x, pm, rel, exist).sum().backward()
+    grads = {n: p.grad for n, p in net.named_parameters()}
+    for n in ("enc.0.weight", "g_head.weight"):
+        assert grads[n] is not None and grads[n].abs().sum() > 0, f"no grad: {n}"
+    assert any(k.startswith("layers.") and grads[k] is not None
+               and grads[k].abs().sum() > 0 for k in grads), "attention untrained"
+    for n in ("pair_fc.weight", "rel_emb.weight", "s_head.weight"):
+        assert grads[n] is None or grads[n].abs().sum() == 0, f"duel grad leak: {n}"
+
+
+def test_mtt_pure_via_frap_agent_factory():
+    # arch="mtt_pure" must build through FRAPAgent unchanged surface and learn.
+    import numpy as np
+    torch.manual_seed(0); np.random.seed(0)
+    from sumo_rl.agents.frap_agent import FRAPAgent, MTTPureQNet
+    rel = np.full((12, 12), -1, np.int64)
+    for i in range(4):
+        rel[i, i] = 0
+    rel[0, 1] = rel[1, 0] = 3
+    pm = np.zeros((2, 12), np.float32); pm[0, 0] = pm[0, 2] = 1; pm[1, 1] = 1
+    exist = (rel.diagonal() >= 0).astype(np.float32)
+    tt = {"A": {"pm": pm, "rel": rel, "exist": exist, "mask": np.array([True, True])}}
+    od = 2 + 12 * 7
+    ag = FRAPAgent(od, 2, 7, tt, 1e-2, 0.95, 0.0, 5, 200, 8, 8,
+                   0, 0, 1, "cpu", embed_dim=16, pair_dim=16, k_max=2,
+                   arch="mtt_pure")
+    assert isinstance(ag.q_net, MTTPureQNet)
+    rng = np.random.default_rng(0)
+    for _ in range(20):
+        ag.replay_buffer.add(rng.standard_normal(od).astype(np.float32), 0, -1.0,
+                             rng.standard_normal(od).astype(np.float32), False, "A")
+    a = ag.take_action(rng.standard_normal(od).astype(np.float32), "A")
+    assert a in (0, 1)
+    for _ in range(3):
+        ag.learn_step()
+    assert ag.loss is not None and np.isfinite(ag.loss)
+
+
 # ── MTTCoLightQNet + agent (arch: mtt_colight) ──────────────────────────────
 
 def _toy_cl(B=3, own_dim=2 + 12 * 7):

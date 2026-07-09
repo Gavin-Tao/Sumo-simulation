@@ -136,6 +136,27 @@ class MTTQNet(FRAPQNet):
         return q_self + q_sup
 
 
+class MTTPureQNet(MTTQNet):
+    """Replace-variant MTT (arch: mtt_pure) — the user-approved spec from the
+    2026-07-09 intent audit §1: relation-biased self-attention REPLACES the
+    hand-crafted single-hop duel instead of augmenting it. The explicit
+    competition channel (pair_fc/rel_emb/s_head, q_sup) is dropped from the
+    forward pass entirely; competition is implicit in attention (an opponent's
+    load flows into my token and lowers my score). Q(phase k) = sum of member
+    net-demand scores — FRAP's movement decomposition and additive phase
+    composition are retained, its explicit phase-competition term is not.
+    Inherited duel parameters exist but are unused (never in the graph, zero
+    grads) — same accepted pattern as rel_bias at n_layers=0. NOTE for KAN
+    analysis: only the g channel is meaningful on mtt_pure checkpoints (s rows
+    from extract_frap_targets read untrained parameters); g's semantics also
+    change from 'pure self-demand' to 'post-competition net demand'."""
+
+    def forward(self, x, pm, rel, exist):
+        d = self.refine(self.encode(x), rel, exist)     # attention = the duel
+        g = self.g_head(d).squeeze(-1)                  # (B,12) net demand
+        return (g.unsqueeze(1) * pm).sum(-1)            # (B,K) additive phases
+
+
 class MTTCoLightQNet(MTTQNet):
     """MTT + CoLight-style inter-junction coordination (arch: mtt_colight).
     Adds neighbour graph-attention on top of MTTQNet: the own junction is
@@ -227,6 +248,9 @@ class FRAPAgent:
             if arch == "mtt":
                 return MTTQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
                                n_heads=mtt_heads, n_layers=mtt_layers)
+            if arch == "mtt_pure":
+                return MTTPureQNet(header_dim, slot_dim, embed_dim, pair_dim,
+                                   k_max, n_heads=mtt_heads, n_layers=mtt_layers)
             if arch != "frap":
                 raise ValueError(f"unknown frap arch: {arch!r}")
             return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max)
