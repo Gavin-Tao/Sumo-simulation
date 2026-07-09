@@ -137,6 +137,11 @@ def main():
     agent.q_net.eval()
     net, hd, sd = agent.q_net, agent.q_net.header_dim, agent.q_net.slot_dim
     feat_names = feature_names_for(sd)   # 16 (φ-only) or 27 (Dublin)
+    # mtt_pure: duel head is out of the forward graph (untrained) — its s(m,n)
+    # values are init noise; collecting them would invite garbage fits.
+    skip_s = type(net).__name__ == "MTTPureQNet"
+    if skip_s:
+        print("mtt_pure checkpoint: S-channel extraction skipped (duel untrained)")
 
     G_X, G_y = [], []
     S_Xm, S_Xn, S_rel, S_y = [], [], [], []
@@ -157,6 +162,16 @@ def main():
                 pm, rel, exist, mask = agent._tensors(ii)
                 with torch.no_grad():
                     d = net.encode(xt)
+                    if hasattr(net, "refine"):
+                        # MTT family (mtt/mtt_pure): the deployed scorer reads
+                        # ATTENTION-REFINED tokens; extracting on raw encoded
+                        # tokens would read a different function than the
+                        # controller (2026-07-09 fix). FRAPQNet has no .refine
+                        # -> branch never fires -> legacy path byte-identical.
+                        # NOTE: with attention, g_m depends on ALL slots — the
+                        # per-slot (x_m -> g_m) rows then read a context-averaged
+                        # marginal effect (lower R2 ceiling by construction).
+                        d = net.refine(d, rel, exist)
                     g = net.g_head(d).squeeze(-1)[0]          # (12,)
                     s = net.duel_scores(d, rel)[0]            # (12,12)
                     q = net(xt, pm, rel, exist).masked_fill(~mask, -1e9)
@@ -169,12 +184,13 @@ def main():
                     for m in np.flatnonzero(ex):
                         G_X.append(slots[m]); G_y.append(float(g[m]))
                     r = rel[0].numpy()
-                    for m in np.flatnonzero(ex):
-                        for n in np.flatnonzero(ex):
-                            if r[m, n] >= 2:
-                                S_Xm.append(slots[m]); S_Xn.append(slots[n])
-                                S_rel.append(int(r[m, n]))
-                                S_y.append(float(s[m, n]))
+                    if not skip_s:
+                        for m in np.flatnonzero(ex):
+                            for n in np.flatnonzero(ex):
+                                if r[m, n] >= 2:
+                                    S_Xm.append(slots[m]); S_Xn.append(slots[n])
+                                    S_rel.append(int(r[m, n]))
+                                    S_y.append(float(s[m, n]))
                     CTX_obs.append(x); CTX_ts.append(i); CTX_act.append(a)
             states, _, done, _ = env.step(action=acts)
     env.close()

@@ -115,11 +115,29 @@ class MTTQNet(FRAPQNet):
         bias = bias + key_block.view(B, 1, 1, 12)                  # mask pad keys
         attn_mask = bias.reshape(B * self.n_heads, 12, 12)
         for L in self.layers:
-            a, _ = L["attn"](d, d, d, attn_mask=attn_mask, need_weights=False)
+            # need_weights=True + the train() pin below both steer AWAY from
+            # torch's eval-mode fast path, which CONVERTS a non-bool attn_mask
+            # to bool — destroying the float additive rel_bias semantics
+            # (found 2026-07-09: train-vs-eval output diff 0.30/0.18; on torch
+            # 2.0.1 need_weights=True alone does NOT disable it, the pin does).
+            a, _ = L["attn"](d, d, d, attn_mask=attn_mask, need_weights=True)
             a = torch.nan_to_num(a)      # degenerate all-absent query -> 0;
             d = L["ln1"](d + a)          # ignored downstream by pm/exist anyway
             d = L["ln2"](d + L["ff"](d))
         return d
+
+    def train(self, mode: bool = True):
+        # Pin attention submodules to training=True permanently: their
+        # dropout=0 makes train-mode (canonical-path) semantics THE intended
+        # semantics, and the corrupting fast path requires training=False so
+        # it can never fire. Behavior-neutral for training (was already
+        # canonical); makes eval-mode inference (extractors/probes/deploy)
+        # byte-identical to the trained policy. Trained ckpts (exp232/233)
+        # unaffected: training + train.py's logged evals always ran train mode.
+        super().train(mode)
+        for L in self.layers:
+            L["attn"].train(True)
+        return self
 
     def forward(self, x, pm, rel, exist):
         d = self.refine(self.encode(x), rel, exist)

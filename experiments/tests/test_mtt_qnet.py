@@ -43,6 +43,25 @@ def test_mtt_extra_params_only():
     assert any(k.startswith("layers.") or k.startswith("rel_bias") for k in m - f)
 
 
+def test_mtt_train_eval_mode_consistency():
+    # eval()+no_grad must NOT change outputs (dropout=0, so any diff = torch
+    # fast-path corrupting the float additive attn_mask by bool-conversion;
+    # guarded by need_weights=True in refine — 2026-07-09 fix).
+    torch.manual_seed(0)
+    net = MTTQNet(2, 7, 16, 16, k_max=2)
+    with torch.no_grad():
+        net.rel_bias.weight.uniform_(-0.5, 0.5)   # trained-like nonzero biases
+    x, pm, rel, exist = _toy()
+    net.train()
+    with torch.no_grad():
+        q_train = net(x, pm, rel, exist)
+    net.eval()
+    with torch.no_grad():
+        q_eval = net(x, pm, rel, exist)
+    assert torch.allclose(q_train, q_eval, atol=1e-6), \
+        f"train/eval mismatch {(q_train - q_eval).abs().max().item():.6f}"
+
+
 # ── MTTPureQNet (arch: mtt_pure, replace-variant) ───────────────────────────
 
 def test_mtt_pure_q_formula_is_sum_of_member_g():
