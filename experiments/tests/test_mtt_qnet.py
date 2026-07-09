@@ -78,6 +78,21 @@ def test_mttcolight_coordination_active():
             - net(x, real, pm, rel, exist)).abs().max() > 1e-3, "neighbours ignored"
 
 
+def test_mttcolight_layers0_is_pure_frap_plus_gat():
+    # exp234 semantics: n_layers=0 -> refine is identity (no attention layers),
+    # net degrades to hand-crafted FRAP duel + neighbour GAT. Lock it.
+    from sumo_rl.agents.frap_agent import MTTCoLightQNet
+    net = MTTCoLightQNet(2, 7, 16, 16, k_max=2, n_neighbors=4, n_layers=0)
+    assert len(net.layers) == 0, "n_layers=0 must build zero attention layers"
+    x, nb, pm, rel, exist = _toy_cl(B=2)
+    q = net(x, nb, pm, rel, exist)
+    assert q.shape == (2, 2) and torch.isfinite(q).all()
+    # FRAP core params all present (superset check, same names)
+    f = set(dict(FRAPQNet(2, 7, 16, 16, 2).named_parameters()))
+    m = set(dict(net.named_parameters()))
+    assert f.issubset(m)
+
+
 def test_mttcolight_agent_learn_gradients():
     import numpy as np
     torch.manual_seed(0); np.random.seed(0)   # deterministic: no cross-test RNG leak
