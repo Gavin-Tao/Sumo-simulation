@@ -24,6 +24,11 @@ elif variant == "w421b":
     obs_kwargs["priority_source"] = ({"ambulance": 4, "bus": 2, "car": 1} if "priority_source" in cfg else {"ambulance": 4, "bus": 2, "truck": 2, "car": 1})
 elif variant == "swap351":
     # 3-5-1 重排: bus 进 amb 的训练桶, amb 进 bus 的训练桶 (桶待遇交换)
+    # [09复核注] 220/217 无 priority_source 键 → 走 else 分支 {amb:4,bus:5}
+    # = "双入训练桶"正确交换 (默认表 bus@l4/amb@l5, l2/l3 处女桶):
+    # J351 均值 78.5, 351 排序门 5/5 (probe_arm_eval.py 5种子)。
+    # if 分支 {amb:3} 为"契约值即桶号"约定 (=exp228d 起点), amb 落处女桶,
+    # 零训练 J351≈267。两变体语义: REVERIFICATION_LEDGER_2026-07-09 §2a。
     obs_kwargs["priority_source"] = ({"ambulance": 3, "bus": 5, "car": 1} if "priority_source" in cfg else {"ambulance": 4, "bus": 5, "truck": 2, "car": 1})
 elif "priority_source" in cfg:
     obs_kwargs["priority_source"] = cfg["priority_source"]

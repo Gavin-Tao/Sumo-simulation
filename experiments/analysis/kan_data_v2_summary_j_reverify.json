@@ -1,0 +1,101 @@
+{
+ "exp227a": {
+  "run": "exp227a_1x1_finetune421_obsfix_2026-07-07T16-39-37",
+  "id": "wz1iw3ob",
+  "n_evals": 60,
+  "J_tail10_mean": 67.53,
+  "J_tail10_std": 3.8,
+  "J_best": 39.74,
+  "doc_claim": 67.5
+ },
+ "exp228a": {
+  "run": "exp228a_1x1_ft421_physfrozen_2026-07-07T17-39-16",
+  "id": "8024sesu",
+  "n_evals": 60,
+  "J_tail10_mean": 65.01,
+  "J_tail10_std": 8.14,
+  "J_best": 39.74,
+  "doc_claim": 65.0
+ },
+ "exp228b": {
+  "run": "exp228b_1x1_ft421_rscale_2026-07-07T17-39-16",
+  "id": "ylp3s1iy",
+  "n_evals": 60,
+  "J_tail10_mean": 68.29,
+  "J_tail10_std": 3.87,
+  "J_best": 39.74,
+  "doc_claim": 68.3
+ },
+ "exp228c": {
+  "run": "exp228c_1x1_ft421_physfrozen_rscale_2026-07-07T17-39-16",
+  "id": "2r6hp0lt",
+  "n_evals": 60,
+  "J_tail10_mean": 65.92,
+  "J_tail10_std": 0.69,
+  "J_best": 39.74,
+  "doc_claim": 65.9
+ },
+ "exp228e": {
+  "run": "exp228e_1x1_ft421_headsonly_2026-07-07T17-39-16",
+  "id": "17gbifmv",
+  "n_evals": 60,
+  "J_tail10_mean": 73.0,
+  "J_tail10_std": 0.57,
+  "J_best": 39.74,
+  "doc_claim": 73.0
+ },
+ "exp228d": {
+  "run": "exp228d_1x1_ft351_physfrozen_2026-07-07T17-39-16",
+  "id": "n58xc075",
+  "n_evals": 60,
+  "J_tail10_mean": 75.48,
+  "J_tail10_std": 6.91,
+  "J_best": 61.26,
+  "doc_claim": 75.5
+ },
+ "exp228f": {
+  "run": "exp228f_1x1_ft351_headsonly_2026-07-07T17-39-16",
+  "id": "hdlft3m4",
+  "n_evals": 60,
+  "J_tail10_mean": 564.36,
+  "J_tail10_std": 288.48,
+  "J_best": 252.76,
+  "doc_claim": null
+ },
+ "exp229a": {
+  "run": "exp229a_1x1_gold421_scratch_2026-07-07T18-26-23",
+  "id": "h8duukky",
+  "n_evals": 400,
+  "J_tail10_mean": 67.3,
+  "J_tail10_std": 10.53,
+  "J_best": 42.26,
+  "doc_claim": 67.3
+ },
+ "exp229b": {
+  "run": "exp229b_1x1_gold351_scratch_2026-07-07T18-26-23",
+  "id": "e7fpmhoi",
+  "n_evals": 399,
+  "J_tail10_mean": 94.93,
+  "J_tail10_std": 13.64,
+  "J_best": 50.11,
+  "doc_claim": 94.9
+ },
+ "exp230a": {
+  "run": "exp230a_1x1_ft421_residual_2026-07-07T20-15-40",
+  "id": "7wrkj81t",
+  "n_evals": 60,
+  "J_tail10_mean": 63.29,
+  "J_tail10_std": 5.76,
+  "J_best": 39.74,
+  "doc_claim": 63.3
+ },
+ "exp230b": {
+  "run": "exp230b_1x1_ft421_residual_wd_2026-07-07T20-15-40",
+  "id": "3iyro9bn",
+  "n_evals": 60,
+  "J_tail10_mean": 58.69,
+  "J_tail10_std": 2.53,
+  "J_best": 39.74,
+  "doc_claim": 58.7
+ }
+}
