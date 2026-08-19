@@ -38,20 +38,21 @@
 
   本工作总 RQ: 当一座城市承诺差异化的服务优先级 — 救护车高于公交、
   公交高于私家车, 且政策要求这种差距可量化、可随上下文变化、可重新
-  议定 — 交通管理方如何把这一承诺表述为形式化契约, 并让 RL 信号
-  控制器"按构造"执行它, 而不是寄望于一个手调奖励系数的偶然效果?
-  具体而言: 契约是否形式可表达? 其进入状态与奖励的编码是否忠实?
-  路口成网后, 契约合规是否仍保持本地性?
+  议定, 并在运行时依优先级自动控制而非依赖预定时序 — 交通管理方
+  如何把这一承诺表述为形式化契约, 并让 RL 信号控制器"按构造"执行
+  它? 具体而言: 契约是否形式可表达? 契约如何编码进状态与奖励 —
+  尤其要在异构路口之上成立? 多路口协同又该如何应对?
   Overall RQ: When a city commits to differentiated service
   priorities — an ambulance over a bus over a private car, by margins
   that policy demands be quantified, conditioned on context, and open
-  to renegotiation — how can the traffic authority state this
-  commitment as a formal contract and have an RL signal controller
-  enforce it by construction, rather than by the accident of a
-  hand-tuned reward coefficient? Specifically, is the contract
-  formally expressible, is its encoding into state and reward
-  faithful, and does contract compliance remain local once junctions
-  are networked?
+  to renegotiation — and expects control to follow priorities
+  automatically at run time rather than by pre-timed schedules, how
+  can the traffic authority state this commitment as a formal
+  contract and have an RL signal controller enforce it by
+  construction? Specifically, is the contract formally expressible;
+  how should it be encoded into state and reward, not least across
+  heterogeneous junctions; and how should multi-junction coordination
+  be handled?
 
   细分 RQ (章节回答的问题; C=对应贡献, R=以结果回答):
   RQ1.1 [契约表达力 / Contract expressibility]                  → C1
@@ -62,19 +63,20 @@
         to heterogeneous road users, and be compiled into a
         representation the controller consumes without architectural
         change?
-  RQ1.2 [编码忠实性 / Encoding faithfulness]                    → C2
-        契约该进 reward 还是进 state — 两者各承担什么角色,
-        缺一会发生什么失效?
-        Where must the contract enter the learning problem — the
-        reward, the state, or both — what role does each channel
-        play, and what failure modes arise when either is omitted?
-  RQ1.3 [协同的本地性 / Locality of coordination]               → C3
-        多路口部署下, 邻居信息必须进入 reward 吗, 还是状态通道
-        的邻居暴露已足以维持各路口的契约合规?
-        In a networked deployment, must neighbouring junctions enter
-        the reward, or does state-channel exposure of neighbour
-        information suffice to sustain contract compliance at each
-        junction?
+  RQ1.2 [编码稳健性 / Encoding robustness]                      → C2
+        编码后的保序性对运行条件是否稳健 — 不同优先级比例、不同
+        流量水平、不同车辆构成、以及异构路口布局之下, 是否依然
+        成立?
+        Is the encoded ordering robust across operating conditions —
+        different priority ratios, traffic volumes, and vehicle-class
+        mixes, and across heterogeneous junction layouts?
+  RQ1.3 [多路口协同 / Multi-junction coordination]              → C3
+        多路口部署下协同如何应对 — 邻居信息必须进入 reward, 还是
+        状态通道的邻居暴露已足以维持各路口的契约合规?
+        How should multi-junction coordination be handled — must
+        neighbouring junctions enter the reward, or does
+        state-channel exposure of neighbour information suffice to
+        sustain contract compliance at each junction?
 
   CONTRIBUTIONS:
   W1-C1 [语言+架构] BNF 优先级契约语言与"编译到桶"架构: 契约以文法
