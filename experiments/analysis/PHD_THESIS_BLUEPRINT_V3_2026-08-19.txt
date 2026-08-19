@@ -1,6 +1,9 @@
 ================================================================================
+  [术语定稿 2026-08-19] 对外统一用 priority specification / 优先级规格;
+  "contract/契约" 措辞弃用 (用户决定, 避免形式化保证的过度暗示)。
+  历史分析文档中的"换约/契约"为旧称, 不回改; 本蓝图已全文替换。
   PhD Thesis 蓝图 V3 — 按用户框架重排 (2026-08-19)
-  变更 (vs V2, 决策记录): W1 以 BNF 契约语言为创新主体, 邻居协同归入 W1
+  变更 (vs V2, 决策记录): W1 以 BNF 规格语言为创新主体, 邻居协同归入 W1
   (状态侧充分性论证); W2 以 phase-free 共享 g/s-argmax 为创新主体, 五 gap
   重写 (旧 g2b/g2c/C2-C5 弃用); W3 = 冻结+微调 (评价协议移出, 设为横切
   方法论篇); W4 瘦身 (g4b 弃, 贡献只留协议+谱系, 失真/监测降为结果)。
@@ -12,48 +15,48 @@
   总 RQ: RL 信号控制如何在异构真实路网上提供【可定义、可执行、可适配、
   可验证】的服务优先级保证?
 
-  契约生命周期四幕 (BNF 使"契约"从隐喻变成字面事实 — 它就是契约语言):
-    W1 定义契约并编码进 agent   (BNF 优先级语言 + 桶状态 + 加权奖励
+  规格生命周期四幕 (BNF 就是规格语言):
+    W1 定义规格并编码进 agent   (BNF 优先级语言 + 桶状态 + 加权奖励
                                  + 邻居信息走状态通道)
-    W2 在异构真实路网上执行契约 (phase-free 共享 g/s-argmax)
-    W3 契约变更时低成本适配     (zero-shot 起点 + 有据冻结微调)
-    W4 验证契约真的被内化       (KAN 审计协议 + 可解释性谱系)
+    W2 在异构真实路网上执行规格 (phase-free 共享 g/s-argmax)
+    W3 规格变更时低成本适配     (zero-shot 起点 + 有据冻结微调)
+    W4 验证规格真的被内化       (KAN 审计协议 + 可解释性谱系)
   横切方法论篇: 优先级控制的评价协议 (与四工作并行, 服务全部实验)。
 
 --------------------------------------------------------------------------------
-§1 W1 — BNF 优先级契约的定义与编码 (define & encode)
-   "BNF-Specified Priority Contracts: Quantitative, Context-Aware
+§1 W1 — BNF 优先级规格的定义与编码 (define & encode)
+   "BNF-Specified Priority Specifications: Quantitative, Context-Aware
     Priority Encoding for RL Signal Control"
 
   GAP:
   g1a 前人不量化"多优先": 优先级处理多为二值抢占 (emergency preemption)
       或按车辆类型的定性偏好 — 没有"优先多少"的定量表达, 更没有形式化
-      的契约语言
+      的规格语言
   g1b 前人不区分上下文: 优先级恒等于车型, 不随场景/在场组合/时段变化
       — 缺一个能表达"不同车辆在不同上下文中优先级大小"的规格层
-  g1c 定义了契约还要能编码进 agent: 优先级只进 reward 权重则状态失明
+  g1c 定义了规格还要能编码进 agent: 优先级只进 reward 权重则状态失明
       (同一加权 reward 下, 优先级不可观测的状态族倒挂 −49% amb, 优先桶
       状态族 5/5 保序 — exp172-182); 且多路口下邻居信息如何进入决策
       缺乏"该走状态还是走 reward"的论证
 
   本工作总 RQ: 当一座城市承诺差异化的服务优先级 — 救护车高于公交、
   公交高于私家车, 其大小可量化、随上下文变化、可重新议定, 且取值
-  由契约求值而得而非硬编码 — 如何把这一承诺写成形式化契约, 并让
-  RL 信号控制器按构造执行? 具体而言: 契约是否形式可表达? 如何编码
+  由规格求值而得而非硬编码 — 如何把这一承诺写成形式化规格, 并让
+  RL 信号控制器按构造执行? 具体而言: 规格是否形式可表达? 如何编码
   进状态与奖励、尤其在异构路口之上? 多路口协同如何应对?
   Overall RQ: When a city commits to differentiated service
   priorities — ambulance over bus over car, with margins that are
   quantified, context-dependent, renegotiable, and derived by
-  evaluating a contract rather than hard-coded — how can this
-  commitment be written as a formal contract and enforced by
+  evaluating a specification rather than hard-coded — how can this
+  commitment be written as a formal specification and enforced by
   construction by an RL signal controller? Specifically: is the
-  contract formally expressible; how is it encoded into state and
+  specification formally expressible; how is it encoded into state and
   reward, especially across heterogeneous junctions; and how is
   multi-junction coordination handled?
 
   细分 RQ (章节回答的问题; C=对应贡献, R=以结果回答):
-  RQ1.1 [契约表达力 / Contract expressibility]                  → C1
-        如何形式化定义定量、上下文相关的优先级契约, 并编译成
+  RQ1.1 [规格表达力 / Specification expressibility]                  → C1
+        如何形式化定义定量、上下文相关的优先级规格, 并编译成
         控制器可直接消费、无需改架构的表示?
         Can priority commitments be specified in a formal grammar
         that assigns quantitative, context-dependent priority levels
@@ -69,21 +72,21 @@
         mixes, and across heterogeneous junction layouts?
   RQ1.3 [多路口协同 / Multi-junction coordination]              → C3
         多路口部署下协同如何应对 — 邻居信息必须进入 reward, 还是
-        状态通道的邻居暴露已足以维持各路口的契约合规?
+        状态通道的邻居暴露已足以维持各路口的规格合规?
         How should multi-junction coordination be handled — must
         neighbouring junctions enter the reward, or does
         state-channel exposure of neighbour information suffice to
-        sustain contract compliance at each junction?
+        sustain specification compliance at each junction?
 
   CONTRIBUTIONS:
-  W1-C1 [语言+架构] BNF 优先级契约语言与"编译到桶"架构: 契约以文法
+  W1-C1 [语言+架构] BNF 优先级规格语言与"编译到桶"架构: 规格以文法
         形式化定义 (定量权重、可上下文化), 编译成平表; agent/featurizer
-        永远只见桶 {1..5} 不见车型 — 该间接层使换约 zero-shot (契约换,
+        永远只见桶 {1..5} 不见车型 — 该间接层使规格变更 zero-shot (规格换,
         观测布局与网络不变)。表达力三档诚实: 已证明 = 桶间接+换表
         zero-shot (W3 全线依赖); 已演示 = 决策时 BNF 权重 (multihead
         线) 与 presence 门控上下文权重 (P-A demo); 表达力余量 = 完整
         .bnf 解析器 (代码预留 Phase-2, 见完成缺口#0)。
-  W1-C2 [方法] 优先桶状态 (φ 级特征化, 车按契约级入桶) + 逐类平均
+  W1-C2 [方法] 优先桶状态 (φ 级特征化, 车按规格级入桶) + 逐类平均
         加权奖励: "权重定价 / 桶感知 / 逐类平均防稀释"三件套 — 三件
         缺一即失效, 主流做法只有第一件 (证据 E1-1/E1-2)。
   W1-C3 [论证+证据] 邻居信息走状态通道即足够, 无需邻居 reward 进入
@@ -95,7 +98,7 @@
   · 场景三尺度: 1x1 单口 (开发主场) → 1x3 走廊 (a/b/c 臂, 协同与
     泛化初检, coeff 臂 −15% car wait 稳健) → Dublin 市中心 18 口
     11h 工作日 (SCATS/GTFS/DFB 标定, 真实异构收官场)
-  · 契约谱: 5-3-1 主线; 5-4-1 (默认表); 4-2-1 / 3-5-1 (换约线,
+  · 规格谱: 5-3-1 主线; 5-4-1 (默认表); 4-2-1 / 3-5-1 (规格变更线,
     编码层随之复验); multihead 权重扫描 (flat/amb15/amb50/倒置)
     作纯权重旋钮探针; 致盲对照 (amb 桶致盲, 行为崩 3.5×/5×/∞)
   · 流量构成: bus 20% 主场景, amb 稀疏 ~1.1/集 (窗口化评价纪律
@@ -115,23 +118,23 @@
        状态可观测性, C2 的"桶感知"必要性铁证
   E1-2 权重佐证: 权重通胀曲线 (旧扫描仅动机); multihead 有效权重
        0.45× vs 名义 5× → "只靠权重"不可行
-  E1-3 换表 zero-shot 性质 (C1 的架构承诺兑现): 桶间接层下换契约
+  E1-3 换表 zero-shot 性质 (C1 的架构承诺兑现): 桶间接层下换规格
        不动网络 — W3 的 do-nothing/双入桶全线复用此性质
   E1-4 ψ 下游块: 状态侧下游可见性进入 Dublin 冠军配方 (326 维布局)
   E1-5 邻居 GAT (exp234 vs exp211): 邻居状态注入与冠军平手 (J 9.3
        ≈9.0, 效率小胜, 滑3最佳 4.4), reward 全程本地 → "状态通道
        足够"的充分性证据; 对照 exp232 (高容量底座+同一协同尾崩) —
        协同的安全性取决于底座
-  E1-6 上下文契约演示: presence 门控权重扫描 (P-A demo)
+  E1-6 上下文规格演示: presence 门控权重扫描 (P-A demo)
   诚实边界: "无需邻居 reward"是充分性论证 (本地 reward 已够好),
        未跑 reward-mixing 对照臂 (列为可选补充); .bnf 解析器未落地
        (完成缺口#0), 且当前口径为"装载期求值、运行期 O(1) 查表"
-       (priority_map 热循环禁解析规则) — 每步实时求值的上下文契约
+       (priority_map 热循环禁解析规则) — 每步实时求值的上下文规格
        属缺口#0 硬化范围; 稳定包 (γ.95/钳位/double/huber/clip) 作为
        训练基础设施随 W1 交付, 不单列贡献。
 
 --------------------------------------------------------------------------------
-§2 W2 — Phase-free 共享 g/s-argmax: 异构路网上的契约执行 (execute)
+§2 W2 — Phase-free 共享 g/s-argmax: 异构路网上的规格执行 (execute)
    "Phase-Free Movement Scoring: Shared Urgency-Suppression Primitives
     over Enumerated Phase Menus"
 
@@ -156,17 +159,17 @@
        分离 p=4.6e-11 vs 8std 的 0.045, 九个数量级
   gap4 可审计性 (W4 入场券): g/s 分解 + 冻结聚合 ⟹ "G/S 完全决定
        控制器" ⟹ α/通道/谱系审计才可能; 单体/可学聚合上不适定
-  gap5 换约分区 (W3 前提): "冻契约无关物理 (pair_fc/rel_emb)、训契约
+  gap5 规格变更分区 (W3 前提): "冻规格无关物理 (pair_fc/rel_emb)、训规格
        语义 (enc+头)"只在模块显式时存在; 单体 MLP 无可指认的物理层
 
-  本工作总 RQ: 当契约必须在一张真实城市路网上执行, 而其路口的几何、
+  本工作总 RQ: 当规格必须在一张真实城市路网上执行, 而其路口的几何、
   转向与可行相位无法被任何固定相位模板覆盖时, agent 如何无需预定
   相位、对各路口原生的相位组合进行估值与任意组合选择 — 且不增加
   计算复杂度与训练难度, 在复杂异构路口上保持良好性能与潜在的泛化
   能力? 具体而言: 动作空间能否由几何推导而非模板强加? 任意大小与
   数量的相位能否由 movement 级原语获得可比估值? 这些竞争原语应当
   围绕物理先验手工构造, 还是交给学习?
-  Overall RQ: When the contract must be executed on a real urban
+  Overall RQ: When the specification must be executed on a real urban
   network whose junctions — in their geometry, movements, and
   feasible signal phases — defy any fixed phase template, how can an
   agent value, freely compose, and select each junction's native
@@ -226,23 +229,24 @@
        直接对照 (这本身是 gap1/共享性论点); 1x1 效率劣势如实报。
 
 --------------------------------------------------------------------------------
-§3 W3 — 免从头重训的契约适配: zero-shot 起点 + 有据冻结微调 (adapt)
-   "Re-Contracting without Retraining: Principled Freeze-and-Finetune
+§3 W3 — 免从头重训的规格适配: zero-shot 起点 + 有据冻结微调 (adapt)
+   "Adapting to Specification Changes without Retraining:
+    Principled Freeze-and-Finetune
     from Zero-Shot Starts"
 
   GAP:
-  g3a 契约变更 (改价/重排) 时从头重训成本不可行 (2000 集), 而微调
+  g3a 规格变更 (改价/重排) 时从头重训成本不可行 (2000 集), 而微调
       何时有效、从哪起步、动哪些参数, 无原则可依
   g3b 冻结选取无理论: 现有 freeze-finetune 实践凭直觉选层, 缺"哪些
-      参数编码契约无关知识"的判据与反例
+      参数编码规格无关知识"的判据与反例
 
-  本工作总 RQ: 当一个在役控制器的优先级契约被重新议定 — 价格被
+  本工作总 RQ: 当一个在役控制器的优先级规格被重新议定 — 价格被
   修改、或名次被重排 — 运营者如何在不诉诸领域默认解法 (从头重训)
   的前提下适配在跑的策略, 且不至于事后才发现训练本身毁掉了一个好
   起点? 具体而言: zero-shot 适配能走多远? 不得不微调时, 参数的
   冻结与放开应依据什么原则? 又是什么机制使"从好起点天真地训练"
   反而有害?
-  Overall RQ: When the priority contract of a controller already in
+  Overall RQ: When the priority specification of a controller already in
   service is renegotiated — its prices revised, or its ranks
   reordered — how can the operator adapt the running policy without
   resorting to the field's default remedy of full retraining, and
@@ -254,40 +258,40 @@
 
   细分 RQ (章节回答的问题):
   RQ3.1 [zero-shot 边界 / Zero-shot reach]                      → C1
-        哪些契约变更完全无需训练即可吸收 — 改价靠重评分、重排靠
+        哪些规格变更完全无需训练即可吸收 — 改价靠重评分、重排靠
         把类重映射进训练过的感知槽位 — 两种情形的分界是什么?
-        Which contract changes are absorbed without any training —
+        Which specification changes are absorbed without any training —
         by re-scoring alone for price changes, or by re-mapping
         classes into trained perception slots for rank reorderings —
         and what separates the two regimes?
   RQ3.2 [有据冻结 / Principled freezing]                        → C2
-        必须微调时, 哪些参数编码契约无关的路口物理 (应冻结)、
-        哪些编码契约语义 (应训练) — 分区画错会发生什么?
+        必须微调时, 哪些参数编码规格无关的路口物理 (应冻结)、
+        哪些编码规格语义 (应训练) — 分区画错会发生什么?
         When fine-tuning is required, which parameters encode
-        contract-invariant junction physics, to be frozen, and which
-        encode contract semantics, to be trained — and what happens
+        specification-invariant junction physics, to be frozen, and which
+        encode specification semantics, to be trained — and what happens
         when the partition is drawn wrongly?
   RQ3.3 [失败机制 / Failure mechanism]                    → R (M1-M3)
         训练式适配为何会劣化一个好的热启动 — 失败源于参数损坏、
-        奖励尺度, 还是新契约 TD 吸引子的几何?
+        奖励尺度, 还是新规格 TD 吸引子的几何?
         Why does training-based adaptation degrade a good warm
         start — is the failure caused by parameter damage, by reward
-        scaling, or by the geometry of the new contract's TD
+        scaling, or by the geometry of the new specification's TD
         attractor?
 
   CONTRIBUTIONS:
   W3-C1 [定律] zero-shot 适配定律: 改价 → do-nothing 即冠军 (J39.7
         配对 5/5 全胜一切训练臂); 重排 → 解耦键+双入训练桶交换
         (门 5/5 + J 78.5, 零训练; 处女桶 267 阴性对照) — 桶身份≠
-        契约价格, 交换 = 把类塞回训练过的感知槽位 (依赖 W1-C1 的
+        规格价格, 交换 = 把类塞回训练过的感知槽位 (依赖 W1-C1 的
         桶间接层)
-  W3-C2 [方法] v4 physics-frozen 微调 — 冻结选取有理有据: 冻契约
-        无关物理 (pair_fc/rel_emb, 冲突组合逻辑不随定价变), 训契约
+  W3-C2 [方法] v4 physics-frozen 微调 — 冻结选取有理有据: 冻规格
+        无关物理 (pair_fc/rel_emb, 冲突组合逻辑不随定价变), 训规格
         语义 (enc+双头; 换桶后住户统计变, 感知必须重校准) — 训 338/
         冻 560/共 898; 三方对照: v4 75.5 < full 100.9 (全放开漂移)
         << heads-only 564 (冻错侧 OOD 嵌入不可恢复, 反例判据);
         300 集胜 2000 集从头 (94.9, 配对 4/5) — 预训练-微调范式的
-        换约实例, 强边际母契约是更好的课程
+        规格变更实例, 强边际母规格是更好的课程
 
   实验与结论: 14 臂战役 (exp227/228/229/230) + 09 复核 (J 榜 11/11
        wandb 重算 Δ=0.0) + 多种子配对稳健化 (C1 5/5, C2 4/5);
@@ -297,7 +301,7 @@
        M1 尺度/M2 缓冲双证伪。KAN 佐证 (S-3): 微调把重排真学进对决
        通道 (0.12), 从头训没有 (0.03)。
        待补: v4-从双入桶起点一臂 (候选最优, 完成缺口#3)。
-  诚实边界: 适用域 = 强边际母策略 + 新契约在已训槽位名次数内;
+  诚实边界: 适用域 = 强边际母策略 + 新规格在已训槽位名次数内;
        J 的 amb 项单集波动 ±30, 全部判决同 eval 种子自比 + 配对。
 
 --------------------------------------------------------------------------------
@@ -306,36 +310,36 @@
     and the Interpretability Cost of Architecture"
 
   GAP:
-  g4a 策略"学会了优先级"还是"搭几何便车"不可区分 — 内化的契约无法
+  g4a 策略"学会了优先级"还是"搭几何便车"不可区分 — 内化的规格无法
       被验证 (黑箱), 而优先级系统恰恰最需要合规验证
   g4c 架构的可解释性代价只有定性讨论, 无量化度量
 
   本工作总 RQ: 当一个承诺了优先级的 RL 控制器已部署在安全关键的
   城市基础设施中, 运营者如何在不修改模型、不扰动其运行的前提下,
-  获得该策略【实际内化】契约的审计级读出 — 而非它因几何巧合"碰巧"
-  满足的那一份? 具体而言: 内化的优先级能否读出为与名义契约同坐标
-  的有效权重? 干预证据能否在拟合度之外确证读出? 内化契约与名义
-  契约偏在何处、偏差多大? 可审计性本身能否作为架构属性被测量?
+  获得该策略【实际内化】规格的审计级读出 — 而非它因几何巧合"碰巧"
+  满足的那一份? 具体而言: 内化的优先级能否读出为与名义规格同坐标
+  的有效权重? 干预证据能否在拟合度之外确证读出? 内化规格与名义
+  规格偏在何处、偏差多大? 可审计性本身能否作为架构属性被测量?
   Overall RQ: When a priority-committed RL controller has been
   deployed in safety-critical urban infrastructure, how can the
   operator, without modifying the model or perturbing its operation,
-  obtain an audit-grade account of the contract the policy has
+  obtain an audit-grade account of the specification the policy has
   actually internalized — as opposed to one it satisfies by accident
   of geometry? Specifically, can the internalized priorities be read
-  out as effective weights commensurable with the nominal contract,
+  out as effective weights commensurable with the nominal specification,
   does interventional evidence confirm the readout beyond surrogate
-  fit, where and by how much does the internalized contract deviate
+  fit, where and by how much does the internalized specification deviate
   from the nominal one, and can auditability itself be measured as a
   property of the architecture?
 
   细分 RQ (章节回答的问题):
   RQ4.1 [有效权重读出 / Effective-weight readout]               → C1
         策略内化的优先级能否蒸馏为结构化代理, 其系数直接读作
-        每级有效权重, 与名义契约同坐标可比?
+        每级有效权重, 与名义规格同坐标可比?
         Can the policy's internalized priorities be distilled into a
         structured surrogate whose coefficients read as per-level
         effective weights, directly commensurable with the nominal
-        contract?
+        specification?
   RQ4.2 [干预效度 / Interventional validity]                    → C1
         干预实验 — 优先级致盲探针与槽位重映射 — 能否证实读出的
         通道正是策略实际使用的通道, 而非仅有拟合度?
@@ -343,10 +347,10 @@
         slot re-mapping — confirm that the read-out channels are
         those the policy actually uses, beyond surrogate fit?
   RQ4.3 [偏差测量 / Deviation measurement]                → R (R4-1/2)
-        实际内化契约与名义契约的差距多大, 各类的优先级住在哪个
+        实际内化规格与名义规格的差距多大, 各类的优先级住在哪个
         打分通道 — 自需求还是压制?
         How large is the gap between the internalized and the nominal
-        contract, and in which scoring channel — self-demand or
+        specification, and in which scoring channel — self-demand or
         suppression — does each class's priority reside?
   RQ4.4 [架构可审计性 / Architectural auditability]             → C2
         审计协议自身的保真度跨架构复用后, 能否充当设计选择的
@@ -363,11 +367,11 @@
         g/s→action 是冻结公式白盒, 审计只打唯一黑盒); read-only,
         对控制器零改动; 合法性先决 = W2 的冻结聚合 (原版可学聚合
         上不可移植 — auditable-by-design)
-  W4-C2 [度量] 可解释性谱系: 同一单槽蒸馏协议跨架构复用, R² 即架构
-        可分解性的测量值 — 手工 0.77 / 注意力叠加 0.094 / 注意力
-        替代 0.03 (崩塌跟踪"g 是否读混合 token") — 协议失败模式
-        转化为度量仪; 可选扩展点: 8std 单体 (K2 结构测验, 工具已
-        建未跑) 与协同臂
+  W4-C2 [度量] 可解释性谱系: 把同一审计协议跨架构复用, 其保真度
+        (R²) 即该架构可审计性的量化度量 — 手工设计高度可读 (0.77),
+        引入注意力后读出能力崩塌一个数量级 (0.09 / 0.03) — "可解释
+        性代价"从定性争论变为可测属性。机制细节与谱系扩展点归实验
+        层 (R4)。
 
   实验与结论 (发现作为结果报告, 不作贡献主张):
   R4-1 Dublin 内化失真: amb 欠内化 −34~−46%, amb/bus 名义排序压平
@@ -398,7 +402,7 @@
 --------------------------------------------------------------------------------
 §6 工作间咬合 (答辩"为什么是一本论文")
   W1→W2: 桶状态与逐类奖励是 g/s 原语的输入语义
-  W1→W3: 桶间接层 (C1) 是 zero-shot 换约的机械基础
+  W1→W3: 桶间接层 (C1) 是 zero-shot 规格变更的机械基础
   W2→W3: 显式模块分区使 v4 冻结可定义
   W2→W4: 冻结聚合+逐槽分解是审计合法性先决 (谱系 0.77 是其测量)
   W4→W2: 通道定位预言原语消融的行为 (s→bus); 谱系反向度量架构
@@ -408,7 +412,7 @@
 --------------------------------------------------------------------------------
 §7 完成缺口 (更新版, 按优先级)
   0 ★W1 硬化: .bnf 解析器落地 (代码预留 Phase-2) + 至少一个上下文
-    契约端到端实验 (如 presence/时段条件优先级) — W1 以 BNF 为创新
+    规格端到端实验 (如 presence/时段条件优先级) — W1 以 BNF 为创新
     主体, 此项从"可选"升为"前置"
   1 ★E3 多种子 (全线硬门): 211/234×3 (W2), 228a/228d×3 (W3)
   2 α 多 draw 置信带 (W4 前置)
