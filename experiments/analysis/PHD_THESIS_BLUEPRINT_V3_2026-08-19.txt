@@ -36,13 +36,22 @@
       状态族 5/5 保序 — exp172-182); 且多路口下邻居信息如何进入决策
       缺乏"该走状态还是走 reward"的论证
 
-  本工作总 RQ: 如何把"定量、上下文相关"的优先级承诺表述为形式化
-  契约并编码进 RL 信号控制器, 使承诺的服务排序结构性成立而非偶然
-  成立?
-  Overall RQ: How can quantitative, context-aware priority commitments
-  be stated as a formal contract and encoded into an RL signal
-  controller, such that the promised service ordering holds
-  structurally rather than incidentally?
+  本工作总 RQ: 当一座城市承诺差异化的服务优先级 — 救护车高于公交、
+  公交高于私家车, 且政策要求这种差距可量化、可随上下文变化、可重新
+  议定 — 交通管理方如何把这一承诺表述为形式化契约, 并让 RL 信号
+  控制器"按构造"执行它, 而不是寄望于一个手调奖励系数的偶然效果?
+  具体而言: 契约是否形式可表达? 其进入状态与奖励的编码是否忠实?
+  路口成网后, 契约合规是否仍保持本地性?
+  Overall RQ: When a city commits to differentiated service
+  priorities — an ambulance over a bus over a private car, by margins
+  that policy demands be quantified, conditioned on context, and open
+  to renegotiation — how can the traffic authority state this
+  commitment as a formal contract and have an RL signal controller
+  enforce it by construction, rather than by the accident of a
+  hand-tuned reward coefficient? Specifically, is the contract
+  formally expressible, is its encoding into state and reward
+  faithful, and does contract compliance remain local once junctions
+  are networked?
 
   细分 RQ (章节回答的问题; C=对应贡献, R=以结果回答):
   RQ1.1 [契约表达力 / Contract expressibility]                  → C1
@@ -82,6 +91,24 @@
         本地 reward: 状态侧两个粒度 — ψ 下游压力块 (溢流可见性, 冠军
         配方成员) 与 GAT 邻居注入 (exp234, 与冠军平手无害) — 全程
         reward 保持本地, Dublin 18 口性能强 (证据 E1-4/E1-5)。
+
+  验证设置 (已做的实验矩阵与基线, 简述):
+  · 场景三尺度: 1x1 单口 (开发主场) → 1x3 走廊 (a/b/c 臂, 协同与
+    泛化初检, coeff 臂 −15% car wait 稳健) → Dublin 市中心 18 口
+    11h 工作日 (SCATS/GTFS/DFB 标定, 真实异构收官场)
+  · 契约谱: 5-3-1 主线; 5-4-1 (默认表); 4-2-1 / 3-5-1 (换约线,
+    编码层随之复验); multihead 权重扫描 (flat/amb15/amb50/倒置)
+    作纯权重旋钮探针; 致盲对照 (amb 桶致盲, 行为崩 3.5×/5×/∞)
+  · 流量构成: bus 20% 主场景, amb 稀疏 ~1.1/集 (窗口化评价纪律
+    因此建立); bus 50% 为旧方案孤点 (seed 污染, 仅作动机);
+    Dublin 三类混流按 SCATS 实测标定
+  · 基线: fixed-time (Dublin 全维胜出, DUBLIN_VS_FIXEDTIME);
+    同加权 reward 下的优先级失明状态族 (type-count/T 族 = "只靠
+    权重"基线, 倒挂 −49% amb); multihead BNF (权重旋钮架构替代,
+    1x1 失真搬家/Dublin 崩); 8std B-state DQN (同状态异动作,
+    对比归 W2)
+  · 未覆盖如实: bus 比例受控 sweep、MaxPressure/发表 SOTA 基线
+    → 完成缺口清单
 
   实验与结论:
   E1-1 状态族对决 (1x1, exp172-182): 同一加权 reward 下, B 族 5/5
@@ -131,11 +158,23 @@
   gap5 换约分区 (W3 前提): "冻契约无关物理 (pair_fc/rel_emb)、训契约
        语义 (enc+头)"只在模块显式时存在; 单体 MLP 无可指认的物理层
 
-  本工作总 RQ: 单个 RL agent 如何摆脱固定相位模板, 在异构真实路网
-  各路口的原生相位结构上执行优先级契约?
-  Overall RQ: How can a single RL agent, free of fixed phase
-  templates, execute the priority contract over the native phase
-  structures of a heterogeneous real-world network?
+  本工作总 RQ: 当契约必须在一张真实城市路网上执行, 而其路口的几何、
+  转向与可行相位无法被任何固定相位模板覆盖时, 单个学习 agent 如何
+  用同一套共享参数对各路口原生的相位组合进行估值与选择, 且不牺牲
+  契约本要保护的稀疏高优先级类? 具体而言: 动作空间能否由几何推导
+  而非模板强加? 任意大小与数量的相位能否由 movement 级原语获得
+  可比估值? 这些竞争原语应当围绕物理先验手工构造, 还是交给学习?
+  Overall RQ: When the contract must be executed on a real urban
+  network whose junctions — in their geometry, movements, and
+  feasible signal phases — defy any fixed phase template, how can a
+  single learning agent, with one shared set of parameters, value
+  and select among each junction's native phase combinations without
+  sacrificing the sparse high-priority classes the contract exists
+  to protect? Specifically, can the action space be derived from
+  geometry rather than imposed as a template, can phases of any size
+  and number be valued commensurably from movement-level primitives,
+  and should those competition primitives be hand-crafted around
+  physical priors or learned?
 
   细分 RQ (章节回答的问题):
   RQ2.1 [动作空间覆盖 / Action-space coverage]                  → C1
@@ -194,11 +233,21 @@
   g3b 冻结选取无理论: 现有 freeze-finetune 实践凭直觉选层, 缺"哪些
       参数编码契约无关知识"的判据与反例
 
-  本工作总 RQ: 已部署控制器的契约被重新议定时, 如何以最小训练成本
-  完成适配 — 并知道何时训练是不必要的、甚至有害的?
-  Overall RQ: When a deployed controller's contract is renegotiated,
-  how can the policy be adapted at minimal training cost — and how
-  does one know when training is unnecessary, or even harmful?
+  本工作总 RQ: 当一个在役控制器的优先级契约被重新议定 — 价格被
+  修改、或名次被重排 — 运营者如何在不诉诸领域默认解法 (从头重训)
+  的前提下适配在跑的策略, 且不至于事后才发现训练本身毁掉了一个好
+  起点? 具体而言: zero-shot 适配能走多远? 不得不微调时, 参数的
+  冻结与放开应依据什么原则? 又是什么机制使"从好起点天真地训练"
+  反而有害?
+  Overall RQ: When the priority contract of a controller already in
+  service is renegotiated — its prices revised, or its ranks
+  reordered — how can the operator adapt the running policy without
+  resorting to the field's default remedy of full retraining, and
+  without discovering too late that training itself has destroyed a
+  good starting point? Specifically, how far does zero-shot
+  adaptation reach, on what principle should parameters be frozen or
+  released when fine-tuning is unavoidable, and what mechanism makes
+  naive training from a good start actively harmful?
 
   细分 RQ (章节回答的问题):
   RQ3.1 [zero-shot 边界 / Zero-shot reach]                      → C1
@@ -258,12 +307,23 @@
       被验证 (黑箱), 而优先级系统恰恰最需要合规验证
   g4c 架构的可解释性代价只有定性讨论, 无量化度量
 
-  本工作总 RQ: 如何在不修改、不扰动已部署控制器的前提下, 获得其
-  实际内化契约的审计级读出 — 可读、可信、可测偏、可跨架构量化?
-  Overall RQ: How can an audit-grade account of the contract a
-  deployed controller has actually internalized be obtained — without
-  modifying or perturbing it — one that is readable, trustworthy,
-  deviation-measurable, and architecture-comparable?
+  本工作总 RQ: 当一个承诺了优先级的 RL 控制器已部署在安全关键的
+  城市基础设施中, 运营者如何在不修改模型、不扰动其运行的前提下,
+  获得该策略【实际内化】契约的审计级读出 — 而非它因几何巧合"碰巧"
+  满足的那一份? 具体而言: 内化的优先级能否读出为与名义契约同坐标
+  的有效权重? 干预证据能否在拟合度之外确证读出? 内化契约与名义
+  契约偏在何处、偏差多大? 可审计性本身能否作为架构属性被测量?
+  Overall RQ: When a priority-committed RL controller has been
+  deployed in safety-critical urban infrastructure, how can the
+  operator, without modifying the model or perturbing its operation,
+  obtain an audit-grade account of the contract the policy has
+  actually internalized — as opposed to one it satisfies by accident
+  of geometry? Specifically, can the internalized priorities be read
+  out as effective weights commensurable with the nominal contract,
+  does interventional evidence confirm the readout beyond surrogate
+  fit, where and by how much does the internalized contract deviate
+  from the nominal one, and can auditability itself be measured as a
+  property of the architecture?
 
   细分 RQ (章节回答的问题):
   RQ4.1 [有效权重读出 / Effective-weight readout]               → C1
