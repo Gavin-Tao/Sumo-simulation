@@ -161,22 +161,24 @@
        语义 (enc+头)"只在模块显式时存在; 单体 MLP 无可指认的物理层
 
   本工作总 RQ: 当契约必须在一张真实城市路网上执行, 而其路口的几何、
-  转向与可行相位无法被任何固定相位模板覆盖时, 单个学习 agent 如何
-  用同一套共享参数对各路口原生的相位组合进行估值与选择, 且不牺牲
-  契约本要保护的稀疏高优先级类? 具体而言: 动作空间能否由几何推导
-  而非模板强加? 任意大小与数量的相位能否由 movement 级原语获得
-  可比估值? 这些竞争原语应当围绕物理先验手工构造, 还是交给学习?
+  转向与可行相位无法被任何固定相位模板覆盖时, agent 如何无需预定
+  相位、对各路口原生的相位组合进行估值与任意组合选择 — 且不增加
+  计算复杂度与训练难度, 在复杂异构路口上保持良好性能与潜在的泛化
+  能力? 具体而言: 动作空间能否由几何推导而非模板强加? 任意大小与
+  数量的相位能否由 movement 级原语获得可比估值? 这些竞争原语应当
+  围绕物理先验手工构造, 还是交给学习?
   Overall RQ: When the contract must be executed on a real urban
   network whose junctions — in their geometry, movements, and
-  feasible signal phases — defy any fixed phase template, how can a
-  single learning agent, with one shared set of parameters, value
-  and select among each junction's native phase combinations without
-  sacrificing the sparse high-priority classes the contract exists
-  to protect? Specifically, can the action space be derived from
-  geometry rather than imposed as a template, can phases of any size
-  and number be valued commensurably from movement-level primitives,
-  and should those competition primitives be hand-crafted around
-  physical priors or learned?
+  feasible signal phases — defy any fixed phase template, how can an
+  agent value, freely compose, and select each junction's native
+  phase combinations without pre-scheduled phases — and do so at no
+  extra computational or training burden, while sustaining strong
+  performance and potential generalization across complex
+  heterogeneous junctions? Specifically, can the action space be
+  derived from geometry rather than imposed as a template, can
+  phases of any size and number be valued commensurably from
+  movement-level primitives, and should those competition primitives
+  be hand-crafted around physical priors or learned?
 
   细分 RQ (章节回答的问题):
   RQ2.1 [动作空间覆盖 / Action-space coverage]                  → C1
