@@ -37,22 +37,19 @@
       缺乏"该走状态还是走 reward"的论证
 
   本工作总 RQ: 当一座城市承诺差异化的服务优先级 — 救护车高于公交、
-  公交高于私家车, 且政策要求这种差距可量化、可随上下文变化、可重新
-  议定, 并在运行时依优先级自动控制而非依赖预定时序 — 交通管理方
-  如何把这一承诺表述为形式化契约, 并让 RL 信号控制器"按构造"执行
-  它? 具体而言: 契约是否形式可表达? 契约如何编码进状态与奖励 —
-  尤其要在异构路口之上成立? 多路口协同又该如何应对?
+  公交高于私家车, 其大小可量化、随上下文变化、可重新议定, 且取值
+  由契约求值而得而非硬编码 — 如何把这一承诺写成形式化契约, 并让
+  RL 信号控制器按构造执行? 具体而言: 契约是否形式可表达? 如何编码
+  进状态与奖励、尤其在异构路口之上? 多路口协同如何应对?
   Overall RQ: When a city commits to differentiated service
-  priorities — an ambulance over a bus over a private car, by margins
-  that policy demands be quantified, conditioned on context, and open
-  to renegotiation — and expects control to follow priorities
-  automatically at run time rather than by pre-timed schedules, how
-  can the traffic authority state this commitment as a formal
-  contract and have an RL signal controller enforce it by
-  construction? Specifically, is the contract formally expressible;
-  how should it be encoded into state and reward, not least across
-  heterogeneous junctions; and how should multi-junction coordination
-  be handled?
+  priorities — ambulance over bus over car, with margins that are
+  quantified, context-dependent, renegotiable, and derived by
+  evaluating a contract rather than hard-coded — how can this
+  commitment be written as a formal contract and enforced by
+  construction by an RL signal controller? Specifically: is the
+  contract formally expressible; how is it encoded into state and
+  reward, especially across heterogeneous junctions; and how is
+  multi-junction coordination handled?
 
   细分 RQ (章节回答的问题; C=对应贡献, R=以结果回答):
   RQ1.1 [契约表达力 / Contract expressibility]                  → C1
@@ -128,8 +125,10 @@
   E1-6 上下文契约演示: presence 门控权重扫描 (P-A demo)
   诚实边界: "无需邻居 reward"是充分性论证 (本地 reward 已够好),
        未跑 reward-mixing 对照臂 (列为可选补充); .bnf 解析器未落地
-       (完成缺口#0); 稳定包 (γ.95/钳位/double/huber/clip) 作为训练
-       基础设施随 W1 交付, 不单列贡献。
+       (完成缺口#0), 且当前口径为"装载期求值、运行期 O(1) 查表"
+       (priority_map 热循环禁解析规则) — 每步实时求值的上下文契约
+       属缺口#0 硬化范围; 稳定包 (γ.95/钳位/double/huber/clip) 作为
+       训练基础设施随 W1 交付, 不单列贡献。
 
 --------------------------------------------------------------------------------
 §2 W2 — Phase-free 共享 g/s-argmax: 异构路网上的契约执行 (execute)
