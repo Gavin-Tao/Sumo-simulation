@@ -36,17 +36,13 @@
       状态族 5/5 保序 — exp172-182); 且多路口下邻居信息如何进入决策
       缺乏"该走状态还是走 reward"的论证
 
-  本工作总 RQ: 如何形式化定义"定量、上下文相关"的优先级契约, 并把
-  它编码进 RL 信号控制器, 使服务排序结构性成立而非偶然成立?
-  Overall RQ: When a city's signal-control objectives include
-  differentiated service priorities — an ambulance outranking a bus
-  outranking a private car, by margins that policy-makers may wish to
-  quantify, contextualize, and later renegotiate — how can such a
-  commitment be stated as a formal, machine-readable contract and
-  encoded into an RL signal controller so that the promised service
-  ordering holds structurally rather than incidentally? Specifically,
-  is the contract expressible, is the encoding faithful, and is the
-  division of labour between reward and state principled?
+  本工作总 RQ: 如何把"定量、上下文相关"的优先级承诺表述为形式化
+  契约并编码进 RL 信号控制器, 使承诺的服务排序结构性成立而非偶然
+  成立?
+  Overall RQ: How can quantitative, context-aware priority commitments
+  be stated as a formal contract and encoded into an RL signal
+  controller, such that the promised service ordering holds
+  structurally rather than incidentally?
 
   细分 RQ (章节回答的问题; C=对应贡献, R=以结果回答):
   RQ1.1 [契约表达力 / Contract expressibility]                  → C1
@@ -135,17 +131,11 @@
   gap5 换约分区 (W3 前提): "冻契约无关物理 (pair_fc/rel_emb)、训契约
        语义 (enc+头)"只在模块显式时存在; 单体 MLP 无可指认的物理层
 
-  本工作总 RQ: 如何让单个 RL agent 在异构真实路网的任意相位结构上
-  执行优先级契约?
-  Overall RQ: When the deployment target is a real urban network whose
-  junctions differ in geometry, movement sets, and feasible signal
-  phases — most of which fit no standard phase template — how can a
-  single learning agent value and select among arbitrary,
-  junction-native phase combinations while honouring the priority
-  contract? Specifically, can control be made phase-free, can
-  valuation generalize across topologies through shared primitives,
-  and does the resulting inductive bias withstand comparison against
-  higher-capacity learned alternatives?
+  本工作总 RQ: 单个 RL agent 如何摆脱固定相位模板, 在异构真实路网
+  各路口的原生相位结构上执行优先级契约?
+  Overall RQ: How can a single RL agent, free of fixed phase
+  templates, execute the priority contract over the native phase
+  structures of a heterogeneous real-world network?
 
   细分 RQ (章节回答的问题):
   RQ2.1 [动作空间覆盖 / Action-space coverage]                  → C1
@@ -204,16 +194,11 @@
   g3b 冻结选取无理论: 现有 freeze-finetune 实践凭直觉选层, 缺"哪些
       参数编码契约无关知识"的判据与反例
 
-  本工作总 RQ: 已部署的优先级控制策略, 如何在契约变更时以最小
-  训练成本完成适配 — 以及运营者如何知道何时训练是不必要的、甚至
-  有害的?
-  Overall RQ: When the priority contract of an already-deployed
-  controller is renegotiated — prices changed, or ranks reordered —
-  how can the operator adapt the running policy at minimal training
-  cost, and how do they know when training is unnecessary, or
-  actively harmful? Specifically, how far does zero-shot adaptation
-  reach, what must be frozen when fine-tuning is unavoidable, and
-  what mechanism governs the failure of naive retraining?
+  本工作总 RQ: 已部署控制器的契约被重新议定时, 如何以最小训练成本
+  完成适配 — 并知道何时训练是不必要的、甚至有害的?
+  Overall RQ: When a deployed controller's contract is renegotiated,
+  how can the policy be adapted at minimal training cost — and how
+  does one know when training is unnecessary, or even harmful?
 
   细分 RQ (章节回答的问题):
   RQ3.1 [zero-shot 边界 / Zero-shot reach]                      → C1
@@ -273,18 +258,12 @@
       被验证 (黑箱), 而优先级系统恰恰最需要合规验证
   g4c 架构的可解释性代价只有定性讨论, 无量化度量
 
-  本工作总 RQ: 训好的策略是否真的内化了名义契约 — 内化能否被读出、
-  被信任、被测偏、被跨架构量化?
-  Overall RQ: When a priority-committed RL signal controller has been
-  deployed in safety-critical urban infrastructure, how can the
-  operator — without modifying the controller or perturbing its
-  operation — obtain an audit-grade account of the priority contract
-  the policy has actually internalized, one that can be read as
-  effective weights, trusted through interventional validation, and
-  used to compare architectures? Specifically, is the internalized
-  contract readable, is the readout trustworthy, is its deviation
-  from the nominal contract measurable, and is readability itself a
-  quantifiable property of the architecture?
+  本工作总 RQ: 如何在不修改、不扰动已部署控制器的前提下, 获得其
+  实际内化契约的审计级读出 — 可读、可信、可测偏、可跨架构量化?
+  Overall RQ: How can an audit-grade account of the contract a
+  deployed controller has actually internalized be obtained — without
+  modifying or perturbing it — one that is readable, trustworthy,
+  deviation-measurable, and architecture-comparable?
 
   细分 RQ (章节回答的问题):
   RQ4.1 [有效权重读出 / Effective-weight readout]               → C1
