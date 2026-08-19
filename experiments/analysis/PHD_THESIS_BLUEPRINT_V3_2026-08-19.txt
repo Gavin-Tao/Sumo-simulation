@@ -37,12 +37,39 @@
       缺乏"该走状态还是走 reward"的论证
 
   本工作总 RQ: 如何形式化定义"定量、上下文相关"的优先级契约, 并把
-  它编码进 RL 信号控制器, 使服务排序结构性成立?
+  它编码进 RL 信号控制器, 使服务排序结构性成立而非偶然成立?
+  Overall RQ: When a city's signal-control objectives include
+  differentiated service priorities — an ambulance outranking a bus
+  outranking a private car, by margins that policy-makers may wish to
+  quantify, contextualize, and later renegotiate — how can such a
+  commitment be stated as a formal, machine-readable contract and
+  encoded into an RL signal controller so that the promised service
+  ordering holds structurally rather than incidentally? Specifically,
+  is the contract expressible, is the encoding faithful, and is the
+  division of labour between reward and state principled?
+
   细分 RQ (章节回答的问题; C=对应贡献, R=以结果回答):
-  RQ1.1 如何形式化定义定量、上下文相关的优先级契约?          → C1
-  RQ1.2 契约该进 reward 还是进 state — 两者各承担什么角色,
-        缺一会发生什么?                                      → C2
-  RQ1.3 多路口下邻居信息该走状态通道还是奖励通道?            → C3
+  RQ1.1 [契约表达力 / Contract expressibility]                  → C1
+        如何形式化定义定量、上下文相关的优先级契约, 并编译成
+        控制器可直接消费、无需改架构的表示?
+        Can priority commitments be specified in a formal grammar
+        that assigns quantitative, context-dependent priority levels
+        to heterogeneous road users, and be compiled into a
+        representation the controller consumes without architectural
+        change?
+  RQ1.2 [编码忠实性 / Encoding faithfulness]                    → C2
+        契约该进 reward 还是进 state — 两者各承担什么角色,
+        缺一会发生什么失效?
+        Where must the contract enter the learning problem — the
+        reward, the state, or both — what role does each channel
+        play, and what failure modes arise when either is omitted?
+  RQ1.3 [协同的本地性 / Locality of coordination]               → C3
+        多路口部署下, 邻居信息必须进入 reward 吗, 还是状态通道
+        的邻居暴露已足以维持各路口的契约合规?
+        In a networked deployment, must neighbouring junctions enter
+        the reward, or does state-channel exposure of neighbour
+        information suffice to sustain contract compliance at each
+        junction?
 
   CONTRIBUTIONS:
   W1-C1 [语言+架构] BNF 优先级契约语言与"编译到桶"架构: 契约以文法
@@ -110,11 +137,39 @@
 
   本工作总 RQ: 如何让单个 RL agent 在异构真实路网的任意相位结构上
   执行优先级契约?
+  Overall RQ: When the deployment target is a real urban network whose
+  junctions differ in geometry, movement sets, and feasible signal
+  phases — most of which fit no standard phase template — how can a
+  single learning agent value and select among arbitrary,
+  junction-native phase combinations while honouring the priority
+  contract? Specifically, can control be made phase-free, can
+  valuation generalize across topologies through shared primitives,
+  and does the resulting inductive bias withstand comparison against
+  higher-capacity learned alternatives?
+
   细分 RQ (章节回答的问题):
-  RQ2.1 动作空间如何摆脱固定相位模板, 覆盖异构路口的原生相位结构? → C1
-  RQ2.2 打分函数如何做到 phase-free — 对任意大小、任意数量的相位
-        给出可比的价值?                                          → C1
-  RQ2.3 竞争原语应当手工先验还是可学?                        → R (梯子)
+  RQ2.1 [动作空间覆盖 / Action-space coverage]                  → C1
+        动作空间能否由路口几何自身推导 — 枚举极大无冲突 movement
+        组合 — 使每个路口暴露其原生相位菜单, 免于模板假设?
+        Can the action space be derived from junction geometry
+        itself — enumerating maximal non-conflicting movement
+        combinations — so that every junction exposes its native
+        phase menu free of template assumptions?
+  RQ2.2 [phase-free 估值 / Phase-free valuation]                → C1
+        相位价值能否由 movement 级原语 — 急迫分与压制正当性分 —
+        经冻结聚合合成, 使任意大小、任意数量的相位从同一套共享
+        参数获得可比的价值?
+        Can phase value be composed from movement-level primitives —
+        an urgency score and a suppression-legitimacy score —
+        through a frozen aggregation, so that phases of any size and
+        count receive commensurable values from one shared parameter
+        set?
+  RQ2.3 [原语选择 / Primitive selection]                  → R (六臂梯)
+        竞争原语应当围绕关系先验手工构造, 还是交给注意力学习 —
+        稀疏优先类下哪种胜出, 代价是什么?
+        Should the competition primitive be hand-crafted around
+        relational priors or learned by attention, and which choice
+        prevails under sparse priority classes, at what cost?
 
   CONTRIBUTIONS:
   W2-C1 [方法] phase-free 共享 g/s-argmax 设计: 离线枚举极大无冲突
@@ -150,11 +205,38 @@
       参数编码契约无关知识"的判据与反例
 
   本工作总 RQ: 已部署的优先级控制策略, 如何在契约变更时以最小
-  训练成本完成适配?
+  训练成本完成适配 — 以及运营者如何知道何时训练是不必要的、甚至
+  有害的?
+  Overall RQ: When the priority contract of an already-deployed
+  controller is renegotiated — prices changed, or ranks reordered —
+  how can the operator adapt the running policy at minimal training
+  cost, and how do they know when training is unnecessary, or
+  actively harmful? Specifically, how far does zero-shot adaptation
+  reach, what must be frozen when fine-tuning is unavoidable, and
+  what mechanism governs the failure of naive retraining?
+
   细分 RQ (章节回答的问题):
-  RQ3.1 何时完全不用训练 — zero-shot 适配能走多远?          → C1
-  RQ3.2 必须训练时, 从哪个起点出发、冻哪些参数、放哪些参数?  → C2
-  RQ3.3 训练式适配为何会失败 — 失败的机制是什么?       → R (M3, 见下)
+  RQ3.1 [zero-shot 边界 / Zero-shot reach]                      → C1
+        哪些契约变更完全无需训练即可吸收 — 改价靠重评分、重排靠
+        把类重映射进训练过的感知槽位 — 两种情形的分界是什么?
+        Which contract changes are absorbed without any training —
+        by re-scoring alone for price changes, or by re-mapping
+        classes into trained perception slots for rank reorderings —
+        and what separates the two regimes?
+  RQ3.2 [有据冻结 / Principled freezing]                        → C2
+        必须微调时, 哪些参数编码契约无关的路口物理 (应冻结)、
+        哪些编码契约语义 (应训练) — 分区画错会发生什么?
+        When fine-tuning is required, which parameters encode
+        contract-invariant junction physics, to be frozen, and which
+        encode contract semantics, to be trained — and what happens
+        when the partition is drawn wrongly?
+  RQ3.3 [失败机制 / Failure mechanism]                    → R (M1-M3)
+        训练式适配为何会劣化一个好的热启动 — 失败源于参数损坏、
+        奖励尺度, 还是新契约 TD 吸引子的几何?
+        Why does training-based adaptation degrade a good warm
+        start — is the failure caused by parameter damage, by reward
+        scaling, or by the geometry of the new contract's TD
+        attractor?
 
   CONTRIBUTIONS:
   W3-C1 [定律] zero-shot 适配定律: 改价 → do-nothing 即冠军 (J39.7
@@ -192,11 +274,44 @@
   g4c 架构的可解释性代价只有定性讨论, 无量化度量
 
   本工作总 RQ: 训好的策略是否真的内化了名义契约 — 内化能否被读出、
-  被信任、被量化?
+  被信任、被测偏、被跨架构量化?
+  Overall RQ: When a priority-committed RL signal controller has been
+  deployed in safety-critical urban infrastructure, how can the
+  operator — without modifying the controller or perturbing its
+  operation — obtain an audit-grade account of the priority contract
+  the policy has actually internalized, one that can be read as
+  effective weights, trusted through interventional validation, and
+  used to compare architectures? Specifically, is the internalized
+  contract readable, is the readout trustworthy, is its deviation
+  from the nominal contract measurable, and is readability itself a
+  quantifiable property of the architecture?
+
   细分 RQ (章节回答的问题):
-  RQ4.1 内化的契约能否被读出, 读出如何证明可信?              → C1
-  RQ4.2 架构变化如何影响可审计性 — 可解释性代价能否量化?     → C2
-  RQ4.3 实际内化的契约与名义契约偏差多大、偏在哪个通道?  → R (R4-1/2)
+  RQ4.1 [有效权重读出 / Effective-weight readout]               → C1
+        策略内化的优先级能否蒸馏为结构化代理, 其系数直接读作
+        每级有效权重, 与名义契约同坐标可比?
+        Can the policy's internalized priorities be distilled into a
+        structured surrogate whose coefficients read as per-level
+        effective weights, directly commensurable with the nominal
+        contract?
+  RQ4.2 [干预效度 / Interventional validity]                    → C1
+        干预实验 — 优先级致盲探针与槽位重映射 — 能否证实读出的
+        通道正是策略实际使用的通道, 而非仅有拟合度?
+        Do intervention experiments — priority-blinding probes and
+        slot re-mapping — confirm that the read-out channels are
+        those the policy actually uses, beyond surrogate fit?
+  RQ4.3 [偏差测量 / Deviation measurement]                → R (R4-1/2)
+        实际内化契约与名义契约的差距多大, 各类的优先级住在哪个
+        打分通道 — 自需求还是压制?
+        How large is the gap between the internalized and the nominal
+        contract, and in which scoring channel — self-demand or
+        suppression — does each class's priority reside?
+  RQ4.4 [架构可审计性 / Architectural auditability]             → C2
+        审计协议自身的保真度跨架构复用后, 能否充当设计选择的
+        可解释性代价的量化度量?
+        Can the audit protocol's own fidelity, applied across
+        architectures, serve as a quantitative measure of the
+        interpretability cost of design choices?
 
   CONTRIBUTIONS:
   W4-C1 [方法+协议] KAN 双通道内化审计协议: 单槽蒸馏读 α 有效权重
@@ -247,117 +362,6 @@
   W4→W2: 通道定位预言原语消融的行为 (s→bus); 谱系反向度量架构
   W4→W3: α 不变性证明交换的"槽语义"; S-3 解释微调胜从头
   评价篇→全部: 门/价/功效纪律贯穿所有判决
-
---------------------------------------------------------------------------------
-§6b 论文级英文 RQ 包装 (LaTeX-ready; 与 §1-§4 的 C/R 映射一致)
-
-W1 — overall RQ:
-  When a city's signal-control objectives include differentiated service
-  priorities --- an ambulance outranking a bus outranking a private car,
-  by margins that policy-makers may wish to quantify, contextualize, and
-  later renegotiate --- how can such a commitment be stated as a formal,
-  machine-readable contract and encoded into an RL signal controller so
-  that the promised service ordering holds structurally rather than
-  incidentally? Specifically, is the contract expressible, is the
-  encoding faithful, and is the division of labour between reward and
-  state principled?
-\begin{itemize}
-\item[\textbf{RQ1.1}] (\emph{Contract expressibility}.)
-Can priority commitments be specified in a formal grammar that assigns
-quantitative, context-dependent priority levels to heterogeneous road
-users, and be compiled into a representation the controller consumes
-without architectural change?                                   [→C1]
-\item[\textbf{RQ1.2}] (\emph{Encoding faithfulness}.)
-Where must the contract enter the learning problem --- the reward, the
-state, or both --- what role does each channel play, and what failure
-modes arise when either is omitted?                             [→C2]
-\item[\textbf{RQ1.3}] (\emph{Locality of coordination}.)
-In a networked deployment, must neighbouring junctions enter the reward,
-or does state-channel exposure of neighbour information suffice to
-sustain contract compliance at each junction?                   [→C3]
-\end{itemize}
-
-W2 — overall RQ:
-  When the deployment target is a real urban network whose junctions
-  differ in geometry, movement sets, and feasible signal phases ---
-  most of which fit no standard phase template --- how can a single
-  learning agent value and select among arbitrary, junction-native
-  phase combinations while honouring the priority contract?
-  Specifically, can control be made phase-free, can valuation
-  generalize across topologies through shared primitives, and does
-  the resulting inductive bias withstand comparison against
-  higher-capacity learned alternatives?
-\begin{itemize}
-\item[\textbf{RQ2.1}] (\emph{Action-space coverage}.)
-Can the action space be derived from junction geometry itself ---
-enumerating maximal non-conflicting movement combinations --- so that
-every junction exposes its native phase menu free of template
-assumptions?                                                    [→C1]
-\item[\textbf{RQ2.2}] (\emph{Phase-free valuation}.)
-Can phase value be composed from movement-level primitives --- an
-urgency score and a suppression-legitimacy score --- through a frozen
-aggregation, so that phases of any size and count receive
-commensurable values from one shared parameter set?             [→C1]
-\item[\textbf{RQ2.3}] (\emph{Primitive selection}.)
-Should the competition primitive be hand-crafted around relational
-priors or learned by attention, and which choice prevails under
-sparse priority classes, at what cost?                    [→R: 六臂梯]
-\end{itemize}
-
-W3 — overall RQ:
-  When the priority contract of an already-deployed controller is
-  renegotiated --- prices changed, or ranks reordered --- how can the
-  operator adapt the running policy at minimal training cost, and how
-  do they know when training is unnecessary, or actively harmful?
-  Specifically, how far does zero-shot adaptation reach, what must be
-  frozen when fine-tuning is unavoidable, and what mechanism governs
-  the failure of naive retraining?
-\begin{itemize}
-\item[\textbf{RQ3.1}] (\emph{Zero-shot reach}.)
-Which contract changes are absorbed without any training --- by
-re-scoring alone for price changes, or by re-mapping classes into
-trained perception slots for rank reorderings --- and what separates
-the two regimes?                                                [→C1]
-\item[\textbf{RQ3.2}] (\emph{Principled freezing}.)
-When fine-tuning is required, which parameters encode
-contract-invariant junction physics, to be frozen, and which encode
-contract semantics, to be trained --- and what happens when the
-partition is drawn wrongly?                                     [→C2]
-\item[\textbf{RQ3.3}] (\emph{Failure mechanism}.)
-Why does training-based adaptation degrade a good warm start --- is
-the failure caused by parameter damage, by reward scaling, or by the
-geometry of the new contract's TD attractor?              [→R: M1-M3]
-\end{itemize}
-
-W4 — overall RQ:
-  When a priority-committed RL signal controller has been deployed in
-  safety-critical urban infrastructure, how can the operator ---
-  without modifying the controller or perturbing its operation ---
-  obtain an audit-grade account of the priority contract the policy
-  has actually internalized, one that can be read as effective
-  weights, trusted through interventional validation, and used to
-  compare architectures? Specifically, is the internalized contract
-  readable, is the readout trustworthy, is its deviation from the
-  nominal contract measurable, and is readability itself a
-  quantifiable property of the architecture?
-\begin{itemize}
-\item[\textbf{RQ4.1}] (\emph{Effective-weight readout}.)
-Can the policy's internalized priorities be distilled into a
-structured surrogate whose coefficients read as per-level effective
-weights, directly commensurable with the nominal contract?      [→C1]
-\item[\textbf{RQ4.2}] (\emph{Interventional validity}.)
-Do intervention experiments --- priority-blinding probes and slot
-re-mapping --- confirm that the read-out channels are those the
-policy actually uses, beyond surrogate fit?                     [→C1]
-\item[\textbf{RQ4.3}] (\emph{Deviation measurement}.)
-How large is the gap between the internalized and the nominal
-contract, and in which scoring channel --- self-demand or
-suppression --- does each class's priority reside?      [→R: R4-1/2]
-\item[\textbf{RQ4.4}] (\emph{Architectural auditability}.)
-Can the audit protocol's own fidelity, applied across architectures,
-serve as a quantitative measure of the interpretability cost of
-design choices?                                                 [→C2]
-\end{itemize}
 
 --------------------------------------------------------------------------------
 §7 完成缺口 (更新版, 按优先级)
