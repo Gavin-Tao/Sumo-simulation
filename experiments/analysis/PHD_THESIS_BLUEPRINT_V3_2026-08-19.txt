@@ -13,7 +13,7 @@
 §0 总故事与总 RQ
 
   总 RQ: RL 信号控制如何在异构真实路网上提供【可定义、可执行、可适配、
-  可验证】的服务优先级保证?
+  可验证】的服务优先级?
 
   规格生命周期四幕 (BNF 就是规格语言):
     W1 定义规格并编码进 agent   (BNF 优先级语言 + 桶状态 + 加权奖励
@@ -25,7 +25,7 @@
 
 --------------------------------------------------------------------------------
 §1 W1 — BNF 优先级规格的定义与编码 (define & encode)
-   "BNF-Specified Priority Specifications: Quantitative, Context-Aware
+   "Priority Specifications in BNF: Quantitative, Context-Aware
     Priority Encoding for RL Signal Control"
 
   GAP:
