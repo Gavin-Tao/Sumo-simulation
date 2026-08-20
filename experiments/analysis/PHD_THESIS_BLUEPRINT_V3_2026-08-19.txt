@@ -63,13 +63,13 @@
         to heterogeneous road users, and be compiled into a
         representation the controller consumes without architectural
         change?
-  RQ1.2 [编码稳健性 / Encoding robustness]                      → C2
-        编码后的保序性对运行条件是否稳健 — 不同优先级比例、不同
-        流量水平、不同车辆构成、以及异构路口布局之下, 是否依然
-        成立?
-        Is the encoded ordering robust across operating conditions —
-        different priority ratios, traffic volumes, and vehicle-class
-        mixes, and across heterogeneous junction layouts?
+  RQ1.2 [运行条件敏感性 / Sensitivity to operating conditions]  → C2
+        编码后的保序性对运行条件多敏感 — 不同优先级比例、不同
+        流量水平、不同车辆构成、以及异构路口布局之下, 保序程度
+        如何变化?
+        How sensitive is the encoded ordering to operating
+        conditions — different priority ratios, traffic volumes,
+        vehicle-class mixes, and junction layouts?
   RQ1.3 [多路口协同 / Multi-junction coordination]              → C3
         多路口部署下协同如何应对 — 邻居信息必须进入 reward, 还是
         状态通道的邻居暴露已足以维持各路口的规格合规?
