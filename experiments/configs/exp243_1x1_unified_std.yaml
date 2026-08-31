@@ -1,8 +1,7 @@
 # 统一配置族 v2 (2026-08-31, 用户定案, 覆盖 v1/3600s 版):
-# 底座 = exp217(std臂)/exp220(gs臂) 逐位 (1000s 集长, 2000 集, MSE, 无 grad_clip,
-#   target_update 20, capacity 50k — 1x1/1x3 已证本土配方)。
-# 仅四项取 208/211 稳定包值: gamma 0.95, use_double, target_clip_max 0.0 (Q<=0 钳位),
-#   eps 0.05/30k。
+# 底座 = exp217(std臂)/exp220(gs臂) 的仿真层 (1000s 集长, 2000 集, 场景文件);
+# DQN 层 16 键全同 208/211 稳定配方 (γ0.95, double, 钳位0, ε0.05/30k, huber,
+#   grad_clip 1.0, target_update 720, capacity 300k, lr/batch/mini/hidden 同)。
 # 语义层三场景统一 (沿用 2026-08-31 两层拆分决定): 表驱动 reward priority-avg-waiting
 #   + 显式 priority_source (桶=权重对齐) + obs 加 psi 下游 cq + lane_occ + awt cap500/local
 #   (槽维恒 27, 与 Dublin 208/211 同 schema)。
@@ -38,7 +37,7 @@ use_gui:           false
 use_max_green:     true
 max_green:         50
 
-# DQN hyperparameters (exp217/220 逐位, 除注明的四项)
+# DQN hyperparameters: 16 键全同 exp208/211 (2026-08-31 用户定案 v2.1)
 hidden_dim:    128
 lr:            0.001
 gamma:         0.95          # ← 208/211 值 (217/220: 0.99)
@@ -46,10 +45,12 @@ epsilon:       0.1
 eps_start:     0.9
 eps_end:       0.05          # ← 208/211 值 (217/220: 0.01)
 eps_decay:     30000         # ← 208/211 值 (217/220: 5000)
-target_update: 20
-capacity:      50000
+target_update: 720           # ← 208/211 值 (217/220: 20)
+capacity:      300000        # ← 208/211 值 (217/220: 50k)
 mini_size:     1000
 batch_size:    256
+loss_fn:       huber         # ← 208/211 值 (217/220: MSE)
+grad_clip:     1.0           # ← 208/211 值 (217/220: 无)
 use_double:      true        # ← 208/211 值 (217/220: false)
 target_clip_max: 0.0         # ← 208/211 值 (Q≤0 钳位; 217/220: 无)
 use_per:         false
