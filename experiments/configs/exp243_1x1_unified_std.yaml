@@ -52,7 +52,7 @@ use_per:         false
 
 # Training
 seed:                0
-episodes:            2000
+episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
 checkpoint_interval: 50
 runs:                1
 
