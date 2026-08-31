@@ -1,0 +1,60 @@
+# exp250 = exp243 逐位 + 唯一变量: action 侧换 Dublin 式 8std 模板 (2026-09-01 用户令).
+#   net -> reindex_8std_net.py 生成的 syc_4phases_8std.net.xml + action_meta_file (mask 机制).
+#   1x1 8std 菜单 = 7/8 有效: NS直/WE直/NS左/N全/S全/E全/W全; a3(WE左) 被管线判 dup 而
+#   mask —— 与 Dublin 缺相位路口同机制, 如实入档 (WE 左转车由 E-all/W-all 服务)。
+#   其余逐键 = exp243 (DQN 16 键 208 配方, 表驱动 531, legacy obs cqm, 1000s x 1500)。
+name: "exp250_1x1_unified_std_8std"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+action_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std_meta.json"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:   {ambulance: 5, bus: 3, car: 1}   # v3 改动 2: 桶=权重对齐
+reward_fn:         "priority-avg-waiting"           # 与 5-3-1 legacy 数值等价
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters: 16 键全同 exp208/211 (v3 改动 1)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.95          # ← 208/211 值 (217/220: 0.99)
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.05          # ← 208/211 值 (217/220: 0.01)
+eps_decay:     30000         # ← 208/211 值 (217/220: 5000)
+target_update: 720           # ← 208/211 值 (217/220: 20)
+capacity:      300000        # ← 208/211 值 (217/220: 50k)
+mini_size:     1000
+batch_size:    256
+loss_fn:       huber         # ← 208/211 值 (217/220: MSE)
+grad_clip:     1.0           # ← 208/211 值 (217/220: 无)
+use_double:      true        # ← 208/211 值 (217/220: false)
+target_clip_max: 0.0         # ← 208/211 值 (Q≤0 钳位; 217/220: 无)
+use_per:         false
+
+# Training
+seed:                0
+episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
