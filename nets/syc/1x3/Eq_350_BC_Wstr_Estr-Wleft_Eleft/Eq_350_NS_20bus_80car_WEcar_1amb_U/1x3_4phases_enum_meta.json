@@ -1,0 +1,1649 @@
+{
+ "action_scheme": "enum_frap",
+ "n_actions": 12,
+ "source_net": "/home/xiaowen/sumo-rl/nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml",
+ "boundary": {
+  "entries": [
+   "-E1",
+   "-E2",
+   "-E3",
+   "-E4",
+   "-E5",
+   "n_t",
+   "s_t",
+   "w_t"
+  ],
+  "exits": [
+   "E1",
+   "E2",
+   "E3",
+   "E4",
+   "E5",
+   "t_n",
+   "t_s",
+   "t_w"
+  ]
+ },
+ "skipped_tls": {},
+ "tls": {
+  "J0": {
+   "n_phases": 12,
+   "phase_movements": [
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1
+    ],
+    [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ]
+   ],
+   "movement_rel": [
+    [
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0
+    ]
+   ],
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "J0",
+      "junction_index": 0,
+      "from_edge": "-E3",
+      "from_lane": 0,
+      "to_edge": "-E0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "J0",
+      "junction_index": 1,
+      "from_edge": "-E3",
+      "from_lane": 1,
+      "to_edge": "E4",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "J0",
+      "junction_index": 2,
+      "from_edge": "-E3",
+      "from_lane": 2,
+      "to_edge": "E5",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "J0",
+      "junction_index": 3,
+      "from_edge": "-E5",
+      "from_lane": 0,
+      "to_edge": "E3",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "J0",
+      "junction_index": 4,
+      "from_edge": "-E5",
+      "from_lane": 1,
+      "to_edge": "-E0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "J0",
+      "junction_index": 5,
+      "from_edge": "-E5",
+      "from_lane": 2,
+      "to_edge": "E4",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "J0",
+      "junction_index": 6,
+      "from_edge": "-E4",
+      "from_lane": 0,
+      "to_edge": "E5",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "J0",
+      "junction_index": 7,
+      "from_edge": "-E4",
+      "from_lane": 1,
+      "to_edge": "E3",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "J0",
+      "junction_index": 8,
+      "from_edge": "-E4",
+      "from_lane": 2,
+      "to_edge": "-E0",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "J0",
+      "junction_index": 9,
+      "from_edge": "E0",
+      "from_lane": 0,
+      "to_edge": "E4",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "10": [
+     {
+      "tl_index": 10,
+      "junction": "J0",
+      "junction_index": 10,
+      "from_edge": "E0",
+      "from_lane": 1,
+      "to_edge": "E5",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "11": [
+     {
+      "tl_index": 11,
+      "junction": "J0",
+      "junction_index": 11,
+      "from_edge": "E0",
+      "from_lane": 2,
+      "to_edge": "E3",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ]
+   },
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "e": {
+   "n_phases": 11,
+   "phase_movements": [
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ]
+   ],
+   "movement_rel": [
+    [
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     2,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     2,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0
+    ]
+   ],
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "e",
+      "junction_index": 0,
+      "from_edge": "-E1",
+      "from_lane": 0,
+      "to_edge": "e_t",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "e",
+      "junction_index": 1,
+      "from_edge": "-E1",
+      "from_lane": 1,
+      "to_edge": "E2",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "e",
+      "junction_index": 2,
+      "from_edge": "-E1",
+      "from_lane": 2,
+      "to_edge": "E0",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "e",
+      "junction_index": 3,
+      "from_edge": "-E0",
+      "from_lane": 0,
+      "to_edge": "E1",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "e",
+      "junction_index": 4,
+      "from_edge": "-E0",
+      "from_lane": 1,
+      "to_edge": "e_t",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "e",
+      "junction_index": 5,
+      "from_edge": "-E0",
+      "from_lane": 2,
+      "to_edge": "E2",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "e",
+      "junction_index": 6,
+      "from_edge": "-E2",
+      "from_lane": 0,
+      "to_edge": "E0",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "e",
+      "junction_index": 7,
+      "from_edge": "-E2",
+      "from_lane": 1,
+      "to_edge": "E1",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "e",
+      "junction_index": 8,
+      "from_edge": "-E2",
+      "from_lane": 2,
+      "to_edge": "e_t",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "e",
+      "junction_index": 9,
+      "from_edge": "t_e",
+      "from_lane": 0,
+      "to_edge": "E2",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "10": [
+     {
+      "tl_index": 10,
+      "junction": "e",
+      "junction_index": 10,
+      "from_edge": "t_e",
+      "from_lane": 1,
+      "to_edge": "E0",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "11": [
+     {
+      "tl_index": 11,
+      "junction": "e",
+      "junction_index": 11,
+      "from_edge": "t_e",
+      "from_lane": 1,
+      "to_edge": "E0",
+      "to_lane": 2,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "12": [
+     {
+      "tl_index": 12,
+      "junction": "e",
+      "junction_index": 12,
+      "from_edge": "t_e",
+      "from_lane": 2,
+      "to_edge": "E1",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ]
+   },
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+   ]
+  },
+  "t": {
+   "n_phases": 11,
+   "phase_movements": [
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ]
+   ],
+   "movement_rel": [
+    [
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     2,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     2,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0
+    ]
+   ],
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "t",
+      "junction_index": 0,
+      "from_edge": "n_t",
+      "from_lane": 0,
+      "to_edge": "t_w",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "t",
+      "junction_index": 1,
+      "from_edge": "n_t",
+      "from_lane": 1,
+      "to_edge": "t_s",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "t",
+      "junction_index": 2,
+      "from_edge": "n_t",
+      "from_lane": 2,
+      "to_edge": "t_e",
+      "to_lane": 1,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "t",
+      "junction_index": 3,
+      "from_edge": "n_t",
+      "from_lane": 2,
+      "to_edge": "t_e",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "t",
+      "junction_index": 4,
+      "from_edge": "e_t",
+      "from_lane": 0,
+      "to_edge": "t_n",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "t",
+      "junction_index": 5,
+      "from_edge": "e_t",
+      "from_lane": 1,
+      "to_edge": "t_w",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "t",
+      "junction_index": 6,
+      "from_edge": "e_t",
+      "from_lane": 2,
+      "to_edge": "t_s",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "t",
+      "junction_index": 7,
+      "from_edge": "s_t",
+      "from_lane": 0,
+      "to_edge": "t_e",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "t",
+      "junction_index": 8,
+      "from_edge": "s_t",
+      "from_lane": 1,
+      "to_edge": "t_n",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "t",
+      "junction_index": 9,
+      "from_edge": "s_t",
+      "from_lane": 2,
+      "to_edge": "t_w",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "10": [
+     {
+      "tl_index": 10,
+      "junction": "t",
+      "junction_index": 10,
+      "from_edge": "w_t",
+      "from_lane": 0,
+      "to_edge": "t_s",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "11": [
+     {
+      "tl_index": 11,
+      "junction": "t",
+      "junction_index": 11,
+      "from_edge": "w_t",
+      "from_lane": 1,
+      "to_edge": "t_e",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "12": [
+     {
+      "tl_index": 12,
+      "junction": "t",
+      "junction_index": 12,
+      "from_edge": "w_t",
+      "from_lane": 2,
+      "to_edge": "t_n",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ]
+   },
+   "mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+   ]
+  }
+ }
+}
