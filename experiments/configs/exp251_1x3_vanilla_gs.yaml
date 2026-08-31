@@ -1,7 +1,7 @@
 # exp251_1x3_vanilla_gs (2026-09-01 用户令): 217/220 vanilla DQN 配方 + 1x3 场景 + 下游语义层。
 # 与 exp242 的唯一差异 = DQN 块 (vanilla vs 208/211 稳定配方) —— 1x3 配方消融对。
-# 其余逐键同: 表驱动 531, ψ下游cq/lane_occ/awt, 1000s x 1500, eval 5/123。
-# 注: 217/220 原 episodes=2000, 此处取 1500 与 242/244 严格同预算配对; 要 2000 说一声。
+# 其余逐键同: 表驱动 531, ψ下游cq/lane_occ/awt, 1000s x 5000, eval 5/123。
+# 注: 217/220 原 episodes=2000, 此处 5000 (用户定案 2026-09-01), 四臂同预算配对。
 name: "exp251_1x3_vanilla_gs"
 
 wandb_project: "sumo-rl-1x3"
@@ -54,7 +54,7 @@ use_per:    false
 
 # Training
 seed:                0
-episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+episodes:            5000          # 用户定案 2026-09-01
 checkpoint_interval: 50
 runs:                1
 

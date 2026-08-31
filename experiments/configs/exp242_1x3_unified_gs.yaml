@@ -1,7 +1,7 @@
 # exp242_1x3_unified_gs (2026-09-01 用户定案): 1x3 统一族臂 = exp241 v3 逐键
 # + 1x3 场景文件 + Dublin 式下游语义层 (1x3 有真实下游路口, ψ下游cq/lane_occ/awt 有工程
 # 理由; 1x1 臂无下游故不加, 槽维 1x3=27 vs 1x1=16 为场景本土差异)。
-# DQN 16 键 = 208/211 稳定配方; 仿真层 = 217/220 (1000s x 1500, eval 5/123)。
+# DQN 16 键 = 208/211 稳定配方; 仿真层 = 217/220 (1000s x 5000, eval 5/123)。
 name: "exp242_1x3_unified_gs"
 
 wandb_project: "sumo-rl-1x3"
@@ -57,7 +57,7 @@ use_per:         false
 
 # Training
 seed:                0
-episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+episodes:            5000          # 用户定案 2026-09-01
 checkpoint_interval: 50
 runs:                1
 
