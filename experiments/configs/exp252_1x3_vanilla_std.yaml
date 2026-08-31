@@ -1,0 +1,60 @@
+# exp252_1x3_vanilla_std (2026-09-01 用户令): 217/220 vanilla DQN 配方 + 1x3 场景 + 下游语义层。
+# 与 exp244 的唯一差异 = DQN 块 (vanilla vs 208/211 稳定配方) —— 1x3 配方消融对。
+# 其余逐键同: 表驱动 531, ψ下游cq/lane_occ/awt, 1000s x 1500, eval 5/123。
+# 注: 217/220 原 episodes=2000, 此处取 1500 与 242/244 严格同预算配对; 要 2000 说一声。
+name: "exp252_1x3_vanilla_std"
+
+wandb_project: "sumo-rl-1x3"
+
+net_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/1x3_4phases.net.xml"
+route_file: "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.rou.xml"
+cfg_file:   "../nets/syc/1x3/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_NS_20bus_80car_WEcar_1amb_U/Eq_350_NS_20bus_80car_WEcar_1amb_U.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "legacy"
+obs_fields:        ["count", "queue", "mean_awt"]
+# 语义层 1x3 专属 (2026-09-01 用户令): 有真实下游路口, Dublin 式 ψ/occ/awt 有工程理由
+obs_awt_basis:     local
+obs_awt_cap:       500
+obs_lane_occ:      true
+obs_downstream:    true
+obs_downstream_fields: ["count", "queue"]
+priority_source:   {ambulance: 5, bus: 3, car: 1}   # v3 改动 2: 桶=权重对齐
+reward_fn:         "priority-avg-waiting"           # 与 5-3-1 legacy 数值等价
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters: 217/220 vanilla 逐位 (与 242/244 的唯一差异 = 本块)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+use_double: false
+use_per:    false
+
+# Training
+seed:                0
+episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
