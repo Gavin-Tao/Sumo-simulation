@@ -9,7 +9,7 @@
 # 方法包: gs = perphase + enum_frap + FRAPQNet(16/16); std = legacy + 原生相位 + DQN(128)。
 # Dublin 两格 = exp208/211 原样。历史臂 217/220/136 为参照行。
 
-name: "exp241_1x1_unified_gs"
+name: "exp246_1x1_unified_gs_521"
 
 wandb_project: "sumo-rl-1x1"
 
@@ -28,7 +28,7 @@ obs_lane_occ:      true
 obs_downstream:    true
 obs_downstream_fields: ["count", "queue"]
 # 语义层 (统一): 表驱动 reward, 桶=权重对齐
-priority_source:   {ambulance: 5, bus: 3, car: 1}
+priority_source:   {ambulance: 5, bus: 2, car: 1}
 reward_fn:         "priority-avg-waiting"
 num_seconds:       1000
 delta_time:        5

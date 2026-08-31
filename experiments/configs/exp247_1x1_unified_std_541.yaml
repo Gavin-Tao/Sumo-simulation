@@ -9,17 +9,17 @@
 # 方法包: gs = perphase + enum_frap + FRAPQNet(16/16); std = legacy + 原生相位 + DQN(128)。
 # Dublin 两格 = exp208/211 原样。历史臂 217/220/136 为参照行。
 
-name: "exp241_1x1_unified_gs"
+name: "exp247_1x1_unified_std_541"
 
 wandb_project: "sumo-rl-1x1"
 
-net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum.net.xml"
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml"
 route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
-cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
 
 # Environment (base: exp217/220 逐位)
 observation_class: "PriorityMovement"
-obs_phase_state:   "perphase"
+obs_phase_state:   "legacy"
 obs_fields:        ["count", "queue", "mean_awt"]
 # 语义层 (统一, 取 208/211): ψ下游cq + lane_occ + awt 规整 → 槽维 27
 obs_awt_basis:     local
@@ -28,7 +28,7 @@ obs_lane_occ:      true
 obs_downstream:    true
 obs_downstream_fields: ["count", "queue"]
 # 语义层 (统一): 表驱动 reward, 桶=权重对齐
-priority_source:   {ambulance: 5, bus: 3, car: 1}
+priority_source:   {ambulance: 5, bus: 4, car: 1}
 reward_fn:         "priority-avg-waiting"
 num_seconds:       1000
 delta_time:        5
@@ -37,13 +37,6 @@ min_green:         5
 use_gui:           false
 use_max_green:     true
 max_green:         50
-
-# Action: enumerated protected phases + movement-duel FRAP (exp220 同款)
-action_scheme:  "enum_frap"
-enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum_meta.json"
-frap:
-  embed_dim: 16
-  pair_dim:  16
 
 # DQN hyperparameters (exp217/220 逐位, 除注明的四项)
 hidden_dim:    128
