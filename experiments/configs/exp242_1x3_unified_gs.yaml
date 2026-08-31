@@ -1,5 +1,6 @@
 # 统一配置族 (2026-08-20, 用户定案): 底座 = exp208/211 共有非方法键,
-# 每场景只换 net/route/cfg/meta 四个文件键。方法包: gs=perphase+enum_frap
+# 每场景只换 net/route/cfg/meta 四个文件键 + episodes (用户定案 2026-08-20:
+# 1x1=1500, 1x3=2000, Dublin=800; 其余逐键同 208/211)。方法包: gs=perphase+enum_frap
 # +FRAPQNet; std=legacy+原生相位+DQN。历史臂 217/220/136 降为参照。
 name: exp242_1x3_unified_gs
 wandb_project: sumo-rl-1x3
@@ -38,7 +39,7 @@ grad_clip: 1.0
 mini_size: 1000
 batch_size: 256
 seed: 0
-episodes: 800
+episodes: 2000
 checkpoint_interval: 50
 runs: 1
 eval_interval: 5
