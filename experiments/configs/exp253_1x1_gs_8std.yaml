@@ -1,0 +1,66 @@
+# exp253 (2026-09-01 用户提议): g/s(FRAP) x 8std 相位集合 — 补齐 1x1 的 方法x相位集合 2x2。
+# = exp241 逐位, 唯一变量 enum_meta_file -> 8std 的 7 个有效相位 (enum 格式转换,
+#   转换器核验槽位: a0=NS直 a1=WE直 a2=NS左 a4-a7=单进口; a3 WE左 dup 已剔除)。
+# 对照: 253 vs 250 = 同 8std 相位集合下 FRAP vs DQN (方法效应, "gs有没有用");
+#       253 vs 241 = 同 FRAP 下 8std vs enum-12 (相位集合效应)。
+# 注: 8std 在 1x1 缺 WE 保护左转, 250/253 共同背此残缺, 互比公平, 对 4相位臂有先天劣势。
+name: "exp253_1x1_gs_8std"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std7.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:   {ambulance: 5, bus: 3, car: 1}   # v3 改动 2: 桶=权重对齐
+reward_fn:         "priority-avg-waiting"           # 与 5-3-1 legacy 数值等价
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
+action_scheme:  "enum_frap"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std7_enumfmt_meta.json"
+frap:
+  embed_dim: 16
+  pair_dim:  16
+
+# DQN hyperparameters: 16 键全同 exp208/211 (v3 改动 1)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.95          # ← 208/211 值 (217/220: 0.99)
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.05          # ← 208/211 值 (217/220: 0.01)
+eps_decay:     30000         # ← 208/211 值 (217/220: 5000)
+target_update: 720           # ← 208/211 值 (217/220: 20)
+capacity:      300000        # ← 208/211 值 (217/220: 50k)
+mini_size:     1000
+batch_size:    256
+loss_fn:       huber         # ← 208/211 值 (217/220: MSE)
+grad_clip:     1.0           # ← 208/211 值 (217/220: 无)
+use_double:      true        # ← 208/211 值 (217/220: false)
+target_clip_max: 0.0         # ← 208/211 值 (Q≤0 钳位; 217/220: 无)
+use_per:         false
+
+# Training
+seed:                0
+episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+

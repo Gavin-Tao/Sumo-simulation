@@ -1,0 +1,502 @@
+{
+ "action_scheme": "enum_frap",
+ "n_actions": 8,
+ "source_net": "nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases.net.xml",
+ "boundary": {
+  "entries": [
+   "e_t",
+   "n_t",
+   "s_t",
+   "w_t"
+  ],
+  "exits": [
+   "t_e",
+   "t_n",
+   "t_s",
+   "t_w"
+  ]
+ },
+ "skipped_tls": {},
+ "tls": {
+  "t": {
+   "n_phases": 8,
+   "phase_movements": [
+    [
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     1
+    ],
+    [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   "movement_rel": [
+    [
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1,
+     1,
+     3,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     3,
+     3,
+     1
+    ],
+    [
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0,
+     1,
+     3,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1
+    ],
+    [
+     3,
+     3,
+     1,
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     3,
+     1,
+     3,
+     1,
+     1,
+     3,
+     3,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0
+    ]
+   ],
+   "links": {
+    "0": [
+     {
+      "tl_index": 0,
+      "junction": "t",
+      "junction_index": 0,
+      "from_edge": "n_t",
+      "from_lane": 0,
+      "to_edge": "t_w",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "N",
+      "turn": "R"
+     }
+    ],
+    "1": [
+     {
+      "tl_index": 1,
+      "junction": "t",
+      "junction_index": 1,
+      "from_edge": "n_t",
+      "from_lane": 1,
+      "to_edge": "t_s",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "N",
+      "turn": "T"
+     }
+    ],
+    "2": [
+     {
+      "tl_index": 2,
+      "junction": "t",
+      "junction_index": 2,
+      "from_edge": "n_t",
+      "from_lane": 2,
+      "to_edge": "t_e",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "N",
+      "turn": "L"
+     }
+    ],
+    "3": [
+     {
+      "tl_index": 3,
+      "junction": "t",
+      "junction_index": 3,
+      "from_edge": "e_t",
+      "from_lane": 0,
+      "to_edge": "t_n",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "E",
+      "turn": "R"
+     }
+    ],
+    "4": [
+     {
+      "tl_index": 4,
+      "junction": "t",
+      "junction_index": 4,
+      "from_edge": "e_t",
+      "from_lane": 1,
+      "to_edge": "t_w",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "E",
+      "turn": "T"
+     }
+    ],
+    "5": [
+     {
+      "tl_index": 5,
+      "junction": "t",
+      "junction_index": 5,
+      "from_edge": "e_t",
+      "from_lane": 2,
+      "to_edge": "t_s",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "E",
+      "turn": "L"
+     }
+    ],
+    "6": [
+     {
+      "tl_index": 6,
+      "junction": "t",
+      "junction_index": 6,
+      "from_edge": "s_t",
+      "from_lane": 0,
+      "to_edge": "t_e",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "S",
+      "turn": "R"
+     }
+    ],
+    "7": [
+     {
+      "tl_index": 7,
+      "junction": "t",
+      "junction_index": 7,
+      "from_edge": "s_t",
+      "from_lane": 1,
+      "to_edge": "t_n",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "S",
+      "turn": "T"
+     }
+    ],
+    "8": [
+     {
+      "tl_index": 8,
+      "junction": "t",
+      "junction_index": 8,
+      "from_edge": "s_t",
+      "from_lane": 2,
+      "to_edge": "t_w",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "S",
+      "turn": "L"
+     }
+    ],
+    "9": [
+     {
+      "tl_index": 9,
+      "junction": "t",
+      "junction_index": 9,
+      "from_edge": "w_t",
+      "from_lane": 0,
+      "to_edge": "t_s",
+      "to_lane": 0,
+      "dir": "r",
+      "dir_turn": "R",
+      "approach": "W",
+      "turn": "R"
+     }
+    ],
+    "10": [
+     {
+      "tl_index": 10,
+      "junction": "t",
+      "junction_index": 10,
+      "from_edge": "w_t",
+      "from_lane": 1,
+      "to_edge": "t_e",
+      "to_lane": 1,
+      "dir": "s",
+      "dir_turn": "T",
+      "approach": "W",
+      "turn": "T"
+     }
+    ],
+    "11": [
+     {
+      "tl_index": 11,
+      "junction": "t",
+      "junction_index": 11,
+      "from_edge": "w_t",
+      "from_lane": 2,
+      "to_edge": "t_n",
+      "to_lane": 2,
+      "dir": "l",
+      "dir_turn": "L",
+      "approach": "W",
+      "turn": "L"
+     }
+    ]
+   },
+   "mask": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "note": "8std template in enum-meta format for FRAP (exp253): 8 actions, a3 (WE-left, pipeline-judged dup-of-a2) mask=False -> 7 selectable, same mechanism as exp250's DQN mask."
+}
