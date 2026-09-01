@@ -1,3 +1,4 @@
+# v2 (2026-09-01 用户令): 升级为完整 8 相位 — a3 = 真 WE 左转对 (原生 p1), mask 全 True; 只改 meta/net 数据, 代码未动。
 # exp253 (2026-09-01 用户提议): g/s(FRAP) x 8std 相位集合 — 补齐 1x1 的 方法x相位集合 2x2。
 # = exp241 逐位, 唯一变量 enum_meta_file -> 8std 的 7 个有效相位 (enum 格式转换,
 #   转换器核验槽位: a0=NS直 a1=WE直 a2=NS左 a4-a7=单进口; a3 WE左 dup 已剔除)。
@@ -8,7 +9,7 @@ name: "exp253_1x1_gs_8std"
 
 wandb_project: "sumo-rl-1x1"
 
-net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std7.net.xml"
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std8.net.xml"
 route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
 cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
 
@@ -28,7 +29,7 @@ max_green:         50
 
 # Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
 action_scheme:  "enum_frap"
-enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std7_enumfmt_meta.json"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std8_enumfmt_meta.json"
 frap:
   embed_dim: 16
   pair_dim:  16
