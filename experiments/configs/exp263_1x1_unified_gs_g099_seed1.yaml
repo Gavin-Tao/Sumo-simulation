@@ -1,0 +1,76 @@
+# exp263 (2026-09-01 用户令): exp249 逐位 + 唯一变量 训练 seed 0->1 — 多种子稳健性检验 (E3 缺口的第一笔)。
+# exp249 = exp241 逐位 + 唯一变量 gamma 0.95->0.99 (2026-08-31 用户令).
+# 目的: 钉死 241 car+60% 轮转模式的主犯 — γ视界 vs buffer/target 慢更新。
+# car 恢复 ~32 => γ 定罪; 不恢复 => 下一嫌疑 target_update/capacity。
+# 统一族 v3 (2026-08-31 用户定案, 覆盖 v2.1):
+# = exp217(std)/exp220(gs) 逐位复制, 只改两处:
+#   (1) DQN 层 16 键全同 exp208/211 稳定配方: gamma 0.95, use_double, target_clip_max 0.0,
+#       eps 0.05/30k, huber, grad_clip 1.0, target_update 720, capacity 300k
+#       (lr/batch/hidden/mini 本就相同)。
+#   (2) reward 换表驱动 priority-avg-waiting + 显式 priority_source 531 —— 与旧
+#       "5-3-1-avg-waiting-time" 数值等价 (rewards.py 文档: 同一遍累加, <=1e-12 漂移),
+#       但桶=权重对齐 (旧默认表 bus 进 4 号桶而 reward 计价 3, 语义不一致), 且为
+#       后续 541/521 扫描提供同一机制。
+# obs 回归 217/220 原样 (cqm, 无 psi 下游/lane_occ/awt 规整 —— 单路口无下游, 不硬塞
+# Dublin 动机特征; 槽维 16, 与 Dublin 的 27 维 schema 不同, 跨场景为定性比较)。
+# 仿真层不动: 1000s 集长, 2000 集, eval 5/123, 同场景文件。
+name: "exp263_1x1_unified_gs_g099_seed1"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:   {ambulance: 5, bus: 3, car: 1}   # v3 改动 2: 桶=权重对齐
+reward_fn:         "priority-avg-waiting"           # 与 5-3-1 legacy 数值等价
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
+action_scheme:  "enum_frap"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum_meta.json"
+frap:
+  embed_dim: 16
+  pair_dim:  16
+
+# DQN hyperparameters: 16 键全同 exp208/211 (v3 改动 1)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99          # ← 消融臂: 唯一改动, 回 217/220 值 (241: 0.95)
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.05          # ← 208/211 值 (217/220: 0.01)
+eps_decay:     30000         # ← 208/211 值 (217/220: 5000)
+target_update: 720           # ← 208/211 值 (217/220: 20)
+capacity:      300000        # ← 208/211 值 (217/220: 50k)
+mini_size:     1000
+batch_size:    256
+loss_fn:       huber         # ← 208/211 值 (217/220: MSE)
+grad_clip:     1.0           # ← 208/211 值 (217/220: 无)
+use_double:      true        # ← 208/211 值 (217/220: false)
+target_clip_max: 0.0         # ← 208/211 值 (Q≤0 钳位; 217/220: 无)
+use_per:         false
+
+# Training
+seed:                1             # ← 唯一改动: 训练 seed 0->1 (eval_seed 123 不变)
+episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
