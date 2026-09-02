@@ -55,7 +55,7 @@ use_per:         false
 
 # Training
 seed:                0
-episodes:            5000          # 用户定案 2026-09-01
+episodes:            3000          # 用户定案 2026-09-02 (原 5000; 265/275 平台在 1500-3000 集内)
 checkpoint_interval: 50
 runs:                1
 
