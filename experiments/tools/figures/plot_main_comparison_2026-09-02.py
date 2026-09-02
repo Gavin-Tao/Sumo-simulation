@@ -53,42 +53,30 @@ def finalize_figure(fig, out_path, formats=("png", "pdf"), dpi=300, pad=0.05):
 # ---------------- 数据 (尾 40 次 eval; per-visit 停车时间 s; J(531) per-visit) ----------------
 CATS = ["car", "bus", "ambulance", "all", "J(531)"]
 SCEN = [
-    dict(title="Dublin (27 TLS, 18 controlled)\nexp208 vs exp211 · unified stability values, γ=0.95",
+    dict(name="Dublin", file="main_comparison_dublin", exps=("exp208", "exp211"),
          std=[4.95, 1.26, 0.90, 4.75, 4.89], std_e=[1.24, 0.18, 0.69, 1.17, 1.18],
-         gs=[2.44, 1.06, 0.92, 2.38, 2.48],  gs_e=[0.32, 0.14, 0.48, 0.31, 0.31],
-         note="paired J wins: FRAP 40/40\nordering gate: both pass"),
-    dict(title="1x1 (symmetric single junction)\nexp274 vs exp263 · unified stability values, γ=0.99, perphase",
+         gs=[2.44, 1.06, 0.92, 2.38, 2.48],  gs_e=[0.32, 0.14, 0.48, 0.31, 0.31]),
+    dict(name="1x1", file="main_comparison_1x1", exps=("exp274", "exp263"),
          std=[32.40, 7.46, 5.38, 31.06, 32.06], std_e=[2.19, 1.32, 2.37, 2.06, 2.10],
-         gs=[31.30, 7.25, 4.50, 30.00, 30.97],  gs_e=[2.19, 1.10, 2.84, 2.11, 2.19],
-         note="paired J wins: FRAP 28/40\nordering gate: both pass"),
-    dict(title="1x3 (corridor, 3 junctions) [interim pair]\nexp244 vs exp242 · unified stability values, γ=0.95",
+         gs=[31.30, 7.25, 4.50, 30.00, 30.97],  gs_e=[2.19, 1.10, 2.84, 2.11, 2.19]),
+    dict(name="1x3", file="main_comparison_1x3", exps=("exp244", "exp242"),
          std=[29.45, 3.34, 2.77, 27.42, 28.48], std_e=[1.32, 0.54, 1.79, 1.22, 1.26],
-         gs=[30.77, 5.92, 4.02, 28.83, 30.11],  gs_e=[1.28, 0.34, 2.10, 1.19, 1.24],
-         note="paired J wins: FRAP 9/40\nordering gate: both pass\n(main pair 275 vs 265 training)"),
+         gs=[30.77, 5.92, 4.02, 28.83, 30.11],  gs_e=[1.28, 0.34, 2.10, 1.19, 1.24]),
 ]
 
 def main():
-    apply_publication_style(FigureStyle(font_size=15, axes_linewidth=2))
-    fig, axes = plt.subplots(1, 3, figsize=(22, 6.6))
+    apply_publication_style(FigureStyle(font_size=16, axes_linewidth=2))
     colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
-    labels = ["8std template + DQN (W1 baseline)", "enum + FRAP g/s (W2, proposed)"]
-    for ax, sc in zip(axes, SCEN):
-        make_grouped_bar_err(ax, CATS, [sc["std"], sc["gs"]], [sc["std_e"], sc["gs_e"]], labels, colors,
-                             ylabel="stopped time per visit (s)  /  J(531)")
-        ax.set_title(sc["title"], fontsize=plt.rcParams["font.size"] * 0.8, loc="left")
-        ax.text(0.98, 0.97, sc["note"], transform=ax.transAxes, ha="right", va="top",
-                fontsize=plt.rcParams["font.size"] * 0.72, linespacing=1.35)
-        ax.axvline(3.5, ymax=0.78, color=PALETTE["neutral"], linewidth=1.2, linestyle="--", zorder=0)  # 分隔 J 列
-    handles, labs = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labs, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.04), fontsize=plt.rcParams["font.size"] * 0.9)
-    fig.text(0.5, -0.04,
-             "Tail-40 evaluation mean ± s.d. (fixed eval seed 123; s.d. = policy variability within the window, not across seeds). "
-             "J(531) = Σ flow-share × weight (amb 5 / bus 3 / car 1) × class stopped time (lower is better). "
-             "Within each scenario the two arms differ only in the method package (phase set, network, observation layout).",
-             ha="center", va="top", fontsize=plt.rcParams["font.size"] * 0.66, wrap=True)
-    fig.tight_layout(rect=(0, 0.0, 1, 0.97))
-    out = finalize_figure(fig, "experiments/analysis/figures/main_comparison_8std_vs_frap", formats=("png", "pdf"))
-    print("saved:", *out)
+    for sc in SCEN:
+        fig, ax = plt.subplots(figsize=(8.5, 5.6))
+        make_grouped_bar_err(ax, CATS, [sc["std"], sc["gs"]], [sc["std_e"], sc["gs_e"]], list(sc["exps"]), colors,
+                             ylabel="stopped time per visit (s) / J")
+        ax.set_title(sc["name"], loc="left")
+        ax.axvline(3.5, ymax=0.85, color=PALETTE["neutral"], linewidth=1.2, linestyle="--", zorder=0)
+        ax.legend(loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.0))
+        fig.tight_layout()
+        out = finalize_figure(fig, f"experiments/analysis/figures/{sc['file']}", formats=("png", "pdf"))
+        print("saved:", *out)
 
 if __name__ == "__main__":
     main()
