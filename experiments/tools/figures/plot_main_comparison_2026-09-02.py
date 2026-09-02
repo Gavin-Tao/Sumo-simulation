@@ -50,34 +50,50 @@ def finalize_figure(fig, out_path, formats=("png", "pdf"), dpi=300, pad=0.05):
         p = out.with_suffix("." + f); fig.savefig(p, dpi=dpi, bbox_inches="tight", pad_inches=pad); saved.append(p)
     plt.close(fig); return saved
 
-# ---------------- 数据 (尾 40 次 eval; per-visit 停车时间 s; J(531) per-visit) ----------------
+# ---------------- 数据 (尾 40 次 eval, 均值 ± sd; 每个指标附各自的 J(531)) ----------------
 CATS = ["car", "bus", "ambulance", "all", "J(531)"]
+def M(std, std_e, gs, gs_e): return dict(std=std, std_e=std_e, gs=gs, gs_e=gs_e)
 SCEN = [
-    dict(name="Dublin", file="main_comparison_dublin", exps=("exp208", "exp211"),
-         std=[4.95, 1.26, 0.90, 4.75, 4.89], std_e=[1.24, 0.18, 0.69, 1.17, 1.18],
-         gs=[2.44, 1.06, 0.92, 2.38, 2.48],  gs_e=[0.32, 0.14, 0.48, 0.31, 0.31]),
-    dict(name="1x1", file="main_comparison_1x1", exps=("exp274", "exp263"),
-         std=[32.40, 7.46, 5.38, 31.06, 32.06], std_e=[2.19, 1.32, 2.37, 2.06, 2.10],
-         gs=[31.30, 7.25, 4.50, 30.00, 30.97],  gs_e=[2.19, 1.10, 2.84, 2.11, 2.19]),
-    dict(name="1x3", file="main_comparison_1x3", exps=("exp244", "exp242"),
-         std=[29.45, 3.34, 2.77, 27.42, 28.48], std_e=[1.32, 0.54, 1.79, 1.22, 1.26],
-         gs=[30.77, 5.92, 4.02, 28.83, 30.11],  gs_e=[1.28, 0.34, 2.10, 1.19, 1.24]),
+  dict(name="Dublin", exps=("exp208", "exp211"),
+    pervisit={"stopped time / visit (s)": M([4.95,1.26,0.90,4.75,4.89],[1.24,0.18,0.69,1.17,1.18],[2.44,1.06,0.92,2.38,2.48],[0.32,0.14,0.48,0.31,0.31]),
+              "stop events / visit":       M([0.57,0.18,0.14,0.55,0.57],[0.09,0.02,0.10,0.09,0.09],[0.27,0.15,0.15,0.27,0.28],[0.03,0.02,0.07,0.03,0.03])},
+    xts={"xts stopped time (s)": M([3.10,1.71,1.00,3.01,3.20],[0.42,0.30,0.78,0.40,0.40],[2.43,1.85,1.27,2.36,2.58],[0.35,0.29,0.64,0.33,0.33]),
+         "xts stop events":      M([0.38,0.20,0.15,0.37,0.39],[0.03,0.02,0.11,0.03,0.03],[0.28,0.21,0.19,0.27,0.30],[0.04,0.02,0.09,0.04,0.04]),
+         "xts speed (m/s)":      M([5.38,6.34,6.38,5.46,6.07],[0.10,0.10,0.41,0.09,0.10],[5.69,6.40,6.39,5.77,6.37],[0.18,0.09,0.39,0.17,0.17])}),
+  dict(name="1x1", exps=("exp274", "exp263"),
+    pervisit={"stopped time / visit (s)": M([32.40,7.46,5.38,31.06,32.06],[2.19,1.32,2.37,2.06,2.10],[31.30,7.25,4.50,30.00,30.97],[2.19,1.10,2.84,2.11,2.19]),
+              "stop events / visit":       M([1.13,0.85,0.49,1.11,1.18],[0.05,0.08,0.14,0.05,0.05],[1.11,0.79,0.47,1.10,1.16],[0.07,0.07,0.16,0.07,0.07])},
+    xts={"xts stopped time (s)": M([32.40,7.46,5.38,31.06,32.06],[2.19,1.32,2.37,2.06,2.10],[31.30,7.25,4.50,30.00,30.97],[2.19,1.10,2.84,2.11,2.19]),
+         "xts stop events":      M([1.13,0.85,0.49,1.11,1.18],[0.05,0.08,0.14,0.05,0.05],[1.11,0.79,0.47,1.10,1.16],[0.07,0.07,0.16,0.07,0.07]),
+         "xts speed (m/s)":      M([3.49,6.99,8.54,3.59,4.14],[0.17,0.39,1.08,0.17,0.16],[3.57,7.11,8.32,3.67,4.23],[0.18,0.31,1.32,0.18,0.19])}),
+  dict(name="1x3", exps=("exp244", "exp242"),
+    pervisit={"stopped time / visit (s)": M([29.45,3.34,2.77,27.42,28.48],[1.32,0.54,1.79,1.22,1.26],[30.77,5.92,4.02,28.83,30.11],[1.28,0.34,2.10,1.19,1.24]),
+              "stop events / visit":       M([1.10,0.49,0.37,1.05,1.12],[0.04,0.07,0.23,0.04,0.04],[1.20,0.76,0.51,1.17,1.26],[0.04,0.04,0.21,0.04,0.04])},
+    xts={"xts stopped time (s)": M([31.94,3.34,2.77,30.36,30.84],[1.49,0.54,1.79,1.40,1.42],[34.22,5.92,4.02,32.64,33.40],[1.44,0.34,2.10,1.37,1.39]),
+         "xts stop events":      M([1.14,0.49,0.37,1.11,1.16],[0.04,0.07,0.23,0.04,0.04],[1.25,0.76,0.51,1.22,1.31],[0.04,0.04,0.21,0.04,0.04]),
+         "xts speed (m/s)":      M([3.40,8.68,8.78,3.53,4.55],[0.11,0.33,1.16,0.11,0.12],[3.22,7.48,7.79,3.33,4.19],[0.10,0.13,0.95,0.10,0.10])}),
 ]
+
+def panel_group(sc, metrics, suffix):
+    colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
+    labels = [f"8STD ({sc['exps'][0]})", f"GS-ENUM ({sc['exps'][1]})"]
+    n = len(metrics)
+    fig, axes = plt.subplots(1, n, figsize=(7.2 * n, 5.8))
+    axes = np.atleast_1d(axes)
+    for ax, (mname, d) in zip(axes, metrics.items()):
+        make_grouped_bar_err(ax, CATS, [d["std"], d["gs"]], [d["std_e"], d["gs_e"]], labels, colors, ylabel=mname)
+        ax.axvline(3.5, ymax=0.85, color=PALETTE["neutral"], linewidth=1.2, linestyle="--", zorder=0)
+    axes[0].set_title(sc["name"], loc="left")
+    handles, labs = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labs, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.02))
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    return finalize_figure(fig, f"experiments/analysis/figures/{sc['name'].lower()}_{suffix}", formats=("png", "pdf"))
 
 def main():
     apply_publication_style(FigureStyle(font_size=16, axes_linewidth=2))
-    colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
     for sc in SCEN:
-        fig, ax = plt.subplots(figsize=(8.5, 5.6))
-        make_grouped_bar_err(ax, CATS, [sc["std"], sc["gs"]], [sc["std_e"], sc["gs_e"]],
-                             [f"8STD ({sc['exps'][0]})", f"GS-ENUM ({sc['exps'][1]})"], colors,
-                             ylabel="stopped time per visit (s) / J")
-        ax.set_title(sc["name"], loc="left")
-        ax.axvline(3.5, ymax=0.85, color=PALETTE["neutral"], linewidth=1.2, linestyle="--", zorder=0)
-        ax.legend(loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.0))
-        fig.tight_layout()
-        out = finalize_figure(fig, f"experiments/analysis/figures/{sc['file']}", formats=("png", "pdf"))
-        print("saved:", *out)
+        print("saved:", *panel_group(sc, sc["pervisit"], "pervisit"))
+        print("saved:", *panel_group(sc, sc["xts"], "xts"))
 
 if __name__ == "__main__":
     main()
