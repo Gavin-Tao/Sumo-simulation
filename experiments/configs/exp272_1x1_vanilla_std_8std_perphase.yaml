@@ -1,0 +1,57 @@
+# exp272_1x1_vanilla_std_8std_perphase (2026-09-02 用户令): exp257_1x1_vanilla_std_8std_full 逐位 + 唯一变量 观测排布 legacy->perphase, 使 std 臂与 FRAP 臂状态信息对等 (含最小绿位与相位已持续时长)。
+# exp257 (2026-09-01 用户令): exp217 逐位 (vanilla 超参 γ0.99/无double/无钳位/MSE/
+# ε0.01-5k/target20/池50k, legacy reward 5-3-1, 2000集) + 唯一改动 = 动作侧换
+# 完整 8 相位 (8std8 net/meta: a3=真 WE 左转, mask 全 True, 不会掉成 7)。
+# 对照: 257 vs 217 = vanilla 超参下 完整8 vs 原生4 (单变量);
+#       257 vs 256 = 同完整8 std 下 vanilla vs (γ0.99+稳定值+表reward) 整包差异。
+name: "exp272_1x1_vanilla_std_8std_perphase"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std8.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+action_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_8std8_meta.json"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"   # ← 唯一改动 (基臂 legacy): 头部=[min_green_ok, 相位已持续时长/100] + 每槽 is_green
+obs_fields:        ["count", "queue", "mean_awt"]
+reward_fn:         "5-3-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# DQN hyperparameters (tuned, same as exp142/exp113)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER
+use_double: false
+use_per:    false
