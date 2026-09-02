@@ -1,0 +1,61 @@
+# exp271_1x1_vanilla_gs_enum12_double_clean (2026-09-02 用户令): exp262_1x1_vanilla_gs_enum12_double 逐位 + 显式 loss_fn mse / grad_clip null —— 真 vanilla 的 gs 臂,
+# 与 std 臂 exp259 除方法(enum+FRAP vs 原生4+DQN)外参数逐键一致 (之前的 exp262 实际带 huber+clip)。
+name: "exp271_1x1_vanilla_gs_enum12_double_clean"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"
+obs_fields:        ["count", "queue", "mean_awt"]
+reward_fn:         "5-3-1-avg-waiting-time"
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
+action_scheme:  "enum_frap"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum_meta.json"
+frap:
+  embed_dim: 16
+  pair_dim:  16
+
+# DQN hyperparameters (exp217 逐位: tuned, same as exp142/exp113)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.01
+eps_decay:     5000
+target_update: 20
+capacity:      50000
+mini_size:     1000
+batch_size:    256
+
+# Training
+seed:                0
+episodes:            2000
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+
+# Vanilla DQN — no Double, no PER (exp217 同款)
+loss_fn:    mse      # 显式 (FRAP 路径默认 huber, 此处与 std 臂一致)
+grad_clip:  null     # 显式 (FRAP 路径默认 1.0, 此处无裁剪)
+use_double: true    # ← 唯一改动 (基臂 false)
+use_per:    false
