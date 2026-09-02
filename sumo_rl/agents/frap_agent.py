@@ -25,9 +25,18 @@ class FRAPQNet(torch.nn.Module):
     junction's phase mask before argmax/max (same contract as train.py's
     masked-std mode)."""
 
-    def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16, k_max=11):
+    def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16, k_max=11,
+                 hold_bias=False):
         super().__init__()
         self.header_dim, self.slot_dim, self.k_max = header_dim, slot_dim, k_max
+        # hold_bias (2026-09-02, additive, default OFF -> network byte-identical to
+        # before): one learnable scalar b added to Q of the CURRENTLY executing
+        # phase, i.e. Q'(k) = Q(k) + b * 1[k == current]. The current phase is
+        # recovered inside forward from the per-slot is_green bits (perphase
+        # layout, slot feature 0) by matching against the phase table pm — no
+        # trainer/replay change. Aggregation stays a fixed formula; b is a
+        # single readable "cost of switching" constant.
+        self.hold_bias = torch.nn.Parameter(torch.zeros(1)) if hold_bias else None
         self.enc = torch.nn.Sequential(
             torch.nn.Linear(slot_dim, embed_dim), torch.nn.ReLU(),
             torch.nn.LayerNorm(embed_dim))
@@ -55,6 +64,7 @@ class FRAPQNet(torch.nn.Module):
 
     def forward(self, x, pm, rel, exist):
         """x (B,obs); pm (B,K,12) float; rel (B,12,12) long; exist (B,12) float."""
+        B = x.shape[0]
         d = self.encode(x)
         g = self.g_head(d).squeeze(-1)                        # (B,12)
         s = self.duel_scores(d, rel)                          # (B,12,12)
@@ -67,7 +77,13 @@ class FRAPQNet(torch.nn.Module):
             * (1.0 - pm) * exist.unsqueeze(1)                 # (B,K,12)
         q_sup = (torch.where(suppressed > 0, duel_max,
                              torch.zeros_like(duel_max)) * suppressed).sum(-1)
-        return q_self + q_sup                                 # (B,K)
+        q = q_self + q_sup                                    # (B,K)
+        if self.hold_bias is not None:
+            green = x[:, self.header_dim:].reshape(B, 12, self.slot_dim)[:, :, 0]   # (B,12) is_green
+            # row k matches iff every EXISTING slot agrees with the current green pattern
+            match = ((pm == green.unsqueeze(1)) | (exist.unsqueeze(1) == 0)).all(-1)  # (B,K) bool
+            q = q + self.hold_bias * match.float()
+        return q
 
 
 class MTTQNet(FRAPQNet):
@@ -258,7 +274,7 @@ class FRAPAgent:
                  eps_start, eps_end, eps_decay, device, embed_dim=16,
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
                  grad_clip=1.0, target_clip_max=None, arch="frap",
-                 mtt_heads=4, mtt_layers=2):
+                 mtt_heads=4, mtt_layers=2, hold_bias=False):
         self.device = torch.device(device)
         # arch: "frap" (default, unchanged) | "mtt" (movement-token transformer,
         # same forward contract). Absent key -> "frap" -> byte-identical legacy.
@@ -271,7 +287,8 @@ class FRAPAgent:
                                    k_max, n_heads=mtt_heads, n_layers=mtt_layers)
             if arch != "frap":
                 raise ValueError(f"unknown frap arch: {arch!r}")
-            return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max)
+            return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
+                            hold_bias=hold_bias)
         self.q_net = _mk().to(self.device)
         self.target_q_net = _mk().to(self.device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())

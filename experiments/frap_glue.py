@@ -63,7 +63,8 @@ def build_frap_agent(cfg, tables, env, device):
         target_clip_max=cfg.get("target_clip_max", None),
         arch=str(fp.get("arch", "frap")),        # "frap" (default) | "mtt"
         mtt_heads=int(fp.get("mtt_heads", 4)),
-        mtt_layers=int(fp.get("mtt_layers", 2)))
+        mtt_layers=int(fp.get("mtt_layers", 2)),
+        hold_bias=bool(fp.get("hold_bias", False)))   # 2026-09-02: 当前相位保持偏置, 默认关
 
 
 def load_neighbor_map(path, n_neighbors=4):
