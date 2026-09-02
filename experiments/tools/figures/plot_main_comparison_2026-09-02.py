@@ -35,10 +35,9 @@ def make_grouped_bar_err(ax, categories, series, errors, labels, colors, ylabel=
         bars = ax.bar(pos, s, width * 0.92, yerr=e, capsize=4, label=lab, color=col,
                       edgecolor="black", linewidth=1.5, error_kw=dict(elinewidth=1.5, ecolor="black"))
         if annotate:
-            ha = "right" if i == 0 else "left"; dx = -0.02 if i == 0 else 0.02
             for b, v, err in zip(bars, s, e):
-                ax.text(b.get_x() + b.get_width() / 2 + dx, v + err, fmt.format(v), ha=ha, va="bottom",
-                        fontsize=plt.rcParams["font.size"] * 0.56, rotation=0, clip_on=False)
+                ax.text(b.get_x() + b.get_width() / 2, v + err, fmt.format(v), ha="center", va="bottom",
+                        fontsize=plt.rcParams["font.size"] * 0.62, rotation=0, clip_on=False)
         tops.extend(np.asarray(s) + np.asarray(e))
     ax.set_xticks(x); ax.set_xticklabels(categories)
     if ylabel: ax.set_ylabel(ylabel)
@@ -77,29 +76,45 @@ SCEN = [
 ]
 
 def panel_group(sc, metrics, suffix):
+    """主图: 每个指标一个面板, 类别 = car/bus/ambulance/all + J(531) (与之前版本一致)."""
     colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
     labels = [f"8STD ({sc['exps'][0]})", f"GS-ENUM ({sc['exps'][1]})"]
+    cats = ["car", "bus", "ambulance", "all", "J(531)"]
     n = len(metrics)
-    fig = plt.figure(figsize=(10.2 * n, 5.8))
-    gs = fig.add_gridspec(1, 2 * n, width_ratios=[5, 2.2] * n, wspace=0.38)
-    first_ax = None
-    for i, (mname, d) in enumerate(metrics.items()):
-        ax = fig.add_subplot(gs[0, 2 * i]); axj = fig.add_subplot(gs[0, 2 * i + 1])
-        make_grouped_bar_err(ax, CLS, [d["std"], d["gs"]], [d["std_e"], d["gs_e"]], labels, colors, ylabel=mname)
-        make_grouped_bar_err(axj, JC, [d["jstd"], d["jgs"]], [d["jstd_e"], d["jgs_e"]], labels, colors, ylabel="J of " + mname.split(" (")[0])
-        axj.set_xlim(-0.75, len(JC) - 0.25)
-        first_ax = first_ax or ax
-    first_ax.set_title(sc["name"], loc="left")
-    handles, labs = first_ax.get_legend_handles_labels()
+    fig, axes = plt.subplots(1, n, figsize=(7.2 * n, 5.8)); axes = np.atleast_1d(axes)
+    for ax, (mname, d) in zip(axes, metrics.items()):
+        make_grouped_bar_err(ax, cats, [d["std"] + [d["jstd"][0]], d["gs"] + [d["jgs"][0]]],
+                             [d["std_e"] + [d["jstd_e"][0]], d["gs_e"] + [d["jgs_e"][0]]], labels, colors, ylabel=mname)
+        ax.axvline(3.5, ymax=0.85, color=PALETTE["neutral"], linewidth=1.2, linestyle="--", zorder=0)
+    axes[0].set_title(sc["name"], loc="left")
+    handles, labs = axes[0].get_legend_handles_labels()
     fig.legend(handles, labs, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.02))
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     return finalize_figure(fig, f"experiments/analysis/figures/{sc['name'].lower()}_{suffix}", formats=("png", "pdf"))
+
+def jeq_group(sc, metrics, suffix):
+    """J_eq 单独成图: 每个指标一个面板, 两根柱 (8STD / GS-ENUM), J_eq = 5·amb + 3·bus + 1·car."""
+    colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
+    labels = [f"8STD ({sc['exps'][0]})", f"GS-ENUM ({sc['exps'][1]})"]
+    n = len(metrics)
+    fig, axes = plt.subplots(1, n, figsize=(4.2 * n, 5.4)); axes = np.atleast_1d(axes)
+    for ax, (mname, d) in zip(axes, metrics.items()):
+        make_grouped_bar_err(ax, ["J_eq"], [[d["jstd"][1]], [d["jgs"][1]]], [[d["jstd_e"][1]], [d["jgs_e"][1]]],
+                             labels, colors, ylabel="J_eq of " + mname.split(" (")[0])
+        ax.set_xlim(-0.7, 0.7); ax.set_xticks([])
+    axes[0].set_title(sc["name"], loc="left")
+    handles, labs = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labs, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.02))
+    fig.tight_layout(rect=(0, 0, 1, 0.93))
+    return finalize_figure(fig, f"experiments/analysis/figures/{sc['name'].lower()}_jeq_{suffix}", formats=("png", "pdf"))
 
 def main():
     apply_publication_style(FigureStyle(font_size=16, axes_linewidth=2))
     for sc in SCEN:
         print("saved:", *panel_group(sc, sc["pervisit"], "pervisit"))
         print("saved:", *panel_group(sc, sc["xts"], "xts"))
+        print("saved:", *jeq_group(sc, sc["pervisit"], "pervisit"))
+        print("saved:", *jeq_group(sc, sc["xts"], "xts"))
 
 if __name__ == "__main__":
     main()
