@@ -69,7 +69,8 @@ def main():
     colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
     for sc in SCEN:
         fig, ax = plt.subplots(figsize=(8.5, 5.6))
-        make_grouped_bar_err(ax, CATS, [sc["std"], sc["gs"]], [sc["std_e"], sc["gs_e"]], list(sc["exps"]), colors,
+        make_grouped_bar_err(ax, CATS, [sc["std"], sc["gs"]], [sc["std_e"], sc["gs_e"]],
+                             [f"8STD ({sc['exps'][0]})", f"GS-ENUM ({sc['exps'][1]})"], colors,
                              ylabel="stopped time per visit (s) / J")
         ax.set_title(sc["name"], loc="left")
         ax.axvline(3.5, ymax=0.85, color=PALETTE["neutral"], linewidth=1.2, linestyle="--", zorder=0)
