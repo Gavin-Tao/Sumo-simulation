@@ -75,6 +75,14 @@ SCEN = [
          "xts speed (m/s)":      M([3.62,7.73,8.45,3.73],[0.11,0.30,1.01,0.11],[3.40,7.02,7.04,3.51],[0.09,0.15,0.91,0.09],[4.61,69.07],[0.11,5.16],[4.30,59.65],[0.09,4.60])}),
 ]
 
+def _outdir(sc):
+    """Dublin 图按时段分文件夹 (figures/dublin_11h 等); 1x1/1x3 仍在 figures/ 根目录。"""
+    import os
+    d = "experiments/analysis/figures"
+    if sc["name"].lower().startswith("dublin"):
+        d = os.path.join(d, sc.get("subdir", "dublin_11h")); os.makedirs(d, exist_ok=True)
+    return d
+
 def panel_group(sc, metrics, suffix):
     """主图: 每个指标一个面板, 类别 = car/bus/ambulance/all + J(531) (与之前版本一致)."""
     colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
@@ -90,7 +98,7 @@ def panel_group(sc, metrics, suffix):
     handles, labs = axes[0].get_legend_handles_labels()
     fig.legend(handles, labs, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.02))
     fig.tight_layout(rect=(0, 0, 1, 0.94))
-    return finalize_figure(fig, f"experiments/analysis/figures/{sc['name'].lower()}_{suffix}", formats=("png", "pdf"))
+    return finalize_figure(fig, f"{_outdir(sc)}/{sc['name'].lower()}_{suffix}", formats=("png", "pdf"))
 
 def jeq_group(sc, metrics, suffix):
     """J_eq 单独成图: 每个指标一个面板, 两根柱 (8STD / GS-ENUM), J_eq = 5·amb + 3·bus + 1·car."""
@@ -106,7 +114,7 @@ def jeq_group(sc, metrics, suffix):
     handles, labs = axes[0].get_legend_handles_labels()
     fig.legend(handles, labs, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.02))
     fig.tight_layout(rect=(0, 0, 1, 0.93))
-    return finalize_figure(fig, f"experiments/analysis/figures/{sc['name'].lower()}_jeq_{suffix}", formats=("png", "pdf"))
+    return finalize_figure(fig, f"{_outdir(sc)}/{sc['name'].lower()}_jeq_{suffix}", formats=("png", "pdf"))
 
 def main():
     apply_publication_style(FigureStyle(font_size=16, axes_linewidth=2))
