@@ -1,17 +1,12 @@
-<!-- 2026-09-22 用户令: 救护车探针路线 = weekday_11h 的 4 辆救护车路线与出发时刻逐字复制 (amb_weekday_11h.rou.xml), 小汽车/公交路由不变;
-     目的: 三个时段用同一组救护车路线, 把时段(负载)效应与路线效应分开。原 02h/18h 救护车文件保留不动。 -->
+<!-- 2026-09-22 用户令 (确认版): 救护车探针 = weekday_11h 的 amb_1 (路线/车型/出发车道/出发速度逐字相同, 8 边 556 m, 经 26165126 → cluster_1448439 → 1448436, 终点 129212233#0)。
+     02h 放两辆: amb_1 出发 2029.7 s 与 11h 完全一致; amb_1_early 同路线同设置, 仅出发时刻改为 918.5 s (原 02h 第一辆救护车的出发时刻)。
+     小汽车/公交路由不变; 原 02h 真实救护车文件 amb_weekday_02h.rou.xml 保留不动。 -->
 <routes>
   <vType id="ambulance" vClass="emergency" guiShape="emergency" color="0,1,0" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
-  <vehicle id="amb_0" type="ambulance" depart="497.4" departLane="1" departSpeed="max">
-    <route edges="43538577#3 668344588 3791745#0 3791745#4 4919462#0 128944693#0 128944693#1 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#7 -532427444#6 -532427444#3 -532427444#2 369977731"/>
+  <vehicle id="amb_1_early" type="ambulance" depart="918.5" departLane="0" departSpeed="max">
+    <route edges="372226878#0 5826896#0 5826896#1 317003249#1 317003249#2 -668344588 -43538577#3 129212233#0"/>
   </vehicle>
   <vehicle id="amb_1" type="ambulance" depart="2029.7" departLane="0" departSpeed="max">
     <route edges="372226878#0 5826896#0 5826896#1 317003249#1 317003249#2 -668344588 -43538577#3 129212233#0"/>
-  </vehicle>
-  <vehicle id="amb_2" type="ambulance" depart="2546.0" departLane="0" departSpeed="max">
-    <route edges="-4475730 2294384#0 4472590#0 37721356#0 4078079#1 38192817 gneE51 5976022 341583777#0 532427444#0 532427444#3 532427444#4 532427444#7 16309917#0"/>
-  </vehicle>
-  <vehicle id="amb_3" type="ambulance" depart="2573.7" departLane="1" departSpeed="max">
-    <route edges="43538577#3 668344588 3791745#0 3791745#4 304634278#0 304634278#1 4476043#0"/>
   </vehicle>
 </routes>

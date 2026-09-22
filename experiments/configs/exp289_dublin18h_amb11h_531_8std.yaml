@@ -1,4 +1,4 @@
-# exp289_dublin18h_amb11h_531_8std (2026-09-22 用户令): exp285_dublin18h_531_8std 逐位, 仅换救护车路由为 11h 探针路线 (amb_weekday_18h_probe11h.rou.xml, = 11h 的 4 辆救护车) 与对应 sumocfg; 小汽车/公交路由、网络、全部超参不变。
+# exp289_dublin18h_amb11h_531_8std (2026-09-22 用户令): exp285_dublin18h_531_8std 逐位, 仅换救护车路由为 11h 探针路线 (amb_weekday_18h_probe11h.rou.xml, = 11h 的 amb_1 路线, 一辆 2029.7 s) 与对应 sumocfg; 小汽车/公交路由、网络、全部超参不变。
 # exp285_dublin18h_531_8std (2026-09-21 用户令): exp208_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_stab_obsfix_clamp_eps05_g095 逐位, 仅换时段场景文件 (weekday_11h -> weekday_18h: 三个路由 + sumocfg); 其余逐键相同。
 name: exp289_dublin18h_amb11h_531_8std
 wandb_project: sumo-rl-dublin
