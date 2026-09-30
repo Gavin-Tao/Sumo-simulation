@@ -1,0 +1,178 @@
+{
+ "seeds": [
+  123,
+  126,
+  128,
+  131,
+  132
+ ],
+ "anomalous": [],
+ "best_ep": [
+  200,
+  145
+ ],
+ "Dublin 18:00 rerouted v2, SELECTED subset: 5 seeds with zero ambulance stops in both arms (NOT the main comparison), ambulance probe route, best checkpoints (8STD: exp298 ep200, GS-ENUM: exp300 ep145), 5 evaluation seeds|avg_stopped_time_per_visit": [
+  [
+   "Stopped time / visit (s) - car",
+   3.695279965140972,
+   0.09652543304900796,
+   5.936068967597825,
+   0.07586719346433587,
+   "+61%",
+   "0/5 (ties 0)"
+  ],
+  [
+   "Stopped time / visit (s) - bus",
+   1.1689640118269218,
+   0.09213513267426554,
+   1.1401015758496296,
+   0.08711243394414638,
+   "-2%",
+   "3/5 (ties 0)"
+  ],
+  [
+   "Stopped time / visit (s) - ambulance",
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   "+nan%",
+   "0/5 (ties 5)"
+  ],
+  [
+   "Stopped time / visit (s) - all",
+   3.5705810469506742,
+   0.09349553806396399,
+   5.698472194961054,
+   0.07242776338433492,
+   "+60%",
+   "0/5 (ties 0)"
+  ],
+  [
+   "J(531) weighted cost (per visit)",
+   3.686440228172555,
+   0.0963133118371707,
+   5.8267038914822,
+   0.0750954363705947,
+   "+58%",
+   "0/5"
+  ]
+ ],
+ "Dublin 18:00 rerouted v2, SELECTED subset: 5 seeds with zero ambulance stops in both arms (NOT the main comparison), ambulance probe route, best checkpoints (8STD: exp298 ep200, GS-ENUM: exp300 ep145), 5 evaluation seeds|avg_stop_events_per_visit": [
+  [
+   "Stop events / visit - car",
+   0.5241427792237979,
+   0.01753120476524155,
+   0.7527237766903397,
+   0.011360719849221105,
+   "+44%",
+   "0/5 (ties 0)"
+  ],
+  [
+   "Stop events / visit - bus",
+   0.1794042321327653,
+   0.01269592059150953,
+   0.17106872982722612,
+   0.011773048693153336,
+   "-5%",
+   "4/5 (ties 0)"
+  ],
+  [
+   "Stop events / visit - ambulance",
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   "+nan%",
+   "0/5 (ties 5)"
+  ],
+  [
+   "Stop events / visit - all",
+   0.5071235020704962,
+   0.016755280991301507,
+   0.7239011247025585,
+   0.010679797513546562,
+   "+43%",
+   "0/5 (ties 0)"
+  ],
+  [
+   "J(531) weighted stop events (per visit)",
+   0.5246429571064566,
+   0.0168949192105176,
+   0.7422739756850291,
+   0.010795777315018774,
+   "+41%",
+   "0/5"
+  ]
+ ],
+ "typeswap": {
+  "8STD": {
+   "pv": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     2.5,
+     2.5,
+     2.5
+    ]
+   ],
+   "ev": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.5,
+     0.5,
+     0.5
+    ]
+   ]
+  },
+  "GS": {
+   "pv": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "ev": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  }
+ }
+}
