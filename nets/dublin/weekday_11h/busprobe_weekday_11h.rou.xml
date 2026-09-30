@@ -1,0 +1,7 @@
+<!-- 2026-09-30 评估专用换车型探针: 与 amb_weekday_11h.rou.xml 的 amb_1 相同 (路线/出发 2029.7 s/departLane/departSpeed), 车型改为 bus。
+     只用于 tools/dublin/eval_pervehicle.py 的 routes 参数 (与 car+bus 路由一起, 替换 amb 路由), 不出现在训练配置里。 -->
+<routes>
+  <vehicle id="probe_bus_1" type="bus" depart="2029.7" departLane="0" departSpeed="max">
+    <route edges="372226878#0 5826896#0 5826896#1 317003249#1 317003249#2 -668344588 -43538577#3 129212233#0"/>
+  </vehicle>
+</routes>
