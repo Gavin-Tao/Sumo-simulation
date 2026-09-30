@@ -32,3 +32,7 @@ Cuffe 西行 3675 / 2658 → 4156 / 4384 (基本不变); Harcourt 路口出口 0
   786 辆/h 在非信号口 9101323 让行, 约 150 辆进不了路网) 和 College Green 两条边; 它们对两臂相同 (通过量 613 vs 621), 不回溢进 RL 路口。
 - 两臂相位集逐路口比对: 18 个 RL 路口里 17 个没有包含关系; 只有 cluster_21620852_2383668110_2383668118_4009885977 (Harcourt / St Stephen's Green / Cuffe)
   的 2 个 enum 相位是 8std 相位的真子集 (8std 在 Cuffe 的两个相位里多放了 Harcourt 左转 206 辆/h)。这是 GS 相位枚举在该路口的粒度问题, 与路由无关, 本文件夹未处理。
+
+## 2026-09-30 18:00 补
+
+新增 `dublin_weekday_18h_probe11h_enum_splitslot.sumocfg` (与 `..._probe11h_enum.sumocfg` 只差路网文件: `../dublin_enum_splitslot.net.xml`), 供 exp300 使用。路由文件未动。

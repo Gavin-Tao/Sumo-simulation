@@ -77,3 +77,9 @@ Kevin Street Lower 西出口 (+17 m), 其余文件逐字节相同。机制、验
 第一版 `weekday_18h_reroute/` 把让行冲突搬到了 gneJ47 / Cuffe Street (见其 README 末节), 已由第二版取代:
 177 辆小汽车在 Aungier 进口道 -532427444#2 末端离网 (路线去掉最后一条边), 不经过任何其它让行口。exp298 / exp299 使用第二版。
 三个 18h 文件夹 (原始 / 第一版 / 第二版) 都保留。
+
+## 2026-09-30 补: `dublin_enum_splitslot.net.xml` + `dublin_enum_splitslot_meta.json` (GS 枚举槽粒度修正版)
+
+`enum_phases.py --split-slots --tag splitslot` 生成; 原 `dublin_enum.*` 不动 (无开关运行逐字节相同)。只有路口
+cluster_21620852_2383668110_2383668118_4009885977 不同: 两条被几何分类并槽的连接改归到该进口空着的槽, 菜单 4 → 6 个相位, 包含 8std 的全部相位。
+审计与验证见 `experiments/analysis/GS_ENUM_AUDIT_2026-09-30.txt`。使用它的实验: exp300。

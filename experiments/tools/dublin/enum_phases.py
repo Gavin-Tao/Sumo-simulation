@@ -48,6 +48,56 @@ def _edge_share(mov, i, j):
     return bool(ti & tj)
 
 
+def split_merged_slots(mov, nodes):
+    """槽粒度修正 (2026-09-30 用户批准; 仅 --split-slots 时调用, 默认路径不变)。
+
+    问题: 几何转向分类可能把同一进口的两个不同去向并进同一个槽 (approach, turn)。
+    槽是整体进出的, 其中任一条 link 与别的进口冲突, 整个槽就被判冲突, 于是
+    "只放其中不冲突的那条 link" 的组合在槽粒度上不存在, 枚举器无从生成
+    (cluster_21620852_...: Harcourt 左转 link 5 与 Cuffe 相容, 却因同槽的 link 6 被判冲突)。
+    规则 (只在确实藏住了相容组合时触发, 其它路口逐位不变):
+      槽内 link 去向 >= 2 个, 且存在另一进口的槽 B 使得 "整槽与 B 冲突, 但槽内至少一条
+      link 与 B 完全不冲突" -> 把槽内 netconvert 标注转向 (dir_turn) 与几何转向不同的 link
+      改归到该进口的 (approach, dir_turn) 槽, 前提是那个槽原本为空。
+    原几何转向保留在 conns[*]["turn_geometric"] 供审计。返回 [(link, 旧槽, 新槽), ...]。
+    """
+    st = slot_tables(mov)
+
+    def lconf(i, j):
+        return (not same_arm(mov, i, j) and are_foes(mov, nodes, i, j)) \
+            or _lane_share(mov, i, j)
+
+    moved = []
+    for slot, idxs in sorted(st.items()):
+        if len({c["to_edge"] for i in idxs for c in mov["links"][i]}) < 2:
+            continue
+        hidden = False
+        for sb, ib in st.items():
+            if sb[0] == slot[0]:
+                continue
+            if any(lconf(i, j) for i in idxs for j in ib):
+                free = [i for i in idxs if not any(lconf(i, j) for j in ib)]
+                if free and len(free) < len(idxs):
+                    hidden = True
+        if not hidden:
+            continue
+        cand = []
+        for i in idxs:
+            lab = {c["dir_turn"] for c in mov["links"][i]}
+            if len(lab) == 1:
+                lab = next(iter(lab))
+                if lab in ("L", "T", "R") and lab != slot[1] and (slot[0], lab) not in st:
+                    cand.append((i, lab))
+        if not cand or len(cand) == len(idxs):      # 不把原槽搬空
+            continue
+        for i, lab in cand:
+            for c in mov["links"][i]:
+                c["turn_geometric"] = c["turn"]
+                c["turn"] = lab
+            moved.append((i, list(slot), [slot[0], lab]))
+    return moved
+
+
 def intra_slot_conflicts(mov, nodes, st):
     bad = []
     for slot, idxs in st.items():
@@ -135,7 +185,24 @@ def verify_phase(mov, nodes, state):
 
 def main():
     demoted = os.path.join(common.OUT_DIR, "dublin_8action_demoted.net.xml")
-    src = sys.argv[1] if len(sys.argv) > 1 else demoted
+    # 2026-09-30: 可选开关 (默认全关, 无参数时行为与输出逐位不变):
+    #   --split-slots   启用 split_merged_slots 槽粒度修正
+    #   --tag X         输出 dublin_enum_X.net.xml / dublin_enum_X_meta.json (不覆盖原文件, 不重写 *_enum.sumocfg)
+    #   --out-dir D     输出目录 (默认 nets/dublin; 给出时同样不重写 sumocfg)
+    argv = sys.argv[1:]
+    split = "--split-slots" in argv
+    tag = argv[argv.index("--tag") + 1] if "--tag" in argv else None
+    out_dir = argv[argv.index("--out-dir") + 1] if "--out-dir" in argv else None
+    skip = set()
+    for flag in ("--tag", "--out-dir"):
+        if flag in argv:
+            skip.update({argv.index(flag), argv.index(flag) + 1})
+    pos = [a for k, a in enumerate(argv) if k not in skip and a != "--split-slots"]
+    src = pos[0] if pos else demoted
+    stem = f"dublin_enum_{tag}" if tag else "dublin_enum"
+    NET_ENUM = os.path.join(out_dir or common.OUT_DIR, stem + ".net.xml")
+    META_ENUM = os.path.join(out_dir or common.OUT_DIR, stem + "_meta.json")
+    slot_split = {}
     print("source net:", src)
     net = common.load_net(src)
     tree = ET.parse(src)
@@ -145,6 +212,11 @@ def main():
     for tid in tls_ids:
         mov = common.tls_movements(net, tid)
         nodes = mov["nodes"]
+        if split:
+            moved = split_merged_slots(mov, nodes)
+            if moved:
+                slot_split[tid] = moved
+                print(f"split-slots {tid}: {moved}")
         st = slot_tables(mov)
         bad = intra_slot_conflicts(mov, nodes, st)
         if bad:
@@ -183,11 +255,14 @@ def main():
             ET.SubElement(tl, "phase", duration=dur, state=s)
     tree.write(NET_ENUM, encoding="UTF-8", xml_declaration=True)
     entries, exits = common.boundary_edges(net)
-    json.dump({"action_scheme": "enum_frap", "n_actions": kmax,
-               "source_net": os.path.relpath(src, common.REPO),
-               "boundary": {"entries": sorted(e.getID() for e in entries),
-                            "exits": sorted(e.getID() for e in exits)},
-               "tls": all_meta}, open(META_ENUM, "w"), indent=1)
+    doc = {"action_scheme": "enum_frap", "n_actions": kmax,
+           "source_net": os.path.relpath(src, common.REPO),
+           "boundary": {"entries": sorted(e.getID() for e in entries),
+                        "exits": sorted(e.getID() for e in exits)},
+           "tls": all_meta}
+    if split:                                         # 默认路径不加此键 -> 旧 meta 逐位不变
+        doc["slot_split"] = slot_split
+    json.dump(doc, open(META_ENUM, "w"), indent=1)
     sizes = sorted(m["n_phases"] for m in all_meta.values())
     print(f"TLS: {len(all_meta)}  K_max={kmax}  menu sizes={sizes}  "
           f"mean={sum(sizes) / len(sizes):.1f}")
@@ -202,6 +277,8 @@ def main():
     for w in warn[:8]:
         print("  ", w)
     print(f"wrote {NET_ENUM}\nwrote {META_ENUM}")
+    if tag or out_dir:                                # 变体输出: 不改动既有 *_enum.sumocfg
+        return
     for h in ("02", "11", "18"):
         src_cfg = os.path.join(common.OUT_DIR, f"weekday_{h}h", f"dublin_weekday_{h}h.sumocfg")
         dst_cfg = src_cfg.replace(".sumocfg", "_enum.sumocfg")
