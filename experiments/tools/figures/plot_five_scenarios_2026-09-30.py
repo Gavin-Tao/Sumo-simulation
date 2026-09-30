@@ -41,7 +41,7 @@ def main():
     cells, colors, hdr, titles, dump = [], [], [], [], {}
     for name, loader, amb_na in SCEN:
         rt, re_, seeds = loader(); dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_}
-        hdr.append(len(cells) + 1); titles.append(name)   # 2026-09-30 用户令: 标题只写场景名, 不写 n; cells.append(["", "", "", ""]); colors.append([HEAD] * 4)
+        hdr.append(len(cells) + 1); titles.append(name); cells.append(["", "", "", ""]); colors.append([HEAD] * 4)   # 块标题行 (只写场景名, 用户令)
         for block, tag in ((rt, "t"), (re_, "e")):
             d = 2 if tag == "t" else 3; means = {}
             for row in block:
