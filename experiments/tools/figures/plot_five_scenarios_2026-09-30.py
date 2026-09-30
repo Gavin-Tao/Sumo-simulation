@@ -59,7 +59,7 @@ def main():
         if r == 0: t.set_weight("bold"); t.set_fontsize(11)
         if c == 0 and r > 0: t.set_ha("left"); cell.PAD = 0.012
         if r in hdr and c > 0: cell.set_edgecolor(HEAD)
-    ax.set_title("8STD (template + DQN) vs GS-ENUM (enumerated phases + FRAP): best checkpoints re-evaluated on independent seeds, mean ± s.d. (per visit)", fontsize=12, pad=6)
+    ax.set_title("8STD (template + DQN) vs GS-ENUM (enumerated phases + FRAP), mean ± s.d. per visit", fontsize=12, pad=6)   # 用户令: 去掉 best checkpoints 字样
     fig.canvas.draw(); ren = fig.canvas.get_renderer(); inv = fig.transFigure.inverted()
     for r, title in zip(hdr, titles):
         bb = tbl[r, 0].get_window_extent(ren); x0, y0 = inv.transform((bb.x0, bb.y0)); x1, y1 = inv.transform((bb.x1, bb.y1))
