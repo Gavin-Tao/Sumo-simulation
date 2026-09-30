@@ -1,0 +1,8 @@
+<!-- 2026-09-22 用户令 (确认版): 救护车探针 = weekday_11h 的 amb_1 逐字相同 (路线/车型/出发时刻 2029.7 s/出发车道/出发速度, 8 边 556 m, 经 26165126 → cluster_1448439 → 1448436, 终点 129212233#0)。
+     小汽车/公交路由不变; 原 18h 真实救护车文件 amb_weekday_18h.rou.xml 保留不动。 -->
+<routes>
+  <vType id="ambulance" vClass="emergency" guiShape="emergency" color="0,1,0" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
+  <vehicle id="amb_1" type="ambulance" depart="2029.7" departLane="0" departSpeed="max">
+    <route edges="372226878#0 5826896#0 5826896#1 317003249#1 317003249#2 -668344588 -43538577#3 129212233#0"/>
+  </vehicle>
+</routes>

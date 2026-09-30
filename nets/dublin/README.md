@@ -64,3 +64,10 @@ sumo -c nets/dublin/weekday_HHh/dublin_weekday_HHh.sumocfg
 V3 re-check: add an `edgeData` additional (period 10800, run `-e 10800` for
 cohort-complete counts) and compare per-TLS sums of outgoing-edge `entered`
 against `calibration/scats_targets.json`.
+
+## 2026-09-30 补: `weekday_18h_reroute/` (18h 改道版, 原 `weekday_18h/` 不动)
+
+18h 高峰下, 非信号让行口 cluster_2384200130_2384200132_389663 (Aungier St 南行右转进 Peter's Row, 177 辆/h 让行于 Redmonds Hill 左转 796 辆/h)
+在 RL 动作空间之外锁死, 队列回溢到 RL 路口 389281。`weekday_18h_reroute/` 只把这 177 辆小汽车的出口从 Peter's Row 改到相邻的
+Kevin Street Lower 西出口 (+17 m), 其余文件逐字节相同。机制、验证与被否决方案见该目录 README 与
+`experiments/analysis/DUBLIN_18H_REROUTE_2026-09-30.txt`。
