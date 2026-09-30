@@ -151,12 +151,11 @@ def render(results, out_png):
         cells.append([f"Gridlock checkpoints (any junction mean stop > 100 s) / {a['K']}", str(a["gridlock"]), str(b["gridlock"]), "", ""]); colors.append(["#ffffff"]*5)
     TS=json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json")) if os.path.exists("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json") else {}
     if "8STD" in TS and "GS" in TS:
-        hdr.append(len(cells)+1); titles.append(f"Dublin 02:00, same route & departure, vehicle type swapped: ambulance | bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} runs/arm, evaluation-only, 1 s resolution)"); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
-        for key,lab in (("pv","Stopped time / visit (s): ambulance | bus (same route)"),("ev","Stop events / visit: ambulance | bus (same route)")):
-            a,b=TS["8STD"][key],TS["GS"][key]; col=["#f3f3f3"]*5
-            for i_,v in ((1,a),(2,b)):
-                if v[0]<v[1]: col[i_]=GREEN
-            cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "green: ambulance < bus", ""]); colors.append(col)
+        hdr.append(len(cells)+1); titles.append(f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} runs/arm, re-evaluated checkpoints, 1 s resolution)"); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
+        for key,sdk,lab in (("pv","pv_sd","Stopped time / visit (s)"),("ev","ev_sd","Stop events / visit")):
+            a,b=TS["8STD"][key],TS["GS"][key]; asd,bsd=TS["8STD"][sdk],TS["GS"][sdk]; d=3 if key=="ev" else 2
+            cells.append([f"{lab} - ambulance (probe route)", f"{a[0]:.{d}f} ± {asd[0]:.{d}f}", f"{b[0]:.{d}f} ± {bsd[0]:.{d}f}", f"vs bus: {100*(a[0]/a[1]-1):+.0f}% / {100*(b[0]/b[1]-1):+.0f}%", ""]); colors.append(["#f3f3f3"]*5)
+            cells.append([f"{lab} - bus (same route & time)", f"{a[1]:.{d}f} ± {asd[1]:.{d}f}", f"{b[1]:.{d}f} ± {bsd[1]:.{d}f}", "", ""]); colors.append(["#f3f3f3"]*5)
     fig,ax=plt.subplots(figsize=(16.5,0.3*len(cells)+2)); ax.axis("off")
     tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","GS − 8STD [95% CI] / rel. diff","GS better (ties), Wilcoxon p"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.11,0.11,0.19,0.19])
     tbl.auto_set_font_size(False); tbl.scale(1,1.45)

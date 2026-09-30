@@ -57,13 +57,13 @@ for scen,d,wins in S:
 import json as _json
 TS=_json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json"))
 hdr.append(len(cells)+1); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
-TSWAP_TITLE=f"Dublin 02:00, same route & departure, type swapped: ambulance | bus  (8STD: exp287, GS-ENUM: exp288; ep650-800, {TS['8STD']['n']} runs/arm)"
-for key,lab in (("pv","Stopped time / visit (s): ambulance | bus (same route)"),("ev","Stop events / visit: ambulance | bus (same route)")):
-    a,b=TS["8STD"][key],TS["GS"][key]; col=["#f3f3f3"]*5
-    for i_,v in ((1,a),(2,b)):
-        if v[0]<v[1]: col[i_]=GREEN
-    cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "", "green: amb < bus"]); colors.append(col)
-fig,ax=plt.subplots(figsize=(13.5,42.5)); ax.axis("off")
+TSWAP_TITLE=f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (exp287 / exp288 re-evaluated at ep650-800, {TS['8STD']['n']} runs/arm, 1 s resolution)"
+for key,sdk,lab in (("pv","pv_sd","Stopped time / visit (s)"),("ev","ev_sd","Stop events / visit")):
+    a,b=TS["8STD"][key],TS["GS"][key]; asd,bsd=TS["8STD"][sdk],TS["GS"][sdk]
+    d=3 if key=="ev" else 2
+    cells.append([f"{lab} - ambulance (probe route)", f"{a[0]:.{d}f} ± {asd[0]:.{d}f}", f"{b[0]:.{d}f} ± {bsd[0]:.{d}f}", "", f"vs bus: {100*(a[0]/a[1]-1):+.0f}%, {100*(b[0]/b[1]-1):+.0f}%"]); colors.append(["#f3f3f3"]*5)
+    cells.append([f"{lab} - bus (same route & time)", f"{a[1]:.{d}f} ± {asd[1]:.{d}f}", f"{b[1]:.{d}f} ± {bsd[1]:.{d}f}", "", ""]); colors.append(["#f3f3f3"]*5)
+fig,ax=plt.subplots(figsize=(13.5,43.5)); ax.axis("off")
 tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","Rel. diff","GS wins / paired"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.17,0.17,0.11,0.15])
 tbl.auto_set_font_size(False); tbl.scale(1,1.45)
 for (r,c),cell in tbl.get_celld().items():
