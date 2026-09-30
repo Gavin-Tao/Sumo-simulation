@@ -1,0 +1,6 @@
+<routes>
+  <vType id="ambulance" vClass="emergency" guiShape="emergency" color="0,1,0" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
+  <vehicle id="amb_0" type="ambulance" depart="1083.2" departLane="0" departSpeed="max">
+    <route edges="4074526#0 4074526#4 317003251#0 4078079#1 38192817 gneE51 gneE49 532427445#0 48454248#0 14039718#0"/>
+  </vehicle>
+</routes>

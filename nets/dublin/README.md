@@ -71,3 +71,9 @@ against `calibration/scats_targets.json`.
 在 RL 动作空间之外锁死, 队列回溢到 RL 路口 389281。`weekday_18h_reroute/` 只把这 177 辆小汽车的出口从 Peter's Row 改到相邻的
 Kevin Street Lower 西出口 (+17 m), 其余文件逐字节相同。机制、验证与被否决方案见该目录 README 与
 `experiments/analysis/DUBLIN_18H_REROUTE_2026-09-30.txt`。
+
+## 2026-09-30 补: `weekday_18h_reroute_v2/` (18h 改道第二版, 现行)
+
+第一版 `weekday_18h_reroute/` 把让行冲突搬到了 gneJ47 / Cuffe Street (见其 README 末节), 已由第二版取代:
+177 辆小汽车在 Aungier 进口道 -532427444#2 末端离网 (路线去掉最后一条边), 不经过任何其它让行口。exp298 / exp299 使用第二版。
+三个 18h 文件夹 (原始 / 第一版 / 第二版) 都保留。
