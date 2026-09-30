@@ -199,6 +199,10 @@ def train(cfg: dict, timestamp: str):
         obs_kwargs["awt_basis"] = str(cfg["obs_awt_basis"])
     if "obs_slot_stats" in cfg:      # B only: intent (default) | lane_copy ablation
         obs_kwargs["slot_stats"] = str(cfg["obs_slot_stats"])
+    if "obs_since_green" in cfg:     # 2026-09-30 (B only): 每 movement 距上次绿灯秒数特征, 默认关
+        obs_kwargs["include_since_green"] = bool(cfg["obs_since_green"])
+    if "obs_awt_log" in cfg:         # 2026-09-30 (B only): awt 特征对数刻度 (替代 awt_cap 截断), 默认关
+        obs_kwargs["awt_log"] = bool(cfg["obs_awt_log"])
     if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
         obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
     if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count

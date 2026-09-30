@@ -48,6 +48,24 @@ def build_frap_agent(cfg, tables, env, device):
     slot_dim, rem = divmod(obs_dim - header_dim, 12)
     assert rem == 0, f"obs dim {obs_dim} is not header(2) + 12*slot_dim"
     fp = cfg.get("frap", {}) or {}
+    # frap.score (2026-09-30): learned (默认) | pressure | pressure_only。压力模式需要槽位内 queue / 下游 queue 的位置:
+    # perphase 槽位布局 = [is_green] + φ(5 级 × fields) + ψ(downstream_fields × 5 级, 若开) + lane_occ(若开) + since_green(若开)。
+    score_mode = str(fp.get("score", "learned")); layout = None
+    if score_mode != "learned":
+        from sumo_rl.environment.observations import PRIORITY_LEVELS
+        fields = tuple(cfg.get("obs_fields", ("count", "queue", "mean_awt", "max_awt")))
+        if "queue" not in fields:
+            raise SystemExit("frap.score pressure* requires 'queue' in obs_fields")
+        nl = len(PRIORITY_LEVELS)
+        queue_idx = [1 + (k) * len(fields) + fields.index("queue") for k in range(nl)]
+        down_idx = None
+        if cfg.get("obs_downstream"):
+            dfs = tuple(cfg.get("obs_downstream_fields", ("count", "queue")))
+            if "queue" in dfs:
+                down_idx = [1 + nl * len(fields) + dfs.index("queue") * nl + k for k in range(nl)]
+        layout = dict(queue_idx=queue_idx, down_queue_idx=down_idx, levels=[float(l) for l in PRIORITY_LEVELS])
+        if down_idx is None:
+            print("  → frap.score: 无下游 queue 特征, 压力退化为进口需求 (无出口项)")
     return FRAPAgent(
         obs_dim=obs_dim, header_dim=header_dim, slot_dim=slot_dim,
         tls_tensors=tables["tls"],
@@ -64,7 +82,8 @@ def build_frap_agent(cfg, tables, env, device):
         arch=str(fp.get("arch", "frap")),        # "frap" (default) | "mtt"
         mtt_heads=int(fp.get("mtt_heads", 4)),
         mtt_layers=int(fp.get("mtt_layers", 2)),
-        hold_bias=bool(fp.get("hold_bias", False)))   # 2026-09-02: 当前相位保持偏置, 默认关
+        hold_bias=bool(fp.get("hold_bias", False)),   # 2026-09-02: 当前相位保持偏置, 默认关
+        score_mode=score_mode, layout=layout)         # 2026-09-30: 压力打分, 默认 learned
 
 
 def load_neighbor_map(path, n_neighbors=4):

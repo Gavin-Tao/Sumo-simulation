@@ -1,0 +1,37 @@
+================================================================================
+  GS 侧饿死/死锁修复实现 (2026-09-30, 用户批准 "先做 GS 的: 292 293 294")
+  依据: DUBLIN_18H_GOOD_TO_BAD_2026-09-30 §7 (1448442 饿死北右转 → 两级共享单车道链 → 救护车 1549 s) 与 §6 改进清单。
+  原则: 全部开关默认关闭, 旧配置逐字节不变 (回归摘要 exp208 / exp136 与 tools/frap/regress_baseline.json 一致); 不改奖励、动作空间、训练流程。
+================================================================================
+1. 改动
+  1.1 观测 (sumo_rl/environment/observations.py, PriorityMovement 类; train.py 映射 obs_since_green / obs_awt_log; ckpt_env 同步)
+      - include_since_green: 每个 movement 槽位末尾追加 "距该 movement 上次被放行的秒数" (min(·,600)/100)。类内记录 served 槽位的时间戳,
+        每集重建自动清零; 对空方向也有定义, 不饱和 —— 饿死的直接表征。perphase 槽位维度 27 → 28, 观测 326 → 338。
+      - awt_log: φ 的 mean_awt / max_awt 与 ψ 的 mean_awt 改为 log(1+秒)/log(1+3600) (0..3600 s → 0..1; 500 s → 0.76, 1500 s → 0.89),
+        开启时不再用 awt_cap 截断。锁死态下观测不再成常量。
+  1.2 FRAP 打分 (sumo_rl/agents/frap_agent.py FRAPQNet; frap_glue 读 frap.score 并算槽位布局)
+      - score: learned (默认, 逐位不变, state_dict 键不变) | pressure | pressure_only
+      - 压力 p_i = Σ_level level × queue_{i,level} − Σ_level downqueue_{i,level} (全部取自槽位现有特征; 等级 = 优先级桶编号 1..5,
+        救护车 5 / 公交 3 / 小汽车 1 = 优先级规格; 下游 queue 来自 ψ 块, 无 ψ 时退化为纯需求)
+      - pressure: g_i = p_i × (1 + tanh(g_head(d_i))) —— 零需求方向 g 恰为 0, 出口堵满为负, 网络只学 (0,2) 倍率; 相位分 = Σ_{i∈k} g_i;
+        竞争项 (相位内对相位外取最大再求和) 保留不变。
+      - pressure_only: g_i = p_i, 无竞争项, 无可学参数 → 带优先级权重的纯最大压力控制器 (基线); learn_step 跳过梯度 (日志量置 0);
+        ckpt_env 允许无检查点直接评估。
+      - mtt / mtt_pure 架构与 pressure* 互斥 (报错)。
+  1.3 测试 experiments/tests/test_frap_pressure.py (3 项) + 原 test_frap_hold_bias.py (2 项): 默认模式逐位相同且无新增状态; pressure 下零需求
+      方向 g == 0、有需求出口空 > 0、出口堵满 < 0、等级加权正确、倍率 = 1+tanh; pressure_only 下 Q(k) = Σ_{i∈k} p_i。5/5 通过。
+  1.4 冒烟 (tools/frap/smoke_enum.py, 现可传配置路径): exp292/293/294 各 120 决策步 + 106 次更新, 相位掩码/无 'g'/相位串一致 ✓, 观测 338 ✓,
+      loss 有限; 294 无梯度步 (loss 0)。regress_dryrun 不支持 enum 配置 (对未改动的 290 同样报 KeyError), 不作为依据。
+2. 配置 (experiments/configs, 均克隆自 exp290 = 18h 探针 GS 臂)
+  exp292_dublin18h_amb11h_531_enumfrap_obsfix            + obs_since_green + obs_awt_log
+  exp293_dublin18h_amb11h_531_enumfrap_obsfix_pressure   + frap.score: pressure
+  exp294_dublin18h_amb11h_531_enumfrap_pressure_only     + frap.score: pressure_only, episodes 1 (基线, 用评估工具跑)
+3. 首个基线数据 (exp294 纯最大压力, 无训练, 18h 种子 123, 收集器口径):
+     all/visit 停车 10.68 s (car 10.93, bus 5.98, 救护车 0), 停车次数 0.646;
+     对照同种子 best 检查点: 8STD exp289 13.31, GS exp290 15.52; 285/286 尾 40 均值 16.25 / 20.31。
+     最堵口 389281 116 s (饱和口, 与两臂相同), 1448442 33 s, 26165126 23 s —— 26165126/1448442 那条链没有锁死。
+     → 一个不学习的优先级加权最大压力规则在 18h 上已经优于两个训练过的控制器, 且救护车零停车; 这既是 293 的骨架合理性证据,
+       也是论文必须正面回答的问题 (学习部分到底增益在哪)。单种子, 待 10 种子核实。
+4. 待用户令: 启动 exp292 与 exp293 (并行, 18h 各 ~7 h; 289/290 已停, 内存 11 GB 可用); 294 用 eval_pervehicle --collector 跑 10 种子 即可。
+   完赛后按 DUBLIN_18H_PROBE_PRELIM / best10seeds 口径出表, 重点看: 锁死频率、救护车未完成次数、逐车配对时间损失、1448442 类饿死是否消失。
+================================================================================

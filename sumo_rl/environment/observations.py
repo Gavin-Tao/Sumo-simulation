@@ -9,6 +9,12 @@ from .traffic_signal import TrafficSignal
 from .priority_map import load_priority_table, PRIORITY_LEVELS, DEFAULT_PRIORITY
 
 
+_AWT_LOG_DEN = float(np.log1p(3600.0))
+def _awt_log(sec: float) -> float:
+    """awt_log 归一: log(1+秒)/log(1+3600) ∈ [0,1] (0..3600 s), 500 s→0.76, 1500 s→0.89 —— 可区分且不饱和。"""
+    return float(np.log1p(max(sec, 0.0)) / _AWT_LOG_DEN)
+
+
 def _local_wait(entry: dict, vid, lane, acc: float) -> float:
     """Waiting accrued ON THIS LANE: acc minus the vehicle's accumulated wait
     when first seen on the lane (crossing a junction effectively resets it —
@@ -580,8 +586,20 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  include_lane_occ: bool = False,
                  awt_cap=None,
                  awt_basis: str = "global",
-                 slot_stats: str = "intent"):
+                 slot_stats: str = "intent",
+                 include_since_green: bool = False,
+                 since_green_cap: float = 600.0,
+                 awt_log: bool = False):
         super().__init__(ts)
+        # since_green (2026-09-30, 用户批准; 默认关 → 旧配置逐位不变): 每槽位末尾追加 "距该 movement 上次被放行的秒数"
+        # (min(·, cap)/100)。对空方向也有定义、不饱和, 是饿死的直接表征; 每集 (对象重建) 自动重置。
+        self.include_since_green = bool(include_since_green)
+        self.since_green_cap = float(since_green_cap)
+        self._last_green: dict = {}
+        self._t0 = None
+        # awt_log (2026-09-30; 默认关): mean/max awt 特征改为 log(1+秒)/log(1+3600), 不再用 awt_cap 截断,
+        # 500 s 与 1500 s 可区分, 避免锁死态下观测成常量。
+        self.awt_log = bool(awt_log)
         bad = [f for f in fields if f not in self._ALL_FIELDS]
         if bad:
             raise ValueError(f"unknown φ fields {bad}; allowed {self._ALL_FIELDS}")
@@ -870,6 +888,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
             obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
 
         served = self._phase_serves.get(ts.green_phase, set())
+        if self.include_since_green:
+            _now = float(ts.sumo.simulation.getTime())
+            if self._t0 is None:
+                self._t0 = _now
+            for _s in served:
+                self._last_green[_s] = _now
         for slot in range(self.N_SLOTS):
             if not self._is_legacy:
                 obs.append(1.0 if slot in served else 0.0)      # is_green per movement slot
@@ -877,12 +901,16 @@ class PriorityMovementObservationFunction(ObservationFunction):
             for p in PRIORITY_LEVELS:
                 c, q, sw, mw = slot_stats[slot][p]
                 mean = (sw / c) if c else 0.0
-                if self.awt_cap is not None:          # F2: bound in raw seconds
+                if self.awt_cap is not None and not self.awt_log:   # F2: bound in raw seconds
                     mean = min(mean, self.awt_cap)
                     mw = min(mw, self.awt_cap)
                 if self.normalize:
-                    vals = {"count": c / cap, "queue": q / cap,
-                            "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
+                    if self.awt_log:
+                        vals = {"count": c / cap, "queue": q / cap,
+                                "mean_awt": _awt_log(mean), "max_awt": _awt_log(mw)}
+                    else:
+                        vals = {"count": c / cap, "queue": q / cap,
+                                "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
                 else:
                     vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
                 obs += [vals[f] for f in self.fields]
@@ -908,6 +936,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
                     if f == "mean_awt":
                         for p in PRIORITY_LEVELS:
                             m = (sw[p] / cnt[p]) if cnt[p] else 0.0
+                            if self.awt_log and self.normalize:
+                                obs.append(_awt_log(m)); continue
                             if self.awt_cap is not None:   # F2, same as φ
                                 m = min(m, self.awt_cap)
                             obs.append(m / (self.awt_scale if self.normalize else 1.0))
@@ -926,13 +956,17 @@ class PriorityMovementObservationFunction(ObservationFunction):
                         lane_n[l] = n
                     occ = max(occ, n / self._in_lane_cap[l])
                 obs.append(occ)
+            if self.include_since_green:
+                _last = self._last_green.get(slot, self._t0)
+                obs.append(min(_now - _last, self.since_green_cap) / 100.0)
         return np.array(obs, dtype=np.float32)
 
     def observation_space(self) -> spaces.Box:
         K = 8 if getattr(self.ts, "std_action_map", None) is not None             else self.ts.num_green_phases
         psi_dim = len(PRIORITY_LEVELS) * len(self.downstream_fields) \
             if self.include_downstream else 0
-        slot_dim = self._phi_dim + psi_dim + (1 if self.include_lane_occ else 0)
+        slot_dim = self._phi_dim + psi_dim + (1 if self.include_lane_occ else 0) \
+            + (1 if getattr(self, "include_since_green", False) else 0)
         if self._is_legacy:
             dim = (K + 1) + self.N_SLOTS * slot_dim
         else:

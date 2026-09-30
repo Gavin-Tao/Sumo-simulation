@@ -26,7 +26,7 @@ class FRAPQNet(torch.nn.Module):
     masked-std mode)."""
 
     def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16, k_max=11,
-                 hold_bias=False):
+                 hold_bias=False, score_mode="learned", layout=None):
         super().__init__()
         self.header_dim, self.slot_dim, self.k_max = header_dim, slot_dim, k_max
         # hold_bias (2026-09-02, additive, default OFF -> network byte-identical to
@@ -37,6 +37,21 @@ class FRAPQNet(torch.nn.Module):
         # trainer/replay change. Aggregation stays a fixed formula; b is a
         # single readable "cost of switching" constant.
         self.hold_bias = torch.nn.Parameter(torch.zeros(1)) if hold_bias else None
+        # score_mode (2026-09-30, 用户批准, 默认 "learned" 逐位不变):
+        #   "pressure"      g_i = p_i * (1 + tanh(g_head(d_i)))  —— 方向分以优先级加权压力为骨架, 网络只学 (0,2) 倍率;
+        #                   零需求方向分恰为 0, 出口堵满为负; 竞争项保留。
+        #   "pressure_only" g_i = p_i, 无竞争项 —— 带优先级权重的纯最大压力控制器 (基线, 无需训练)。
+        #   p_i = Σ_level level·queue_{i,level} − Σ_level downqueue_{i,level}, 全部取自槽位现有特征 (layout 给出位置)。
+        if score_mode not in ("learned", "pressure", "pressure_only"):
+            raise ValueError(f"unknown score_mode {score_mode!r}")
+        self.score_mode = score_mode
+        if score_mode != "learned":
+            if not layout or "queue_idx" not in layout:
+                raise ValueError("score_mode pressure* requires layout {queue_idx, down_queue_idx|None, levels}")
+            self.register_buffer("_q_idx", torch.tensor(layout["queue_idx"], dtype=torch.long))
+            self.register_buffer("_lvl_w", torch.tensor(layout.get("levels", list(range(1, len(layout["queue_idx"]) + 1))), dtype=torch.float))
+            dq = layout.get("down_queue_idx")
+            self.register_buffer("_dq_idx", torch.tensor(dq, dtype=torch.long) if dq else torch.zeros(0, dtype=torch.long))
         self.enc = torch.nn.Sequential(
             torch.nn.Linear(slot_dim, embed_dim), torch.nn.ReLU(),
             torch.nn.LayerNorm(embed_dim))
@@ -44,6 +59,24 @@ class FRAPQNet(torch.nn.Module):
         self.pair_fc = torch.nn.Linear(2 * embed_dim, pair_dim)
         self.rel_emb = torch.nn.Embedding(2, pair_dim)      # 0=merge, 1=crossing
         self.s_head = torch.nn.Linear(pair_dim, 1)
+
+    def pressure(self, x):
+        """(B,obs) -> (B,12) 优先级加权压力 p_i (仅 pressure 模式可用)。"""
+        B = x.shape[0]
+        slots = x[:, self.header_dim:].reshape(B, 12, self.slot_dim)
+        D = (slots[:, :, self._q_idx] * self._lvl_w).sum(-1)
+        O = slots[:, :, self._dq_idx].sum(-1) if self._dq_idx.numel() else torch.zeros_like(D)
+        return D - O
+
+    def movement_scores(self, x, exist=None):
+        """(B,obs) -> (B,12) 方向分 g_i (按 score_mode)。"""
+        d = self.encode(x)
+        g = self.g_head(d).squeeze(-1)
+        if self.score_mode == "pressure":
+            g = self.pressure(x) * (1.0 + torch.tanh(g))
+        elif self.score_mode == "pressure_only":
+            g = self.pressure(x)
+        return g
 
     def encode(self, x):
         B = x.shape[0]
@@ -67,8 +100,14 @@ class FRAPQNet(torch.nn.Module):
         B = x.shape[0]
         d = self.encode(x)
         g = self.g_head(d).squeeze(-1)                        # (B,12)
-        s = self.duel_scores(d, rel)                          # (B,12,12)
+        if self.score_mode == "pressure":
+            g = self.pressure(x) * (1.0 + torch.tanh(g))      # 压力骨架 × 学习倍率 (0,2)
+        elif self.score_mode == "pressure_only":
+            g = self.pressure(x)
         q_self = (g.unsqueeze(1) * pm).sum(-1)                # (B,K)
+        if self.score_mode == "pressure_only":
+            return q_self                                     # 纯最大压力: 无竞争项、无保持偏置
+        s = self.duel_scores(d, rel)                          # (B,12,12)
         # cand[b,k,m,n] = 1 iff m in phase k AND (m,n) is a conflict pair
         cand = pm.unsqueeze(-1) * (rel >= 2).float().unsqueeze(1)     # (B,K,12,12)
         masked = s.unsqueeze(1).masked_fill(cand == 0, NEG)   # (B,K,12,12)
@@ -274,11 +313,14 @@ class FRAPAgent:
                  eps_start, eps_end, eps_decay, device, embed_dim=16,
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
                  grad_clip=1.0, target_clip_max=None, arch="frap",
-                 mtt_heads=4, mtt_layers=2, hold_bias=False):
+                 mtt_heads=4, mtt_layers=2, hold_bias=False,
+                 score_mode="learned", layout=None):
         self.device = torch.device(device)
         # arch: "frap" (default, unchanged) | "mtt" (movement-token transformer,
         # same forward contract). Absent key -> "frap" -> byte-identical legacy.
         def _mk():
+            if arch in ("mtt", "mtt_pure") and score_mode != "learned":
+                raise ValueError("frap.score pressure* only supported for arch frap")
             if arch == "mtt":
                 return MTTQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
                                n_heads=mtt_heads, n_layers=mtt_layers)
@@ -287,8 +329,11 @@ class FRAPAgent:
                                    k_max, n_heads=mtt_heads, n_layers=mtt_layers)
             if arch != "frap":
                 raise ValueError(f"unknown frap arch: {arch!r}")
+            if score_mode == "learned":
+                return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
+                                hold_bias=hold_bias)
             return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
-                            hold_bias=hold_bias)
+                            hold_bias=hold_bias, score_mode=score_mode, layout=layout)
         self.q_net = _mk().to(self.device)
         self.target_q_net = _mk().to(self.device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())
@@ -339,6 +384,9 @@ class FRAPAgent:
         mini_size (warm-up convention) AND batch_size (sampling feasibility)."""
         if self.replay_buffer.size() <= max(self.mini_size, self.batch_size):
             return
+        if getattr(self.q_net, "score_mode", "learned") == "pressure_only":
+            # 纯最大压力基线: Q 不含可学参数, 跳过梯度步 (日志量置 0)
+            self.start_train = True; self.loss = 0.0; self.grad_norm = 0.0; self.q_mean = 0.0; self.q_abs_max = 0.0; return
         self.start_train = True
         s, a, r, ns, d, tids = self.replay_buffer.sample(self.batch_size)
         idx = torch.tensor([self._idx[t] for t in tids], device=self.device)

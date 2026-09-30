@@ -21,7 +21,7 @@ def list_ckpts(cfg):
         if ep not in best or os.path.getmtime(p) > os.path.getmtime(best[ep]): best[ep] = p
     return [best[k] for k in sorted(best)]
 
-def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None):
+def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_gui=False):
     """返回 dict(env, act, states, cfg, ckpt, kind, agent)。route_override: 评估专用路由文件列表 (逗号分隔, 相对 experiments/), 只换车不换控制器。act(ts, state) -> (env 动作, 内部动作序号, Q 向量)。"""
     if ckpt: ckpt = os.path.abspath(ckpt)
     cfg_path = find_cfg(exp); cfg = yaml.safe_load(open(cfg_path))
@@ -39,17 +39,23 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None):
     if "obs_awt_cap" in cfg: kw["awt_cap"] = float(cfg["obs_awt_cap"])
     if "obs_awt_basis" in cfg: kw["awt_basis"] = str(cfg["obs_awt_basis"])
     if "obs_slot_stats" in cfg: kw["slot_stats"] = str(cfg["obs_slot_stats"])
+    if "obs_since_green" in cfg: kw["include_since_green"] = bool(cfg["obs_since_green"])
+    if "obs_awt_log" in cfg: kw["awt_log"] = bool(cfg["obs_awt_log"])
     assert cfg["observation_class"] == "PriorityMovement", cfg["observation_class"]
     obs_class = functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
     reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
     env = SumoEnvironment(net_file=cfg["net_file"], route_file=(route_override or cfg["route_file"]), cfg_file=cfg["cfg_file"], out_csv_name=None,
-        use_gui=False, num_seconds=cfg.get("num_seconds", 1000), min_green=cfg.get("min_green", 5), max_green=cfg.get("max_green", 50),
+        use_gui=use_gui, num_seconds=cfg.get("num_seconds", 1000), min_green=cfg.get("min_green", 5), max_green=cfg.get("max_green", 50),
         use_max_green=cfg.get("use_max_green", False), single_agent=False, yellow_time=cfg.get("yellow_time", 2),
         delta_time=cfg.get("delta_time", 5), reward_fn=reward_fn, observation_class=obs_class, sumo_seed=cfg.get("seed", 0),
         sumo_warnings=False, additional_sumo_cmd=extra_sumo)
     seed = seed if seed is not None else int(cfg.get("eval_seed", 123))
-    ckpt = ckpt or list_ckpts(cfg)[-1]
-    ck = torch.load(ckpt, map_location="cpu", weights_only=False)
+    _cks = list_ckpts(cfg); _po = (cfg.get("frap", {}) or {}).get("score") == "pressure_only"
+    if ckpt is None and not _cks and _po:
+        ckpt, ck = "(none: pressure_only 无可学参数)", {"episode": 0}     # 纯最大压力基线不需要权重
+    else:
+        ckpt = ckpt or _cks[-1]
+        ck = torch.load(ckpt, map_location="cpu", weights_only=False)
     meta_file, scheme = cfg.get("action_meta_file"), cfg.get("action_scheme")
     states = env.reset(seed)
     if meta_file:
@@ -83,7 +89,9 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None):
         for tid in env.ts_ids:
             ts = env.traffic_signals[tid]; ts.observation_fn.rebind_movements(tables["turnmap"][tid]); ts.observation_space = ts.observation_fn.observation_space()
         states = {t: env.traffic_signals[t].observation_fn() for t in env.ts_ids}
-        agent = build_frap_agent(cfg, tables, env, "cpu"); agent.q_net.load_state_dict(ck["policy_state_dict"]); agent.q_net.eval(); agent.epsilon = 0.0
+        agent = build_frap_agent(cfg, tables, env, "cpu")
+        if "policy_state_dict" in ck: agent.q_net.load_state_dict(ck["policy_state_dict"])
+        agent.q_net.eval(); agent.epsilon = 0.0
         def act(t, s):
             i = agent._idx[t]; pm, rel, exist, mask = agent._tensors(torch.tensor([i]))
             with torch.no_grad(): q = agent.q_net(torch.tensor(np.asarray(s, dtype=np.float32)).unsqueeze(0), pm, rel, exist)[0].numpy()

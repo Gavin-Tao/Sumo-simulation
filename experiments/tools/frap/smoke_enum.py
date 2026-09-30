@@ -20,6 +20,8 @@ import torch  # noqa: E402
 import yaml  # noqa: E402
 
 CFG = os.path.join(_REPO, "experiments", "configs", "exp211_dublin11h_531_enumfrap.yaml")
+if len(sys.argv) > 1 and sys.argv[1].endswith(".yaml"):   # 2026-09-30: 允许传入其它 enum 配置做冒烟 (默认仍为 exp211)
+    CFG = os.path.abspath(sys.argv[1])
 STEPS = 120
 
 
@@ -47,7 +49,8 @@ def main():
         include_downstream=bool(cfg["obs_downstream"]),
         downstream_fields=tuple(cfg["obs_downstream_fields"]),
         include_lane_occ=bool(cfg["obs_lane_occ"]),
-        awt_cap=float(cfg["obs_awt_cap"]), awt_basis=cfg["obs_awt_basis"])
+        awt_cap=float(cfg["obs_awt_cap"]), awt_basis=cfg["obs_awt_basis"],
+        include_since_green=bool(cfg.get("obs_since_green", False)), awt_log=bool(cfg.get("obs_awt_log", False)))
     reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg["priority_source"]))
     env = SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"],
         cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False,
