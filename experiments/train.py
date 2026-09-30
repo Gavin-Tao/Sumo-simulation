@@ -505,6 +505,7 @@ def train(cfg: dict, timestamp: str):
             use_double=cfg.get("use_double", False),
             loss_fn=cfg.get("loss_fn", "mse"),
             target_clip_max=cfg.get("target_clip_max", None),
+            target_clip_min=cfg.get("target_clip_min", None),
             use_per=cfg.get("use_per", False),
             per_alpha=cfg.get("per_alpha", 0.6),
             per_beta_start=cfg.get("per_beta_start", 0.4),

@@ -54,6 +54,7 @@ class DQN:
                  use_double: bool = False,
                  loss_fn: str = "mse",
                  target_clip_max=None,
+                 target_clip_min=None,
                  use_per: bool = False,
                  per_alpha: float = 0.6,
                  per_beta_start: float = 0.4,
@@ -115,6 +116,8 @@ class DQN:
         # true Q is <= 0, so target_clip_max=0.0 cuts the max-operator's
         # positive ratchet structurally. Default None = original behaviour.
         self.target_clip_max = None if target_clip_max is None else float(target_clip_max)
+        # target_clip_min (2026-09-30): TD 目标下限, 与 target_clip_max 对称; 默认 None 逐位不变 (见 frap_agent.py 同名注释)
+        self.target_clip_min = None if target_clip_min is None else float(target_clip_min)
         self.count = 0  # 计数器,记录更新次数
         self.device = device
         self.loss = None
@@ -198,6 +201,8 @@ class DQN:
                                                                 )  # TD误差目标
         if self.target_clip_max is not None:
             q_targets = q_targets.clamp(max=self.target_clip_max)   # R1 锚
+        if self.target_clip_min is not None:
+            q_targets = q_targets.clamp(min=self.target_clip_min)
 
         # ── Loss: PER 用 importance-sampling 权重加权;否则原 MSE ──
         if 'weights' in transition_dict:

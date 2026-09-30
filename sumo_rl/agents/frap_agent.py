@@ -312,7 +312,7 @@ class FRAPAgent:
                  epsilon, target_update, capacity, mini_size, batch_size,
                  eps_start, eps_end, eps_decay, device, embed_dim=16,
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
-                 grad_clip=1.0, target_clip_max=None, arch="frap",
+                 grad_clip=1.0, target_clip_max=None, target_clip_min=None, arch="frap",
                  mtt_heads=4, mtt_layers=2, hold_bias=False,
                  score_mode="learned", layout=None):
         self.device = torch.device(device)
@@ -346,6 +346,10 @@ class FRAPAgent:
         # R1 stabilization parity with DQN (dqn_agent_txw.py): clamp TD target
         # at the domain bound (all-negative rewards -> true Q <= 0).
         self.target_clip_max = None if target_clip_max is None else float(target_clip_max)
+        # target_clip_min (2026-09-30, 用户批准 "你来定", 默认 None 逐位不变): TD 目标下限, 与 target_clip_max 对称。
+        # 作用 (EXP300_DRIFT §2.2): 一次锁死集把 −10…−60/步的奖励灌进回放池后, 目标可达 −200 以下, 共享小网络被这些样本拖偏
+        # (Q 幅值 5→223, 正常状态的 Q 被污染)。加下限后灾难状态一律记为该值, 仍远差于正常状态 (Q≈−5), 策略照样规避, 但不再拖动网络。
+        self.target_clip_min = None if target_clip_min is None else float(target_clip_min)
         self.use_per, self.start_train = False, False
         self.loss = None
         self.grad_norm = None
@@ -408,6 +412,8 @@ class FRAPAgent:
         tgt = rewards + self.gamma * mnq * (1 - dones)
         if self.target_clip_max is not None:
             tgt = tgt.clamp(max=self.target_clip_max)
+        if self.target_clip_min is not None:
+            tgt = tgt.clamp(min=self.target_clip_min)
         loss = F.smooth_l1_loss(q, tgt) if self.loss_fn == "huber" else F.mse_loss(q, tgt)
         self.loss = loss.item()
         with torch.no_grad():
@@ -459,7 +465,7 @@ class MTTCoLightAgent:
                  epsilon, target_update, capacity, mini_size, batch_size,
                  eps_start, eps_end, eps_decay, device, embed_dim=16,
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
-                 grad_clip=1.0, target_clip_max=None, mtt_heads=4, mtt_layers=2,
+                 grad_clip=1.0, target_clip_max=None, target_clip_min=None, mtt_heads=4, mtt_layers=2,
                  n_neighbors=4):
         self.device = torch.device(device)
         self.n_neighbors = n_neighbors
@@ -478,6 +484,10 @@ class MTTCoLightAgent:
         self.eps_start, self.eps_end, self.eps_decay = eps_start, eps_end, eps_decay
         self.use_double, self.loss_fn, self.grad_clip = use_double, loss_fn, grad_clip
         self.target_clip_max = None if target_clip_max is None else float(target_clip_max)
+        # target_clip_min (2026-09-30, 用户批准 "你来定", 默认 None 逐位不变): TD 目标下限, 与 target_clip_max 对称。
+        # 作用 (EXP300_DRIFT §2.2): 一次锁死集把 −10…−60/步的奖励灌进回放池后, 目标可达 −200 以下, 共享小网络被这些样本拖偏
+        # (Q 幅值 5→223, 正常状态的 Q 被污染)。加下限后灾难状态一律记为该值, 仍远差于正常状态 (Q≈−5), 策略照样规避, 但不再拖动网络。
+        self.target_clip_min = None if target_clip_min is None else float(target_clip_min)
         self.use_per, self.start_train = False, False
         self.loss = self.grad_norm = self.q_mean = self.q_abs_max = None
         self.replay_buffer = MTTCoLightReplayBuffer(capacity)
@@ -537,6 +547,8 @@ class MTTCoLightAgent:
         tgt = rewards + self.gamma * mnq * (1 - dones)
         if self.target_clip_max is not None:
             tgt = tgt.clamp(max=self.target_clip_max)
+        if self.target_clip_min is not None:
+            tgt = tgt.clamp(min=self.target_clip_min)
         loss = F.smooth_l1_loss(q, tgt) if self.loss_fn == "huber" else F.mse_loss(q, tgt)
         self.loss = loss.item()
         with torch.no_grad():
