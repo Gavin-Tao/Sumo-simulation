@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<nodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.20" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/nodes_file.xsd">
+    <location netOffset="-677749.85,-5911444.78" convBoundary="4086.88,1466.99,5491.17,2740.13" origBoundary="-6.368224,53.318846,-6.186539,53.396212" projParameter="+proj=utm +zone=29 +ellps=WGS84 +datum=WGS84 +units=m +no_defs" />
+
+    <node id="130159360" x="4458.07" y="1699.67" type="priority" />
+    <node id="130159362" x="4532.41" y="1697.65" type="priority" />
+    <node id="133307283" x="4317.36" y="1737.97" type="traffic_light" tl="133307283" />
+    <node id="133307292" x="4461.03" y="1755.70" type="priority" />
+    <node id="133307321" x="4416.29" y="1809.77" type="priority" />
+    <node id="133307348" x="4378.08" y="1806.38" type="priority" />
+    <node id="134850078" x="4958.06" y="1999.83" type="priority" />
+    <node id="135109478" x="4589.21" y="2291.79" type="priority" />
+    <node id="135109491" x="4548.76" y="2239.18" type="priority" />
+    <node id="135109495" x="4568.54" y="2235.13" type="priority" />
+    <node id="135109515" x="4474.29" y="2189.77" type="priority" />
+    <node id="135109534" x="4334.76" y="2171.33" type="traffic_light" tl="135109534" />
+    <node id="135109542" x="4285.17" y="2185.94" type="priority" />
+    <node id="1426049017" x="4313.56" y="2740.13" type="dead_end" />
+    <node id="1426051367" x="4261.08" y="2708.43" type="dead_end" />
+    <node id="1426100554" x="4590.31" y="2576.19" type="priority" />
+    <node id="1430847303" x="5151.28" y="2364.38" type="traffic_light" tl="1430847303" />
+    <node id="1431043203" x="4876.64" y="2362.46" type="priority" />
+    <node id="1448436" x="4350.80" y="2602.34" type="traffic_light" tl="1448436" />
+    <node id="1448442" x="4288.32" y="2209.44" type="traffic_light" tl="1448442" />
+    <node id="1488943160" x="4693.93" y="2510.91" type="priority" />
+    <node id="1489245550" x="4897.92" y="2445.08" type="priority" />
+    <node id="2363474208" x="4192.74" y="2220.93" type="dead_end" />
+    <node id="2376143186" x="4495.50" y="2581.32" type="priority" />
+    <node id="2383668109" x="4309.33" y="1873.75" type="priority" />
+    <node id="2383668112" x="4284.59" y="1887.64" type="priority" />
+    <node id="2397311044" x="5269.30" y="2399.53" type="dead_end" />
+    <node id="2413927007" x="4437.29" y="1841.19" type="priority" />
+    <node id="247416072" x="4202.33" y="2062.69" type="dead_end" />
+    <node id="247416073" x="4184.42" y="2096.35" type="dead_end" />
+    <node id="26165090" x="4379.15" y="2054.04" type="traffic_light" tl="26165090" />
+    <node id="26165126" x="4298.92" y="2298.39" type="traffic_light" tl="26165126" />
+    <node id="26165156" x="4343.31" y="2374.21" type="priority" />
+    <node id="26165224" x="4404.74" y="2476.03" type="priority" />
+    <node id="26165229" x="4460.83" y="2480.24" type="priority" />
+    <node id="26165233" x="4516.45" y="2483.70" type="priority" />
+    <node id="26165258" x="4531.49" y="2538.64" type="priority" />
+    <node id="26165637" x="4352.96" y="2564.83" type="priority" />
+    <node id="26165647" x="4396.83" y="2567.02" type="priority" />
+    <node id="26165708" x="4415.37" y="2345.30" type="priority" />
+    <node id="26165710" x="4389.03" y="2273.57" type="priority" />
+    <node id="26166035" x="4223.11" y="1610.57" type="dead_end" />
+    <node id="26911836" x="4420.31" y="2683.77" type="dead_end" />
+    <node id="26911837" x="4424.63" y="2608.85" type="priority" />
+    <node id="26912118" x="4324.53" y="2600.79" type="priority" />
+    <node id="2705322908" x="4198.33" y="2251.79" type="dead_end" />
+    <node id="27434872" x="5314.97" y="1660.37" type="dead_end" />
+    <node id="27434874" x="5265.50" y="1568.92" type="dead_end" />
+    <node id="2876012640" x="4403.72" y="1750.77" type="priority" />
+    <node id="2893792091" x="4624.16" y="2132.46" type="priority" />
+    <node id="3130255643" x="4748.97" y="2109.42" type="priority" />
+    <node id="3130255645" x="4732.26" y="2098.43" type="priority" />
+    <node id="32233860" x="4485.46" y="2085.92" type="priority" />
+    <node id="32235616" x="4501.39" y="2249.42" type="priority" />
+    <node id="32235828" x="4769.73" y="2258.91" type="priority" />
+    <node id="32236033" x="4713.49" y="2363.47" type="priority" />
+    <node id="32236047" x="4698.88" y="2269.08" type="priority" />
+    <node id="32236377" x="4361.01" y="2199.99" type="traffic_light" tl="32236377" />
+    <node id="32237862" x="4434.37" y="2233.81" type="priority" />
+    <node id="3506865299" x="4277.81" y="2104.86" type="priority" />
+    <node id="389281" x="4276.30" y="2088.49" type="traffic_light" tl="389281" />
+    <node id="389332" x="4484.28" y="2615.09" type="traffic_light" tl="389332" />
+    <node id="4106516316" x="4426.40" y="1970.84" type="priority" />
+    <node id="434149480" x="4682.41" y="2197.12" type="priority" />
+    <node id="442374638" x="4876.87" y="2040.19" type="priority" />
+    <node id="453482561" x="4858.76" y="1750.87" type="priority" />
+    <node id="453482563" x="4872.29" y="1766.42" type="priority" />
+    <node id="4836679335" x="4780.82" y="1466.99" type="dead_end" />
+    <node id="508057825" x="4210.90" y="1865.04" type="dead_end" />
+    <node id="5099319590" x="4782.64" y="2353.98" type="priority" />
+    <node id="5166592132" x="5018.48" y="2406.38" type="traffic_light" tl="5166592132" />
+    <node id="5207211666" x="4796.89" y="2479.72" type="priority" />
+    <node id="5345930965" x="4698.19" y="2523.15" type="priority" />
+    <node id="544457885" x="4251.92" y="1865.55" type="priority" />
+    <node id="544460406" x="4253.11" y="1728.55" type="priority" />
+    <node id="5504143189" x="4502.47" y="2617.77" type="priority" />
+    <node id="550879544" x="4523.67" y="2620.90" type="priority" />
+    <node id="57744043" x="4856.94" y="2283.84" type="priority" />
+    <node id="658464" x="5004.61" y="1538.56" type="priority" />
+    <node id="659799" x="5276.10" y="2303.04" type="priority" />
+    <node id="659802" x="5195.29" y="2142.72" type="traffic_light" tl="659802" />
+    <node id="659804" x="5491.17" y="1984.04" type="dead_end" />
+    <node id="659805" x="5096.90" y="1959.36" type="priority" />
+    <node id="659806" x="5067.45" y="1892.29" type="priority" />
+    <node id="799533608" x="4383.73" y="2275.31" type="priority" />
+    <node id="846357104" x="4878.93" y="1766.81" type="priority" />
+    <node id="9101323" x="5121.71" y="1650.64" type="priority" />
+    <node id="9101324" x="5167.29" y="1741.42" type="priority" />
+    <node id="9101424" x="4675.82" y="1810.33" type="priority" />
+    <node id="9101554" x="4370.79" y="1875.31" type="priority" />
+    <node id="9101555" x="4367.00" y="1957.96" type="priority" />
+    <node id="9101658" x="4443.77" y="2273.55" type="priority" />
+    <node id="91709151" x="5031.31" y="1800.33" type="priority" />
+    <node id="cluster_135109528_9101656" x="4396.47" y="2108.59" type="traffic_light" tl="cluster_135109528_9101656" />
+    <node id="cluster_1397032513_2421668802" x="4087.96" y="1696.06" type="dead_end" />
+    <node id="cluster_1426051354_2705523737" x="4244.28" y="2598.51" type="priority" />
+    <node id="cluster_1426051358_1426100603_3206752725_3783453672_3783453675" x="4580.67" y="2630.50" type="priority" />
+    <node id="cluster_1431043168_5166592133" x="4996.21" y="2328.86" type="priority" />
+    <node id="cluster_1448439_2464758361" x="4357.76" y="2473.77" type="traffic_light" tl="cluster_1448439_2464758361" />
+    <node id="cluster_1998326407_2876012598_4781977262_658429" x="4865.82" y="1726.85" type="traffic_light" tl="cluster_1998326407_2876012598_4781977262_658429" />
+    <node id="cluster_21620584_2776327481_3451336529_389455828" x="4495.37" y="1484.28" type="dead_end" />
+    <node id="cluster_21620852_2383668110_2383668118_4009885977" x="4491.84" y="1867.89" type="traffic_light" tl="cluster_21620852_2383668110_2383668118_4009885977" />
+    <node id="cluster_2384200130_2384200132_389663" x="4262.96" y="1966.28" type="priority" />
+    <node id="cluster_2389844198_2389844201_2389844205_2389844211_6039199296" x="5244.03" y="1903.71" type="priority" />
+    <node id="cluster_2498303858_3624079904_6141082777_6141082778_9936781" x="4972.84" y="1996.40" type="traffic_light" tl="cluster_2498303858_3624079904_6141082777_6141082778_9936781" />
+    <node id="cluster_3136024185_659807" x="4951.04" y="1936.66" type="priority" />
+    <node id="cluster_32236375_538053439_9101657" x="4411.87" y="2168.28" type="priority" />
+    <node id="cluster_389339_5593550332" x="4753.97" y="2090.23" type="priority" />
+    <node id="cluster_389667_5421212978" x="4337.42" y="1638.01" type="priority" />
+    <node id="cluster_4405324204_5099319588_5112286596_57744040" x="4776.00" y="2293.83" type="priority" />
+    <node id="cluster_442374639_659809" x="4897.89" y="2033.26" type="priority" />
+    <node id="cluster_449382698_9101552" x="4429.84" y="1871.86" type="priority" />
+    <node id="cluster_5166592137_5166592140_557198554_57744042" x="4973.39" y="2257.84" type="traffic_light" tl="cluster_5166592137_5166592140_557198554_57744042" />
+    <node id="gneJ45" x="4293.98" y="1848.42" type="priority" />
+    <node id="gneJ46" x="4313.50" y="1863.62" type="priority" />
+    <node id="gneJ47" x="4289.17" y="1868.95" type="priority" />
+    <node id="gneJ48" x="4266.82" y="1867.15" type="priority" />
+    <node id="gneJ63" x="4681.39" y="2641.52" type="dead_end" />
+    <node id="gneJ70" x="4657.79" y="2636.28" type="dead_end" />
+</nodes>

@@ -3,6 +3,9 @@
 → Dublin 18:00 剔除 4 个饱和路口 (任一臂尾40均值 >50 s, 两臂对称; 访问量加权, 权重 = 路由文件车辆数, 两臂相同)
 → Dublin 02:00 救护车探针对 (exp287/288, 救护车路线 = 11h amb_1, 两辆): 全量尾40 + 剔除 1 次异常评估 (任一臂任一路口 >50 s: 8STD ep124)
 → Dublin 02:00 best.pth × 10 评估种子 (287 ep770 / 288 ep760, 收集器口径, 停车时间 + 停车次数 + 门) 与其同路换车型块 (2026-09-30)
+→ 1x1 / 1x3 best.pth × 10 评估种子 (274 ep1325 / 263 ep1370; 275 ep1785 / 265 ep580; 用户令 2026-09-30), 排在 02:00 best 块之前 (场景顺序 1x1 → 1x3 → Dublin):
+   异常规则 "任一臂任一路口全车类停车 > 50 s" 两场景均未命中 (最大 37.0 s); 1x1 另附 "对称剔除 Tukey 1.5×IQR 离群种子 128" 块 (1x3 无离群种子, 不出块)。
+   数据来自 plot_best10seeds_table_2026-09-30.py --window 1x1|1x3 的 JSON。
 → Dublin 18:00 两条规则叠加 (剔 4 口 + 剔锁死评估, n=28, 访问量加权)
 → Dublin 18:00 剔除合流口 cluster_21620852 锁死评估 (规则对称: 任一臂该口 all 停车时间 >100 s 的评估两臂同剔;
    尾40 里只有 GS 触发 12 次, 8STD 0 次, 标题如实标注; n=28 配对)。
@@ -75,6 +78,25 @@ for key,sdk,lab in (("pv","pv_sd","Stopped time / visit (s)"),("ev","ev_sd","Sto
     cells.append([f"{lab} - bus (same route & time)", f"{a[1]:.{d}f} ± {asd[1]:.{d}f}", f"{b[1]:.{d}f} ± {bsd[1]:.{d}f}", "", ""]); colors.append(["#f3f3f3"]*5)
     cells.append([f"{lab}: evals with ambulance < bus", _tswins(TS,"8STD",key), _tswins(TS,"GS",key), "", ""]); colors.append(["#ffffff"]*5)
 
+# ── 附加块 (2026-09-30 用户令): 1x1 / 1x3 best.pth × 10 评估种子 (收集器口径, 同种子配对); 全 10 种子块 + (若有) 对称剔除 Tukey 离群种子块 ──
+GRID_TITLES=[]
+def _grid_best(window, e1, e2):
+    B_=_json.load(open(f"experiments/analysis/figures/main_comparison_{window}_best10seeds_2026-09-30_en.json")); epA,epB=B_["best_ep"]; ns=len(B_["seeds"]); tk=B_.get("tukey_outliers",[])
+    for bt in dict.fromkeys(k.split("|")[0] for k in B_ if "|" in k):
+        hdr.append(len(cells)+1); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
+        if "excl." in bt: GRID_TITLES.append(f"{window}, best checkpoints, excl. Tukey-outlier seed {', '.join(map(str,tk))} (1.5 IQR, either arm), n = {ns-len(tk)}  (8STD: exp{e1}, GS-ENUM: exp{e2})")
+        else: GRID_TITLES.append(f"{window}, best checkpoints x {ns} seeds (anomaly rule > {B_['anom_threshold']:.0f} s: no hits)  (8STD: exp{e1} ep{epA}, GS-ENUM: exp{e2} ep{epB})")
+        for m,glab in (("avg_stopped_time_per_visit","Ordering gate (stopped time): amb ≤ bus ≤ car"),("avg_stop_events_per_visit","Ordering gate (stop events): amb ≤ bus ≤ car")):
+            rows=B_[bt+"|"+m]
+            for lab,a,asd,b,bsd,rel,wins in rows:
+                isJ=lab.startswith("J("); col=["#eef3ff" if isJ else "#fafafa"]*5; col[2 if b<a else 1]=GREEN
+                d=3 if (m=="avg_stop_events_per_visit" and not isJ) else 2
+                cells.append([lab, f"{a:.{d}f} ± {asd:.{d}f}", f"{b:.{d}f} ± {bsd:.{d}f}", rel, wins if isJ else ""]); colors.append(col)
+            mean={r[0].split(" - ")[-1]: (r[1], r[3]) for r in rows if " - " in r[0]}
+            g=[gate(mean["ambulance"][i],mean["bus"][i],mean["car"][i]) for i in (0,1)]   # 网格场景救护车每集 1-3 辆 × 10 种子, 两个门都全判 (与上面 1x1/1x3 尾40 块一致)
+            cells.append([glab, g[0], g[1], "", ""]); colors.append(["#ffffff"]*5)
+_grid_best("1x1","274","263"); _grid_best("1x3","275","265")
+
 # ── 附加块 (2026-09-30 用户令): best.pth × 10 评估种子 (287 ep770 / 288 ep760), 收集器口径, 含停车次数; 数据来自 plot_02h_best10seeds_table 的 JSON ──
 _B=_json.load(open("experiments/analysis/figures/main_comparison_02h_best10seeds_2026-09-30_en.json"))
 _bk=[k for k in _B if "best checkpoints (" in k and "excl" not in k]
@@ -110,7 +132,7 @@ for key,lab,d in (("pv","Stopped time / visit (s)",2),("ev","Stop events / visit
     cells.append([f"{lab} - bus (same route & time)", f"{ma[1]:.{d}f} ± {_np.std(a[1]):.{d}f}", f"{mb[1]:.{d}f} ± {_np.std(b[1]):.{d}f}", "", ""]); colors.append(["#f3f3f3"]*5)
     _w=lambda x: f"{sum(1 for p,q in zip(*x) if p<q)}/{len(x[0])} (ties {sum(1 for p,q in zip(*x) if p==q)})"
     cells.append([f"{lab}: evals with ambulance < bus", _w(a), _w(b), "", ""]); colors.append(["#ffffff"]*5)
-fig,ax=plt.subplots(figsize=(13.5,52)); ax.axis("off")
+fig,ax=plt.subplots(figsize=(13.5,max(52,0.3312*len(cells)))); ax.axis("off")   # 原 157 行 = 52 in; 加块后按行数等比加高
 tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","Rel. diff","GS wins / paired"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.17,0.17,0.11,0.15])
 tbl.auto_set_font_size(False); tbl.scale(1,1.45)
 for (r,c),cell in tbl.get_celld().items():
@@ -122,7 +144,7 @@ for (r,c),cell in tbl.get_celld().items():
         if c>0: cell.set_edgecolor("#dde3ea")
 ax.set_title("8STD (template + DQN) vs GS-ENUM (enum + FRAP): tail-40 evaluations, mean ± s.d.",fontsize=13,pad=6)
 fig.canvas.draw(); ren=fig.canvas.get_renderer(); inv=fig.transFigure.inverted()
-for r,scen in zip(hdr,[x[0] for x in S]+[TSWAP_TITLE,BEST_TITLE,BEST_TS_TITLE]):   # 块标题跨列叠加, 不受相邻单元格遮挡
+for r,scen in zip(hdr,[x[0] for x in S]+[TSWAP_TITLE]+GRID_TITLES+[BEST_TITLE,BEST_TS_TITLE]):   # 块标题跨列叠加, 不受相邻单元格遮挡
     bb=tbl[r,0].get_window_extent(ren); x0,y0=inv.transform((bb.x0,bb.y0)); x1,y1=inv.transform((bb.x1,bb.y1))
     fig.text(x0+0.004, (y0+y1)/2, scen, ha="left", va="center", fontsize=10.5, weight="bold", zorder=10)
 from matplotlib.transforms import Bbox

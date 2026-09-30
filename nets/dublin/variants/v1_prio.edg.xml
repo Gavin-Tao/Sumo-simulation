@@ -1,0 +1,705 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<edges xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.20" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/edges_file.xsd">
+    <location netOffset="-677749.85,-5911444.78" convBoundary="4086.88,1466.99,5491.17,2740.13" origBoundary="-6.368224,53.318846,-6.186539,53.396212" projParameter="+proj=utm +zone=29 +ellps=WGS84 +datum=WGS84 +units=m +no_defs" />
+
+    <edge id="-110223240#1" from="5099319590" to="32236033" name="Duke Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4782.64,2353.98 4727.99,2361.48 4713.49,2363.47" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4776.18,2353.25 4727.77,2359.89 4718.70,2361.14" />
+    </edge>
+    <edge id="-125872847#11" from="659805" to="659802" name="Merrion Street Upper" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5096.90,1959.36 5101.43,1965.13 5103.26,1967.46 5115.37,1989.50 5119.62,1998.09 5128.92,2016.36 5141.23,2040.51 5143.83,2045.74 5144.76,2047.57 5146.78,2051.38 5150.86,2059.36 5168.20,2092.12 5174.41,2103.72 5191.52,2135.60 5194.38,2141.06 5195.29,2142.72" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5100.79,1966.91 5101.92,1968.35 5113.95,1990.24 5118.19,1998.81 5127.49,2017.09 5139.80,2041.23 5142.40,2046.46 5143.34,2048.31 5145.36,2052.12 5149.44,2060.10 5166.79,2092.87 5173.00,2104.48 5190.11,2136.35 5190.55,2137.19" />
+    </edge>
+    <edge id="-13866376#4" from="130159362" to="130159360" name="Clonmel Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4532.41,1697.65 4528.54,1697.75 4486.21,1698.93 4464.70,1699.52 4461.92,1699.58 4458.07,1699.67" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4532.37,1696.05 4528.50,1696.15 4486.17,1697.33 4464.66,1697.92 4461.88,1697.98 4461.33,1697.99" />
+    </edge>
+    <edge id="-14039611#0" from="133307321" to="2413927007" name="Montague Lane" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4416.29,1809.77 4418.12,1815.81 4425.51,1828.57 4437.29,1841.19" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4416.54,1816.13 4416.64,1816.45 4424.22,1829.53 4436.12,1842.28" />
+    </edge>
+    <edge id="-14039611#1" from="2876012640" to="133307321" name="Montague Lane" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4403.72,1750.77 4403.13,1757.01 4416.29,1809.77" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4401.59,1756.26 4401.51,1757.13 4412.68,1801.92" />
+    </edge>
+    <edge id="-14039614" from="133307348" to="133307321" name="Montague Court" priority="3" type="highway.residential" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4377.94,1807.97 4407.69,1810.61" />
+    </edge>
+    <edge id="-14039718#5" from="544460406" to="cluster_1397032513_2421668802" name="Camden Row" priority="3" type="highway.residential" numLanes="2" speed="8.33" shape="4253.11,1728.55 4234.11,1725.03 4222.03,1723.06 4174.86,1715.94 4160.07,1713.53 4129.56,1708.56 4095.19,1702.94 4091.59,1702.50 4086.88,1703.28" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4250.09,1723.11 4234.93,1720.30 4222.77,1718.32 4175.60,1711.20 4160.84,1708.79 4130.33,1703.82 4095.87,1698.19 4091.49,1697.65 4088.31,1698.18" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4249.50,1726.25 4234.38,1723.45 4222.28,1721.48 4175.11,1714.36 4160.33,1711.95 4129.82,1706.98 4095.42,1701.36 4091.56,1700.88 4088.83,1701.33" />
+    </edge>
+    <edge id="-14039867#2" from="9101555" to="cluster_2384200130_2384200132_389663" name="Digges Street Upper" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4367.00,1957.96 4335.90,1956.87 4294.93,1955.44 4267.35,1954.47" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4362.27,1956.19 4335.96,1955.27 4294.99,1953.84 4275.38,1953.15" />
+    </edge>
+    <edge id="-14151839#2" from="32236047" to="32235828" name="Anne Street South" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4698.88,2269.08 4725.82,2265.21 4764.17,2259.77 4769.73,2258.91" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4704.69,2269.86 4726.05,2266.79 4764.39,2261.35" />
+    </edge>
+    <edge id="-14152304#1" from="135109534" to="cluster_135109528_9101656" name="Bow Lane East" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4334.76,2171.33 4341.83,2162.70 4386.77,2110.52 4388.37,2108.66 4394.72,2103.71" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4340.73,2166.57 4343.06,2163.73 4387.98,2111.56 4389.15,2110.21" />
+    </edge>
+    <edge id="-14152304#3" from="135109542" to="135109534" name="Bow Lane East" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4285.17,2185.94 4313.16,2182.99 4328.49,2180.45 4332.07,2175.24 4334.76,2171.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4292.59,2186.77 4313.37,2184.58 4329.42,2181.92 4331.99,2178.18" />
+    </edge>
+    <edge id="-14152308" from="32236377" to="135109534" name="Digges Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4361.01,2199.99 4357.51,2190.58 4351.94,2183.28 4334.76,2171.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4360.23,2193.29 4358.93,2189.80 4353.06,2182.11 4341.80,2174.28" />
+    </edge>
+    <edge id="-15464769#0" from="cluster_135109528_9101656" to="cluster_32236375_538053439_9101657" name="Mercer Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4398.22,2113.47 4413.46,2156.46" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4398.07,2117.83 4411.95,2156.99" />
+    </edge>
+    <edge id="-15464769#2" from="26165090" to="cluster_135109528_9101656" name="Mercer Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4379.15,2054.04 4394.72,2103.71" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4379.32,2059.92 4391.33,2098.25" />
+    </edge>
+    <edge id="-238740928#2" from="32235616" to="135109515" name="Clarendon Row" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4501.39,2249.42 4492.12,2227.22 4484.07,2210.30 4480.21,2202.19 4474.29,2189.77" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4500.56,2243.27 4493.58,2226.57 4485.51,2209.61 4481.65,2201.50 4475.73,2189.08" />
+    </edge>
+    <edge id="-304634278#0" from="5504143189" to="389332" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4503.02,2613.00 4491.82,2611.35" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4502.55,2616.17 4491.35,2614.51" />
+    </edge>
+    <edge id="-304634278#1" from="550879544" to="5504143189" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4524.22,2616.13 4503.32,2613.04" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4523.75,2619.29 4502.85,2616.21" />
+    </edge>
+    <edge id="-317003249#1" from="26165637" to="cluster_1448439_2464758361" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4352.96,2564.83 4355.02,2533.68 4357.67,2478.18 4357.75,2476.43" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4354.93,2559.30 4356.62,2533.77 4359.20,2479.65" />
+    </edge>
+    <edge id="-317003249#2" from="1448436" to="26165637" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4352.99,2592.06 4354.24,2570.49" />
+    </edge>
+    <edge id="-341583777#1" from="cluster_2384200130_2384200132_389663" to="2383668112" name="Redmonds Hill" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4267.35,1954.47 4277.70,1914.32 4284.59,1887.64" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4270.89,1947.14 4279.25,1914.72 4285.83,1889.25" />
+    </edge>
+    <edge id="-369564011#1" from="cluster_1448439_2464758361" to="26165156" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4357.78,2471.11 4357.69,2446.83 4356.32,2425.17 4353.65,2410.45 4350.46,2397.46 4347.28,2384.84 4343.31,2374.21" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4359.36,2465.81 4359.29,2446.78 4357.91,2424.98 4355.22,2410.12 4352.01,2397.07 4348.81,2384.36 4346.61,2378.47" />
+    </edge>
+    <edge id="-37264303#1" from="434149480" to="32236047" name="Anne&amp;apos;s Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4682.41,2197.12 4686.42,2226.65 4692.00,2270.07 4698.88,2269.08" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4680.82,2197.34 4684.83,2226.86 4690.62,2271.89 4693.96,2271.40" />
+    </edge>
+    <edge id="-3791031#3" from="1430847303" to="659799" name="Clare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="5151.28,2364.38 5160.55,2361.17 5160.79,2361.05 5181.94,2350.23 5221.58,2330.36 5264.40,2308.90 5276.10,2303.04" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5158.50,2363.57 5161.08,2362.68 5161.51,2362.48 5182.66,2351.66 5222.30,2331.79 5265.12,2310.33 5270.36,2307.70" />
+    </edge>
+    <edge id="-3791745#3" from="26911837" to="1448436" name="Dame Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4424.63,2608.85 4394.58,2605.81 4389.40,2605.35 4362.24,2603.05 4350.80,2602.34" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4419.86,2603.54 4395.05,2601.03 4389.81,2600.57 4362.59,2598.26 4358.26,2597.99" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4419.54,2606.73 4394.74,2604.22 4389.54,2603.76 4362.36,2601.45 4358.06,2601.19" />
+    </edge>
+    <edge id="-3791745#5" from="389332" to="26911837" name="Dame Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4484.28,2615.09 4473.35,2614.00 4424.63,2608.85" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4477.82,2609.62 4473.84,2609.23 4431.06,2604.70" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4477.50,2612.81 4473.51,2612.41 4430.72,2607.88" />
+    </edge>
+    <edge id="-38192815" from="4106516316" to="cluster_449382698_9101552" name="Cuffe Lane" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4426.40,1970.84 4425.29,1967.40 4424.93,1964.76 4429.59,1877.19" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4427.92,1970.35 4426.86,1967.04 4426.54,1964.69 4430.80,1884.53" />
+    </edge>
+    <edge id="-40701185" from="135109478" to="135109491" name="Harry Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4589.21,2291.79 4580.44,2295.47 4574.94,2295.31 4571.00,2292.96 4568.18,2289.10 4548.76,2239.18" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4585.87,2291.46 4580.14,2293.86 4575.40,2293.72 4572.10,2291.75 4569.60,2288.33 4552.60,2244.63" />
+    </edge>
+    <edge id="-4074527#1" from="659804" to="659802" name="Merrion Square South" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5491.17,1984.04 5480.36,1989.84 5461.37,2000.02 5390.47,2038.61 5299.69,2086.10 5249.63,2113.58 5195.29,2142.72" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5490.41,1982.63 5479.60,1988.43 5460.61,1998.61 5389.72,2037.20 5298.93,2084.69 5248.87,2112.17 5200.84,2137.93" />
+    </edge>
+    <edge id="-4074528#4" from="659802" to="659799" name="Merrion Square West" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5195.29,2142.72 5226.09,2203.83 5227.40,2206.43 5267.56,2286.10 5267.71,2286.40 5267.80,2286.58 5268.78,2288.52 5269.19,2289.34 5276.10,2303.04" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5197.05,2149.77 5224.66,2204.55 5225.97,2207.15 5266.13,2286.82 5266.28,2287.12 5266.37,2287.30 5267.35,2289.24 5267.76,2290.06 5269.98,2294.47" />
+    </edge>
+    <edge id="-43321718#3" from="544457885" to="508057825" name="Kevin Street Lower" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4248.09,1863.90 4210.92,1863.44" />
+    </edge>
+    <edge id="-43321722" from="gneJ48" to="544457885" name="Kevin Street Lower" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4269.93,1865.87 4255.85,1864.36" />
+    </edge>
+    <edge id="-43538577#3" from="26912118" to="cluster_1426051354_2705523737" name="Dame Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4324.53,2600.79 4248.77,2598.67" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4318.79,2599.03 4252.73,2597.18" />
+    </edge>
+    <edge id="-4475686#2" from="1426100554" to="1488943160" name="Suffolk Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4590.31,2576.19 4590.47,2574.56 4590.98,2573.04 4592.17,2571.50 4594.22,2569.48 4626.70,2549.58 4682.29,2516.29 4693.93,2510.91" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4594.41,2571.53 4595.21,2570.75 4627.53,2550.95 4683.04,2517.71 4694.60,2512.36" />
+    </edge>
+    <edge id="-4475730" from="27434874" to="9101323" name="Fitzwilliam Square South" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5265.50,1568.92 5131.15,1645.61 5121.71,1650.64" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5264.71,1567.53 5130.38,1644.21 5127.41,1645.79" />
+    </edge>
+    <edge id="-4475731" from="27434872" to="9101324" name="Fitzwilliam Square North" priority="12" type="highway.tertiary" numLanes="1" speed="8.33" shape="5314.97,1660.37 5174.48,1737.83 5167.29,1741.42" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5314.20,1658.97 5173.74,1736.41 5173.00,1736.78" />
+    </edge>
+    <edge id="-47638297#3" from="91709151" to="659806" name="Ely Place Upper" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="5031.31,1800.33 5032.30,1802.81 5034.89,1808.90 5046.42,1838.24 5049.49,1845.96 5058.41,1869.23 5067.45,1892.29" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5029.82,1800.92 5030.82,1803.42 5033.41,1809.51 5044.93,1838.83 5048.00,1846.54 5056.92,1869.81 5063.30,1886.09" />
+    </edge>
+    <edge id="-4919489#0" from="135109491" to="32235616" name="Chatham Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4548.76,2239.18 4509.13,2249.88 4501.39,2249.42" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4542.10,2239.32 4510.93,2247.74" />
+    </edge>
+    <edge id="-4919489#1" from="135109495" to="135109491" name="Chatham Street" priority="4" type="highway.unclassified" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4562.61,2231.44 4554.50,2233.11" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4563.26,2234.58 4555.14,2236.24" />
+    </edge>
+    <edge id="-523892327#0" from="cluster_5166592137_5166592140_557198554_57744042" to="57744043" name="Molesworth Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4966.26,2254.13 4856.94,2283.84" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4965.84,2252.59 4861.82,2280.86" />
+    </edge>
+    <edge id="-532427444#2" from="389281" to="cluster_2384200130_2384200132_389663" name="Aungier Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4276.30,2088.49 4274.24,2066.24 4271.83,2040.24 4264.95,1970.29" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4277.30,2081.97 4275.83,2066.09 4273.42,2040.09 4267.19,1976.67" />
+    </edge>
+    <edge id="-532427444#3" from="3506865299" to="389281" name="Aungier Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4279.39,2104.57 4278.42,2094.03" />
+    </edge>
+    <edge id="-532427444#6" from="135109542" to="3506865299" name="Aungier Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4285.17,2185.94 4282.05,2150.57 4279.37,2120.27 4277.81,2104.86" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4286.13,2178.57 4283.64,2150.43 4280.96,2120.12 4279.42,2104.84" />
+    </edge>
+    <edge id="-532427444#7" from="1448442" to="135109542" name="Aungier Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4289.14,2203.54 4287.72,2192.95" />
+    </edge>
+    <edge id="-532427445#1" from="133307283" to="gneJ45" name="Wexford Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4317.36,1737.97 4312.70,1757.32 4304.36,1798.69 4293.98,1848.42" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4314.52,1742.95 4311.14,1756.97 4302.79,1798.37 4292.44,1847.96" />
+    </edge>
+    <edge id="-53750892#4" from="cluster_442374639_659809" to="cluster_5166592137_5166592140_557198554_57744042" name="Kildare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4899.91,2038.39 4901.37,2041.86 4923.44,2094.09 4935.20,2120.65 4940.45,2136.87 4945.58,2153.58 4951.96,2177.38 4966.36,2227.73 4973.29,2252.21" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4901.25,2045.69 4921.97,2094.73 4933.70,2121.22 4938.92,2137.35 4944.04,2154.02 4950.42,2177.81 4964.82,2228.17 4969.78,2245.69" />
+    </edge>
+    <edge id="-553868718#0" from="5345930965" to="gneJ63" name="Nassau Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4698.19,2523.15 4696.91,2529.29 4699.31,2552.20 4700.92,2569.02 4701.07,2580.58 4700.64,2590.73 4698.96,2597.40 4693.96,2609.85 4687.71,2621.79 4685.52,2626.81 4683.96,2631.15 4681.39,2641.52" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4696.59,2522.96 4695.29,2529.21 4697.72,2552.36 4699.32,2569.11 4699.47,2580.56 4699.05,2590.50 4697.43,2596.90 4692.51,2609.18 4686.27,2621.10 4684.03,2626.22 4682.43,2630.69 4679.84,2641.14" />
+    </edge>
+    <edge id="-553868720" from="5207211666" to="5345930965" name="Nassau Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4796.89,2479.72 4790.79,2481.41 4711.28,2504.96 4707.17,2507.67 4703.39,2510.94 4700.67,2514.80 4699.17,2518.79 4698.19,2523.15" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4793.83,2478.91 4790.35,2479.87 4710.60,2503.49 4706.20,2506.39 4702.19,2509.86 4699.24,2514.05 4697.63,2518.33 4696.66,2522.66" />
+    </edge>
+    <edge id="-554991019" from="26165126" to="1448442" name="Aungier Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4299.76,2291.96 4290.57,2214.79" />
+    </edge>
+    <edge id="-5826896#0" from="26165156" to="26165126" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4343.31,2374.21 4338.35,2364.71 4313.24,2321.94 4300.47,2302.24 4298.92,2298.39" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4342.46,2369.12 4339.75,2363.93 4314.60,2321.10 4302.88,2303.01" />
+    </edge>
+    <edge id="-5976022" from="2383668112" to="gneJ47" name="Redmonds Hill" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4288.19,1879.68 4288.75,1877.37" />
+    </edge>
+    <edge id="-668344588" from="1448436" to="26912118" name="Dame Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4340.51,2600.13 4330.22,2599.52" />
+    </edge>
+    <edge id="-77616869#2" from="cluster_389667_5421212978" to="133307283" name="Camden Street Lower" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4337.22,1642.51 4336.95,1648.52 4326.02,1704.02 4324.68,1709.28 4317.36,1737.97" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4335.62,1642.44 4335.36,1648.33 4324.46,1703.67 4323.13,1708.88 4317.63,1730.42" />
+    </edge>
+    <edge id="-8080825" from="26165647" to="26165224" name="Dame Court" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4398.90,2561.72 4405.86,2481.66" />
+    </edge>
+    <edge id="10577341#0" from="659806" to="91709151" name="Ely Place" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="5067.45,1892.29 5058.41,1869.23 5049.49,1845.96 5046.42,1838.24 5034.89,1808.90 5032.30,1802.81 5031.31,1800.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5066.28,1884.92 5059.90,1868.65 5050.98,1845.38 5047.91,1837.65 5036.37,1808.29 5033.78,1802.19 5032.80,1799.74" />
+    </edge>
+    <edge id="110223240#0" from="32236033" to="5099319590" name="Duke Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4713.49,2363.47 4727.99,2361.48 4782.64,2353.98" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4719.13,2364.31 4728.21,2363.07 4776.61,2356.42" />
+    </edge>
+    <edge id="125872847#0" from="659802" to="659805" name="Merrion Street Upper" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5195.29,2142.72 5194.38,2141.06 5191.52,2135.60 5174.41,2103.72 5168.20,2092.12 5150.86,2059.36 5146.78,2051.38 5144.76,2047.57 5143.83,2045.74 5141.23,2040.51 5128.92,2016.36 5119.62,1998.09 5115.37,1989.50 5103.26,1967.46 5101.43,1965.13 5096.90,1959.36" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5193.35,2135.65 5192.93,2134.85 5175.82,2102.96 5169.61,2091.37 5152.28,2058.62 5148.20,2050.64 5146.18,2046.83 5145.26,2045.02 5142.66,2039.79 5130.35,2015.63 5121.05,1997.37 5116.79,1988.76 5104.60,1966.57 5103.31,1964.93" />
+    </edge>
+    <edge id="128944693#0" from="2376143186" to="26165647" name="Dame Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4495.50,2581.32 4490.28,2577.02 4396.83,2567.02" spreadType="center" disallow="pedestrian tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="pedestrian tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4489.83,2576.97 4403.88,2567.77" />
+    </edge>
+    <edge id="128944693#1" from="26165647" to="26165637" name="Dame Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4389.77,2566.67 4360.18,2565.19" />
+    </edge>
+    <edge id="129212233#0" from="cluster_1426051354_2705523737" to="1426051367" name="Sycamore Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4248.77,2598.67 4249.46,2605.77 4249.88,2610.23 4255.44,2664.74 4256.42,2672.81 4259.07,2692.90 4260.20,2703.78 4261.08,2708.43" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4249.56,2606.78 4249.88,2610.23 4255.44,2664.74 4256.42,2672.81 4259.07,2692.90 4260.20,2703.78 4261.08,2708.43" />
+    </edge>
+    <edge id="13866376#0" from="130159360" to="130159362" name="Clonmel Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4458.07,1699.67 4461.92,1699.58 4464.70,1699.52 4486.21,1698.93 4528.54,1697.75 4532.41,1697.65" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4461.40,1701.19 4461.96,1701.18 4464.74,1701.12 4486.25,1700.53 4528.58,1699.35 4532.45,1699.25" />
+    </edge>
+    <edge id="13890256" from="9101324" to="9101323" name="Fitzwilliam Square West" priority="11" type="highway.secondary" numLanes="2" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5165.50,1734.28 5126.34,1656.29" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5162.64,1735.72 5123.48,1657.72" />
+    </edge>
+    <edge id="14039609#0" from="133307283" to="2876012640" name="Montague Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4317.36,1737.97 4326.89,1737.37 4395.22,1750.05 4403.72,1750.77" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4328.19,1737.61 4395.22,1750.05 4396.53,1750.16" />
+    </edge>
+    <edge id="14039609#2" from="2876012640" to="133307292" name="Montague Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4403.72,1750.77 4422.92,1752.99 4431.00,1753.87 4461.03,1755.70" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4410.91,1751.60 4422.92,1752.99 4431.00,1753.87 4456.21,1755.41" />
+    </edge>
+    <edge id="14039611#0" from="2413927007" to="133307321" name="Montague Lane" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4437.29,1841.19 4425.51,1828.57 4418.12,1815.81 4416.29,1809.77" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4438.46,1840.10 4426.80,1827.61 4419.61,1815.20" />
+    </edge>
+    <edge id="14039611#1" from="133307321" to="2876012640" name="Montague Lane" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4416.29,1809.77 4403.13,1757.01 4403.72,1750.77" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4415.79,1801.14 4404.75,1756.89 4404.78,1756.56" />
+    </edge>
+    <edge id="14039614" from="133307321" to="133307348" name="Montague Court" priority="3" type="highway.residential" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4407.97,1807.43 4378.22,1804.79" />
+    </edge>
+    <edge id="14039718#0" from="544460406" to="cluster_1397032513_2421668802" name="Camden Row" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4253.11,1728.55 4234.11,1725.03 4222.03,1723.06 4174.86,1715.94 4160.07,1713.53 4129.56,1708.56 4095.19,1702.94 4091.59,1702.50 4086.88,1703.28" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4249.50,1726.25 4234.38,1723.45 4222.28,1721.48 4175.11,1714.36 4160.33,1711.95 4129.82,1706.98 4095.42,1701.36 4091.56,1700.88 4088.83,1701.33" />
+    </edge>
+    <edge id="14039867#0" from="cluster_2384200130_2384200132_389663" to="9101555" name="Digges Street Upper" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4267.35,1954.47 4294.93,1955.44 4335.90,1956.87 4367.00,1957.96" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4275.27,1956.35 4294.87,1957.04 4335.84,1958.47 4362.16,1959.39" />
+    </edge>
+    <edge id="14039949#0" from="389281" to="26165090" name="York Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4276.30,2088.49 4308.85,2077.59 4336.27,2068.40 4379.15,2054.04" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4283.57,2086.06 4308.85,2077.59 4336.27,2068.40 4372.29,2056.34" />
+    </edge>
+    <edge id="14151839#0" from="32235828" to="32236047" name="Anne Street South" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4769.73,2258.91 4764.17,2259.77 4725.82,2265.21 4698.88,2269.08" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4763.90,2258.19 4725.59,2263.63 4704.23,2266.70" />
+    </edge>
+    <edge id="14151839#3" from="32236047" to="434149480" name="Anne Street South" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4698.88,2269.08 4692.00,2270.07 4686.42,2226.65 4682.41,2197.12" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4694.23,2268.13 4693.38,2268.25 4688.01,2226.44 4684.00,2196.90" />
+    </edge>
+    <edge id="14151841" from="135109478" to="135109495" name="Chatham Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4587.62,2287.44 4569.64,2238.15" />
+    </edge>
+    <edge id="14151843" from="135109515" to="32235616" name="Clarendon Row" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4474.29,2189.77 4480.21,2202.19 4484.07,2210.30 4492.12,2227.22 4501.39,2249.42" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4472.85,2190.46 4478.77,2202.88 4482.63,2210.99 4490.66,2227.87 4497.60,2244.50" />
+    </edge>
+    <edge id="14152304#0" from="cluster_135109528_9101656" to="135109534" name="Bow Lane East" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4394.72,2103.71 4388.37,2108.66 4386.77,2110.52 4341.83,2162.70 4334.76,2171.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4387.14,2107.64 4385.56,2109.48 4340.60,2161.67 4338.25,2164.54" />
+    </edge>
+    <edge id="14152304#2" from="135109534" to="135109542" name="Bow Lane East" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4334.76,2171.33 4332.07,2175.24 4328.49,2180.45 4313.16,2182.99 4285.17,2185.94" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4329.35,2176.37 4327.56,2178.98 4312.95,2181.40 4292.25,2183.58" />
+    </edge>
+    <edge id="14152308" from="135109534" to="32236377" name="Digges Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4334.76,2171.33 4351.94,2183.28 4357.51,2190.58 4361.01,2199.99" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4339.97,2176.90 4350.82,2184.45 4356.09,2191.36 4357.23,2194.41" />
+    </edge>
+    <edge id="15464767#0" from="26165090" to="9101555" name="Mercer Street" priority="10" type="highway.tertiary" numLanes="2" speed="8.33" shape="4379.15,2054.04 4367.21,2016.00 4365.48,2010.51 4365.01,2002.61 4364.62,1996.08 4367.00,1957.96" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4379.00,2048.22 4368.74,2015.52 4367.07,2010.22 4366.61,2002.51 4366.22,1996.08 4368.30,1962.84" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4375.95,2049.18 4365.68,2016.48 4363.89,2010.80 4363.41,2002.71 4363.02,1996.08 4365.10,1962.64" />
+    </edge>
+    <edge id="15464767#5" from="9101555" to="9101554" name="Mercer Street" priority="10" type="highway.tertiary" numLanes="2" speed="8.33" shape="4367.00,1957.96 4368.66,1919.36 4370.79,1875.31" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4368.80,1953.36 4370.26,1919.43 4372.04,1882.59" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4365.60,1953.22 4367.06,1919.29 4368.84,1882.43" />
+    </edge>
+    <edge id="15464769#0" from="cluster_32236375_538053439_9101657" to="cluster_135109528_9101656" name="Mercer Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4413.46,2156.46 4398.22,2113.47" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4414.97,2155.93 4401.09,2116.76" />
+    </edge>
+    <edge id="15464769#2" from="cluster_135109528_9101656" to="26165090" name="Mercer Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4394.72,2103.71 4379.15,2054.04" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4394.39,2097.30 4382.37,2058.96" />
+    </edge>
+    <edge id="16309917#0" from="1448442" to="2363474208" name="Longford Street Great" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4288.32,2209.44 4233.39,2215.56 4192.74,2220.93" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4277.95,2210.60 4233.39,2215.56 4192.74,2220.93" />
+    </edge>
+    <edge id="2110697#0" from="cluster_21620852_2383668110_2383668118_4009885977" to="26165090" name="St. Stephen&amp;apos;s Green" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4501.40,1880.26 4539.81,1970.99 4551.68,2001.96 4482.82,2021.51 4379.15,2054.04" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4504.27,1887.04 4539.81,1970.99 4551.68,2001.96 4482.82,2021.51 4386.02,2051.88" />
+    </edge>
+    <edge id="2110698#0" from="cluster_442374639_659809" to="cluster_2498303858_3624079904_6141082777_6141082778_9936781" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4899.91,2038.39 4924.82,2028.31 4938.97,2022.67 4960.35,2014.16 4968.72,2010.61" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4907.23,2037.16 4925.42,2029.79 4939.56,2024.16 4960.96,2015.64 4969.34,2012.08" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4906.03,2034.19 4924.22,2026.83 4938.38,2021.18 4959.74,2012.68 4968.10,2009.14" />
+    </edge>
+    <edge id="2294310#0" from="cluster_389339_5593550332" to="3130255643" name="Dawson Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4751.86,2091.08 4749.45,2096.50 4748.46,2104.40 4748.97,2109.42" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4749.33,2097.47 4748.87,2101.16" />
+    </edge>
+    <edge id="2294311#0" from="5166592132" to="cluster_1431043168_5166592133" name="Kildare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="5020.07,2406.19 5017.60,2399.13 5017.19,2395.78 4997.92,2328.49" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5018.37,2401.34 5017.60,2399.13 5017.19,2395.78 4999.85,2335.23" />
+    </edge>
+    <edge id="2294382#0" from="gneJ47" to="2383668109" name="Cuffe Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4289.17,1868.95 4296.21,1872.64 4309.33,1873.75" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4295.58,1874.12 4295.75,1874.21 4300.16,1874.58" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4297.12,1871.11 4300.43,1871.39" />
+    </edge>
+    <edge id="2294382#1" from="2383668109" to="9101554" name="Cuffe Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4308.54,1875.33 4363.54,1876.73" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4308.62,1872.13 4363.62,1873.53" />
+    </edge>
+    <edge id="2294384#0" from="9101323" to="658464" name="Pembroke Street Upper" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="5121.71,1650.64 5104.45,1615.33 5098.31,1605.51 5093.21,1598.18 5053.46,1569.34 5017.21,1545.96 5004.61,1538.56" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5119.94,1643.37 5105.85,1614.55 5099.65,1604.63 5094.37,1597.04 5054.36,1568.02 5018.05,1544.60 5012.56,1541.37" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5117.06,1644.77 5103.05,1616.11 5096.97,1606.39 5092.05,1599.32 5052.56,1570.66 5016.37,1547.32 5010.94,1544.13" />
+    </edge>
+    <edge id="22962979" from="247416073" to="389281" name="Whitefriar Place" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4184.42,2096.35 4194.64,2097.45 4276.30,2088.49" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4184.42,2096.35 4194.64,2097.45 4265.93,2089.63" />
+    </edge>
+    <edge id="229823258" from="gneJ48" to="2383668112" priority="12" type="highway.secondary_link" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4272.88,1874.14 4277.33,1879.27" />
+    </edge>
+    <edge id="229823260" from="2383668112" to="2383668109" priority="6" type="highway.secondary_link" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4291.55,1883.73 4300.99,1878.43" />
+    </edge>
+    <edge id="230483152#0" from="cluster_2389844198_2389844201_2389844205_2389844211_6039199296" to="9101324" name="Pembroke Street Lower" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="5244.80,1897.38 5222.38,1852.91 5202.55,1812.50 5199.48,1806.30 5182.31,1771.69 5167.29,1741.42" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5246.23,1896.66 5223.81,1852.20 5203.99,1811.79 5200.91,1805.59 5183.74,1770.98 5171.92,1747.14" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5243.37,1898.10 5220.95,1853.62 5201.11,1813.21 5198.05,1807.01 5180.88,1772.40 5169.05,1748.57" />
+    </edge>
+    <edge id="24349650" from="32236377" to="1448442" name="Longford Street Little" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4361.01,2199.99 4345.03,2201.34 4319.75,2204.36 4288.32,2209.44" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4353.27,2200.64 4345.03,2201.34 4319.75,2204.36 4295.47,2208.28" />
+    </edge>
+    <edge id="24687121#0" from="26165710" to="26165708" name="Drury Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4389.03,2273.57 4403.89,2314.04 4415.37,2345.30" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4390.89,2278.65 4403.89,2314.04 4413.50,2340.20" />
+    </edge>
+    <edge id="24687121#2" from="26165708" to="26165229" name="Drury Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4415.37,2345.30 4437.12,2410.98 4460.63,2475.86 4460.83,2480.24" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4417.13,2350.60 4437.12,2410.98 4460.29,2474.91" />
+    </edge>
+    <edge id="26545993#0" from="5166592132" to="1430847303" name="Leinster Street South" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="5018.48,2406.38 5027.64,2403.44 5079.14,2386.88 5138.27,2368.44 5151.28,2364.38" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5023.33,2406.50 5028.13,2404.96 5079.62,2388.41 5138.75,2369.97 5146.32,2367.60" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5022.35,2403.46 5027.15,2401.92 5078.66,2385.35 5137.79,2366.91 5145.37,2364.55" />
+    </edge>
+    <edge id="26602093#0" from="32233860" to="cluster_135109528_9101656" name="Glovers Alley" priority="4" type="highway.unclassified" numLanes="2" speed="8.33" shape="4485.46,2085.92 4451.69,2095.50 4435.68,2100.72 4404.80,2111.28 4398.22,2113.47" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4478.48,2082.91 4450.29,2090.91 4434.16,2096.17 4403.54,2106.64" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4479.36,2085.99 4451.22,2093.97 4435.17,2099.20 4404.55,2109.68" />
+    </edge>
+    <edge id="271848004#1" from="cluster_2498303858_3624079904_6141082777_6141082778_9936781" to="cluster_3136024185_659807" name="St. Stephen&amp;apos;s Green" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4977.19,1992.19 4953.07,1935.81" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4977.19,1992.19 4955.86,1942.34" />
+    </edge>
+    <edge id="304634278#0" from="389332" to="5504143189" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4490.42,2620.85 4501.62,2622.50" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4490.88,2617.68 4502.09,2619.33" />
+    </edge>
+    <edge id="304634278#1" from="5504143189" to="550879544" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4501.92,2622.54 4522.81,2625.63" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4502.38,2619.37 4523.28,2622.46" />
+    </edge>
+    <edge id="307805528#0" from="3130255645" to="3130255643" name="Dawson Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4732.26,2098.43 4739.96,2099.59 4742.97,2100.78 4745.32,2103.01 4746.41,2104.91 4748.97,2109.42" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4739.83,2099.57 4739.96,2099.59 4742.97,2100.78 4744.72,2102.44" />
+    </edge>
+    <edge id="317003249#1" from="cluster_1448439_2464758361" to="26165637" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4357.75,2476.43 4357.67,2478.18 4355.02,2533.68 4352.96,2564.83" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4352.81,2479.36 4350.23,2533.41 4348.54,2558.87" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4356.00,2479.50 4353.42,2533.59 4351.74,2559.08" />
+    </edge>
+    <edge id="317003249#2" from="26165637" to="1448436" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4347.85,2570.12 4346.61,2591.70" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4351.04,2570.30 4349.80,2591.88" />
+    </edge>
+    <edge id="317003251#0" from="133307292" to="cluster_21620852_2383668110_2383668118_4009885977" name="Harcourt Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4461.03,1755.70 4468.26,1789.31 4477.28,1822.97 4489.09,1853.89" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4461.92,1759.85 4468.26,1789.31 4477.28,1822.97 4489.09,1853.89" />
+    </edge>
+    <edge id="341583777#0" from="2383668112" to="cluster_2384200130_2384200132_389663" name="Redmonds Hill" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4284.59,1887.64 4277.70,1914.32 4267.35,1954.47" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4279.63,1887.65 4273.05,1913.12 4264.69,1945.54" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4282.73,1888.45 4276.15,1913.92 4267.79,1946.34" />
+    </edge>
+    <edge id="344354262" from="cluster_3136024185_659807" to="846357104" name="St. Stephen&amp;apos;s Green" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4953.07,1935.81 4938.94,1903.59 4908.00,1833.08 4878.93,1766.81" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4950.28,1929.46 4938.94,1903.59 4908.00,1833.08 4885.64,1782.11" />
+    </edge>
+    <edge id="352376956#0" from="3130255645" to="2893792091" name="St. Stephen&amp;apos;s Green" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4732.26,2098.43 4706.74,2105.27 4660.03,2124.27 4647.66,2129.41 4635.42,2132.59 4624.16,2132.46" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4730.49,2098.90 4706.74,2105.27 4660.03,2124.27 4647.66,2129.41 4635.42,2132.59 4624.62,2132.47" />
+    </edge>
+    <edge id="357012332#0" from="cluster_2498303858_3624079904_6141082777_6141082778_9936781" to="134850078" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4965.71,1978.69 4961.96,1989.43 4958.06,1999.83" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4963.41,1985.29 4961.96,1989.43 4958.22,1999.39" />
+    </edge>
+    <edge id="357012332#1" from="134850078" to="cluster_442374639_659809" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4958.06,1999.83 4952.33,2004.12 4943.27,2009.08 4895.87,2028.13" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4957.69,2000.11 4952.33,2004.12 4943.27,2009.08 4902.50,2025.47" />
+    </edge>
+    <edge id="369977731" from="cluster_2384200130_2384200132_389663" to="247416072" name="Peter&amp;apos;s Row" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4256.58,1974.09 4202.33,2062.69" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4255.38,1976.05 4202.33,2062.69" />
+    </edge>
+    <edge id="372226878#0" from="2705322908" to="26165126" name="Stephen Street Upper" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4198.33,2251.79 4206.93,2263.78 4215.70,2274.02 4220.08,2279.14 4224.09,2282.98 4231.93,2289.24 4238.15,2294.04 4249.41,2299.48 4255.04,2301.28 4268.56,2303.78 4278.15,2303.99 4284.64,2303.15 4298.92,2298.39" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4198.33,2251.79 4206.93,2263.78 4215.70,2274.02 4220.08,2279.14 4224.09,2282.98 4231.93,2289.24 4238.15,2294.04 4249.41,2299.48 4255.04,2301.28 4268.56,2303.78 4278.15,2303.99 4284.64,2303.15 4289.14,2301.65" />
+    </edge>
+    <edge id="375772038#0" from="3130255643" to="32235828" name="Dawson Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4748.97,2109.42 4753.42,2141.40 4757.69,2172.16 4757.94,2173.96 4758.78,2179.99 4762.59,2207.44 4766.16,2233.18 4769.73,2258.91" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4749.22,2111.21 4753.42,2141.40 4757.69,2172.16 4757.94,2173.96 4758.78,2179.99 4762.59,2207.44 4766.16,2233.18 4768.74,2251.80" />
+    </edge>
+    <edge id="375772038#6" from="32235828" to="cluster_4405324204_5099319588_5112286596_57744040" name="Dawson Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4769.73,2258.91 4773.41,2285.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4770.73,2266.07 4773.41,2285.33" />
+    </edge>
+    <edge id="37721356#0" from="cluster_1998326407_2876012598_4781977262_658429" to="cluster_21620852_2383668110_2383668118_4009885977" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4863.25,1728.84 4852.58,1733.09 4811.34,1748.25 4669.51,1802.12 4579.61,1839.56 4576.88,1840.59 4508.13,1866.48 4500.92,1868.29 4497.64,1868.66 4496.37,1868.80" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4854.92,1730.44 4852.01,1731.60 4810.78,1746.75 4668.92,1800.63 4579.00,1838.08 4576.32,1839.09 4507.66,1864.95" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4856.10,1733.41 4853.15,1734.58 4811.90,1749.75 4670.10,1803.61 4580.22,1841.04 4577.44,1842.09 4508.61,1868.01 4507.67,1868.24" />
+    </edge>
+    <edge id="3790875#0" from="5207211666" to="1489245550" name="Nassau Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4796.89,2479.72 4806.03,2480.61 4818.28,2476.40 4838.69,2465.08 4897.92,2445.08" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4800.98,2481.73 4806.22,2482.24 4818.93,2477.87 4839.34,2466.55 4893.35,2448.31" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4801.29,2478.54 4805.84,2478.98 4817.63,2474.93 4838.04,2463.61 4892.32,2445.28" />
+    </edge>
+    <edge id="3790875#2" from="1489245550" to="5166592132" name="Nassau Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4897.92,2445.08 4933.56,2433.12 4944.39,2429.49 4980.01,2418.56 5012.03,2408.43 5018.48,2406.38" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4903.96,2444.74 4934.07,2434.64 4944.88,2431.01 4980.49,2420.09 5012.51,2409.96 5014.68,2409.27" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4902.94,2441.71 4933.05,2431.60 4943.90,2427.97 4979.53,2417.03 5011.55,2406.90 5013.71,2406.22" />
+    </edge>
+    <edge id="3791031#0" from="659799" to="1430847303" name="Clare Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="5276.10,2303.04 5264.40,2308.90 5221.58,2330.36 5181.94,2350.23 5160.79,2361.05 5160.55,2361.17 5151.28,2364.38" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5267.50,2301.98 5262.25,2304.61 5219.43,2326.07 5179.77,2345.95 5158.60,2356.78 5156.41,2357.53" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5268.93,2304.84 5263.68,2307.47 5220.86,2328.93 5181.22,2348.80 5160.06,2359.63 5159.93,2359.69 5157.45,2360.55" />
+    </edge>
+    <edge id="3791745#0" from="1448436" to="26911837" name="Dame Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4350.80,2602.34 4362.24,2603.05 4389.40,2605.35 4394.58,2605.81 4424.63,2608.85" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4357.66,2607.58 4361.89,2607.84 4388.99,2610.13 4394.13,2610.59 4418.90,2613.09" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4357.86,2604.38 4362.12,2604.65 4389.26,2606.94 4394.43,2607.40 4419.22,2609.91" />
+    </edge>
+    <edge id="3791745#4" from="26911837" to="389332" name="Dame Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4424.63,2608.85 4473.35,2614.00 4484.28,2615.09" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4430.05,2614.25 4472.85,2618.77 4476.87,2619.17" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4430.38,2611.07 4473.18,2615.59 4477.19,2615.99" />
+    </edge>
+    <edge id="3792427#0" from="659806" to="cluster_3136024185_659807" name="Hume Street" priority="10" type="highway.tertiary" numLanes="2" speed="8.33" shape="5067.45,1892.29 5019.97,1909.46 4960.41,1932.93 4953.07,1935.81" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5060.05,1893.26 5019.40,1907.96 4959.82,1931.44 4957.65,1932.30" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5061.14,1896.27 5020.54,1910.96 4961.00,1934.42 4958.81,1935.27" />
+    </edge>
+    <edge id="3792428" from="659805" to="659806" name="Ely Place" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5096.90,1959.36 5092.73,1953.13 5067.45,1892.29" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5092.68,1953.02 5070.19,1898.87" />
+    </edge>
+    <edge id="3792490#0" from="cluster_2498303858_3624079904_6141082777_6141082778_9936781" to="659805" name="Merrion Row" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4980.11,2005.74 5014.11,1992.20 5027.08,1987.06 5049.31,1978.23 5059.61,1974.15 5085.79,1963.77 5096.90,1959.36" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4988.29,2004.21 5014.70,1993.69 5027.67,1988.55 5049.90,1979.72 5060.20,1975.64 5086.38,1965.26 5091.55,1963.20" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4987.10,2001.23 5013.52,1990.71 5026.49,1985.57 5048.72,1976.74 5059.02,1972.66 5085.20,1962.28 5090.37,1960.23" />
+    </edge>
+    <edge id="3792491#0" from="659805" to="cluster_2389844198_2389844201_2389844205_2389844211_6039199296" name="Baggot Street Lower" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="5096.90,1959.36 5145.65,1940.74 5176.18,1931.27 5191.55,1927.86 5207.52,1924.02 5234.96,1913.79" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5105.26,1957.88 5146.17,1942.25 5176.59,1932.82 5191.91,1929.42 5207.99,1925.55 5235.52,1915.29" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5104.12,1954.89 5145.13,1939.23 5175.77,1929.72 5191.19,1926.30 5207.05,1922.49 5234.40,1912.29" />
+    </edge>
+    <edge id="37956677#0" from="442374638" to="cluster_389339_5593550332" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="3" speed="8.33" shape="4876.87,2040.19 4873.54,2041.54 4857.94,2047.90 4857.19,2048.22 4803.35,2070.12 4797.23,2072.61 4786.34,2077.05 4772.73,2082.59 4756.07,2089.39" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4875.67,2037.22 4872.33,2038.58 4856.73,2044.94 4855.96,2045.27 4802.14,2067.16 4796.02,2069.65 4785.13,2074.09 4771.52,2079.63 4754.86,2086.43" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4876.87,2040.19 4873.54,2041.54 4857.94,2047.90 4857.19,2048.22 4803.35,2070.12 4797.23,2072.61 4786.34,2077.05 4772.73,2082.59 4756.07,2089.39" />
+        <lane index="2" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4878.07,2043.16 4874.75,2044.50 4859.15,2050.86 4858.42,2051.17 4804.56,2073.08 4798.44,2075.57 4787.55,2080.01 4773.94,2085.55 4757.28,2092.35" />
+    </edge>
+    <edge id="38167515" from="32237862" to="cluster_32236375_538053439_9101657" name="Johnson&amp;apos;s Place" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4434.37,2233.81 4436.53,2226.69 4436.49,2219.98 4435.19,2214.47 4431.24,2204.10 4421.08,2176.29" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4434.90,2232.07 4436.53,2226.69 4436.49,2219.98 4435.19,2214.47 4431.24,2204.10 4421.08,2176.29" />
+    </edge>
+    <edge id="38192815" from="cluster_449382698_9101552" to="4106516316" name="Cuffe Lane" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4429.59,1877.19 4424.93,1964.76 4425.29,1967.40 4426.40,1970.84" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4427.61,1884.36 4423.32,1964.83 4423.72,1967.76 4424.88,1971.33" />
+    </edge>
+    <edge id="38192816" from="cluster_449382698_9101552" to="cluster_21620852_2383668110_2383668118_4009885977" name="Cuffe Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4429.59,1877.19 4491.48,1880.29 4501.40,1880.26" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4436.69,1879.15 4479.98,1881.32" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4436.85,1875.95 4480.12,1878.12" />
+    </edge>
+    <edge id="38192817" from="cluster_449382698_9101552" to="gneJ46" name="Cuffe Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4430.08,1866.52 4358.77,1865.46 4313.50,1863.62" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4422.45,1864.81 4358.81,1863.86 4305.36,1861.69" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4422.40,1868.01 4358.73,1867.06 4305.23,1864.89" />
+    </edge>
+    <edge id="4074526#0" from="cluster_21620584_2776327481_3451336529_389455828" to="130159360" name="Harcourt Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4489.81,1484.52 4474.55,1540.39 4469.50,1570.23 4465.33,1603.30 4461.07,1637.15 4459.92,1650.21 4458.07,1699.67" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4490.26,1482.88 4474.55,1540.39 4469.50,1570.23 4465.33,1603.30 4461.07,1637.15 4459.92,1650.21 4458.25,1694.87" />
+    </edge>
+    <edge id="4074526#4" from="130159360" to="133307292" name="Harcourt Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4458.32,1704.41 4460.78,1750.88" />
+    </edge>
+    <edge id="4074527#0" from="659802" to="659804" name="Merrion Square South" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5195.29,2142.72 5249.63,2113.58 5299.69,2086.10 5390.47,2038.61 5461.37,2000.02 5480.36,1989.84 5491.17,1984.04" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5202.35,2140.75 5250.39,2114.99 5300.45,2087.51 5391.22,2040.02 5462.13,2001.43 5481.12,1991.25 5491.93,1985.45" />
+    </edge>
+    <edge id="4074528#0" from="659799" to="659802" name="Merrion Square West" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5276.10,2303.04 5269.19,2289.34 5268.78,2288.52 5267.80,2286.58 5267.71,2286.40 5267.56,2286.10 5227.40,2206.43 5226.09,2203.83 5195.29,2142.72" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5272.84,2293.03 5270.62,2288.62 5270.21,2287.80 5269.23,2285.86 5269.14,2285.68 5268.99,2285.38 5228.83,2205.71 5227.52,2203.11 5199.91,2148.32" />
+    </edge>
+    <edge id="4074531#0" from="1430847303" to="2397311044" name="Lincoln Place" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="5151.28,2364.38 5155.40,2371.33 5167.60,2378.88 5192.99,2395.12 5204.35,2404.32 5217.33,2412.23 5222.51,2413.50 5226.76,2412.89 5246.86,2406.97 5269.30,2399.53" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5153.52,2371.29 5154.22,2372.48 5166.75,2380.23 5192.05,2396.42 5203.43,2405.63 5216.71,2413.73 5222.43,2415.13 5227.10,2414.46 5247.34,2408.50 5269.80,2401.05" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5156.27,2369.66 5156.58,2370.18 5168.45,2377.53 5193.93,2393.82 5205.27,2403.01 5217.95,2410.73 5222.59,2411.87 5226.42,2411.32 5246.38,2405.44 5268.80,2398.01" />
+    </edge>
+    <edge id="4078079#1" from="cluster_21620852_2383668110_2383668118_4009885977" to="cluster_449382698_9101552" name="Cuffe Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4480.51,1868.61 4430.08,1866.52" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4480.58,1867.01 4437.39,1865.22" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4480.44,1870.21 4437.23,1868.42" />
+    </edge>
+    <edge id="419502786#0" from="453482563" to="cluster_3136024185_659807" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="3" speed="8.33" shape="4872.29,1766.42 4873.71,1768.74 4899.95,1828.31 4936.37,1909.77 4940.84,1919.60 4945.86,1930.63 4946.64,1938.59" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4864.20,1759.33 4870.87,1770.23 4897.03,1829.61 4933.45,1911.08 4937.93,1920.93 4942.73,1931.47 4942.87,1932.98" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4866.93,1757.66 4873.71,1768.74 4899.95,1828.31 4936.37,1909.77 4940.84,1919.60 4945.86,1930.63 4945.95,1931.52" />
+        <lane index="2" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4869.66,1755.99 4876.55,1767.25 4902.87,1827.01 4939.29,1908.46 4943.75,1918.27 4948.99,1929.79 4949.02,1930.06" />
+    </edge>
+    <edge id="42636056" from="9101554" to="cluster_449382698_9101552" name="Cuffe Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4370.79,1875.31 4429.59,1877.19" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4377.82,1877.14 4422.25,1878.56" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4377.92,1873.94 4422.29,1875.36" />
+    </edge>
+    <edge id="43321718#3" from="508057825" to="544457885" name="Kevin Street Lower" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4210.88,1866.64 4248.05,1867.10" />
+    </edge>
+    <edge id="43321722" from="544457885" to="gneJ48" name="Kevin Street Lower" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4255.16,1870.73 4269.25,1872.24" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4255.50,1867.54 4269.59,1869.06" />
+    </edge>
+    <edge id="43538577#3" from="cluster_1426051354_2705523737" to="26912118" name="Dame Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4248.77,2598.67 4324.53,2600.79" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4252.55,2603.58 4318.61,2605.43" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4252.64,2600.38 4318.70,2602.23" />
+    </edge>
+    <edge id="43538584" from="26911836" to="26911837" name="Fownes Street Upper" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4420.31,2683.77 4424.47,2612.48 4424.63,2608.85" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4420.31,2683.77 4424.07,2619.34" />
+    </edge>
+    <edge id="4401661#0" from="26912118" to="1426049017" name="Eustace Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4324.53,2600.79 4323.79,2613.59 4322.58,2642.72 4322.02,2651.75 4318.98,2681.92 4313.56,2740.13" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4323.93,2611.22 4323.79,2613.59 4322.58,2642.72 4322.02,2651.75 4318.98,2681.92 4313.56,2740.13" />
+    </edge>
+    <edge id="4472590#0" from="658464" to="cluster_1998326407_2876012598_4781977262_658429" name="Leeson Street Lower" priority="11" type="highway.secondary" numLanes="3" speed="8.33" shape="5004.61,1538.56 4997.32,1549.06 4978.28,1576.98 4952.44,1615.83 4940.53,1633.75 4930.12,1648.49 4926.91,1652.89 4925.27,1655.27 4900.52,1692.26 4889.81,1705.44 4874.45,1721.60" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4998.24,1542.12 4994.68,1547.25 4975.63,1575.19 4949.78,1614.06 4937.89,1631.94 4927.51,1646.63 4924.31,1651.03 4922.62,1653.47 4897.94,1690.36 4887.40,1703.33 4872.13,1719.40" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5000.87,1543.94 4997.32,1549.06 4978.28,1576.98 4952.44,1615.83 4940.53,1633.75 4930.12,1648.49 4926.91,1652.89 4925.27,1655.27 4900.52,1692.26 4889.81,1705.44 4874.45,1721.60" />
+        <lane index="2" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5003.50,1545.77 4999.96,1550.87 4980.93,1578.77 4955.10,1617.60 4943.17,1635.56 4932.73,1650.35 4929.51,1654.75 4927.92,1657.07 4903.10,1694.16 4892.22,1707.55 4876.77,1723.80" />
+    </edge>
+    <edge id="4472595#0" from="2893792091" to="32233860" name="St. Stephen&amp;apos;s Green" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4624.16,2132.46 4614.05,2125.91 4607.10,2120.62 4599.33,2110.39 4588.39,2084.06 4582.75,2071.68 4569.75,2043.14 4478.76,2065.79 4485.46,2085.92" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4623.77,2132.21 4614.05,2125.91 4607.10,2120.62 4599.33,2110.39 4588.39,2084.06 4582.75,2071.68 4569.75,2043.14 4478.76,2065.79 4482.15,2075.98" />
+    </edge>
+    <edge id="4475686#0" from="1488943160" to="1426100554" name="Suffolk Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4693.93,2510.91 4682.29,2516.29 4626.70,2549.58 4594.22,2569.48 4592.17,2571.50 4590.98,2573.04 4590.47,2574.56 4590.31,2576.19" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4693.26,2509.46 4681.54,2514.87 4625.87,2548.21 4593.23,2568.21 4590.97,2570.44 4590.63,2570.87" />
+    </edge>
+    <edge id="4475687" from="1426100554" to="cluster_1426051358_1426100603_3206752725_3783453672_3783453675" name="Church Lane" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4590.31,2576.19 4588.63,2597.20 4586.71,2620.50" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4588.51,2578.57 4587.04,2597.07 4585.67,2613.70" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4591.70,2578.83 4590.22,2597.33 4588.85,2613.96" />
+    </edge>
+    <edge id="4475730" from="9101323" to="27434874" name="Fitzwilliam Square South" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5121.71,1650.64 5131.15,1645.61 5265.50,1568.92" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5128.92,1648.61 5131.92,1647.01 5266.29,1570.31" />
+    </edge>
+    <edge id="4475731" from="9101324" to="27434872" name="Fitzwilliam Square North" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="5167.29,1741.42 5174.48,1737.83 5314.97,1660.37" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="5174.43,1739.64 5175.22,1739.25 5315.74,1661.77" />
+    </edge>
+    <edge id="4476043#0" from="550879544" to="cluster_1426051358_1426100603_3206752725_3783453672_3783453675" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4522.75,2623.97 4556.97,2630.96 4571.65,2634.74" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4522.90,2625.63 4556.61,2632.52 4572.20,2636.53" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4523.54,2622.50 4557.33,2629.40 4572.39,2633.28" />
+    </edge>
+    <edge id="4476051#0" from="cluster_389339_5593550332" to="3130255645" name="St. Stephen&amp;apos;s Green" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4751.86,2091.08 4744.90,2093.69 4736.34,2096.90 4732.26,2098.43" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4746.78,2092.99 4744.90,2093.69 4739.43,2095.74" />
+    </edge>
+    <edge id="4628796#1" from="cluster_1998326407_2876012598_4781977262_658429" to="4836679335" name="Earlsfort Terrace" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4858.17,1714.00 4842.40,1662.66 4828.93,1619.83 4827.52,1615.36 4826.37,1611.71 4822.55,1599.58 4817.12,1582.32 4815.20,1576.21 4780.82,1466.99" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4859.70,1713.53 4843.93,1662.19 4830.46,1619.35 4829.05,1614.88 4827.90,1611.23 4824.08,1599.10 4818.65,1581.84 4816.73,1575.73 4782.35,1466.51" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4856.64,1714.47 4840.87,1663.13 4827.40,1620.31 4825.99,1615.84 4824.84,1612.19 4821.02,1600.06 4815.59,1582.80 4813.67,1576.69 4779.29,1467.47" />
+    </edge>
+    <edge id="4629169#0" from="cluster_21620852_2383668110_2383668118_4009885977" to="9101424" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4501.40,1880.26 4505.20,1880.27 4508.18,1879.45 4514.73,1877.74 4529.62,1868.28 4601.53,1839.86 4675.82,1810.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4507.72,1879.58 4508.18,1879.45 4514.73,1877.74 4529.62,1868.28 4601.53,1839.86 4675.82,1810.33" />
+    </edge>
+    <edge id="4629169#5" from="9101424" to="453482561" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4675.82,1810.33 4756.87,1778.08 4818.79,1752.99 4843.82,1745.15 4851.24,1746.45 4858.76,1750.87" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4675.82,1810.33 4756.87,1778.08 4818.79,1752.99 4843.82,1745.15 4851.24,1746.45 4858.48,1750.70" />
+    </edge>
+    <edge id="4629169#8" from="453482561" to="453482563" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4858.76,1750.87 4865.64,1760.25 4872.29,1766.42" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4858.96,1751.14 4859.23,1751.51" />
+    </edge>
+    <edge id="48454248#0" from="133307283" to="544460406" name="Camden Row" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4317.36,1737.97 4312.77,1737.26 4253.11,1728.55" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4310.46,1736.92 4257.06,1729.13" />
+    </edge>
+    <edge id="4919459#0" from="cluster_1448439_2464758361" to="26165224" name="Exchequer Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4357.78,2471.11 4378.69,2473.07 4404.74,2476.03" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4365.24,2471.81 4378.69,2473.07 4397.67,2475.23" />
+    </edge>
+    <edge id="4919459#1" from="26165224" to="26165229" name="Exchequer Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4411.85,2476.56 4455.45,2479.84" />
+    </edge>
+    <edge id="4919459#2" from="26165229" to="26165233" name="Exchequer Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4460.83,2480.24 4469.47,2480.78 4516.45,2483.70" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4465.85,2480.55 4469.47,2480.78 4510.51,2483.33" />
+    </edge>
+    <edge id="4919460" from="32236377" to="799533608" name="Digges Lane" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4362.54,2205.06 4382.08,2269.85" />
+    </edge>
+    <edge id="4919462#0" from="389332" to="2376143186" name="Trinity Street" priority="4" type="highway.unclassified" numLanes="2" speed="8.33" shape="4484.28,2615.09 4487.11,2591.26 4495.50,2581.32" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4487.08,2605.12 4488.64,2591.93 4493.09,2586.66" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4483.90,2604.74 4485.58,2590.59 4490.64,2584.60" />
+    </edge>
+    <edge id="4919462#1" from="2376143186" to="26165258" name="Trinity Street" priority="4" type="highway.unclassified" numLanes="2" speed="8.33" shape="4495.50,2581.32 4506.33,2568.48 4531.49,2538.64" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4500.31,2578.10 4507.55,2569.51 4529.69,2543.26" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4497.86,2576.04 4505.11,2567.45 4527.24,2541.20" />
+    </edge>
+    <edge id="4919463#0" from="26165258" to="1426100554" name="Saint Andrew Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4531.49,2538.64 4553.65,2552.79 4590.31,2576.19" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4536.98,2542.15 4553.65,2552.79 4584.85,2572.70" />
+    </edge>
+    <edge id="4919471#0" from="26165126" to="799533608" name="Stephen Street Lower" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4298.92,2298.39 4331.26,2287.65 4383.73,2275.31" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4306.13,2296.00 4331.26,2287.65 4378.18,2276.62" />
+    </edge>
+    <edge id="4919471#2" from="799533608" to="26165710" name="Stephen Street Lower" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4386.27,2274.48 4386.46,2274.41" />
+    </edge>
+    <edge id="4919471#3" from="26165710" to="32237862" name="Stephen Street Lower" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4389.03,2273.57 4407.69,2265.23 4417.97,2257.43 4425.74,2246.78 4434.37,2233.81" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4393.92,2271.38 4407.69,2265.23 4417.97,2257.43 4425.74,2246.78 4431.08,2238.76" />
+    </edge>
+    <edge id="4919487#0" from="32235616" to="9101658" name="Chatham Row" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4501.39,2249.42 4496.63,2250.91 4480.26,2257.99 4443.77,2273.55" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4494.45,2251.85 4480.26,2257.99 4449.03,2271.31" />
+    </edge>
+    <edge id="4919489#0" from="32235616" to="135109491" name="Chatham Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4501.39,2249.42 4509.13,2249.88 4548.76,2239.18" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4510.75,2251.10 4542.93,2242.41" />
+    </edge>
+    <edge id="4919491" from="135109491" to="135109478" name="Balfe Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4548.76,2239.18 4568.18,2289.10 4571.00,2292.96 4574.94,2295.31 4580.44,2295.47 4589.21,2291.79" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4549.61,2245.79 4566.76,2289.87 4569.90,2294.17 4574.48,2296.90 4580.74,2297.08 4587.11,2294.41" />
+    </edge>
+    <edge id="4919501#0" from="32236033" to="32236047" name="Duke Lane Upper" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4713.49,2363.47 4705.94,2314.69 4698.88,2269.08" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4712.40,2356.45 4705.94,2314.69 4699.98,2276.21" />
+    </edge>
+    <edge id="4919535#1" from="cluster_32236375_538053439_9101657" to="32236377" name="Noel Purcell Walk" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4401.08,2172.09 4383.99,2185.14 4361.01,2199.99" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4401.08,2172.09 4383.99,2185.14 4367.42,2195.85" />
+    </edge>
+    <edge id="4919538" from="26165708" to="26165156" name="Fade Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4410.19,2347.38 4349.60,2371.68" />
+    </edge>
+    <edge id="4919615#0" from="26165233" to="9101658" name="William Street South" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4516.45,2483.70 4514.22,2467.04 4511.28,2450.78 4510.57,2448.77 4507.44,2439.86 4500.81,2420.99 4489.66,2392.48 4486.21,2383.43 4469.53,2337.78 4443.77,2273.55" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4515.66,2477.81 4514.22,2467.04 4511.28,2450.78 4510.57,2448.77 4507.44,2439.86 4500.81,2420.99 4489.66,2392.48 4486.21,2383.43 4469.53,2337.78 4445.84,2278.72" />
+    </edge>
+    <edge id="4919615#4" from="9101658" to="32237862" name="William Street South" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4443.77,2273.55 4439.33,2260.61 4436.52,2248.41 4434.81,2238.08 4434.37,2233.81" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4441.91,2268.14 4439.33,2260.61 4436.52,2248.41 4435.08,2239.71" />
+    </edge>
+    <edge id="4919616#0" from="26165258" to="26165233" name="Saint Andrew Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4531.49,2538.64 4528.85,2533.85 4525.76,2528.27 4516.45,2483.70" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4528.44,2533.11 4525.76,2528.27 4517.65,2489.43" />
+    </edge>
+    <edge id="4919617" from="26165233" to="32235616" name="Wicklow Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4516.45,2483.70 4575.07,2480.08 4580.68,2478.39 4612.00,2463.14 4589.06,2414.25 4569.59,2372.74 4562.09,2357.04 4550.84,2336.10 4507.55,2256.26 4501.39,2249.42" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4522.29,2483.34 4575.07,2480.08 4580.68,2478.39 4612.00,2463.14 4589.06,2414.25 4569.59,2372.74 4562.09,2357.04 4550.84,2336.10 4508.02,2257.12" />
+    </edge>
+    <edge id="521969635#0" from="5099319590" to="5207211666" name="Dawson Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4782.64,2353.98 4794.84,2445.45 4795.42,2449.75 4797.32,2463.02 4797.85,2468.35 4797.96,2472.92 4797.68,2477.32 4796.89,2479.72" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4784.47,2367.68 4794.84,2445.45 4795.42,2449.75 4797.32,2463.02 4797.85,2468.35 4797.96,2472.92 4797.89,2474.10" />
+    </edge>
+    <edge id="521969636" from="1431043203" to="1489245550" name="South Frederick Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4878.43,2369.40 4896.09,2437.99" />
+    </edge>
+    <edge id="523892321#0" from="5099319590" to="cluster_4405324204_5099319588_5112286596_57744040" name="Dawson Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4784.03,2354.77 4784.07,2351.46 4785.82,2348.16 4778.90,2296.36" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4785.73,2347.51 4779.84,2303.41" />
+    </edge>
+    <edge id="523892327#0" from="57744043" to="cluster_5166592137_5166592140_557198554_57744042" name="Molesworth Street" priority="10" type="highway.tertiary" numLanes="1" speed="8.33" shape="4856.94,2283.84 4966.26,2254.13" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4862.66,2283.94 4966.68,2255.67" />
+    </edge>
+    <edge id="524737392#0" from="cluster_1431043168_5166592133" to="cluster_5166592137_5166592140_557198554_57744042" name="Kildare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4997.92,2328.49 4978.79,2261.96" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4995.87,2321.35 4978.79,2261.96" />
+    </edge>
+    <edge id="52879956" from="cluster_3136024185_659807" to="cluster_2498303858_3624079904_6141082777_6141082778_9936781" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4948.08,1937.89 4965.71,1978.69" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4949.46,1945.11 4970.95,1994.86" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4952.39,1943.84 4973.90,1993.60" />
+    </edge>
+    <edge id="52879957#1" from="cluster_1426051358_1426100603_3206752725_3783453672_3783453675" to="550879544" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4573.12,2620.54 4523.65,2617.70" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4573.21,2618.94 4524.83,2616.16" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4573.03,2622.14 4524.18,2619.33" />
+    </edge>
+    <edge id="532097269#1.24" from="gneJ70" to="cluster_1426051358_1426100603_3206752725_3783453672_3783453675" name="College Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4657.79,2636.28 4586.71,2620.50" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4658.14,2634.72 4593.59,2620.39" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4657.44,2637.84 4592.90,2623.51" />
+    </edge>
+    <edge id="532427444#0" from="cluster_2384200130_2384200132_389663" to="389281" name="Aungier Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4264.95,1970.29 4271.83,2040.24 4274.24,2066.24 4276.30,2088.49" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4260.82,1977.30 4267.05,2040.70 4269.46,2066.68 4270.93,2082.56" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4264.00,1976.99 4270.24,2040.39 4272.65,2066.39 4274.12,2082.27" />
+    </edge>
+    <edge id="532427444#3" from="389281" to="3506865299" name="Aungier Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4272.04,2094.62 4273.02,2105.16" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4275.23,2094.32 4276.20,2104.87" />
+    </edge>
+    <edge id="532427444#4" from="3506865299" to="135109542" name="Aungier Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4277.81,2104.86 4279.37,2120.27 4282.05,2150.57 4285.17,2185.94" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4273.05,2105.48 4274.59,2120.72 4277.27,2150.99 4279.75,2179.13" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4276.23,2105.16 4277.78,2120.42 4280.46,2150.71 4282.94,2178.85" />
+    </edge>
+    <edge id="532427444#7" from="135109542" to="1448442" name="Aungier Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4281.38,2193.80 4282.80,2204.39" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4284.55,2193.38 4285.97,2203.96" />
+    </edge>
+    <edge id="532427445#0" from="gneJ45" to="133307283" name="Wexford Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4293.98,1848.42 4304.36,1798.69 4312.70,1757.32 4317.36,1737.97" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4295.57,1848.61 4305.93,1799.01 4314.26,1757.67 4317.63,1743.69" />
+    </edge>
+    <edge id="532435056#1" from="cluster_5166592137_5166592140_557198554_57744042" to="cluster_1431043168_5166592133" name="Kildare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4975.24,2263.05 4994.51,2329.23" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4975.24,2263.05 4992.50,2322.32" />
+    </edge>
+    <edge id="532435057#0" from="cluster_1431043168_5166592133" to="5166592132" name="Kildare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4994.51,2329.23 5012.96,2395.55 5015.16,2399.87 5017.06,2407.11" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4996.44,2336.18 5012.96,2395.55 5015.16,2399.87 5015.79,2402.25" />
+    </edge>
+    <edge id="53750891#0" from="cluster_4405324204_5099319588_5112286596_57744040" to="5099319590" name="Dawson Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4775.03,2296.95 4775.95,2303.80 4781.93,2348.69 4781.05,2354.19" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4775.97,2303.93 4781.74,2347.27" />
+    </edge>
+    <edge id="53750892#0" from="cluster_5166592137_5166592140_557198554_57744042" to="cluster_442374639_659809" name="Kildare Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4973.29,2252.21 4966.36,2227.73 4951.96,2177.38 4945.58,2153.58 4940.45,2136.87 4935.20,2120.65 4923.44,2094.09 4901.37,2041.86 4899.91,2038.39" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4972.86,2244.82 4967.90,2227.29 4953.50,2176.95 4947.12,2153.14 4941.98,2136.39 4936.70,2120.08 4924.91,2093.45 4904.20,2044.44" />
+    </edge>
+    <edge id="553868718#1" from="5345930965" to="5207211666" name="Nassau Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4698.19,2523.15 4699.17,2518.79 4700.67,2514.80 4703.39,2510.94 4707.17,2507.67 4711.28,2504.96 4790.79,2481.41 4796.89,2479.72" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4699.78,2523.36 4700.71,2519.25 4702.10,2515.55 4704.59,2512.02 4708.14,2508.95 4711.96,2506.43 4791.23,2482.95 4794.68,2481.99" />
+    </edge>
+    <edge id="554991019" from="1448442" to="26165126" name="Aungier Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4287.39,2215.17 4296.59,2292.33" />
+    </edge>
+    <edge id="5826896#0" from="26165126" to="26165156" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4298.92,2298.39 4300.47,2302.24 4313.24,2321.94 4338.35,2364.71 4343.31,2374.21" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4296.84,2305.46 4309.15,2324.46 4334.15,2367.04 4336.78,2372.08" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4299.86,2304.24 4311.88,2322.78 4336.95,2365.49 4339.62,2370.60" />
+    </edge>
+    <edge id="5826896#1" from="26165156" to="cluster_1448439_2464758361" name="South Great George&amp;apos;s Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4343.31,2374.21 4347.28,2384.84 4350.46,2397.46 4353.65,2410.45 4356.32,2425.17 4357.69,2446.83 4357.78,2471.11" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4340.61,2380.71 4342.69,2386.27 4345.80,2398.62 4348.95,2411.45 4351.55,2425.75 4352.89,2446.99 4352.96,2465.83" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4343.61,2379.59 4345.75,2385.32 4348.91,2397.85 4352.08,2410.78 4354.73,2425.36 4356.09,2446.88 4356.16,2465.82" />
+    </edge>
+    <edge id="59604115" from="cluster_442374639_659809" to="442374638" name="St. Stephen&amp;apos;s Green" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4895.87,2028.13 4885.91,2032.16 4876.87,2040.19" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4888.40,2029.43 4885.05,2030.78 4882.79,2032.80" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4889.60,2032.39 4886.77,2033.54 4884.91,2035.19" />
+    </edge>
+    <edge id="5976022" from="gneJ47" to="2383668112" name="Redmonds Hill" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4282.54,1875.84 4281.97,1878.15" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4285.65,1876.61 4285.08,1878.91" />
+    </edge>
+    <edge id="668344588" from="26912118" to="1448436" name="Dame Street" priority="11" type="highway.secondary" numLanes="2" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4329.85,2605.91 4340.13,2606.52" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4330.03,2602.72 4340.32,2603.32" />
+    </edge>
+    <edge id="74233405#1" from="gneJ63" to="5345930965" name="Grafton Street" priority="11" type="highway.secondary" numLanes="1" speed="8.33" shape="4681.39,2641.52 4683.96,2631.15 4685.52,2626.81 4687.71,2621.79 4693.96,2609.85 4698.96,2597.40 4700.64,2590.73 4701.07,2580.58 4700.92,2569.02 4699.31,2552.20 4696.91,2529.29 4698.19,2523.15" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4682.94,2641.90 4685.49,2631.61 4687.01,2627.40 4689.15,2622.48 4695.41,2610.52 4700.49,2597.90 4702.23,2590.96 4702.67,2580.60 4702.52,2568.93 4700.90,2552.04 4698.53,2529.37 4699.73,2523.62" />
+    </edge>
+    <edge id="77616869#0" from="133307283" to="cluster_389667_5421212978" name="Camden Street Lower" priority="11" type="highway.secondary" numLanes="2" speed="8.33" shape="4317.36,1737.97 4324.68,1709.28 4326.02,1704.02 4336.95,1648.52 4337.22,1642.51" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4323.84,1732.00 4329.33,1710.47 4330.70,1705.08 4341.73,1649.09 4342.02,1642.73" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4320.74,1731.21 4326.23,1709.68 4327.58,1704.37 4338.54,1648.71 4338.82,1642.58" />
+    </edge>
+    <edge id="7849019#2" from="cluster_4405324204_5099319588_5112286596_57744040" to="57744043" name="Molesworth Street" priority="10" type="highway.tertiary" numLanes="2" speed="8.33" shape="4778.90,2296.36 4780.97,2296.05 4848.18,2285.93 4856.94,2283.84" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4784.56,2297.13 4848.49,2287.50 4851.98,2286.67" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4784.09,2293.96 4847.87,2284.36 4851.24,2283.56" />
+    </edge>
+    <edge id="7849021#0" from="57744043" to="1431043203" name="South Frederick Street" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" shape="4856.94,2283.84 4869.79,2333.93 4876.64,2362.46" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4858.71,2290.73 4869.79,2333.93 4874.94,2355.40" />
+    </edge>
+    <edge id="7849022#0" from="1431043203" to="cluster_1431043168_5166592133" name="Setanta Place" priority="4" type="highway.unclassified" numLanes="2" speed="8.33" shape="4876.64,2362.46 4898.35,2356.37 4905.54,2354.36 4910.69,2352.91 4920.41,2350.18 4941.46,2344.29 4990.02,2330.52 4994.51,2329.23" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4882.58,2362.45 4898.78,2357.91 4905.97,2355.90 4911.12,2354.45 4920.84,2351.72 4941.89,2345.83 4989.54,2332.32" />
+        <lane index="1" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4881.72,2359.37 4897.92,2354.83 4905.11,2352.82 4910.26,2351.37 4919.98,2348.64 4941.03,2342.75 4988.66,2329.24" />
+    </edge>
+    <edge id="8080823#0" from="cluster_389667_5421212978" to="26166035" name="Pleasants Street" priority="3" type="highway.residential" numLanes="1" speed="8.33" shape="4337.62,1633.52 4320.25,1632.37 4281.90,1625.13 4273.00,1622.50 4260.78,1619.51 4223.11,1610.57" spreadType="center" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4332.97,1633.21 4320.25,1632.37 4281.90,1625.13 4273.00,1622.50 4260.78,1619.51 4223.11,1610.57" />
+    </edge>
+    <edge id="8080825" from="26165224" to="26165647" name="Dame Court" priority="4" type="highway.unclassified" numLanes="1" speed="8.33" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway">
+        <lane index="0" disallow="tram rail_urban rail rail_electric rail_fast ship cable_car subway" speed="8.33" shape="4402.67,2481.39 4395.71,2561.44" />
+    </edge>
+    <edge id="gneE48" from="gneJ45" to="gneJ47" priority="-1" numLanes="1" speed="13.89">
+        <lane index="0" speed="13.89" shape="4292.39,1848.19 4289.68,1859.75" />
+    </edge>
+    <edge id="gneE49" from="gneJ47" to="gneJ45" priority="-1" numLanes="1" speed="13.89">
+        <lane index="0" speed="13.89" shape="4292.80,1860.48 4295.51,1848.92" />
+    </edge>
+    <edge id="gneE51" from="gneJ46" to="gneJ47" priority="-1" numLanes="1" speed="13.89">
+        <lane index="0" speed="13.89" shape="4297.40,1865.51 4297.21,1865.55" />
+    </edge>
+    <edge id="gneE52" from="gneJ47" to="gneJ48" priority="-1" numLanes="1" speed="13.89">
+        <lane index="0" speed="13.89" shape="4278.33,1866.47 4274.04,1866.13" />
+    </edge>
+    <edge id="gneE53" from="gneJ48" to="gneJ47" priority="-1" numLanes="1" speed="13.89">
+        <lane index="0" speed="13.89" shape="4273.79,1869.32 4278.08,1869.66" />
+    </edge>
+    <edge id="gneE62" from="846357104" to="cluster_1998326407_2876012598_4781977262_658429" priority="-1" numLanes="1" speed="13.89">
+        <lane index="0" speed="13.89" shape="4884.72,1779.33 4870.61,1736.32" />
+    </edge>
+    <edge id="gneE63" from="cluster_1998326407_2876012598_4781977262_658429" to="453482563" priority="-1" numLanes="2" speed="13.89">
+        <lane index="0" speed="13.89" shape="4862.73,1737.70 4865.26,1753.17" />
+        <lane index="1" speed="13.89" shape="4865.88,1737.15 4868.42,1752.65" />
+    </edge>
+</edges>
