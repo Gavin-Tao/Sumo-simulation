@@ -151,11 +151,14 @@ def render(results, out_png):
         cells.append([f"Gridlock checkpoints (any junction mean stop > 100 s) / {a['K']}", str(a["gridlock"]), str(b["gridlock"]), "", ""]); colors.append(["#ffffff"]*5)
     TS=json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json")) if os.path.exists("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json") else {}
     if "8STD" in TS and "GS" in TS:
-        hdr.append(len(cells)+1); titles.append(f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} runs/arm, re-evaluated checkpoints, 1 s resolution)"); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
+        hdr.append(len(cells)+1); titles.append(f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} evals/arm = 4 ckpt x 10 seeds, training-collector metric)"); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
         for key,sdk,lab in (("pv","pv_sd","Stopped time / visit (s)"),("ev","ev_sd","Stop events / visit")):
             a,b=TS["8STD"][key],TS["GS"][key]; asd,bsd=TS["8STD"][sdk],TS["GS"][sdk]; d=3 if key=="ev" else 2
-            cells.append([f"{lab} - ambulance (probe route)", f"{a[0]:.{d}f} ± {asd[0]:.{d}f}", f"{b[0]:.{d}f} ± {bsd[0]:.{d}f}", f"vs bus: {100*(a[0]/a[1]-1):+.0f}% / {100*(b[0]/b[1]-1):+.0f}%", ""]); colors.append(["#f3f3f3"]*5)
+            cells.append([f"{lab} - ambulance (probe route)", f"{a[0]:.{d}f} ± {asd[0]:.{d}f}", f"{b[0]:.{d}f} ± {bsd[0]:.{d}f}", f"vs bus: {100*(a[0]/a[1]-1):+.0f}% / {100*(b[0]/b[1]-1):+.0f}%", ""]); colors.append([("#f3f3f3" if i_ not in (1,2) else ("#cfe9cf" if v[0]<v[1] else "#f3f3f3")) for i_,v in ((0,None),(1,a),(2,b),(3,None),(4,None))])
             cells.append([f"{lab} - bus (same route & time)", f"{a[1]:.{d}f} ± {asd[1]:.{d}f}", f"{b[1]:.{d}f} ± {bsd[1]:.{d}f}", "", ""]); colors.append(["#f3f3f3"]*5)
+            def _w(arm):
+                pa=TS[arm]["per_eval"]["amb_"+key]; pb=TS[arm]["per_eval"]["bus_"+key]; return f"{sum(1 for x,y in zip(pa,pb) if x<y)}/{len(pa)} (ties {sum(1 for x,y in zip(pa,pb) if x==y)})"
+            cells.append([f"{lab}: evals with ambulance < bus", _w("8STD"), _w("GS"), "", ""]); colors.append(["#ffffff"]*5)
     fig,ax=plt.subplots(figsize=(16.5,0.3*len(cells)+2)); ax.axis("off")
     tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","GS − 8STD [95% CI] / rel. diff","GS better (ties), Wilcoxon p"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.11,0.11,0.19,0.19])
     tbl.auto_set_font_size(False); tbl.scale(1,1.45)

@@ -10,7 +10,7 @@ import numpy as np
 import ckpt_env
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀")
+    ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀"); ap.add_argument("--collector", action="store_true", help="同时运行训练用的 EpisodeMetricsCollector (5 s 采样口径), 导出其逐车记录与 eval_* 汇总")
     a = ap.parse_args()
     tmp = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "experiments", f"logs/tripinfo_tmp_exp{a.exp}_{os.getpid()}.xml"))
     B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=f"--tripinfo-output {tmp} --tripinfo-output.write-unfinished true", route_override=a.routes)
@@ -47,9 +47,18 @@ def main():
     _orig = env._sumo_step
     def hooked(): _orig(); rec()
     env._sumo_step = hooked
+    mc = None
+    if a.collector:   # 与 train.py 评估分支同构造: 5 s 采样, 只数受控进口道, 排除恒绿右转车道
+        from sumo_rl.environment.metrics import EpisodeMetricsCollector
+        ts_lane_map = {t: env.traffic_signals[t].signal_controlled_lanes for t in env.ts_ids}
+        always_green = set().union(*(env.traffic_signals[t].always_green_lanes for t in env.ts_ids))
+        mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green)
     rec(); done = {"__all__": False}
     while not done["__all__"]:
+        if mc is not None: mc.collect_step(sumo)
         states, _, done, _ = env.step(action={t: act(t, states[t])[0] for t in env.ts_ids})
+    if mc is not None:
+        mc.collect_step(sumo); mc.finalize(sumo)
     for key, r in on.items(): r["exit"] = None; veh[key[0]]["tls"].setdefault(key[1], []).append(r)
     env.close()
     trip = {}
@@ -60,7 +69,12 @@ def main():
         os.remove(tmp)
     for vid, v in veh.items():
         v["trip"] = trip.get(vid)
-    out = dict(exp=a.exp, routes=a.routes, kind=B["kind"], ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
+    coll = None
+    if mc is not None:
+        recs = dict(getattr(mc, "_finalized", {})); recs.update(getattr(mc, "_active", {}))
+        coll = {"summary": {k: (float(v) if isinstance(v, (int, float)) else v) for k, v in mc.to_flat_dict(prefix="eval").items() if isinstance(v, (int, float))},
+                "vehicles": {vid: {"type": r["type"], "k_v": len(r.get("ts_visited", set())), "stopped_sec": dict(r.get("per_ts_stopped_sec", {})), "stop_events": dict(r.get("per_ts_stop_events", {}))} for vid, r in recs.items()}}
+    out = dict(exp=a.exp, routes=a.routes, kind=B["kind"], collector=coll, ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
     os.makedirs(a.out, exist_ok=True); path = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}{a.tag}.json")
     json.dump(out, open(path, "w")); print("saved", path, "| vehicles", len(veh), "tripinfo", len(trip))
 if __name__ == "__main__": main()

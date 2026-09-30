@@ -56,14 +56,24 @@ for scen,d,wins in S:
 # ── 附加块 (2026-09-30 用户令): 同路线同时刻换车型 (评估专用, 现有检查点 ep650-800, 每臂 8 车次): 救护车 vs 公交, 只有车型不同 ──
 import json as _json
 TS=_json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json"))
+def _tscol(TS,key):
+    col=["#f3f3f3"]*5
+    for i_,arm in ((1,"8STD"),(2,"GS")):
+        if TS[arm][key][0] < TS[arm][key][1]: col[i_]=GREEN   # 救护车 < 同路公交 → 绿
+    return col
+def _tswins(TS,arm,key):
+    pa=TS[arm]["per_eval"]["amb_"+key]; pb=TS[arm]["per_eval"]["bus_"+key]
+    w=sum(1 for x,y in zip(pa,pb) if x<y); t=sum(1 for x,y in zip(pa,pb) if x==y); return f"{w}/{len(pa)} (ties {t})"
+
 hdr.append(len(cells)+1); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
-TSWAP_TITLE=f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (exp287 / exp288 re-evaluated at ep650-800, {TS['8STD']['n']} runs/arm, 1 s resolution)"
+TSWAP_TITLE=f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} evals/arm = 4 ckpt x 10 seeds)"
 for key,sdk,lab in (("pv","pv_sd","Stopped time / visit (s)"),("ev","ev_sd","Stop events / visit")):
     a,b=TS["8STD"][key],TS["GS"][key]; asd,bsd=TS["8STD"][sdk],TS["GS"][sdk]
     d=3 if key=="ev" else 2
-    cells.append([f"{lab} - ambulance (probe route)", f"{a[0]:.{d}f} ± {asd[0]:.{d}f}", f"{b[0]:.{d}f} ± {bsd[0]:.{d}f}", "", f"vs bus: {100*(a[0]/a[1]-1):+.0f}%, {100*(b[0]/b[1]-1):+.0f}%"]); colors.append(["#f3f3f3"]*5)
+    cells.append([f"{lab} - ambulance (probe route)", f"{a[0]:.{d}f} ± {asd[0]:.{d}f}", f"{b[0]:.{d}f} ± {bsd[0]:.{d}f}", "", f"vs bus: {100*(a[0]/a[1]-1):+.0f}%, {100*(b[0]/b[1]-1):+.0f}%"]); colors.append(_tscol(TS,key))
     cells.append([f"{lab} - bus (same route & time)", f"{a[1]:.{d}f} ± {asd[1]:.{d}f}", f"{b[1]:.{d}f} ± {bsd[1]:.{d}f}", "", ""]); colors.append(["#f3f3f3"]*5)
-fig,ax=plt.subplots(figsize=(13.5,43.5)); ax.axis("off")
+    cells.append([f"{lab}: evals with ambulance < bus", _tswins(TS,"8STD",key), _tswins(TS,"GS",key), "", ""]); colors.append(["#ffffff"]*5)
+fig,ax=plt.subplots(figsize=(13.5,44.5)); ax.axis("off")
 tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","Rel. diff","GS wins / paired"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.17,0.17,0.11,0.15])
 tbl.auto_set_font_size(False); tbl.scale(1,1.45)
 for (r,c),cell in tbl.get_celld().items():
