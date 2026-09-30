@@ -233,7 +233,7 @@ def main():
              "J(531) = per-class per-visit metric weighted 5/3/1 (ambulance/bus/car) by each scenario's traffic shares (see plotting scripts).",
              "Ambulance sample: Dublin 02h has 2 ambulances per evaluation, 11h has 4, 18h has 1 (probe route); grids 1x1/1x3 have many more. Do not cite the Dublin ambulance means alone.",
              "Dublin 11h: the primary block is the USER-SELECTED protocol - seeds 128 and 132 removed from both arms, because in those two seeds the 8STD ambulance amb_0 was caught for 45 s / 90 s at junction 389281 by the Aungier Street right-turn queue spilling back from the unsignalised yield junction (an exogenous bottleneck outside the control set). The full 10-seed result is kept as a reference block; both appear in the Overview.",
-             "Dublin 18h: PRIMARY block has three arms - 8STD (exp298 ep200), GS (exp300 ep145: split-slot net only) and GS-2 (exp301 ep95: exp300 + since-green observation + log-scale waiting + pressure-anchored phase score + TD-target floor -50); computed from the raw per-seed collector json with the same formulas as the PNG tables. Reference blocks below it: two-arm rerouted v2 (177 cars/h leave at the end of the Aungier approach instead of turning into Peter's Row; GS uses the split-slot enumerated net), best checkpoints exp298 ep200 (8STD, training stopped at ep253) vs exp300 ep145 (GS, training still running) - a snapshot, not a final result. A USER-SELECTED 5-seed block (seeds with zero ambulance stops in both arms) and the original-scenario blocks (exp289/290, 7 of 10 seeds anomalous by the >100 s rule) are kept as reference.",
+             "Dublin 18h: PRIMARY block = rerouted scenario v2 (177 cars/h leave at the end of the Aungier approach instead of turning into Peter's Row), 8STD exp298 ep200 (training stopped at ep253) vs GS-ENUM exp301 ep95 (split-slot enumerated net + since-green observation + log-scale waiting + pressure-anchored phase score + TD-target floor -50; training still running) - a snapshot, not a final result; computed from the raw per-seed collector json with the same formulas as the PNG tables. Reference blocks: original 18h scenario exp289/290 (7 of 10 seeds anomalous by the >100 s rule).",
              "Source files and generator: experiments/tools/figures/build_main_comparison_xlsx_2026-09-30.py; json paths are on line 2 of each sheet."]
     for i, t in enumerate(lines, 1): ws0.cell(i, 1, t).font = TITLE if i == 1 else N
     ws0.column_dimensions["A"].width = 180
@@ -252,30 +252,23 @@ def main():
     r, k3 = write_block(ws, r, "Dublin 11:00, tail-40 evaluations (episodes 605-800 every 5, evaluation seed 123)  (8STD: exp208, GS-ENUM: exp211)  [Protocol B]", rows_t, rows_e, amb_na=True,
                         note="Constants from plot_main_table_en_2026-09-22.py (S/EV) = the 11h block of main_comparison_8std_vs_frap_2026-09-22_en.png; 'GS wins 40/40' = J better in all 40 evaluations.")
     sheets.append(("Dublin 11h", ws, k + k2 + [("Dublin 11:00 tail-40 [Protocol B]", k3)]))
-    # Dublin 18h: THREE-ARM primary block (8STD exp298 | GS exp300 | GS-2 exp301) computed from raw collector json, then 2-arm reference blocks
+    # Dublin 18h (2026-09-30 user request: keep exp301 only, drop exp300): 8STD exp298 vs GS exp301 computed from the raw collector json; original-scenario blocks kept as reference
     ws = wb.create_sheet("Dublin 18h"); r = 1
-    ws.cell(r, 1, "Dublin 18h: rerouted scenario v2 (177 cars/h leave at the Aungier approach end); GS arms on the split-slot enumerated net; SNAPSHOT (exp300 / exp301 still training)").font = TITLE; r += 1
-    ws.cell(r, 1, "GS = exp300 (split-slot net, no other change); GS-2 = exp301 = exp300 + since-green observation + log-scale waiting + pressure-anchored phase score + TD-target floor -50. Best checkpoints frozen 2026-09-30 evening: 8STD exp298 ep200, GS exp300 ep145, GS-2 exp301 ep95.").font = NOTE; r += 2
-    ARMS = [("8STD", 298, 200), ("GS (exp300)", 300, 145), ("GS-2 (exp301)", 301, 95)]
-    r, k3a, bad = three_arm_block(ws, r, "Dublin 18:00 rerouted v2, best checkpoints x 10 seeds, three arms  [PRIMARY, snapshot]", ARMS)
-    three_arm_keys = [("Dublin 18:00 rerouted v2, three arms, 10 seeds [PRIMARY]", k3a)]
+    ws.cell(r, 1, "Dublin 18h: rerouted scenario v2 (177 cars/h leave at the Aungier approach end); GS on the split-slot enumerated net; SNAPSHOT (exp301 still training)").font = TITLE; r += 1
+    ws.cell(r, 1, "GS = exp301 = split-slot net + since-green observation + log-scale waiting + pressure-anchored phase score + TD-target floor -50. Best checkpoints frozen 2026-09-30 evening: 8STD exp298 ep200 (training stopped at ep253), GS exp301 ep95.").font = NOTE; r += 2
+    ARMS = [("8STD", 298, 200), ("GS-ENUM (exp301)", 301, 95)]
+    r, k18, bad = three_arm_block(ws, r, "Dublin 18:00 rerouted v2, best checkpoints x 10 seeds (8STD: exp298 ep200, GS-ENUM: exp301 ep95)  [PRIMARY, snapshot]", ARMS)
+    keys18 = [("Dublin 18:00 rerouted v2, best checkpoints x 10 seeds (8STD exp298 ep200, GS exp301 ep95) [PRIMARY]", k18)]
     if bad:
-        r, k3b, _ = three_arm_block(ws, r, f"Dublin 18:00 rerouted v2, three arms, excl. anomalous seeds {bad}", ARMS, seeds_keep=[x for x in range(123, 133) if x not in bad])
-        three_arm_keys.append((f"Dublin 18:00 rerouted v2, three arms, excl. anomalous seeds {bad}", k3b))
+        r, k18b, _ = three_arm_block(ws, r, f"Dublin 18:00 rerouted v2, excl. anomalous seeds {bad}", ARMS, seeds_keep=[x for x in range(123, 133) if x not in bad])
+        keys18.append((f"Dublin 18:00 rerouted v2, excl. anomalous seeds {bad}", k18b))
     r += 1
-    ws, r, k = add_json(wb, "Dublin 18h", f"{FIG}/main_comparison_18h_best10seeds_reroute_v2_2026-09-30_en.json", amb_na=True, ws=ws, r=r,
-                        protocol="Protocol A; rerouted scenario v2 (Aungier right-turn cars leave at the approach end), GS on the split-slot enumerated net; SNAPSHOT: exp300 still training",
-                        title_override="Dublin 18:00, rerouted scenario v2, best checkpoints x 10 seeds, two arms (8STD: exp298 ep200, GS-ENUM: exp300 ep145); anomaly rule (>100 s): no hits  [reference: same data as the PNG]",
-                        ts_title="Dublin 18:00 rerouted v2: same route & departure time, ambulance vs bus probe, best checkpoints, 10 seeds")
-    ws, r, k2 = add_json(wb, "Dublin 18h", f"{FIG}/main_comparison_18h_best10seeds_reroute_v2_SELECTED_ambzero5_2026-09-30_en.json", amb_na=True, ws=ws, r=r,
-                         protocol="Protocol A, USER-SELECTED: 5 seeds with zero ambulance stops in both arms", typeswap=False,
-                         title_override="Dublin 18:00, rerouted scenario v2, 5 seeds with zero ambulance stops in both arms (123, 126, 128, 131, 132)  [USER-SELECTED]")
     ws, r, k3 = add_json(wb, "Dublin 18h", f"{FIG}/main_comparison_18h_best10seeds_2026-09-30_en.json", amb_na=True, ws=ws, r=r,
                          protocol="Protocol A, ORIGINAL 18h scenario (exogenous Aungier/Peter's Row yield lock present), best checkpoints exp289 ep270 / exp290 ep75 (reference)",
                          title_override=["Dublin 18:00, ORIGINAL scenario, best checkpoints x 10 seeds (8STD: exp289 ep270, GS-ENUM: exp290 ep75)  [reference]",
                                          "Dublin 18:00, ORIGINAL scenario, excl. 7 anomalous seeds (any junction > 100 s in either arm: 124, 125, 127, 128, 130, 131, 132), 3 seeds  [reference]"],
                          ts_title="Dublin 18:00 ORIGINAL scenario: same route & departure time, ambulance vs bus probe, best checkpoints, 10 seeds [reference]")
-    sheets.append(("Dublin 18h", ws, k + k2 + k3)); THREE = (ws, three_arm_keys)
+    sheets.append(("Dublin 18h", ws, keys18 + k3))
     # Overview
     ov = wb.create_sheet("Overview", 1); r = 1
     ov.cell(r, 1, "Overview: all-class stopped time / visit and J(531) per block (formulas referencing the scenario sheets)").font = TITLE; r += 1
@@ -291,18 +284,6 @@ def main():
             for c in (3, 4, 6, 7): ov.cell(r, c).number_format = "0.00"
             for c in (5, 8): ov.cell(r, c).number_format = "+0%;-0%;0%"
             style_row(ov, r, ncol=len(hdr)); r += 1
-    r += 1; ws3, keys3 = THREE
-    ov.cell(r, 1, "Dublin 18h three-arm block (8STD | GS exp300 | GS-2 exp301): all-class stopped time / visit and J(531)").font = TITLE; r += 1
-    hdr3 = ["Block", "Protocol", "8STD all", "GS (exp300) all", "GS-2 (exp301) all", "GS vs 8STD", "GS-2 vs 8STD", "8STD J", "GS J", "GS-2 J", "GS wins (J)", "GS-2 wins (J)"]
-    for c, h in enumerate(hdr3, 1): ov.cell(r, c, h)
-    style_row(ov, r, ncol=len(hdr3), bold=True, fill=HFILL); r += 1
-    for t, key in keys3:
-        ra, rj = key[("t", "all")], key[("t", "J")]; q = f"'{ws3.title}'!"
-        vals = [t, "A", f"={q}B{ra}", f"={q}D{ra}", f"={q}F{ra}", f'=IF(C{r}=0,"",D{r}/C{r}-1)', f'=IF(C{r}=0,"",E{r}/C{r}-1)', f"={q}B{rj}", f"={q}D{rj}", f"={q}F{rj}", f"={q}K{rj}", f"={q}L{rj}"]
-        for c, v in enumerate(vals, 1): ov.cell(r, c, v)
-        for c in (3, 4, 5, 8, 9, 10): ov.cell(r, c).number_format = "0.00"
-        for c in (6, 7): ov.cell(r, c).number_format = "+0%;-0%;0%"
-        style_row(ov, r, ncol=len(hdr3)); r += 1
     ov.column_dimensions["A"].width = 110; ov.column_dimensions["B"].width = 9
     for c in "CDEFGHIJK": ov.column_dimensions[c].width = 20
     ov.freeze_panes = "C3"
