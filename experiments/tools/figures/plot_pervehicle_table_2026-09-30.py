@@ -93,6 +93,28 @@ def analyse(name, pair, share):
             if per and max(np.mean(x) for x in per.values())>100: grid+=1
         out["rows"][f"robust_{arm}"]=dict(completion=comp, gridlock=grid, K=K)
     return out
+
+def typeswap_block():
+    """Dublin 02:00 探针路线: 同两辆车分别作为 ambulance (原探针评估) 与 bus (_busprobe 评估), 各臂末 4 检查点。"""
+    J=["26165126","cluster_1448439_2464758361","1448436"]; out={}
+    for e in ("287","288"):
+        fs=sorted(f for f in glob.glob(f"{D}/exp{e}_ep*_seed123.json") if "busprobe" not in f)[-4:]
+        rows=[]
+        for f in fs:
+            g=f.replace("_seed123.json","_seed123_busprobe.json")
+            if not os.path.exists(g): continue
+            A=json.load(open(f))["vehicles"]; B=json.load(open(g))["vehicles"]
+            for amb_id,bus_id in (("amb_1_early","probe_bus_1_early"),("amb_1","probe_bus_1")):
+                if amb_id not in A or bus_id not in B: continue
+                def summ(v):
+                    st=sum(x["stopped"] for t in J for x in v["tls"].get(t,[])); ga=[x["entry_state"] in ("G","g") for t in J for x in v["tls"].get(t,[])]
+                    return dict(st=st, ga=np.mean(ga) if ga else np.nan, tl=v["trip"]["timeLoss"], dur=v["trip"]["duration"])
+                rows.append((summ(A[amb_id]), summ(B[bus_id])))
+        if rows:
+            out[e]=dict(n=len(rows), stops=(np.mean([r[0]["st"] for r in rows]), np.mean([r[1]["st"] for r in rows])), nostop=(np.mean([r[0]["st"]==0 for r in rows]), np.mean([r[1]["st"]==0 for r in rows])),
+                        green=(np.nanmean([r[0]["ga"] for r in rows]), np.nanmean([r[1]["ga"] for r in rows])), tl=(np.mean([r[0]["tl"] for r in rows]), np.mean([r[1]["tl"] for r in rows])), dur=(np.mean([r[0]["dur"] for r in rows]), np.mean([r[1]["dur"] for r in rows])))
+    return out
+
 def fmt(x,d=2): return "n/a" if x is None or (isinstance(x,float) and np.isnan(x)) else f"{x:.{d}f}"
 def render(results, out_png):
     GREEN="#cfe9cf"; cells=[]; colors=[]; hdr=[]; titles=[]
@@ -127,6 +149,14 @@ def render(results, out_png):
         a,b=rows["robust_std"],rows["robust_gs"]
         cells.append(["Completion rate (arrived before episode end)", fmt(a["completion"],3), fmt(b["completion"],3), "", ""]); colors.append(["#ffffff"]*5)
         cells.append([f"Gridlock checkpoints (any junction mean stop > 100 s) / {a['K']}", str(a["gridlock"]), str(b["gridlock"]), "", ""]); colors.append(["#ffffff"]*5)
+    TS=json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json")) if os.path.exists("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json") else {}
+    if "8STD" in TS and "GS" in TS:
+        hdr.append(len(cells)+1); titles.append(f"Dublin 02:00, same route & departure, vehicle type swapped: ambulance | bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} runs/arm, evaluation-only, 1 s resolution)"); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
+        for key,lab in (("pv","Stopped time / visit (s): ambulance | bus (same route)"),("ev","Stop events / visit: ambulance | bus (same route)")):
+            a,b=TS["8STD"][key],TS["GS"][key]; col=["#f3f3f3"]*5
+            for i_,v in ((1,a),(2,b)):
+                if v[0]<v[1]: col[i_]=GREEN
+            cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "green = ambulance below bus", ""]); colors.append(col)
     fig,ax=plt.subplots(figsize=(16.5,0.3*len(cells)+2)); ax.axis("off")
     tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","GS − 8STD [95% CI] / rel. diff","GS better (ties), Wilcoxon p"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.11,0.11,0.19,0.19])
     tbl.auto_set_font_size(False); tbl.scale(1,1.45)

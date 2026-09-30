@@ -10,10 +10,10 @@ import numpy as np
 import ckpt_env
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle")
+    ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀")
     a = ap.parse_args()
     tmp = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "experiments", f"logs/tripinfo_tmp_exp{a.exp}_{os.getpid()}.xml"))
-    B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=f"--tripinfo-output {tmp} --tripinfo-output.write-unfinished true")
+    B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=f"--tripinfo-output {tmp} --tripinfo-output.write-unfinished true", route_override=a.routes)
     env, act, states = B["env"], B["act"], B["states"]; sumo = env.sumo
     print(f"[pervehicle] exp{a.exp} {B['kind']} ckpt ep{B['ckpt_episode']} seed {B['seed']} n_ts {len(env.ts_ids)}")
     lanes = {t: [l for l in dict.fromkeys(sumo.trafficlight.getControlledLanes(t))] for t in env.ts_ids}
@@ -60,7 +60,7 @@ def main():
         os.remove(tmp)
     for vid, v in veh.items():
         v["trip"] = trip.get(vid)
-    out = dict(exp=a.exp, kind=B["kind"], ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
-    os.makedirs(a.out, exist_ok=True); path = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}.json")
+    out = dict(exp=a.exp, routes=a.routes, kind=B["kind"], ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
+    os.makedirs(a.out, exist_ok=True); path = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}{a.tag}.json")
     json.dump(out, open(path, "w")); print("saved", path, "| vehicles", len(veh), "tripinfo", len(trip))
 if __name__ == "__main__": main()

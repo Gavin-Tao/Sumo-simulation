@@ -21,8 +21,8 @@ def list_ckpts(cfg):
         if ep not in best or os.path.getmtime(p) > os.path.getmtime(best[ep]): best[ep] = p
     return [best[k] for k in sorted(best)]
 
-def build(exp, ckpt=None, seed=None, extra_sumo=None):
-    """返回 dict(env, act, states, cfg, ckpt, kind, agent, phase_label)。act(ts, state) -> (env 动作, 内部动作序号, Q 向量)。"""
+def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None):
+    """返回 dict(env, act, states, cfg, ckpt, kind, agent)。route_override: 评估专用路由文件列表 (逗号分隔, 相对 experiments/), 只换车不换控制器。act(ts, state) -> (env 动作, 内部动作序号, Q 向量)。"""
     if ckpt: ckpt = os.path.abspath(ckpt)
     cfg_path = find_cfg(exp); cfg = yaml.safe_load(open(cfg_path))
     from sumo_rl.environment.env import SumoEnvironment
@@ -42,7 +42,7 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None):
     assert cfg["observation_class"] == "PriorityMovement", cfg["observation_class"]
     obs_class = functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
     reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
-    env = SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"], cfg_file=cfg["cfg_file"], out_csv_name=None,
+    env = SumoEnvironment(net_file=cfg["net_file"], route_file=(route_override or cfg["route_file"]), cfg_file=cfg["cfg_file"], out_csv_name=None,
         use_gui=False, num_seconds=cfg.get("num_seconds", 1000), min_green=cfg.get("min_green", 5), max_green=cfg.get("max_green", 50),
         use_max_green=cfg.get("use_max_green", False), single_agent=False, yellow_time=cfg.get("yellow_time", 2),
         delta_time=cfg.get("delta_time", 5), reward_fn=reward_fn, observation_class=obs_class, sumo_seed=cfg.get("seed", 0),

@@ -52,7 +52,18 @@ for scen,d,wins in S:
         am,bu,ca=ev["ev_amb"][i][0],ev["ev_bus"][i][0],ev["ev_car"][i][0]
         ge.append(("pass (amb n/a)" if bu<=ca else "fail (amb n/a)") if amb_na else gate(am,bu,ca))
     cells.append(["Ordering gate (stop events): amb ≤ bus ≤ car",ge[0],ge[1],"",""]); colors.append(["#ffffff"]*5)
-fig,ax=plt.subplots(figsize=(13.5,41)); ax.axis("off")
+
+# ── 附加块 (2026-09-30 用户令): 同路线同时刻换车型 (评估专用, 现有检查点 ep650-800, 每臂 8 车次): 救护车 vs 公交, 只有车型不同 ──
+import json as _json
+TS=_json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json"))
+hdr.append(len(cells)+1); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
+TSWAP_TITLE=f"Dublin 02:00, same route & departure, vehicle type swapped: ambulance | bus  (8STD: exp287, GS-ENUM: exp288; ckpt ep650-800, {TS['8STD']['n']} runs/arm, 1 s resolution)"
+for key,lab in (("pv","Stopped time / visit (s): ambulance | bus (same route)"),("ev","Stop events / visit: ambulance | bus (same route)")):
+    a,b=TS["8STD"][key],TS["GS"][key]; col=["#f3f3f3"]*5
+    for i_,v in ((1,a),(2,b)):
+        if v[0]<v[1]: col[i_]=GREEN
+    cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "green = ambulance below bus", ""]); colors.append(col)
+fig,ax=plt.subplots(figsize=(13.5,42.5)); ax.axis("off")
 tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","Rel. diff","GS wins / paired"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.17,0.17,0.11,0.15])
 tbl.auto_set_font_size(False); tbl.scale(1,1.45)
 for (r,c),cell in tbl.get_celld().items():
@@ -64,7 +75,7 @@ for (r,c),cell in tbl.get_celld().items():
         if c>0: cell.set_edgecolor("#dde3ea")
 ax.set_title("8STD (template + DQN) vs GS-ENUM (enum + FRAP): tail-40 evaluations, mean ± s.d.",fontsize=13,pad=6)
 fig.canvas.draw(); ren=fig.canvas.get_renderer(); inv=fig.transFigure.inverted()
-for r,(scen,_,_) in zip(hdr,S):   # 块标题跨列叠加, 不受相邻单元格遮挡
+for r,scen in zip(hdr,[x[0] for x in S]+[TSWAP_TITLE]):   # 块标题跨列叠加, 不受相邻单元格遮挡
     bb=tbl[r,0].get_window_extent(ren); x0,y0=inv.transform((bb.x0,bb.y0)); x1,y1=inv.transform((bb.x1,bb.y1))
     fig.text(x0+0.004, (y0+y1)/2, scen, ha="left", va="center", fontsize=10.5, weight="bold", zorder=10)
 from matplotlib.transforms import Bbox
