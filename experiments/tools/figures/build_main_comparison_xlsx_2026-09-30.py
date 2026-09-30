@@ -12,7 +12,8 @@ FIG = os.path.join(REPO, "experiments/analysis/figures"); OUT = os.path.join(REP
 F = "Arial"; B = Font(name=F, bold=True); N = Font(name=F); TITLE = Font(name=F, bold=True, size=12); NOTE = Font(name=F, italic=True, color="555555")
 HFILL = PatternFill("solid", fgColor="C9D3DF"); TFILL = PatternFill("solid", fgColor="E3E8EF"); GREEN = PatternFill("solid", fgColor="CFE9CF")
 thin = Side(style="thin", color="999999"); BOX = Border(left=thin, right=thin, top=thin, bottom=thin)
-HDR = ["Metric", "8STD mean", "8STD s.d.", "GS-ENUM mean", "GS-ENUM s.d.", "Rel. diff (GS-8STD)/8STD", "GS wins / paired", "Notes"]
+HDR = ["Metric", "8STD (mean ± s.d.)", "GS-ENUM (mean ± s.d.)", "Rel. diff (GS-8STD)/8STD", "GS wins / paired", "Notes"]
+HELP = ["8STD mean", "8STD s.d.", "GS mean", "GS s.d."]   # hidden numeric helper columns H..K (formulas reference these)
 
 def style_row(ws, r, ncol=8, bold=False, fill=None):
     for c in range(1, ncol + 1):
@@ -20,45 +21,49 @@ def style_row(ws, r, ncol=8, bold=False, fill=None):
         if fill: cell.fill = fill
 
 def write_block(ws, r, title, rows_t, rows_e, amb_na, note=""):
-    """One block: title + header + 5 stopped-time rows + gate + 5 stop-event rows + gate. Returns (next free row, key cells)."""
-    ws.cell(r, 1, title).font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8); ws.cell(r, 1).fill = TFILL; r += 1
+    """One block: title + header + 5 stopped-time rows + gate + 5 stop-event rows + gate.
+    Visible: A metric | B 8STD mean ± s.d. | C GS mean ± s.d. | D rel. diff | E wins | F notes. Hidden numeric helpers H..K feed the formulas."""
+    ws.cell(r, 1, title).font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6); ws.cell(r, 1).fill = TFILL; r += 1
     for c, h in enumerate(HDR, 1): ws.cell(r, c, h)
-    style_row(ws, r, bold=True, fill=HFILL); r += 1
+    for c, h in enumerate(HELP, 8): ws.cell(r, c, h).font = NOTE
+    style_row(ws, r, ncol=6, bold=True, fill=HFILL); r += 1
     key = {}
     def rows(block, tag):
         nonlocal r
         for row in block:
             lab, am, asd, bm, bsd, _rel, wins = (row + [""] * 7)[:7]
-            ws.cell(r, 1, lab); ws.cell(r, 2, float(am)); ws.cell(r, 3, float(asd)); ws.cell(r, 4, float(bm)); ws.cell(r, 5, float(bsd))
-            ws.cell(r, 6, f'=IF(B{r}=0,"",D{r}/B{r}-1)'); ws.cell(r, 7, wins if "J(531)" in lab else "")
-            for c in (2, 3, 4, 5): ws.cell(r, c).number_format = "0.00"
-            ws.cell(r, 6).number_format = "+0%;-0%;0%"
-            style_row(ws, r)
-            ws.cell(r, 2 if float(am) <= float(bm) else 4).fill = GREEN   # lower is better
-            if "ambulance" in lab: ws.cell(r, 8, "Few ambulances per evaluation in Dublin (02h: 2, 11h: 4, 18h: 1); do not cite the mean alone")
+            ws.cell(r, 1, lab)
+            ws.cell(r, 8, float(am)); ws.cell(r, 9, float(asd)); ws.cell(r, 10, float(bm)); ws.cell(r, 11, float(bsd))
+            for c in (8, 9, 10, 11): ws.cell(r, c).number_format = "0.00"; ws.cell(r, c).font = NOTE
+            ws.cell(r, 2, f'=TEXT(H{r},"0.00")&" ± "&TEXT(I{r},"0.00")'); ws.cell(r, 3, f'=TEXT(J{r},"0.00")&" ± "&TEXT(K{r},"0.00")')
+            ws.cell(r, 4, f'=IF(H{r}=0,"",J{r}/H{r}-1)').number_format = "+0%;-0%;0%"; ws.cell(r, 5, wins)   # per-class paired wins too (2026-09-30)
+            style_row(ws, r, ncol=6)
+            ws.cell(r, 2 if float(am) <= float(bm) else 3).fill = GREEN   # lower is better
+            if "ambulance" in lab: ws.cell(r, 6, "Few ambulances per evaluation in Dublin (02h: 2, 11h: 4, 18h: 1); do not cite the mean alone")
             key[(tag, lab.split(" - ")[-1] if " - " in lab else "J")] = r
             r += 1
     rows(rows_t, "t")
     car, bus, amb = key[("t", "car")], key[("t", "bus")], key[("t", "ambulance")]
     ws.cell(r, 1, "Ordering gate (stopped time): amb <= bus <= car")
-    for c, col in ((2, "B"), (4, "D")):
+    for c, col in ((2, "H"), (3, "J")):
         ws.cell(r, c, f'=IF(AND({col}{amb}<={col}{bus},{col}{bus}<={col}{car}),"pass",IF(AND({col}{amb}-{col}{bus}<=5,{col}{bus}-{col}{car}<=5),"pass (tol. 5 s)","fail"))')
-    ws.cell(r, 8, "tol. 5 s = tolerance of one 5 s sampling quantum"); style_row(ws, r); r += 1
+    ws.cell(r, 6, "tol. 5 s = tolerance of one 5 s sampling quantum"); style_row(ws, r, ncol=6); r += 1
     rows(rows_e, "e")
     car, bus, amb = key[("e", "car")], key[("e", "bus")], key[("e", "ambulance")]
     ws.cell(r, 1, "Ordering gate (stop events): amb <= bus <= car" + (" (amb n/a: bus <= car only)" if amb_na else ""))
-    for c, col in ((2, "B"), (4, "D")):
+    for c, col in ((2, "H"), (3, "J")):
         if amb_na: ws.cell(r, c, f'=IF({col}{bus}<={col}{car},"pass (amb n/a)","fail (amb n/a)")')
         else: ws.cell(r, c, f'=IF(AND({col}{amb}<={col}{bus},{col}{bus}<={col}{car}),"pass",IF(AND({col}{amb}-{col}{bus}<=0.5,{col}{bus}-{col}{car}<=0.5),"pass (tol.)","fail"))')
-    if amb_na: ws.cell(r, 8, "1-4 ambulances per evaluation: stop events take values 0 / 0.5 / 1 only, not comparable with the bus mean over hundreds of vehicles")
-    style_row(ws, r); r += 1
-    if note: ws.cell(r, 1, note).font = NOTE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8); r += 1
+    if amb_na: ws.cell(r, 6, "1-4 ambulances per evaluation: stop events take values 0 / 0.5 / 1 only, not comparable with the bus mean over hundreds of vehicles")
+    style_row(ws, r, ncol=6); r += 1
+    if note: ws.cell(r, 1, note).font = NOTE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6); r += 1
+    for col in "HIJK": ws.column_dimensions[col].hidden = True
     return r + 1, key
 
 def write_typeswap(ws, r, seeds, ts, title):
     """Same route & departure time, ambulance vs bus probe: per-seed raw values + formula mean / s.d. / counts."""
     ws.cell(r, 1, title).font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8); ws.cell(r, 1).fill = TFILL; r += 1
-    hdr = ["Vehicle / metric"] + [f"seed {s}" for s in seeds] + ["Mean", "S.d."]
+    hdr = ["Vehicle / metric"] + [f"seed {s}" for s in seeds] + ["Mean ± s.d."]
     for c, h in enumerate(hdr, 1): ws.cell(r, c, h)
     style_row(ws, r, ncol=len(hdr), bold=True, fill=HFILL); r += 1
     n = len(seeds); last = get_column_letter(1 + n); lines = []
@@ -67,7 +72,7 @@ def write_typeswap(ws, r, seeds, ts, title):
             for veh, idx in (("ambulance (probe route)", 0), ("bus (same route & time)", 1)):
                 ws.cell(r, 1, f"{arm} - {veh} - {metric}")
                 for k, v in enumerate(ts[arm][mk][idx]): ws.cell(r, 2 + k, float(v)).number_format = "0.00"
-                ws.cell(r, 2 + n, f"=AVERAGE(B{r}:{last}{r})").number_format = "0.00"; ws.cell(r, 3 + n, f"=STDEV(B{r}:{last}{r})").number_format = "0.00"
+                ws.cell(r, 2 + n, f'=TEXT(AVERAGE(B{r}:{last}{r}),"0.00")&" ± "&TEXT(STDEV(B{r}:{last}{r}),"0.00")')
                 style_row(ws, r, ncol=len(hdr)); lines.append((arm, mk, idx, r)); r += 1
     for arm in ("8STD", "GS"):
         for metric, mk in (("stopped time", "pv"), ("stop events", "ev")):
@@ -97,9 +102,9 @@ def add_json(wb, sheet, path, amb_na, protocol, title_override=None, ws=None, r=
     if typeswap and "typeswap" in d:
         r = write_typeswap(ws, r, d["seeds"], d["typeswap"], ts_title or f"{sheet}: same route & departure time, ambulance vs bus probe, best checkpoints, {len(d['seeds'])} seeds")
     if per_seed and "per_seed" in d:
-        ws.cell(r, 1, f"{sheet}: per-seed raw values, mean / s.d. recomputed by formula").font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8); ws.cell(r, 1).fill = TFILL; r += 1
+        ws.cell(r, 1, f"{sheet}: per-seed raw values, mean / s.d. recomputed by formula").font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6); ws.cell(r, 1).fill = TFILL; r += 1
         seeds = d["seeds"]; n = len(seeds); last = get_column_letter(1 + n)
-        hdr = ["Arm / class / metric"] + [f"seed {s}" for s in seeds] + ["Mean", "S.d."]
+        hdr = ["Arm / class / metric"] + [f"seed {s}" for s in seeds] + ["Mean ± s.d."]
         for c, h in enumerate(hdr, 1): ws.cell(r, c, h)
         style_row(ws, r, ncol=len(hdr), bold=True, fill=HFILL); r += 1
         for arm in ("8STD", "GS"):
@@ -107,12 +112,12 @@ def add_json(wb, sheet, path, amb_na, protocol, title_override=None, ws=None, r=
                 for m, ml in (("avg_stopped_time_per_visit", "stopped time / visit (s)"), ("avg_stop_events_per_visit", "stop events / visit")):
                     vals = d["per_seed"][arm][cls][m]; ws.cell(r, 1, f"{arm} - {cls} - {ml}")
                     for k, v in enumerate(vals): ws.cell(r, 2 + k, float(v)).number_format = "0.00"
-                    ws.cell(r, 2 + n, f"=AVERAGE(B{r}:{last}{r})").number_format = "0.00"; ws.cell(r, 3 + n, f"=STDEV(B{r}:{last}{r})").number_format = "0.00"
+                    ws.cell(r, 2 + n, f'=TEXT(AVERAGE(B{r}:{last}{r}),"0.00")&" ± "&TEXT(STDEV(B{r}:{last}{r}),"0.00")')
                     style_row(ws, r, ncol=len(hdr)); r += 1
         r += 1
     ws.column_dimensions["A"].width = 50
-    for c in "BCDEFG": ws.column_dimensions[c].width = 16
-    ws.column_dimensions["H"].width = 62; ws.freeze_panes = "B4"
+    for c in "BCDEFG": ws.column_dimensions[c].width = 22
+    ws.freeze_panes = "B4"
     return ws, r + 1, keys
 
 
@@ -131,18 +136,23 @@ def _pv(recs, field):
 
 def three_arm_block(ws, r, title, arms, thr=100.0, seeds_keep=None, amb_ids=("amb_1",), bus_ids=("probe_bus_1",)):
     """arms = [(label, exp, ep), ...] (first = 8STD reference). Values computed from the raw collector json exactly like plot_best10seeds_table
-    (population s.d.; J = sum SH*WT*metric; wins = seeds where the GS arm is lower than 8STD). Returns (next row, key cells, anomalous seeds)."""
+    (population s.d.; J = sum SH*WT*metric; wins = seeds where the GS arm is lower than 8STD).
+    Visible: metric | one 'mean ± s.d.' column per arm | rel. diffs | wins | notes. Hidden numeric helper columns (mean, s.d. per arm) to the right."""
     A = [_load(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll.json") for _, e, ep in arms]
     Ab = [_load(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_busprobe_coll.json") for _, e, ep in arms]
     seeds = sorted(set.intersection(*[set(x) for x in A + Ab]))
     bad = sorted({s for s in seeds for X in A if any(v > thr for k, v in X[s]["collector"]["summary"].items() if k.endswith("/all/avg_stopped_time") and not k.startswith("eval/system"))})
     if seeds_keep is not None: seeds = [s for s in seeds if s in seeds_keep]
-    n = len(arms); ncol = 1 + 2 * n + (n - 1) + (1 if n > 2 else 0) + (n - 1) + 1
-    hdr = ["Metric"] + [f"{lab} {x}" for lab, _, _ in arms for x in ("mean", "s.d.")] + [f"{lab} vs {arms[0][0]}" for lab, _, _ in arms[1:]] \
+    n = len(arms)
+    hdr = ["Metric"] + [f"{lab} (mean ± s.d.)" for lab, _, _ in arms] + [f"{lab} vs {arms[0][0]}" for lab, _, _ in arms[1:]] \
         + ([f"{arms[2][0]} vs {arms[1][0]}"] if n > 2 else []) + [f"{lab} wins vs {arms[0][0]}" for lab, _, _ in arms[1:]] + ["Notes"]
+    ncol = len(hdr); h0 = ncol + 2                     # first hidden helper column index
+    HL = lambda i, k: get_column_letter(h0 + 2 * i + k)   # helper column letter: arm i, k=0 mean / 1 s.d.
     ws.cell(r, 1, f"{title}; seeds {', '.join(map(str, seeds))}; anomaly rule (any junction > {thr:.0f} s in any arm): " + (f"seeds {bad}" if bad else "no hits")).font = TITLE
     ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=ncol); ws.cell(r, 1).fill = TFILL; r += 1
     for c, h in enumerate(hdr, 1): ws.cell(r, c, h)
+    for i, (lab, _, _) in enumerate(arms):
+        ws.cell(r, h0 + 2 * i, f"{lab} mean").font = NOTE; ws.cell(r, h0 + 2 * i + 1, f"{lab} s.d.").font = NOTE
     style_row(ws, r, ncol=ncol, bold=True, fill=HFILL); r += 1
     key = {}
     def block(m, label, jlabel, tag):
@@ -155,30 +165,33 @@ def three_arm_block(ws, r, title, arms, thr=100.0, seeds_keep=None, amb_ids=("am
             arrs = J if c == "J" else vals[c]; lab = jlabel if c == "J" else f"{label} - {c}"
             ws.cell(r, 1, lab)
             for i, a in enumerate(arrs):
-                ws.cell(r, 2 + 2 * i, float(np.nanmean(a))).number_format = "0.00"; ws.cell(r, 3 + 2 * i, float(np.nanstd(a))).number_format = "0.00"
-            col = 2 + 2 * n
+                ws.cell(r, h0 + 2 * i, float(np.nanmean(a))).number_format = "0.00"; ws.cell(r, h0 + 2 * i + 1, float(np.nanstd(a))).number_format = "0.00"
+                ws.cell(r, h0 + 2 * i).font = NOTE; ws.cell(r, h0 + 2 * i + 1).font = NOTE
+                ws.cell(r, 2 + i, f'=TEXT({HL(i,0)}{r},"0.00")&" ± "&TEXT({HL(i,1)}{r},"0.00")')
+            col = 2 + n
             for i in range(1, n):
-                ws.cell(r, col, f'=IF(B{r}=0,"",{get_column_letter(2 + 2 * i)}{r}/B{r}-1)').number_format = "+0%;-0%;0%"; col += 1
+                ws.cell(r, col, f'=IF({HL(0,0)}{r}=0,"",{HL(i,0)}{r}/{HL(0,0)}{r}-1)').number_format = "+0%;-0%;0%"; col += 1
             if n > 2:
-                ws.cell(r, col, f'=IF(D{r}=0,"",F{r}/D{r}-1)').number_format = "+0%;-0%;0%"; col += 1
+                ws.cell(r, col, f'=IF({HL(1,0)}{r}=0,"",{HL(2,0)}{r}/{HL(1,0)}{r}-1)').number_format = "+0%;-0%;0%"; col += 1
             for i in range(1, n):
                 ok = ~np.isnan(arrs[0]) & ~np.isnan(arrs[i])
                 ws.cell(r, col, f"{int((arrs[i] < arrs[0])[ok].sum())}/{int(ok.sum())}" + ("" if c == "J" else f" (ties {int((arrs[i] == arrs[0])[ok].sum())})")); col += 1
             if c == "ambulance": ws.cell(r, ncol, "1 ambulance per evaluation (probe route); do not cite the mean alone")
             style_row(ws, r, ncol=ncol)
-            means = [float(np.nanmean(a)) for a in arrs]; ws.cell(r, 2 + 2 * int(np.argmin(means))).fill = GREEN
+            means = [float(np.nanmean(a)) for a in arrs]; ws.cell(r, 2 + int(np.argmin(means))).fill = GREEN
             key[(tag, c)] = r; r += 1
         car, bus, amb = key[(tag, "car")], key[(tag, "bus")], key[(tag, "ambulance")]
         ws.cell(r, 1, "Ordering gate (stopped time): amb <= bus <= car" if tag == "t" else "Ordering gate (stop events): amb <= bus <= car (amb n/a: bus <= car only)")
         for i in range(n):
-            col = get_column_letter(2 + 2 * i)
-            if tag == "t": ws.cell(r, 2 + 2 * i, f'=IF(AND({col}{amb}<={col}{bus},{col}{bus}<={col}{car}),"pass",IF(AND({col}{amb}-{col}{bus}<=5,{col}{bus}-{col}{car}<=5),"pass (tol. 5 s)","fail"))')
-            else: ws.cell(r, 2 + 2 * i, f'=IF({col}{bus}<={col}{car},"pass (amb n/a)","fail (amb n/a)")')
+            col = HL(i, 0)
+            if tag == "t": ws.cell(r, 2 + i, f'=IF(AND({col}{amb}<={col}{bus},{col}{bus}<={col}{car}),"pass",IF(AND({col}{amb}-{col}{bus}<=5,{col}{bus}-{col}{car}<=5),"pass (tol. 5 s)","fail"))')
+            else: ws.cell(r, 2 + i, f'=IF({col}{bus}<={col}{car},"pass (amb n/a)","fail (amb n/a)")')
         style_row(ws, r, ncol=ncol); r += 1
     block("avg_stopped_time_per_visit", "Stopped time / visit (s)", "J(531) weighted cost (per visit)", "t")
     block("avg_stop_events_per_visit", "Stop events / visit", "J(531) weighted stop events (per visit)", "e")
+    key["_helper"] = (h0, n)   # for the Overview
+    for i in range(2 * n): ws.column_dimensions[get_column_letter(h0 + i)].hidden = True
     r += 1
-    # type swap, all arms
     ts = {}
     for i, (lab, _, _) in enumerate(arms):
         amb_pv, bus_pv, amb_ev, bus_ev = [], [], [], []
@@ -192,7 +205,7 @@ def three_arm_block(ws, r, title, arms, thr=100.0, seeds_keep=None, amb_ids=("am
 
 def write_typeswap_arms(ws, r, seeds, ts, title):
     ws.cell(r, 1, title).font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8); ws.cell(r, 1).fill = TFILL; r += 1
-    hdr = ["Vehicle / metric"] + [f"seed {s}" for s in seeds] + ["Mean", "S.d."]
+    hdr = ["Vehicle / metric"] + [f"seed {s}" for s in seeds] + ["Mean ± s.d."]
     for c, h in enumerate(hdr, 1): ws.cell(r, c, h)
     style_row(ws, r, ncol=len(hdr), bold=True, fill=HFILL); r += 1
     n = len(seeds); last = get_column_letter(1 + n); lines = []
@@ -201,7 +214,7 @@ def write_typeswap_arms(ws, r, seeds, ts, title):
             for veh, idx in (("ambulance (probe route)", 0), ("bus (same route & time)", 1)):
                 ws.cell(r, 1, f"{arm} - {veh} - {metric}")
                 for k, v in enumerate(ts[arm][mk][idx]): ws.cell(r, 2 + k, float(v)).number_format = "0.00"
-                ws.cell(r, 2 + n, f"=AVERAGE(B{r}:{last}{r})").number_format = "0.00"; ws.cell(r, 3 + n, f"=STDEV(B{r}:{last}{r})").number_format = "0.00"
+                ws.cell(r, 2 + n, f'=TEXT(AVERAGE(B{r}:{last}{r}),"0.00")&" ± "&TEXT(STDEV(B{r}:{last}{r}),"0.00")')
                 style_row(ws, r, ncol=len(hdr)); lines.append((arm, mk, idx, r)); r += 1
     for arm in ts:
         for metric, mk in (("stopped time", "pv"), ("stop events", "ev")):
@@ -278,10 +291,14 @@ def main():
     for name, ws, keys in sheets:
         for t, key in keys:
             ra, rj = key[("t", "all")], key[("t", "J")]; q = f"'{ws.title}'!"; gate_row = rj + 1
+            if "_helper" in key:      # block written by three_arm_block: helper columns start at h0, visible arm columns B, C
+                h0, n = key["_helper"]; mA, mG = get_column_letter(h0), get_column_letter(h0 + 2); vA, vG, wins = "B", "C", get_column_letter(2 + n + (n - 1) + (1 if n > 2 else 0))
+            else:                      # write_block: helpers H (8STD mean), J (GS mean); visible B, C; wins E
+                mA, mG, vA, vG, wins = "H", "J", "B", "C", "E"
             proto = "B" if "tail-40" in t else "A"
-            vals = [f"{name}: {t}", proto, f"={q}B{ra}", f"={q}D{ra}", f'=IF(C{r}=0,"",D{r}/C{r}-1)', f"={q}B{rj}", f"={q}D{rj}", f'=IF(F{r}=0,"",G{r}/F{r}-1)', f"={q}G{rj}", f"={q}B{gate_row}", f"={q}D{gate_row}"]
+            vals = [f"{name}: {t}", proto, f"={q}{vA}{ra}", f"={q}{vG}{ra}", f'=IF({q}{mA}{ra}=0,"",{q}{mG}{ra}/{q}{mA}{ra}-1)', f"={q}{vA}{rj}", f"={q}{vG}{rj}",
+                    f'=IF({q}{mA}{rj}=0,"",{q}{mG}{rj}/{q}{mA}{rj}-1)', f"={q}{wins}{rj}", f"={q}{vA}{gate_row}", f"={q}{vG}{gate_row}"]
             for c, v in enumerate(vals, 1): ov.cell(r, c, v)
-            for c in (3, 4, 6, 7): ov.cell(r, c).number_format = "0.00"
             for c in (5, 8): ov.cell(r, c).number_format = "+0%;-0%;0%"
             style_row(ov, r, ncol=len(hdr)); r += 1
     ov.column_dimensions["A"].width = 110; ov.column_dimensions["B"].width = 9
