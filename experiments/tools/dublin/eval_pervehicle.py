@@ -1,5 +1,5 @@
 """逐车评估 (2026-09-30, 用户批准 "新表, 不影响旧表与旧代码"): 用训练好的检查点在评估种子上跑一集, 导出每辆车的
-行程指标 (SUMO tripinfo: duration / timeLoss / waitingTime / routeLength) 与逐路口进口道记录 (进入/离开时刻, 进入时连接灯色,
+行程指标 (SUMO tripinfo: duration / timeLoss / departDelay 插入延迟 / waitingTime / routeLength) 与逐路口进口道记录 (进入/离开时刻, 进入时连接灯色,
 首次变绿时刻, 停车秒数, movement 连接序号)。只读分析, 不训练。
 用法: python experiments/tools/dublin/eval_pervehicle.py <exp> [--ckpt path] [--seed 123] [--out dir]
 输出: <out>/exp<exp>_ep<ckpt集>_seed<seed>.json
@@ -55,7 +55,7 @@ def main():
     trip = {}
     if os.path.exists(tmp):
         for ti in ET.parse(tmp).getroot().iter("tripinfo"):
-            trip[ti.get("id")] = {k: float(ti.get(k)) for k in ("depart", "arrival", "duration", "routeLength", "waitingTime", "waitingCount", "stopTime", "timeLoss") if ti.get(k) is not None}
+            trip[ti.get("id")] = {k: float(ti.get(k)) for k in ("depart", "departDelay", "arrival", "duration", "routeLength", "waitingTime", "waitingCount", "stopTime", "timeLoss") if ti.get(k) is not None}
             trip[ti.get("id")]["vType"] = ti.get("vType")
         os.remove(tmp)
     for vid, v in veh.items():
