@@ -96,7 +96,7 @@ def main():
     links = {t: sumo.trafficlight.getControlledLinks(t) for t in env.ts_ids}
     in_edges = {t: sorted(set(l[0][0].rsplit("_", 1)[0] for l in links[t] if l)) for t in env.ts_ids}
     in_lanes = {t: sorted(set(l[0][0] for l in links[t] if l)) for t in env.ts_ids}
-    trace = collections.defaultdict(list); tls_state_log = collections.defaultdict(list); decisions = []
+    trace = collections.defaultdict(list); tls_state_log = collections.defaultdict(list); decisions = []; qscan = {}
     seen = set()
     def record():
         now = sumo.simulation.getTime()
@@ -134,6 +134,7 @@ def main():
                 if nxt and nxt[0][2] <= a.near: amb_near[nxt[0][0]] = (vid, round(nxt[0][2], 1))
         for t in env.ts_ids:
             g, k, q = act(t, states[t]); actions[t] = g
+            qa = np.nanmax(np.abs(q)); qscan.setdefault(t, []).append((sumo.simulation.getTime(), float(qa), float(np.nanmin(q)), k))   # 每口每决策步的 |Q| 最大 / Q 最小 / 动作
             if t in amb_near:
                 ts = env.traffic_signals[t]
                 decisions.append(dict(t=sumo.simulation.getTime(), tls=t, amb=amb_near[t][0], dist=amb_near[t][1], chosen=k, chosen_label=phase_label(t, k),
@@ -141,7 +142,7 @@ def main():
                                       q=[None if np.isnan(x) else round(float(x), 3) for x in q], obs=[round(float(x), 3) for x in np.asarray(states[t]).ravel()]))
         states, _, done, _ = env.step(action=actions)
     out = dict(exp=a.exp, ckpt=ckpt, seed=seed, in_edges=in_edges, links={t: [(l[0][0], l[0][1]) if l else None for l in links[t]] for t in env.ts_ids},
-               trace=dict(trace), decisions=decisions, phase_share={t: dict(collections.Counter(tls_state_log[t])) for t in env.ts_ids})
+               trace=dict(trace), decisions=decisions, qscan=qscan, phase_share={t: dict(collections.Counter(tls_state_log[t])) for t in env.ts_ids})
     os.makedirs("analysis/data", exist_ok=True); path = f"analysis/data/amb_trace_exp{a.exp}_ep{int(ck.get('episode', 0)):04d}_seed{seed}.json"
     json.dump(out, open(path, "w")); print("saved", path)
     env.close()
