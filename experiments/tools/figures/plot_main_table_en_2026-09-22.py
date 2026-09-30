@@ -66,7 +66,7 @@ def _tswins(TS,arm,key):
     w=sum(1 for x,y in zip(pa,pb) if x<y); t=sum(1 for x,y in zip(pa,pb) if x==y); return f"{w}/{len(pa)} (ties {t})"
 
 hdr.append(len(cells)+1); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
-TSWAP_TITLE=f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} evals/arm = 4 ckpt x 10 seeds)"
+TSWAP_TITLE=f"Dublin 02:00, same route & time, type swapped: ambulance vs bus  (8STD: exp287, GS-ENUM: exp288; {TS['8STD']['n']} evals/arm)"
 for key,sdk,lab in (("pv","pv_sd","Stopped time / visit (s)"),("ev","ev_sd","Stop events / visit")):
     a,b=TS["8STD"][key],TS["GS"][key]; asd,bsd=TS["8STD"][sdk],TS["GS"][sdk]
     d=3 if key=="ev" else 2
