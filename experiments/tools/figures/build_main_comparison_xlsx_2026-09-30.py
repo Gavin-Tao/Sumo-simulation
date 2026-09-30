@@ -95,13 +95,17 @@ def block_pairs(d):
             t, m = k.split("|"); out.setdefault(t, {})[m] = v
     return [(t, b.get("avg_stopped_time_per_visit"), b.get("avg_stop_events_per_visit")) for t, b in out.items()]
 
-def sheet_from_json(wb, name, path, amb_na, protocol):
-    d = json.load(open(path)); ws = wb.create_sheet(name); r = 1
-    ws.cell(r, 1, f"{name}: best 检查点 × {len(d['seeds'])} 评估种子 (种子 {d['seeds'][0]}-{d['seeds'][-1]}); {protocol}").font = TITLE; r += 1
+def sheet_from_json(wb, name, path, amb_na, protocol, title_override=None, ws=None, r=None, typeswap=True):
+    """title_override: 块标题替换文本 (2026-09-30: 用户选定的 11h 口径需要中文说明); ws/r 给出时在已有工作表上追加。"""
+    d = json.load(open(path))
+    if ws is None: ws = wb.create_sheet(name); r = 1
+    ws.cell(r, 1, f"{name}: best 检查点 × {len(d['seeds'])} 评估种子 (种子 {', '.join(map(str, d['seeds']))}); {protocol}").font = TITLE; r += 1
     ws.cell(r, 1, f"数据源: {os.path.relpath(path, REPO)} (与同名 png 同源); 异常种子 (对称规则): {d.get('anomalous') or '无'}; Tukey 离群种子: {d.get('tukey_outliers') or '无'}").font = Font(name=F, italic=True); r += 2
     keys = []
     for t, rt, re_ in block_pairs(d):
-        r, key = write_block(ws, r, t, rt, re_, amb_na); keys.append((t, key))
+        tt = title_override or t
+        r, key = write_block(ws, r, tt, rt, re_, amb_na); keys.append((tt, key))
+    if not typeswap: d.pop("typeswap", None)
     if "typeswap" in d: r = write_typeswap(ws, r, d["seeds"], d["typeswap"], f"{name}: 同路线同时刻换车型 (救护车 vs 公交探针), best 检查点, {len(d['seeds'])} 种子")
     if "per_seed" in d:
         ws.cell(r, 1, f"{name}: 逐种子原始值 (全车类), 用公式复算均值/标准差").font = TITLE; ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8); ws.cell(r, 1).fill = TFILL; r += 1
@@ -142,6 +146,7 @@ def main():
              "异常剔除只用对称、写明的规则 (任一臂任一路口全车类停车 > 阈值 → 两臂同剔); 各块标题里写了是否命中。",
              "J(531) = 按优先级 5/3/1 加权的每类 per-visit 指标, 份额按各场景车流构成 (见脚本)。",
              "救护车样本: Dublin 02h 每次评估 2 辆, 11h 4 辆, 网格 1x1/1x3 较多; Dublin 的救护车行不要单独引用均值。",
+             "Dublin 11h 主块按用户选定口径: 剔除评估种子 128、132 (两臂同剔), 原因是 8STD 的 amb_0 在这两个种子被 Aungier St 右转排队回溢卡在 389281 (45 s / 90 s), 属路线撞上非 RL 让行口的外部瓶颈; 全部 10 种子的结果作为参考块保留在同一工作表, 总览里两行都有。",
              "数据源文件与生成脚本: experiments/tools/figures/build_main_comparison_xlsx_2026-09-30.py; json 见各表第 2 行。"]
     for i, t in enumerate(lines, 1): ws0.cell(i, 1, t).font = TITLE if i == 1 else N
     ws0.column_dimensions["A"].width = 160
@@ -151,7 +156,16 @@ def main():
     sheets["Dublin 02h"] = sheet_from_json(wb, "Dublin 02h", f"{FIG}/main_comparison_02h_best10seeds_2026-09-30_en.json", amb_na=True, protocol="口径 A; 救护车路线 = 11h 的 amb_1 路线 (两辆)")
     # Dublin 11h: 口径 A (若 json 已生成) + 口径 B
     p11 = f"{FIG}/main_comparison_11h_best10seeds_2026-09-30_en.json"
-    if os.path.exists(p11):
+    p11s = f"{FIG}/main_comparison_11h_best10seeds_SELECTED_excl128_132_2026-09-30_en.json"
+    if os.path.exists(p11s) and os.path.exists(p11):
+        # 用户选定口径 (2026-09-30 用户令 "把这个作为 11 hour"): 剔除种子 128/132 (两臂同剔; 8STD 的 amb_0 在这两个种子被 Aungier St 回溢卡在 389281 45/90 s), 8 种子
+        ws, d, keys = sheet_from_json(wb, "Dublin 11h", p11s, amb_na=True, protocol="口径 A, 用户选定: 剔除种子 128、132 (两臂同剔; 8STD 的 amb_0 在这两个种子被 Aungier St 回溢卡在 389281)",
+                                      title_override="Dublin 11:00, best 检查点 × 8 种子, 剔除种子 128、132 (8STD: exp208 ep240, GS-ENUM: exp211 ep215)  [用户选定口径]")
+        r = ws.max_row + 2
+        ws, d2, keys2 = sheet_from_json(wb, "Dublin 11h (参考: 全部 10 种子)", p11, amb_na=True, protocol="口径 A, 未剔除", ws=ws, r=r,
+                                        title_override="Dublin 11:00, best 检查点 × 10 种子, 全部 (8STD: exp208 ep240, GS-ENUM: exp211 ep215)  [参考]", typeswap=False)
+        keys += keys2; r = ws.max_row + 2
+    elif os.path.exists(p11):
         ws, d, keys = sheet_from_json(wb, "Dublin 11h", p11, amb_na=True, protocol="口径 A (best 检查点 × 10 种子) + 口径 B (尾 40 次评估) 两块")
         r = ws.max_row + 2
     else:
