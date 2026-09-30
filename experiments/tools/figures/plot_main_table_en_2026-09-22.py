@@ -57,12 +57,12 @@ for scen,d,wins in S:
 import json as _json
 TS=_json.load(open("experiments/analysis/data/typeswap_02h_pervisit_2026-09-30.json"))
 hdr.append(len(cells)+1); cells.append(["","","","",""]); colors.append(["#dde3ea"]*5)
-TSWAP_TITLE=f"Dublin 02:00, same route & departure, vehicle type swapped: ambulance | bus  (8STD: exp287, GS-ENUM: exp288; ckpt ep650-800, {TS['8STD']['n']} runs/arm, 1 s resolution)"
+TSWAP_TITLE=f"Dublin 02:00, same route & departure, type swapped: ambulance | bus  (8STD: exp287, GS-ENUM: exp288; ep650-800, {TS['8STD']['n']} runs/arm)"
 for key,lab in (("pv","Stopped time / visit (s): ambulance | bus (same route)"),("ev","Stop events / visit: ambulance | bus (same route)")):
     a,b=TS["8STD"][key],TS["GS"][key]; col=["#f3f3f3"]*5
     for i_,v in ((1,a),(2,b)):
         if v[0]<v[1]: col[i_]=GREEN
-    cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "green = ambulance below bus", ""]); colors.append(col)
+    cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "", "green: amb < bus"]); colors.append(col)
 fig,ax=plt.subplots(figsize=(13.5,42.5)); ax.axis("off")
 tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","Rel. diff","GS wins / paired"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.17,0.17,0.11,0.15])
 tbl.auto_set_font_size(False); tbl.scale(1,1.45)

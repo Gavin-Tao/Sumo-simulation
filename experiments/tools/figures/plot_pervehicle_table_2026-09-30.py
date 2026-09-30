@@ -156,7 +156,7 @@ def render(results, out_png):
             a,b=TS["8STD"][key],TS["GS"][key]; col=["#f3f3f3"]*5
             for i_,v in ((1,a),(2,b)):
                 if v[0]<v[1]: col[i_]=GREEN
-            cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "green = ambulance below bus", ""]); colors.append(col)
+            cells.append([lab, f"{a[0]:.2f} | {a[1]:.2f}", f"{b[0]:.2f} | {b[1]:.2f}", "green: ambulance < bus", ""]); colors.append(col)
     fig,ax=plt.subplots(figsize=(16.5,0.3*len(cells)+2)); ax.axis("off")
     tbl=ax.table(cellText=cells,colLabels=["Metric","8STD","GS-ENUM","GS − 8STD [95% CI] / rel. diff","GS better (ties), Wilcoxon p"],cellColours=colors,colColours=["#c9d3df"]*5,loc="upper center",cellLoc="center",colWidths=[0.40,0.11,0.11,0.19,0.19])
     tbl.auto_set_font_size(False); tbl.scale(1,1.45)
