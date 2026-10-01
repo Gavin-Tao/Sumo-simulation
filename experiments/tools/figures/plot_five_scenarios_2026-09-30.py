@@ -9,6 +9,9 @@ FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle
 SH18 = {"car": .9568, "bus": .0430, "ambulance": .0002}; WT = {"car": 1, "bus": 3, "ambulance": 5}
 SH = {"1x1": {"car": .965, "bus": .033, "ambulance": .0017}, "1x3": {"car": .950, "bus": .050, "ambulance": .0004}, "Dublin 02:00": {"car": .9879, "bus": .0109, "ambulance": .0012},
       "Dublin 11:00": {"car": .9507, "bus": .0485, "ambulance": .0008}, "Dublin 18:00": SH18}
+# 2026-10-01 用户令: 11h 延误行剔除 amb_0 (两臂同剔) —— 其路线以 -532427444#2 → 369977731 结尾, 即 18h 已改道消除的非 RL 让行右转;
+# 它在 8 个种子里每趟都损失 155-235 s 却几乎不被收集器记为停车 (排队发生在非 RL 进口道上), 属外部瓶颈, 与控制器无关。
+DELAY_EXCLUDE = {"Dublin 11:00": {"amb_0"}}
 RAW = {"1x1": [(274, 1325), (263, 1370)], "1x3": [(275, 1785), (265, 580)], "Dublin 02:00": [(287, 770), (288, 760)], "Dublin 11:00": [(208, 240), (211, 215)], "Dublin 18:00": [(298, 200), (301, 95)]}
 
 def delay_rows(name, seeds):
@@ -23,7 +26,7 @@ def delay_rows(name, seeds):
             d = json.load(open(f)); cv = d["collector"]["vehicles"]; acc = {"car": [], "bus": [], "ambulance": [], "all": []}
             for vid, rec in d["vehicles"].items():
                 t = rec.get("trip"); k = cv.get(vid, {}).get("k_v", 0)
-                if not t or k <= 0 or rec.get("type") not in acc: continue
+                if not t or k <= 0 or rec.get("type") not in acc or vid in DELAY_EXCLUDE.get(name, set()): continue
                 x = float(t["timeLoss"]) / k; acc[rec["type"]].append(x); acc["all"].append(x)
             per_seed[seed] = {c: (float(np.mean(v)) if v else np.nan) for c, v in acc.items()}
         arms.append(per_seed)
@@ -68,7 +71,7 @@ SCEN = [("1x1", lambda: rows_from_json(f"{FIG}/main_comparison_1x1_best10seeds_2
 def main():
     cells, colors, hdr, titles, dump = [], [], [], [], {}
     for name, loader, amb_na in SCEN:
-        rt, re_, seeds = loader(); rd = delay_rows(name, seeds) if WITH_DELAY else []; dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd}
+        rt, re_, seeds = loader(); rd = delay_rows(name, seeds) if WITH_DELAY else []; dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd, "delay_excluded_vehicles": sorted(DELAY_EXCLUDE.get(name, set()))}
         hdr.append(len(cells) + 1); titles.append(name); cells.append(["", "", "", ""]); colors.append([HEAD] * 4)   # 块标题行 (只写场景名, 用户令)
         for block, tag in ((rt, "t"), (re_, "e")) + (((rd, "d"),) if WITH_DELAY else ()):
             d = 2 if tag in ("t", "d") else 3; means = {}
