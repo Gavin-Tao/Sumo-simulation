@@ -1,7 +1,8 @@
 """五场景合一表 (2026-09-30 用户令): 1x1 (剔 Tukey 种子 128, n=9) | 1x3 (10 种子) | Dublin 02:00 (10 种子) | Dublin 11:00 (用户选定: 剔 128/132, 8 种子) | Dublin 18:00 改道第二版 (exp298 vs exp301, 10 种子)。
 列: Metric | 8STD | GS-ENUM | Rel. diff (不含配对胜、备注列与保序门行); 块标题只写场景名。每块三组行: 停车时间/visit、停车次数/visit、延误(timeLoss)/visit (2026-10-01 加)。均值 ± 总体标准差, 与各 best10 表/Excel 同源。
-输出: experiments/analysis/figures/main_comparison_five_scenarios_2026-09-30_en.{png,json} (新文件)。"""
-import json, glob, os, numpy as np
+输出: experiments/analysis/figures/main_comparison_five_scenarios_2026-09-30_en.{png,json} (不带延误) 与 ..._with_delay_2026-09-30_en.{png,json} (--delay, 带延误行)。"""
+import json, glob, os, sys, numpy as np
+WITH_DELAY = "--delay" in sys.argv   # 2026-10-01 用户令: 出两张图, 默认不带延误行, --delay 带延误行 (文件名加 _with_delay)
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"
@@ -67,9 +68,9 @@ SCEN = [("1x1", lambda: rows_from_json(f"{FIG}/main_comparison_1x1_best10seeds_2
 def main():
     cells, colors, hdr, titles, dump = [], [], [], [], {}
     for name, loader, amb_na in SCEN:
-        rt, re_, seeds = loader(); rd = delay_rows(name, seeds); dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd}
+        rt, re_, seeds = loader(); rd = delay_rows(name, seeds) if WITH_DELAY else []; dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd}
         hdr.append(len(cells) + 1); titles.append(name); cells.append(["", "", "", ""]); colors.append([HEAD] * 4)   # 块标题行 (只写场景名, 用户令)
-        for block, tag in ((rt, "t"), (re_, "e"), (rd, "d")):
+        for block, tag in ((rt, "t"), (re_, "e")) + (((rd, "d"),) if WITH_DELAY else ()):
             d = 2 if tag in ("t", "d") else 3; means = {}
             for row in block:
                 lab, am, asd, bm, bsd = row[:5]; c = lab.split(" - ")[-1] if " - " in lab else "J"; means[c] = (am, bm)
@@ -93,7 +94,7 @@ def main():
         fig.text(x0 + 0.004, (y0 + y1) / 2, title, ha="left", va="center", fontsize=11, weight="bold", zorder=10)
     tb = tbl.get_window_extent(ren); tt = ax.title.get_window_extent(ren); bb = Bbox.union([tb, tt]); pad = 0.15 * fig.dpi
     crop = Bbox.from_extents((bb.x0 - pad) / fig.dpi, (bb.y0 - pad) / fig.dpi, (bb.x1 + pad) / fig.dpi, (bb.y1 + pad) / fig.dpi)
-    out = f"{FIG}/main_comparison_five_scenarios_2026-09-30_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
+    out = f"{FIG}/main_comparison_five_scenarios{'_with_delay' if WITH_DELAY else ''}_2026-09-30_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)
 
 if __name__ == "__main__": main()
