@@ -1,11 +1,38 @@
 """五场景合一表 (2026-09-30 用户令): 1x1 (剔 Tukey 种子 128, n=9) | 1x3 (10 种子) | Dublin 02:00 (10 种子) | Dublin 11:00 (用户选定: 剔 128/132, 8 种子) | Dublin 18:00 改道第二版 (exp298 vs exp301, 10 种子)。
-列: Metric | 8STD | GS-ENUM | Rel. diff (不含配对胜、备注列与保序门行); 块标题只写场景名。均值 ± 总体标准差, 与各 best10 表/Excel 同源。
+列: Metric | 8STD | GS-ENUM | Rel. diff (不含配对胜、备注列与保序门行); 块标题只写场景名。每块三组行: 停车时间/visit、停车次数/visit、延误(timeLoss)/visit (2026-10-01 加)。均值 ± 总体标准差, 与各 best10 表/Excel 同源。
 输出: experiments/analysis/figures/main_comparison_five_scenarios_2026-09-30_en.{png,json} (新文件)。"""
 import json, glob, os, numpy as np
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"
 SH18 = {"car": .9568, "bus": .0430, "ambulance": .0002}; WT = {"car": 1, "bus": 3, "ambulance": 5}
+SH = {"1x1": {"car": .965, "bus": .033, "ambulance": .0017}, "1x3": {"car": .950, "bus": .050, "ambulance": .0004}, "Dublin 02:00": {"car": .9879, "bus": .0109, "ambulance": .0012},
+      "Dublin 11:00": {"car": .9507, "bus": .0485, "ambulance": .0008}, "Dublin 18:00": SH18}
+RAW = {"1x1": [(274, 1325), (263, 1370)], "1x3": [(275, 1785), (265, 580)], "Dublin 02:00": [(287, 770), (288, 760)], "Dublin 11:00": [(208, 240), (211, 215)], "Dublin 18:00": [(298, 200), (301, 95)]}
+
+def delay_rows(name, seeds):
+    """Delay (SUMO tripinfo timeLoss, 1 s) / visit: 每辆车 timeLoss / k_v (收集器在采样时刻看到它的路口数, k_v>0), 按车类对车辆取均值, 再对评估种子取均值 ± 总体标准差。
+    含未完成行程 (timeLoss 截至仿真结束)。与停车指标同一批评估文件。"""
+    arms = []
+    for e, ep in RAW[name]:
+        per_seed = {}
+        for f in glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll.json"):
+            seed = int(f.split("_seed")[1].split("_")[0])
+            if seed not in seeds: continue
+            d = json.load(open(f)); cv = d["collector"]["vehicles"]; acc = {"car": [], "bus": [], "ambulance": [], "all": []}
+            for vid, rec in d["vehicles"].items():
+                t = rec.get("trip"); k = cv.get(vid, {}).get("k_v", 0)
+                if not t or k <= 0 or rec.get("type") not in acc: continue
+                x = float(t["timeLoss"]) / k; acc[rec["type"]].append(x); acc["all"].append(x)
+            per_seed[seed] = {c: (float(np.mean(v)) if v else np.nan) for c, v in acc.items()}
+        arms.append(per_seed)
+    ss = sorted(set(arms[0]) & set(arms[1])); rows = []
+    vals = {c: [np.array([arm[s][c] for s in ss]) for arm in arms] for c in ("car", "bus", "ambulance", "all")}
+    for c in ("car", "bus", "ambulance", "all"):
+        rows.append([f"Delay (time loss) / visit (s) - {c}", float(np.nanmean(vals[c][0])), float(np.nanstd(vals[c][0])), float(np.nanmean(vals[c][1])), float(np.nanstd(vals[c][1]))])
+    J = [sum(SH[name][c] * WT[c] * np.nan_to_num(vals[c][i]) for c in SH[name]) for i in (0, 1)]
+    rows.append(["J(531) weighted delay (per visit)", float(J[0].mean()), float(J[0].std()), float(J[1].mean()), float(J[1].std())])
+    return rows
 GREEN = "#cfe9cf"; GREY = "#f3f3f3"; HEAD = "#dde3ea"
 
 def gate(am, bu, ca, tol=5.0):
@@ -40,10 +67,10 @@ SCEN = [("1x1", lambda: rows_from_json(f"{FIG}/main_comparison_1x1_best10seeds_2
 def main():
     cells, colors, hdr, titles, dump = [], [], [], [], {}
     for name, loader, amb_na in SCEN:
-        rt, re_, seeds = loader(); dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_}
+        rt, re_, seeds = loader(); rd = delay_rows(name, seeds); dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd}
         hdr.append(len(cells) + 1); titles.append(name); cells.append(["", "", "", ""]); colors.append([HEAD] * 4)   # 块标题行 (只写场景名, 用户令)
-        for block, tag in ((rt, "t"), (re_, "e")):
-            d = 2 if tag == "t" else 3; means = {}
+        for block, tag in ((rt, "t"), (re_, "e"), (rd, "d")):
+            d = 2 if tag in ("t", "d") else 3; means = {}
             for row in block:
                 lab, am, asd, bm, bsd = row[:5]; c = lab.split(" - ")[-1] if " - " in lab else "J"; means[c] = (am, bm)
                 col = [GREY] * 4; col[1 if am <= bm else 2] = GREEN
