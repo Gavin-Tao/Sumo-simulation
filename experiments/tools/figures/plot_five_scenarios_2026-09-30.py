@@ -2,7 +2,10 @@
 列: Metric | 8STD | GS-ENUM | Rel. diff (不含配对胜、备注列与保序门行); 块标题只写场景名。每块三组行: 停车时间/visit、停车次数/visit、延误/visit (2026-10-01 加; 2026-10-09 起 Dublin 三块的延误只算 RL 路口 = rl_delay_rows, 网格仍为整趟 timeLoss/k_v)。均值 ± 总体标准差, 与各 best10 表/Excel 同源。
 输出: experiments/analysis/figures/main_comparison_five_scenarios_2026-09-30_en.{png,json} (不带延误) 与 ..._with_delay_2026-09-30_en.{png,json} (--delay, 带延误行)。"""
 import json, glob, os, sys, numpy as np
-WITH_DELAY = "--delay" in sys.argv   # 2026-10-01 用户令: 出两张图, 默认不带延误行, --delay 带延误行 (文件名加 _with_delay)
+WITH_DELAY = "--delay" in sys.argv
+def _arg(name, default):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
+GS18_EP = int(_arg("--gs18-ep", 95)); GS18_TAG = _arg("--gs18-tag", "_best_coll"); OUT_SUFFIX = _arg("--out-suffix", "")   # 2026-10-09: 18h GS 检查点可换 (默认 ep95 = 旧图), 新图加后缀不覆盖旧图   # 2026-10-01 用户令: 出两张图, 默认不带延误行, --delay 带延误行 (文件名加 _with_delay)
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"
@@ -12,7 +15,8 @@ SH = {"1x1": {"car": .965, "bus": .033, "ambulance": .0017}, "1x3": {"car": .950
 # 2026-10-01 用户令: 11h 延误行剔除 amb_0 (两臂同剔) —— 其路线以 -532427444#2 → 369977731 结尾, 即 18h 已改道消除的非 RL 让行右转;
 # 它在 8 个种子里每趟都损失 155-235 s 却几乎不被收集器记为停车 (排队发生在非 RL 进口道上), 属外部瓶颈, 与控制器无关。
 DELAY_EXCLUDE = {"Dublin 11:00": {"amb_0"}}
-RAW = {"1x1": [(274, 1325), (263, 1370)], "1x3": [(275, 1785), (265, 580)], "Dublin 02:00": [(287, 770), (288, 760)], "Dublin 11:00": [(208, 240), (211, 215)], "Dublin 18:00": [(298, 200), (301, 95)]}
+RAW = {"1x1": [(274, 1325), (263, 1370)], "1x3": [(275, 1785), (265, 580)], "Dublin 02:00": [(287, 770), (288, 760)], "Dublin 11:00": [(208, 240), (211, 215)], "Dublin 18:00": [(298, 200), (301, GS18_EP)]}
+TAG = {(301, GS18_EP): GS18_TAG}   # 非 best 检查点的评估文件后缀 (例 _ckpt_coll)
 
 def rl_delay_rows(name, seeds):
     """Dublin 三时段 (2026-10-09 用户令): 只算 RL 路口的延误 (eval_rl_delay.py: SUMO edgeData 按车类的逐边 timeLoss, 只累加 18 个 RL 路口进口道边 + 路口内部边).
@@ -73,7 +77,7 @@ def rows_from_json(path, pick=None):
 def rows_from_raw(exps):
     A = []
     for e, ep in exps:
-        A.append({int(f.split("_seed")[1].split("_")[0]): json.load(open(f)) for f in glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll.json")})
+        A.append({int(f.split("_seed")[1].split("_")[0]): json.load(open(f)) for f in glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*{TAG.get((e, ep), '_best_coll')}.json")})
     seeds = sorted(set(A[0]) & set(A[1])); out = []
     for m, label, jlabel in (("avg_stopped_time_per_visit", "Stopped time / visit (s)", "J(531) weighted cost (per visit)"), ("avg_stop_events_per_visit", "Stop events / visit", "J(531) weighted stop events (per visit)")):
         vals = {c: [np.array([X[s]["collector"]["summary"].get(f"eval/system/{c}/{m}", np.nan) for s in seeds]) for X in A] for c in ("car", "bus", "ambulance", "all")}
@@ -86,7 +90,7 @@ SCEN = [("1x1", lambda: rows_from_json(f"{FIG}/main_comparison_1x1_best10seeds_2
         ("1x3", lambda: rows_from_json(f"{FIG}/main_comparison_1x3_best10seeds_2026-09-30_en.json"), False),
         ("Dublin 02:00", lambda: rows_from_json(f"{FIG}/main_comparison_02h_best10seeds_2026-09-30_en.json"), True),
         ("Dublin 11:00", lambda: rows_from_json(f"{FIG}/main_comparison_11h_best10seeds_SELECTED_excl128_132_2026-09-30_en.json"), True),
-        ("Dublin 18:00", lambda: rows_from_raw([(298, 200), (301, 95)]), True)]
+        ("Dublin 18:00", lambda: rows_from_raw(RAW["Dublin 18:00"]), True)]
 
 def main():
     cells, colors, hdr, titles, dump = [], [], [], [], {}
@@ -119,7 +123,7 @@ def main():
         fig.text(x0 + 0.004, (y0 + y1) / 2, title, ha="left", va="center", fontsize=11, weight="bold", zorder=10)
     tb = tbl.get_window_extent(ren); tt = ax.title.get_window_extent(ren); bb = Bbox.union([tb, tt]); pad = 0.15 * fig.dpi
     crop = Bbox.from_extents((bb.x0 - pad) / fig.dpi, (bb.y0 - pad) / fig.dpi, (bb.x1 + pad) / fig.dpi, (bb.y1 + pad) / fig.dpi)
-    out = f"{FIG}/main_comparison_five_scenarios{'_with_delay' if WITH_DELAY else ''}_2026-09-30_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
+    out = f"{FIG}/main_comparison_five_scenarios{'_with_delay' if WITH_DELAY else ''}{OUT_SUFFIX}_{'2026-10-09' if OUT_SUFFIX else '2026-09-30'}_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)
 
 if __name__ == "__main__": main()
