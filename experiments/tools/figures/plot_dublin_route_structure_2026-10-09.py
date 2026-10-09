@@ -7,6 +7,7 @@
   ambulance_routes_11h_each_2026-10-09_en.png  11h 四辆救护车一辆一张 (2×2), 路口按顺序编号, [RL] / (priority) 标注
   bus_routes_2026-10-09_en.png              三时段全部公交路线 (GTFS), 同样标注
   car_routes_top_2026-10-09_en.png          三时段流量最大的 12 条小汽车路线, 同样标注
+  car_routes_top25_2026-10-09_en.png        同上, 前 25 条 (2026-10-09 用户问 18h 左上走廊为何不在图里: 18h 该走廊最大一条路线排第 13)
   edge_flows_car_bus_2026-10-09_en.png      2×3: 小汽车 / 公交 的逐边每小时流量 (线宽 ∝ 流量), 三时段并排"""
 import os, sys, json, collections, xml.etree.ElementTree as ET
 import numpy as np, matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -152,7 +153,7 @@ def fig_car_routes(top=12):
         routes = [(f"{n}/h", list(e), cm(k % 20)) for k, (e, n) in enumerate(topr)]
         draw_routes(axs[i], routes, f"{WL[w]}: top {top} of {len(cnt)} car routes = {100*cov/tot:.0f}% of {tot} cars/h", legend=False, lw=1.8)
     fig.suptitle(f"Most used car routes (top {top} per window). Yellow circle = RL junction on these routes; red × = non-RL junction on these routes", fontsize=11)
-    plt.tight_layout(rect=(0, 0, 1, 0.95)); fig.savefig(f"{OUT}/car_routes_top_2026-10-09_en.png", dpi=170); plt.close(fig)
+    plt.tight_layout(rect=(0, 0, 1, 0.95)); fig.savefig(f"{OUT}/car_routes_top{'' if top == 12 else top}_2026-10-09_en.png", dpi=170); plt.close(fig)
 
 def fig_edge_flows():
     fig, axs = plt.subplots(2, 3, figsize=(18, 11.5))
@@ -171,4 +172,4 @@ def fig_edge_flows():
     plt.tight_layout(rect=(0, 0, 1, 0.96)); fig.savefig(f"{OUT}/edge_flows_car_bus_2026-10-09_en.png", dpi=170); plt.close(fig)
 
 if __name__ == "__main__":
-    fig_visits_map(); fig_heatmap(); fig_ambulance_v2(); fig_ambulance_11h_each(); fig_bus_routes(); fig_car_routes(); fig_edge_flows(); print("saved 7 figures to", OUT)
+    fig_visits_map(); fig_heatmap(); fig_ambulance_v2(); fig_ambulance_11h_each(); fig_bus_routes(); fig_car_routes(); fig_car_routes(top=25); fig_edge_flows(); print("saved 8 figures to", OUT)

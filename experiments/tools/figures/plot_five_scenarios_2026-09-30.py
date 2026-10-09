@@ -1,5 +1,5 @@
 """五场景合一表 (2026-09-30 用户令): 1x1 (剔 Tukey 种子 128, n=9) | 1x3 (10 种子) | Dublin 02:00 (10 种子) | Dublin 11:00 (用户选定: 剔 128/132, 8 种子) | Dublin 18:00 改道第二版 (exp298 vs exp301, 10 种子)。
-列: Metric | 8STD | GS-ENUM | Rel. diff (不含配对胜、备注列与保序门行); 块标题只写场景名。每块三组行: 停车时间/visit、停车次数/visit、延误(timeLoss)/visit (2026-10-01 加)。均值 ± 总体标准差, 与各 best10 表/Excel 同源。
+列: Metric | 8STD | GS-ENUM | Rel. diff (不含配对胜、备注列与保序门行); 块标题只写场景名。每块三组行: 停车时间/visit、停车次数/visit、延误/visit (2026-10-01 加; 2026-10-09 起 Dublin 三块的延误只算 RL 路口 = rl_delay_rows, 网格仍为整趟 timeLoss/k_v)。均值 ± 总体标准差, 与各 best10 表/Excel 同源。
 输出: experiments/analysis/figures/main_comparison_five_scenarios_2026-09-30_en.{png,json} (不带延误) 与 ..._with_delay_2026-09-30_en.{png,json} (--delay, 带延误行)。"""
 import json, glob, os, sys, numpy as np
 WITH_DELAY = "--delay" in sys.argv   # 2026-10-01 用户令: 出两张图, 默认不带延误行, --delay 带延误行 (文件名加 _with_delay)
@@ -13,6 +13,26 @@ SH = {"1x1": {"car": .965, "bus": .033, "ambulance": .0017}, "1x3": {"car": .950
 # 它在 8 个种子里每趟都损失 155-235 s 却几乎不被收集器记为停车 (排队发生在非 RL 进口道上), 属外部瓶颈, 与控制器无关。
 DELAY_EXCLUDE = {"Dublin 11:00": {"amb_0"}}
 RAW = {"1x1": [(274, 1325), (263, 1370)], "1x3": [(275, 1785), (265, 580)], "Dublin 02:00": [(287, 770), (288, 760)], "Dublin 11:00": [(208, 240), (211, 215)], "Dublin 18:00": [(298, 200), (301, 95)]}
+
+def rl_delay_rows(name, seeds):
+    """Dublin 三时段 (2026-10-09 用户令): 只算 RL 路口的延误 (eval_rl_delay.py: SUMO edgeData 按车类的逐边 timeLoss, 只累加 18 个 RL 路口进口道边 + 路口内部边).
+    每 visit = Σ timeLoss / Σ 进口道进入次数 (精确计数, 非采样); 分车类后对评估种子取均值 ± 总体标准差。不剔除任何车辆: amb_0 在非 RL 让行口的排队本来就不在 RL 边上。"""
+    arms = []
+    for e, ep in RAW[name]:
+        per = {}
+        for f in glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_rldelay.json"):
+            seed = int(f.split("_seed")[1].split("_")[0])
+            if seed not in seeds: continue
+            C = json.load(open(f))["classes"]; tl = {c: C[c]["rl_timeloss"] for c in C}; en = {c: C[c]["rl_entered"] for c in C}
+            per[seed] = {c: (tl[c] / en[c] if en[c] else np.nan) for c in C}; per[seed]["all"] = sum(tl.values()) / max(sum(en.values()), 1)
+        arms.append(per)
+    ss = sorted(set(arms[0]) & set(arms[1])); rows = []
+    vals = {c: [np.array([arm[s][c] for s in ss]) for arm in arms] for c in ("car", "bus", "ambulance", "all")}
+    for c in ("car", "bus", "ambulance", "all"):
+        rows.append([f"RL-junction delay / visit (s) - {c}", float(np.nanmean(vals[c][0])), float(np.nanstd(vals[c][0])), float(np.nanmean(vals[c][1])), float(np.nanstd(vals[c][1]))])
+    J = [sum(SH[name][c] * WT[c] * np.nan_to_num(vals[c][i]) for c in SH[name]) for i in (0, 1)]
+    rows.append(["J(531) weighted RL-junction delay (per visit)", float(J[0].mean()), float(J[0].std()), float(J[1].mean()), float(J[1].std())])
+    return rows
 
 def delay_rows(name, seeds):
     """Delay (SUMO tripinfo timeLoss, 1 s) / visit: 每辆车 timeLoss / k_v (收集器在采样时刻看到它的路口数, k_v>0), 按车类对车辆取均值, 再对评估种子取均值 ± 总体标准差。
@@ -71,7 +91,9 @@ SCEN = [("1x1", lambda: rows_from_json(f"{FIG}/main_comparison_1x1_best10seeds_2
 def main():
     cells, colors, hdr, titles, dump = [], [], [], [], {}
     for name, loader, amb_na in SCEN:
-        rt, re_, seeds = loader(); rd = delay_rows(name, seeds) if WITH_DELAY else []; dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd, "delay_excluded_vehicles": sorted(DELAY_EXCLUDE.get(name, set()))}
+        rt, re_, seeds = loader()
+        rd = (rl_delay_rows(name, seeds) if name.startswith("Dublin") else delay_rows(name, seeds)) if WITH_DELAY else []   # Dublin: 只算 RL 路口; 网格: 整趟 (全部路口都是 RL)
+        dump[name] = {"seeds": seeds, "stopped_time": rt, "stop_events": re_, "delay": rd, "delay_definition": ("RL-junction edges only (edgeData timeLoss / entries)" if name.startswith("Dublin") else "whole-trip timeLoss / k_v")}
         hdr.append(len(cells) + 1); titles.append(name); cells.append(["", "", "", ""]); colors.append([HEAD] * 4)   # 块标题行 (只写场景名, 用户令)
         for block, tag in ((rt, "t"), (re_, "e")) + (((rd, "d"),) if WITH_DELAY else ()):
             d = 2 if tag in ("t", "d") else 3; means = {}
@@ -90,7 +112,7 @@ def main():
         if r == 0: t.set_weight("bold"); t.set_fontsize(11)
         if c == 0 and r > 0: t.set_ha("left"); cell.PAD = 0.012
         if r in hdr and c > 0: cell.set_edgecolor(HEAD)
-    ax.set_title("8STD (template + DQN) vs GS-ENUM (enumerated phases + FRAP), mean ± s.d. per visit", fontsize=12, pad=6)   # 用户令: 去掉 best checkpoints 字样
+    ax.set_title("8STD (template + DQN) vs GS-ENUM (enumerated phases + FRAP), mean ± s.d. per visit" + ("; Dublin delay rows count only RL-junction approaches" if WITH_DELAY else ""), fontsize=12, pad=6)   # 用户令: 去掉 best checkpoints 字样
     fig.canvas.draw(); ren = fig.canvas.get_renderer(); inv = fig.transFigure.inverted()
     for r, title in zip(hdr, titles):
         bb = tbl[r, 0].get_window_extent(ren); x0, y0 = inv.transform((bb.x0, bb.y0)); x1, y1 = inv.transform((bb.x1, bb.y1))

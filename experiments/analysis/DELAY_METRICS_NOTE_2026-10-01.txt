@@ -51,3 +51,31 @@ Dublin 11:00 exp208 ep240 / exp211 ep215 (用户选定剔种子 128/132, n=8); D
    Dublin 18:00  ambulance  11.5 ± 3.6      11.4 ± 3.9      −1%     5/10   |  2.0 ± 2.4     1.5 ± 2.3   −25%
    Dublin 18:00  all        37.1 ± 0.9      32.2 ± 0.3      −13%    10/10  |  5.5 ± 0.1     5.0 ± 0.1   −9%
    注: 不除的数受路线长短影响大 (11h 公交路线比小汽车长 20%, 剩余救护车 amb_2 路线 1.6 km), 只用于比两臂, 不用于跨车类。
+
+─────────────────────────────────────────────────────────────────────────────────────
+§5 只算 RL 路口的延误 (2026-10-09, 用户令; 工具 experiments/tools/dublin/eval_rl_delay.py; 数据 pervehicle/*_rldelay.json)
+─────────────────────────────────────────────────────────────────────────────────────
+  定义: SUMO edgeData 按车类 (vTypes) 输出逐边 timeLoss (含路口内部边), 只累加 18 个 RL 路口的进口道边 + 路口内部边;
+        每 visit = Σ timeLoss / Σ 进口道进入次数 (entered + departed, 精确计数, 不是收集器 5 s 采样的 k_v); 每车 = Σ timeLoss / tripinfo 车辆数。
+        同一批 best 检查点与评估种子 (02h 10, 11h 8 [剔 128/132], 18h 10); 不剔除任何车辆 —— amb_0 在非 RL 让行口的排队本来就不在 RL 边上。
+        带延误版五场景表 (main_comparison_five_scenarios_with_delay) 的 Dublin 三块延误行自 2026-10-09 起改用此口径; 1x1/1x3 仍为整趟 timeLoss/k_v (网格所有路口都是 RL)。
+  结果 (每 visit, 均值 ± 总体标准差; GS 相对 8STD):
+   Dublin 02:00  RL-junction delay / visit (s) - car                3.05 ± 0.09 |   2.85 ± 0.06 |   -7%
+   Dublin 02:00  RL-junction delay / visit (s) - bus                2.30 ± 0.30 |   2.20 ± 0.28 |   -5%
+   Dublin 02:00  RL-junction delay / visit (s) - ambulance          2.07 ± 0.67 |   2.26 ± 0.38 |   +9%
+   Dublin 02:00  RL-junction delay / visit (s) - all                3.03 ± 0.08 |   2.83 ± 0.06 |   -7%
+   Dublin 02:00  J(531) weighted RL-junction delay (per visit)      3.10 ± 0.08 |   2.90 ± 0.06 |   -7%
+   Dublin 11:00  RL-junction delay / visit (s) - car                7.09 ± 0.19 |   5.94 ± 0.14 |  -16%
+   Dublin 11:00  RL-junction delay / visit (s) - bus                3.96 ± 0.14 |   3.52 ± 0.13 |  -11%
+   Dublin 11:00  RL-junction delay / visit (s) - ambulance          4.18 ± 1.32 |   4.49 ± 1.31 |   +8%
+   Dublin 11:00  RL-junction delay / visit (s) - all                6.82 ± 0.18 |   5.73 ± 0.14 |  -16%
+   Dublin 11:00  J(531) weighted RL-junction delay (per visit)      7.33 ± 0.19 |   6.18 ± 0.14 |  -16%
+   Dublin 18:00  RL-junction delay / visit (s) - car               12.65 ± 0.64 |   8.99 ± 0.11 |  -29%
+   Dublin 18:00  RL-junction delay / visit (s) - bus                4.09 ± 0.13 |   4.36 ± 0.15 |   +7%
+   Dublin 18:00  RL-junction delay / visit (s) - ambulance          2.69 ± 1.17 |   2.56 ± 1.09 |   -5%
+   Dublin 18:00  RL-junction delay / visit (s) - all               11.92 ± 0.58 |   8.60 ± 0.10 |  -28%
+   Dublin 18:00  J(531) weighted RL-junction delay (per visit)     12.63 ± 0.61 |   9.17 ± 0.11 |  -27%
+  对照 (全体车辆, GS 相对 8STD): 整趟延误 02h −3% / 11h −6% / 18h −13%; RL 路口延误 02h −7% / 11h −16% / 18h −27%; 停车时间/visit 02h −14% / 11h −27% / 18h −15%。
+  RL 路口延误占整趟延误的比例 (18h 8STD seed 123 示例): 小汽车 51%, 公交 74%, 救护车 45% —— 其余发生在非 RL 路口与路段, 两臂相同, 所以整趟口径把差距稀释了一半。
+  优先级顺序 (RL 路口延误, 均值): 02h 两臂 救护车 ≤ 公交 ≤ 小汽车 (8STD 2.07/2.30/3.05, GS 2.26/2.20/2.85 → GS 救护车略高于公交 0.06 s, 在 5 s 容差内);
+                                  11h 8STD 4.18 > 3.96 (救护车略高于公交, 容差内), GS 4.49 > 3.52; 18h 两臂 救护车 < 公交 < 小汽车 严格满足。
