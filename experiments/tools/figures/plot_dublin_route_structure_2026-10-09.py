@@ -112,7 +112,7 @@ def fig_ambulance_v2():
 def fig_ambulance_11h_each():
     """11h 四辆救护车一辆一张 (用户令 2026-10-09): 2×2, 每张只画一条轨迹, RL 路口黄圆标 id, 非 RL 路口红 × 标 id (标签交错避免重叠)."""
     ambs = D["ambulances"]["11h"]; cmap = ["#1a9850", "#d73027", "#4575b4", "#f46d43"]
-    fig, axs = plt.subplots(2, 2, figsize=(15, 13))
+    fig, axs = plt.subplots(2, 2, figsize=(22, 19))
     for k, a in enumerate(ambs):
         ax = axs[k // 2, k % 2]; base(ax)
         for j in RL: ax.scatter(*xy[j], s=24, facecolor="white", edgecolor="#555555", linewidth=0.7, zorder=3)
@@ -121,14 +121,14 @@ def fig_ambulance_11h_each():
         ax.scatter(pts[0, 0], pts[0, 1], marker="^", s=90, color=cmap[k], edgecolor="k", zorder=5); ax.scatter(pts[-1, 0], pts[-1, 1], marker="s", s=75, color=cmap[k], edgecolor="k", zorder=5)
         n_rl = n_non = 0
         for i, (n, is_rl, t) in enumerate(route_nodes(a["edges"])):
-            c = net.getNode(n).getCoord(); off = [(7, 7), (7, -11), (-7, 12), (-7, -16)][i % 4]
+            c = net.getNode(n).getCoord(); off = [(8, 8), (8, -13), (-70, 16), (-70, -20)][i % 4]
             if is_rl:
                 n_rl += 1; ax.scatter(*c, s=90, color="#ffd92f", edgecolor="k", linewidth=0.9, zorder=6)
                 ax.annotate(f"{n_rl + n_non}. {SHORT[n]} [RL]", c, fontsize=8, weight="bold", xytext=off, textcoords="offset points", zorder=7)
             elif t != "dead_end":
                 n_non += 1; ax.scatter(*c, s=70, marker="x", color="#d62728", linewidth=1.8, zorder=6)
                 ax.annotate(f"{n_rl + n_non}. {n[:18]} ({t})", c, fontsize=7, color="#d62728", xytext=off, textcoords="offset points", zorder=7)
-        m = 110; ax.set_xlim(pts[:, 0].min() - m, pts[:, 0].max() + m); ax.set_ylim(pts[:, 1].min() - m, pts[:, 1].max() + m)   # 每张按本条路线放大, 标签才分得开
+        # 用户令 2026-10-09: 画完整路网, 不按路线放大
         ax.set_title(f"Dublin 11:00 - {a['id']}: depart {a['depart']:.0f} s, {a['length']} m, {len(a['junctions'])} RL junctions (yellow) + {n_non} non-RL junctions (red ×)", fontsize=10)
     fig.suptitle("Dublin 11:00 ambulance routes, one per panel. Numbers = order along the route; [RL] = controlled by the RL agent; (priority) = unsignalised yield junction; ▲ entry, ■ exit", fontsize=11.5)
     plt.tight_layout(rect=(0, 0, 1, 0.96)); fig.savefig(f"{OUT}/ambulance_routes_11h_each_2026-10-09_en.png", dpi=170); plt.close(fig)
