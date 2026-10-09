@@ -1,0 +1,61 @@
+# exp303_dublin18h_reroute_v2_amb11h_521_8std (2026-10-09 用户令, 优先级权重消融 5/2/1): exp298_dublin18h_reroute_v2_amb11h_531_8std 逐位, 只把 priority_source.bus 由 3 改为 2。注意权重即等级: 奖励 (priority-avg-waiting) 按等级加权、观测优先级分桶按等级、GS 压力打分按等级, 三处同时随 priority_source 变 (未设 obs_priority_source)。场景 (weekday_18h_reroute_v2)、路网、其余超参不变。评估时 J 需按 521/531/541 各算。
+# exp298_dublin18h_reroute_v2_amb11h_531_8std (2026-09-30 用户令): exp289_dublin18h_amb11h_531_8std 逐位, 仅把 SUMO 场景文件换成 18h 改道第二版文件夹 nets/dublin/weekday_18h_reroute_v2 (三个路由 + sumocfg; 只有小汽车路由有差别: 177 辆 Aungier 南行右转进 Peter's Row 的车改为在 Aungier 进口道 -532427444#2 末端离网, 不再进入非 RL 让行口 cluster_2384200130_2384200132_389663, 也不经过 gneJ47; 取代 exp296/297 用的第一版改道 (其把让行冲突搬到 Cuffe St, 见 experiments/analysis/DUBLIN_18H_REROUTE_2026-09-30.txt §8-9)); 路网、公交/救护车路由内容、全部超参不变。
+# exp289_dublin18h_amb11h_531_8std (2026-09-22 用户令): exp285_dublin18h_531_8std 逐位, 仅换救护车路由为 11h 探针路线 (amb_weekday_18h_probe11h.rou.xml, = 11h 的 amb_1 路线, 一辆 2029.7 s) 与对应 sumocfg; 小汽车/公交路由、网络、全部超参不变。
+# exp285_dublin18h_531_8std (2026-09-21 用户令): exp208_dublin11h_531_B_movement_legacy_cqm_outcq_mask_nocoord_stab_obsfix_clamp_eps05_g095 逐位, 仅换时段场景文件 (weekday_11h -> weekday_18h: 三个路由 + sumocfg); 其余逐键相同。
+name: exp303_dublin18h_reroute_v2_amb11h_521_8std
+wandb_project: sumo-rl-dublin
+net_file: ../nets/dublin/dublin_8std.net.xml
+route_file: ../nets/dublin/weekday_18h_reroute_v2/car_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/bus_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/amb_weekday_18h_probe11h.rou.xml
+cfg_file: ../nets/dublin/weekday_18h_reroute_v2/dublin_weekday_18h_probe11h.sumocfg
+observation_class: PriorityMovement
+obs_phase_state: legacy
+obs_fields:
+- count
+- queue
+- mean_awt
+# ---- obs-side fixes (audit 2026-06-12, all measured defects) ----
+obs_awt_basis: local      # strip inherited wait -> stationary feature distribution
+obs_awt_cap: 500          # bound worst-case stuck-on-lane wait at feature 5.0
+obs_lane_occ: true        # shared-lane physical occupancy truth (+12 dims)
+priority_source:
+  ambulance: 5
+  bus: 2
+  car: 1
+reward_fn: priority-avg-waiting
+num_seconds: 3600
+delta_time: 5
+yellow_time: 2
+min_green: 5
+use_gui: false
+use_max_green: true
+max_green: 50
+hidden_dim: 128
+lr: 0.001
+gamma: 0.95
+epsilon: 0.1
+eps_start: 0.9
+eps_end: 0.05
+# ---- training-side stabilization (deadly-triad, exp200-validated recipe) ----
+eps_decay: 30000          # exploration tail ~ep80 instead of ep30
+target_update: 720        # sync once per episode (720 steps) -> quasi-fixed TD target
+capacity: 300000          # ~23 episodes in buffer instead of 3.8
+use_double: true          # kill max-operator overestimation feedback
+loss_fn: huber            # saturate gradients on exploding TD errors
+grad_clip: 1.0
+mini_size: 1000
+batch_size: 256
+seed: 0
+episodes: 800
+checkpoint_interval: 50
+runs: 1
+eval_interval: 5
+eval_seed: 123
+logging_mode: basic
+use_per: false
+action_meta_file: ../nets/dublin/dublin_8std_meta.json
+obs_downstream: true
+obs_downstream_fields:
+- count
+- queue
+# ---- R1 (forensics Part 7): TD target clamp at the domain bound Q<=0 ----
+target_clip_max: 0.0
