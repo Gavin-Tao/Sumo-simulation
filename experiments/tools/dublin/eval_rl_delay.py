@@ -8,24 +8,23 @@ import argparse, json, os, sys, collections, xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ckpt_env
 
-def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--tag", default="_rldelay")
-    a = ap.parse_args(); pid = os.getpid()
+def edgedata_files(exp, pid=None):
+    """写按车类的 edgeData 附加文件 (含路口内部边, 1 小时一个 interval); 返回 (附加文件路径, {车类: 输出路径})。
+    供本脚本与 eval_pervehicle.py --rl-delay 共用 (2026-10-10 用户批准合并: 一次仿真同时出收集器指标与 RL 路口延误)。"""
+    pid = pid or os.getpid()
     LOG = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "logs")); os.makedirs(LOG, exist_ok=True)
-    add = f"{LOG}/edgedata_add_exp{a.exp}_{pid}.xml"; trip = f"{LOG}/tripinfo_tmp_exp{a.exp}_{pid}.xml"; outs = {c: f"{LOG}/edgedata_{c}_exp{a.exp}_{pid}.xml" for c in ("car", "bus", "ambulance")}
+    add = f"{LOG}/edgedata_add_exp{exp}_{pid}.xml"; outs = {c: f"{LOG}/edgedata_{c}_exp{exp}_{pid}.xml" for c in ("car", "bus", "ambulance")}
     open(add, "w").write("<additional>" + "".join(f'<edgeData id="ed_{c}" file="{outs[c]}" freq="3600" vTypes="{c}" withInternal="true" excludeEmpty="true"/>' for c in outs) + "</additional>")
-    B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=f"--additional-files {add} --tripinfo-output {trip} --tripinfo-output.write-unfinished true")
-    env, act, states = B["env"], B["act"], B["states"]; sumo = env.sumo
-    rl = list(env.ts_ids); approach = {t: sorted({l.rsplit("_", 1)[0] for l in dict.fromkeys(sumo.trafficlight.getControlledLanes(t))}) for t in rl}
-    done = {"__all__": False}
-    while not done["__all__"]:
-        states, _, done, _ = env.step(action={t: act(t, states[t])[0] for t in rl})
-    env.close()
+    return add, outs
+
+def approach_edges(env):
+    """每个 RL 路口的进口道边 (受控车道去掉 _laneIndex 后去重排序)。需在 env.close() 之前调用。"""
+    sumo = env.sumo
+    return {t: sorted({l.rsplit("_", 1)[0] for l in dict.fromkeys(sumo.trafficlight.getControlledLanes(t))}) for t in env.ts_ids}
+
+def rl_delay_classes(add, outs, approach, wt):
+    """解析 edgeData 输出 → 按车类的 RL 路口延误 (键与 2026-10-09 版逐一相同), 并删除临时文件。wt = {vType: [timeLoss, ...]} 来自 tripinfo (含未完成)。"""
     res = {}
-    wt = {}
-    if os.path.exists(trip):
-        for ti in ET.parse(trip).getroot().iter("tripinfo"): wt.setdefault(ti.get("vType"), []).append(float(ti.get("timeLoss")))
-        os.remove(trip)
     for c, f in outs.items():
         ed = {e.get("id"): e for iv in ET.parse(f).getroot().iter("interval") for e in iv.iter("edge")} if os.path.exists(f) else {}
         per_j = {}
@@ -39,6 +38,24 @@ def main():
         os.remove(f)
     os.remove(add)
     for c in res: res[c]["trip_timeloss_per_vehicle"] = (sum(wt[c]) / len(wt[c]) if wt.get(c) else None); res[c]["n_tripinfo"] = len(wt.get(c, []))
+    return res
+
+def main():
+    ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--tag", default="_rldelay")
+    a = ap.parse_args()
+    add, outs = edgedata_files(a.exp); trip = add.replace("edgedata_add_", "tripinfo_tmp_")
+    B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=f"--additional-files {add} --tripinfo-output {trip} --tripinfo-output.write-unfinished true")
+    env, act, states = B["env"], B["act"], B["states"]
+    rl = list(env.ts_ids); approach = approach_edges(env)
+    done = {"__all__": False}
+    while not done["__all__"]:
+        states, _, done, _ = env.step(action={t: act(t, states[t])[0] for t in rl})
+    env.close()
+    wt = {}
+    if os.path.exists(trip):
+        for ti in ET.parse(trip).getroot().iter("tripinfo"): wt.setdefault(ti.get("vType"), []).append(float(ti.get("timeLoss")))
+        os.remove(trip)
+    res = rl_delay_classes(add, outs, approach, wt)
     out = dict(exp=a.exp, kind=B["kind"], ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], rl_junctions=rl, approach_edges=approach, classes=res)
     os.makedirs(a.out, exist_ok=True); path = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}{a.tag}.json"); json.dump(out, open(path, "w"), indent=1)
     print("saved", path, "|", {c: (round(r["rl_per_vehicle"] or 0, 1), round(r["trip_timeloss_per_vehicle"] or 0, 1)) for c, r in res.items()})

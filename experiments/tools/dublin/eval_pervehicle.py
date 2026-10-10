@@ -11,10 +11,18 @@ import ckpt_env
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀"); ap.add_argument("--collector", action="store_true", help="同时运行训练用的 EpisodeMetricsCollector (5 s 采样口径), 导出其逐车记录与 eval_* 汇总")
+    ap.add_argument("--rl-delay", action="store_true", help="同一次仿真顺带输出 RL 路口延误 (= eval_rl_delay.py 的结果, 2026-10-10 用户批准合并): 挂 edgeData 附加输出, 另存 <同名><rl-delay-tag>.json")
+    ap.add_argument("--rl-delay-tag", default="_rldelay", help="RL 路口延误文件后缀 (默认 _rldelay, 与 eval_rl_delay.py 相同)")
     a = ap.parse_args()
     tmp = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "experiments", f"logs/tripinfo_tmp_exp{a.exp}_{os.getpid()}.xml"))
-    B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=f"--tripinfo-output {tmp} --tripinfo-output.write-unfinished true", route_override=a.routes)
+    extra = f"--tripinfo-output {tmp} --tripinfo-output.write-unfinished true"
+    rld = None
+    if a.rl_delay:   # 2026-10-10: 与 eval_rl_delay.py 同一份 edgeData 附加文件 (输出设备, 不改变仿真轨迹)
+        import eval_rl_delay as rld
+        add, outs = rld.edgedata_files(a.exp); extra = f"--additional-files {add} " + extra
+    B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=extra, route_override=a.routes)
     env, act, states = B["env"], B["act"], B["states"]; sumo = env.sumo
+    approach = rld.approach_edges(env) if rld else None
     print(f"[pervehicle] exp{a.exp} {B['kind']} ckpt ep{B['ckpt_episode']} seed {B['seed']} n_ts {len(env.ts_ids)}")
     lanes = {t: [l for l in dict.fromkeys(sumo.trafficlight.getControlledLanes(t))] for t in env.ts_ids}
     lane2tls = {l: t for t, ls in lanes.items() for l in ls}
@@ -77,4 +85,11 @@ def main():
     out = dict(exp=a.exp, routes=a.routes, kind=B["kind"], collector=coll, ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
     os.makedirs(a.out, exist_ok=True); path = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}{a.tag}.json")
     json.dump(out, open(path, "w")); print("saved", path, "| vehicles", len(veh), "tripinfo", len(trip))
+    if rld:   # RL 路口延误: 与 eval_rl_delay.py 同一公式同一键 (wt 按 tripinfo 的 vType 收 timeLoss, 含未完成行程)
+        wt = {}
+        for t in trip.values(): wt.setdefault(t["vType"], []).append(float(t["timeLoss"]))
+        res = rld.rl_delay_classes(add, outs, approach, wt)
+        rout = dict(exp=a.exp, kind=B["kind"], ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], rl_junctions=list(env.ts_ids), approach_edges=approach, classes=res)
+        rpath = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}{a.rl_delay_tag}.json"); json.dump(rout, open(rpath, "w"), indent=1)
+        print("saved", rpath, "|", {c: (round(r["rl_per_vehicle"] or 0, 1), round(r["trip_timeloss_per_vehicle"] or 0, 1)) for c, r in res.items()})
 if __name__ == "__main__": main()
