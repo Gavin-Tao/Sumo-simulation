@@ -589,7 +589,9 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  slot_stats: str = "intent",
                  include_since_green: bool = False,
                  since_green_cap: float = 600.0,
-                 awt_log: bool = False):
+                 awt_log: bool = False,
+                 include_green_elapsed: bool = False,
+                 green_elapsed_cap: float = 600.0):
         super().__init__(ts)
         # since_green (2026-09-30, 用户批准; 默认关 → 旧配置逐位不变): 每槽位末尾追加 "距该 movement 上次被放行的秒数"
         # (min(·, cap)/100)。对空方向也有定义、不饱和, 是饿死的直接表征; 每集 (对象重建) 自动重置。
@@ -600,6 +602,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
         # awt_log (2026-09-30; 默认关): mean/max awt 特征改为 log(1+秒)/log(1+3600), 不再用 awt_cap 截断,
         # 500 s 与 1500 s 可区分, 避免锁死态下观测成常量。
         self.awt_log = bool(awt_log)
+        # green_elapsed (2026-10-10, 用户批准; 默认关 → 旧配置逐位不变): 每槽位末尾 (since_green 之后) 追加
+        # "该 movement 本次连续被放行了多少秒" (min(·, cap)/100), 未放行为 0。与 since_green 对称: 一个记红了多久, 一个记绿了多久。
+        # 跨相位连续放行的运动 (常绿右转、相邻相位都含它) 不归零, 所以它不等于头部的相位已持续时间。每集随对象重建自动重置。
+        self.include_green_elapsed = bool(include_green_elapsed)
+        self.green_elapsed_cap = float(green_elapsed_cap)
+        self._green_since: dict = {}
         bad = [f for f in fields if f not in self._ALL_FIELDS]
         if bad:
             raise ValueError(f"unknown φ fields {bad}; allowed {self._ALL_FIELDS}")
@@ -894,6 +902,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 self._t0 = _now
             for _s in served:
                 self._last_green[_s] = _now
+        if self.include_green_elapsed:
+            _now_g = float(ts.sumo.simulation.getTime())
+            for _s in served:
+                self._green_since.setdefault(_s, _now_g)       # 本次放行的起点 (已在放行中则保持)
+            for _s in [k for k in self._green_since if k not in served]:
+                del self._green_since[_s]                      # 不再放行 → 清零
         for slot in range(self.N_SLOTS):
             if not self._is_legacy:
                 obs.append(1.0 if slot in served else 0.0)      # is_green per movement slot
@@ -959,6 +973,9 @@ class PriorityMovementObservationFunction(ObservationFunction):
             if self.include_since_green:
                 _last = self._last_green.get(slot, self._t0)
                 obs.append(min(_now - _last, self.since_green_cap) / 100.0)
+            if self.include_green_elapsed:
+                obs.append(min(_now_g - self._green_since[slot], self.green_elapsed_cap) / 100.0
+                           if slot in served else 0.0)
         return np.array(obs, dtype=np.float32)
 
     def observation_space(self) -> spaces.Box:
@@ -966,7 +983,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
         psi_dim = len(PRIORITY_LEVELS) * len(self.downstream_fields) \
             if self.include_downstream else 0
         slot_dim = self._phi_dim + psi_dim + (1 if self.include_lane_occ else 0) \
-            + (1 if getattr(self, "include_since_green", False) else 0)
+            + (1 if getattr(self, "include_since_green", False) else 0) \
+            + (1 if getattr(self, "include_green_elapsed", False) else 0)
         if self._is_legacy:
             dim = (K + 1) + self.N_SLOTS * slot_dim
         else:

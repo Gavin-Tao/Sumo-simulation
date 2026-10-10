@@ -84,7 +84,10 @@ def build_frap_agent(cfg, tables, env, device):
         mtt_heads=int(fp.get("mtt_heads", 4)),
         mtt_layers=int(fp.get("mtt_layers", 2)),
         hold_bias=bool(fp.get("hold_bias", False)),   # 2026-09-02: 当前相位保持偏置, 默认关
-        score_mode=score_mode, layout=layout)         # 2026-09-30: 压力打分, 默认 learned
+        score_mode=score_mode, layout=layout,         # 2026-09-30: 压力打分, 默认 learned
+        header_in=bool(fp.get("header_in", False)),   # 2026-10-10: 观测头部拼入编码器 (与 8STD 信息对等), 默认关
+        menu_hidden=int(fp.get("menu_hidden", 128)),  # 2026-10-10: 仅 arch menuq 用 (菜单条件化 Q 的 MLP 宽度/层数)
+        menu_layers=int(fp.get("menu_layers", 2)))
 
 
 def load_neighbor_map(path, n_neighbors=4):

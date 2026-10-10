@@ -42,7 +42,9 @@ def main():
                      ("priority_source", "priority_source"), ("obs_downstream", "include_downstream"),
                      ("obs_downstream_fields", "downstream_fields"), ("obs_lane_occ", "include_lane_occ"),
                      ("obs_awt_cap", "awt_cap"), ("obs_awt_basis", "awt_basis"),
-                     ("obs_slot_stats", "slot_stats")]:
+                     ("obs_slot_stats", "slot_stats"),
+                     ("obs_since_green", "include_since_green"), ("obs_awt_log", "awt_log"),   # 2026-10-10 补映射 (旧配置无这些键 → 摘要不变)
+                     ("obs_green_elapsed", "include_green_elapsed")]:
         if src in cfg:
             v = cfg[src]
             obs_kwargs[dst] = tuple(v) if isinstance(v, list) else v

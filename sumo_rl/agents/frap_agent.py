@@ -26,9 +26,13 @@ class FRAPQNet(torch.nn.Module):
     masked-std mode)."""
 
     def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16, k_max=11,
-                 hold_bias=False, score_mode="learned", layout=None):
+                 hold_bias=False, score_mode="learned", layout=None, header_in=False):
         super().__init__()
         self.header_dim, self.slot_dim, self.k_max = header_dim, slot_dim, k_max
+        # header_in (2026-10-10, 用户批准, 默认关 → 网络逐位不变): 把观测头部 (perphase: [min_green_ok, 相位已持续时间/100])
+        # 广播拼到每个运动槽的特征后面再进编码器, 让 FRAP 拿到与 8STD 的 MLP 相同的信息 (原 FRAP 只读 x[:, header_dim:], 头部被丢弃)。
+        # pressure()/hold_bias 仍从原始槽特征取值, 不受影响; MTT 继承 encode 同样生效。
+        self.header_in = bool(header_in)
         # hold_bias (2026-09-02, additive, default OFF -> network byte-identical to
         # before): one learnable scalar b added to Q of the CURRENTLY executing
         # phase, i.e. Q'(k) = Q(k) + b * 1[k == current]. The current phase is
@@ -53,7 +57,7 @@ class FRAPQNet(torch.nn.Module):
             dq = layout.get("down_queue_idx")
             self.register_buffer("_dq_idx", torch.tensor(dq, dtype=torch.long) if dq else torch.zeros(0, dtype=torch.long))
         self.enc = torch.nn.Sequential(
-            torch.nn.Linear(slot_dim, embed_dim), torch.nn.ReLU(),
+            torch.nn.Linear(slot_dim + (header_dim if self.header_in else 0), embed_dim), torch.nn.ReLU(),
             torch.nn.LayerNorm(embed_dim))
         self.g_head = torch.nn.Linear(embed_dim, 1)
         self.pair_fc = torch.nn.Linear(2 * embed_dim, pair_dim)
@@ -81,6 +85,8 @@ class FRAPQNet(torch.nn.Module):
     def encode(self, x):
         B = x.shape[0]
         slots = x[:, self.header_dim:].reshape(B, 12, self.slot_dim)
+        if self.header_in:                                   # 头部广播到 12 个槽 (B,12,slot_dim+header_dim)
+            slots = torch.cat([slots, x[:, :self.header_dim].unsqueeze(1).expand(B, 12, self.header_dim)], dim=-1)
         return self.enc(slots)                               # (B,12,E)
 
     def duel_scores(self, d, rel):
@@ -138,8 +144,8 @@ class MTTQNet(FRAPQNet):
     """
 
     def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16,
-                 k_max=11, n_heads=4, n_layers=2):
-        super().__init__(header_dim, slot_dim, embed_dim, pair_dim, k_max)
+                 k_max=11, n_heads=4, n_layers=2, header_in=False):
+        super().__init__(header_dim, slot_dim, embed_dim, pair_dim, k_max, header_in=header_in)
         self.n_heads = n_heads
         self.layers = torch.nn.ModuleList([
             torch.nn.ModuleDict({
@@ -314,16 +320,24 @@ class FRAPAgent:
                  pair_dim=16, k_max=11, use_double=True, loss_fn="huber",
                  grad_clip=1.0, target_clip_max=None, target_clip_min=None, arch="frap",
                  mtt_heads=4, mtt_layers=2, hold_bias=False,
-                 score_mode="learned", layout=None):
+                 score_mode="learned", layout=None, header_in=False,
+                 menu_hidden=128, menu_layers=2):
         self.device = torch.device(device)
         # arch: "frap" (default, unchanged) | "mtt" (movement-token transformer,
         # same forward contract). Absent key -> "frap" -> byte-identical legacy.
         def _mk():
             if arch in ("mtt", "mtt_pure") and score_mode != "learned":
                 raise ValueError("frap.score pressure* only supported for arch frap")
+            if arch == "menuq":   # 2026-10-10 菜单条件化 Q (用户批准): 整条状态 + 候选相位说明书 -> 标量 Q; 见 menu_qnet.py
+                if score_mode != "learned" or hold_bias or header_in:
+                    raise ValueError("arch menuq 不支持 frap.score pressure* / hold_bias / header_in (它本身读整条状态含头部)")
+                from .menu_qnet import MenuQNet
+                return MenuQNet(header_dim, slot_dim, k_max, hidden=menu_hidden, n_layers=menu_layers)
             if arch == "mtt":
                 return MTTQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
-                               n_heads=mtt_heads, n_layers=mtt_layers)
+                               n_heads=mtt_heads, n_layers=mtt_layers, header_in=header_in)
+            if arch == "mtt_pure" and header_in:
+                raise ValueError("frap.header_in 暂不支持 arch mtt_pure")
             if arch == "mtt_pure":
                 return MTTPureQNet(header_dim, slot_dim, embed_dim, pair_dim,
                                    k_max, n_heads=mtt_heads, n_layers=mtt_layers)
@@ -331,9 +345,9 @@ class FRAPAgent:
                 raise ValueError(f"unknown frap arch: {arch!r}")
             if score_mode == "learned":
                 return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
-                                hold_bias=hold_bias)
+                                hold_bias=hold_bias, header_in=header_in)
             return FRAPQNet(header_dim, slot_dim, embed_dim, pair_dim, k_max,
-                            hold_bias=hold_bias, score_mode=score_mode, layout=layout)
+                            hold_bias=hold_bias, score_mode=score_mode, layout=layout, header_in=header_in)
         self.q_net = _mk().to(self.device)
         self.target_q_net = _mk().to(self.device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())

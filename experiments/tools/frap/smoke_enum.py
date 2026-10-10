@@ -50,7 +50,7 @@ def main():
         downstream_fields=tuple(cfg["obs_downstream_fields"]),
         include_lane_occ=bool(cfg["obs_lane_occ"]),
         awt_cap=float(cfg["obs_awt_cap"]), awt_basis=cfg["obs_awt_basis"],
-        include_since_green=bool(cfg.get("obs_since_green", False)), awt_log=bool(cfg.get("obs_awt_log", False)))
+        include_since_green=bool(cfg.get("obs_since_green", False)), awt_log=bool(cfg.get("obs_awt_log", False)), include_green_elapsed=bool(cfg.get("obs_green_elapsed", False)))
     reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg["priority_source"]))
     env = SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"],
         cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False,
