@@ -6,7 +6,7 @@
   每格 = 评估种子 123-132 上的均值 ± 总体标准差; 括号内 = 相对 8STD 的变化; 每行最小值标绿。
 列: 8STD exp298 best ep200 | GS exp301 ep800 (= 主对比图 ..._18hGSep800_2026-10-09 的 301 列, 同一批文件) | GS exp301 best ep95 (冻结快照)
     | GS exp309 best ep280 | GS exp310 best ep445   (best = 训练时 sliding3 判据; 用户令 2026-10-10: 309/310 只评 best)
-用法 (仓库根目录): python experiments/tools/figures/plot_dublin18h_gs_ablation_2026-10-10.py [--out-suffix X]
+用法 (仓库根目录): python experiments/tools/figures/plot_dublin18h_gs_ablation_2026-10-10.py [--out-suffix X] [--with-ep800]  (后者多 309/310 ep800 两列, 输出加后缀 _with_ep800)
 输出: experiments/analysis/figures/dublin18h_gs_ablation_301_309_310_2026-10-10_en.{png,json}
 """
 import glob, json, os, sys, numpy as np
@@ -22,6 +22,9 @@ CLASSES = ("car", "bus", "ambulance", "all")
 # (列名, exp, 检查点集数, 收集器文件后缀)
 ARMS = [("8STD\nexp298 best ep200", 298, 200, "_best_coll"), ("GS exp301\nep800 (main fig.)", 301, 800, "_ckpt_coll"),
         ("GS exp301\nbest ep95", 301, 95, "_best_coll"), ("GS exp309\nbest ep280", 309, 280, "_best_coll"), ("GS exp310\nbest ep445", 310, 445, "_best_coll")]
+if "--with-ep800" in sys.argv:   # 2026-10-10 用户令: 309/310 的 ep800 检查点也评了 (合并版工具), 出第二张图, 第一张不动
+    ARMS = [ARMS[0], ARMS[1], ("GS exp309\nep800", 309, 800, "_ckpt_coll"), ("GS exp310\nep800", 310, 800, "_ckpt_coll"), ARMS[2], ARMS[3], ARMS[4]]
+    OUT_SUFFIX = OUT_SUFFIX or "_with_ep800"
 GREEN = "#cfe9cf"; GREY = "#f3f3f3"; HEAD = "#dde3ea"
 
 def load_coll(e, ep, tag):
@@ -73,9 +76,9 @@ def main():
             cells.append(txt); colors.append(col)
     print(f"\n== Dublin 18:00 (seeds n={len(seeds)}: {seeds}) ==")
     for row in cells: print("  " + " | ".join(f"{x:30s}" if i else f"{x:48s}" for i, x in enumerate(row)))
-    fig, ax = plt.subplots(figsize=(17.5, 0.30 * len(cells) + 2.4)); ax.axis("off")
+    fig, ax = plt.subplots(figsize=(17.5 + 2.9 * (len(ARMS) - 5), 0.30 * len(cells) + 2.4)); ax.axis("off")
     tbl = ax.table(cellText=cells, colLabels=["Metric"] + [a[0] for a in ARMS], cellColours=colors, colColours=["#c9d3df"] * ncol,
-                   loc="upper center", cellLoc="center", colWidths=[0.27] + [0.146] * len(ARMS))
+                   loc="upper center", cellLoc="center", colWidths=[0.27 * 5 / len(ARMS) if len(ARMS) > 5 else 0.27] + [0.146 * 5 / len(ARMS) if len(ARMS) > 5 else 0.146] * len(ARMS))
     tbl.auto_set_font_size(False); tbl.scale(1, 1.45)
     for (r, c), cell in tbl.get_celld().items():
         t = cell.get_text(); t.set_fontsize(10)
