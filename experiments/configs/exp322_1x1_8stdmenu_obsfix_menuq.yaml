@@ -82,4 +82,4 @@ frap:
   pair_dim: 16
   arch: menuq               # 2026-10-10: 菜单条件化 Q (menu_qnet.py)
   menu_hidden: 128
-  menu_layers: 2
+  menu_layers: 1             # 2026-10-10 核对后改 1: 与 8STD 的 Qnet (state→128→8, 单隐层) 同深同宽, 322 vs 316 只差 Q 写法

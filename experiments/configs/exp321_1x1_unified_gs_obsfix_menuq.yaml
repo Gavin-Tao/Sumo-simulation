@@ -1,4 +1,4 @@
-# exp322_1x1_unified_gs_obsfix_menuq (2026-10-10 用户令, 菜单条件化 Q): exp317 逐位, 只把 FRAP 换成 arch menuq —— Q(s,k)=MLP([整条 206 维状态, 候选相位 12 维放行说明书, 是否当前相位]), 对枚举菜单逐候选评分, 128 宽 2 层 (≈4 万参数, 与 8STD 的 MLP 同量级); 无压力打分 (menuq 自己读整条状态含头部)。与 316 (8STD MLP, 固定 8 相位) 对比 = 同类网络、不同菜单。未启动。
+# exp321_1x1_unified_gs_obsfix_menuq (2026-10-10 用户令, 菜单条件化 Q): exp317 逐位, 只把 FRAP 换成 arch menuq —— Q(s,k)=MLP([整条 206 维状态, 候选相位 12 维放行说明书, 是否当前相位]), 对枚举菜单逐候选评分, 128 宽单隐层 (与 8STD 的 Qnet 同深同宽, ≈2.8 万参数); 无压力打分 (menuq 自己读整条状态含头部)。与 316 (8STD MLP, 固定 8 相位) 对比 = 同类网络、不同菜单。未启动。
 # exp317_1x1_unified_gs_obsfix_pressure (2026-10-10 用户令, 1x1 的 exp301 配方): exp249 逐位 (seed 0, 与 exp274/316 同训练种子; 主图 1x1 GS 用的 exp263 = exp249 的 seed 1 变体) + obs_since_green + obs_awt_log + frap.score=pressure (1x1 无下游 queue, 压力退化为进口需求), 与 exp316 (8STD) 配对。未启动。
 # 注: 不加 target_clip_min -50 (两臂都不加, 保持对等): 1x1 用 γ=0.99, best 策略的 Q 量级约 -60..-95 (每步奖励 -0.6..-0.9), -50 会在正常目标上持续触发; Dublin 是 γ=0.95、Q≈-6, -50 只在崩盘时触发。1x1 两臂历史上都没崩过, 下限是 Dublin 的稳定化手段, 这里省略。
 # exp249 = exp241 逐位 + 唯一变量 gamma 0.95->0.99 (2026-08-31 用户令).
@@ -16,7 +16,7 @@
 # obs 回归 217/220 原样 (cqm, 无 psi 下游/lane_occ/awt 规整 —— 单路口无下游, 不硬塞
 # Dublin 动机特征; 槽维 16, 与 Dublin 的 27 维 schema 不同, 跨场景为定性比较)。
 # 仿真层不动: 1000s 集长, 2000 集, eval 5/123, 同场景文件。
-name: "exp322_1x1_unified_gs_obsfix_menuq"
+name: "exp321_1x1_unified_gs_obsfix_menuq"
 
 wandb_project: "sumo-rl-1x1"
 
@@ -82,4 +82,4 @@ frap:
   pair_dim: 16
   arch: menuq               # 2026-10-10: 菜单条件化 Q (menu_qnet.py)
   menu_hidden: 128
-  menu_layers: 2
+  menu_layers: 1             # 2026-10-10 核对后改 1: 与 8STD 的 Qnet (state→128→8, 单隐层) 同深同宽, 322 vs 316 只差 Q 写法
