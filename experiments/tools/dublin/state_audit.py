@@ -46,7 +46,8 @@ def slot_view(vec, slot):
     if kw.get("include_lane_occ"): d["occ"]=vec[o]; o+=1
     if kw.get("include_since_green"): d["since_green"]=vec[o]; o+=1
     return d
-watch=["389281","cluster_135109528_9101656"]; probs=[]; allvals=[]
+watch=[t for t in ["389281","cluster_135109528_9101656"] if t in ts_ids] or ts_ids[:2]   # Dublin 看两个大路口; 其它路网 (1x1/1x3) 看前两个
+probs=[]; allvals=[]
 prev_sg={t:None for t in watch}
 for step in range(steps):
     act={t: (step//4)%K[t] for t in ts_ids}     # 每 4 决策换一个相位, 轮流
