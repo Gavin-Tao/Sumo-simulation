@@ -13,11 +13,12 @@ ARMS = [("8STD perphase (main fig.)", "exp274", 274, 1325), ("old GS FRAP (main 
         ("8STD + both + green-elapsed", "exp320", 320, 805),
         ("FRAP pressure + both obs", "exp317", 317, 960), ("FRAP pressure + header", "exp318", 318, 335), ("FRAP pressure + green-elapsed", "exp319", 319, 1275),
         ("FRAP learned + both obs", "exp323", 323, 1330), ("FRAP learned + header", "exp324", 324, 1365), ("FRAP learned + green-elapsed", "exp325", 325, 500),
-        ("menu-Q, enumerated 12", "exp321", 321, 1470), ("menu-Q, standard 8", "exp322", 322, 1375)]
+        ("menu-Q, enumerated 12", "exp321", 321, 1470), ("menu-Q, standard 8", "exp322", 322, 1375),
+        ("FIXED 4-phase cycle, 15 s greens (no learning)", "fix316g15", "fix316g15", 0), ("FIXED 4-phase cycle, 20 s greens (no learning)", "fix316g20", "fix316g20", 0)]
 GREEN = "#cfe9cf"; GREY = "#f3f3f3"; GOLD = "#ffe9a8"
 
 def load(e, ep):
-    return {int(f.split("_seed")[1].split("_")[0]): json.load(open(f)) for f in glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll.json")}
+    return {int(f.split("_seed")[1].split("_")[0]): json.load(open(f)) for f in glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll.json")}   # e 可为 'fix316g15' (固定周期基线, ep 0)
 
 def delay(d):
     cv = d["collector"]["vehicles"]; acc = {c: [] for c in ("car", "bus", "ambulance", "all")}
@@ -48,8 +49,8 @@ def main():
     for rank, (name, tag, e, ep) in enumerate(order, 1):
         M = per[e]; rel = 100 * (np.nanmean(M["t_all"]) / np.nanmean(per[best]["t_all"]) - 1)
         wins = int((per[best]["t_all"] < M["t_all"]).sum()) if e != best else None
-        row = [f"{rank}", f"{name}\n{tag}, best ep{ep}", f"{rel:+.0f}%" if e != best else "best", f"{wins}/{len(seeds)}" if wins is not None else "-"]
-        col = [GOLD if e == best else GREY] * 4
+        row = [f"{rank}", f"{name}\n{tag}" + (f", best ep{ep}" if ep else ""), f"{rel:+.0f}%" if e != best else "best", f"{wins}/{len(seeds)}" if wins is not None else "-"]
+        col = [GOLD if e == best else ("#e8e8ff" if str(e).startswith("fix") else GREY)] * 4
         for k, _, d in cols:
             m, sd = float(np.nanmean(M[k])), float(np.nanstd(M[k])); row.append(f"{m:.{d}f} ± {sd:.{d}f}"); col.append(GREEN if abs(m - mins[k]) < 1e-12 else GREY)
         cells.append(row); colors.append(col)
@@ -57,7 +58,7 @@ def main():
                              **{k: [float(np.nanmean(M[k])), float(np.nanstd(M[k]))] for k, _, _ in cols}})
     print(f"seeds n={len(seeds)}; 最好 (all 停车时间): {order[0][0]} ({order[0][1]})")
     for row in cells: print("  " + " | ".join(x.replace("\n", " ") for x in row[:5]), "| ...")
-    fig, ax = plt.subplots(figsize=(24, 0.42 * len(cells) + 1.9)); ax.axis("off")
+    fig, ax = plt.subplots(figsize=(24, 0.42 * len(cells) + 2.1)); ax.axis("off")
     hdr = ["Rank", "Method (1x1, best checkpoint)", "vs best\n(all stopped)", "best wins\n(seeds)"] + [c[1] for c in cols]
     tbl = ax.table(cellText=cells, colLabels=hdr, cellColours=colors, colColours=["#c9d3df"] * len(hdr), loc="upper center", cellLoc="center",
                    colWidths=[0.028, 0.165, 0.048, 0.045] + [0.0515] * len(cols))
@@ -66,11 +67,11 @@ def main():
         t = cell.get_text(); t.set_fontsize(9.2)
         if r == 0: t.set_weight("bold"); cell.set_height(cell.get_height() * 1.3)
         if c == 1 and r > 0: t.set_ha("left"); cell.PAD = 0.01
-    ax.set_title("1x1 grid: all 14 methods ranked by stopped time per visit (all vehicles), mean ± s.d. over evaluation seeds 123-132; green = best in column; gold = overall best",
+    ax.set_title("1x1 grid: all 14 learned methods + 2 fixed-cycle baselines (lavender), ranked by stopped time per visit (all vehicles), mean ± s.d. over seeds 123-132; green = best in column; gold = overall best",
                  fontsize=12.5, pad=8)
     note = ("Each row = best checkpoint (sliding-3) of one run, evaluated with the merged evaluator on 10 seeds. 'both obs' = since-green + log-scale wait. "
             "Delay = whole-trip time loss / junction visits. 'best wins' = number of seeds on which the top method beats this row (all stopped time). "
-            "J(531) = 0.965·car + 3·0.033·bus + 5·0.0017·ambulance (1x1 visit shares). Ambulance = 1 veh/h flows (underpowered, s.d. ≈ mean). Main five-scenario figure's 1x1 block excluded seed 128; here all 10 seeds.")
+            "J(531) = 0.965·car + 3·0.033·bus + 5·0.0017·ambulance (1x1 visit shares). Ambulance = 1 veh/h flows (underpowered, s.d. ≈ mean). Fixed cycle = phases N/S-through, E/W-through, N/S-left, E/W-left in order, equal greens, 2 s yellow, no learning (same evaluator and seeds). Main five-scenario figure's 1x1 block excluded seed 128; here all 10 seeds.")
     fig.text(0.02, 0.005, note, fontsize=8.5, color="#333333", va="bottom")
     out = f"{FIG}/grid1x1_all_methods_ranked_2026-10-11_en.png"; plt.savefig(out, dpi=200, bbox_inches="tight"); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)

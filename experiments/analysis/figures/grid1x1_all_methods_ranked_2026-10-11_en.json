@@ -11,15 +11,143 @@
   131,
   132
  ],
- "best_by_all_stopped_time": "exp327",
+ "best_by_all_stopped_time": "fix316g15",
  "rows": [
   {
    "rank": 1,
+   "name": "FIXED 4-phase cycle, 15 s greens (no learning)",
+   "exp": "fix316g15",
+   "best_ep": 0,
+   "rel_vs_best_all_stopped_time_pct": 0.0,
+   "best_wins_over_this": null,
+   "t_all": [
+    18.317194259588796,
+    0.4812975189788799
+   ],
+   "t_car": [
+    18.359164420485175,
+    0.47020605373815294
+   ],
+   "t_bus": [
+    17.3125,
+    1.1350247794651886
+   ],
+   "t_ambulance": [
+    23.666666666666664,
+    7.492588930996341
+   ],
+   "J_t": [
+    19.63169783243486,
+    0.5282290970819673
+   ],
+   "e_all": [
+    0.812982660423908,
+    0.01070942241914567
+   ],
+   "e_car": [
+    0.8125336927223721,
+    0.01053370513728795
+   ],
+   "e_bus": [
+    0.8150000000000001,
+    0.03905124837953326
+   ],
+   "J_e": [
+    0.8729966801437555,
+    0.011774279527293997
+   ],
+   "d_all": [
+    26.494736720827632,
+    0.5848057324025606
+   ],
+   "d_car": [
+    26.530618598382752,
+    0.5630985119144644
+   ],
+   "d_bus": [
+    25.550525,
+    1.4733302814118092
+   ],
+   "d_ambulance": [
+    33.33233333333333,
+    9.303924148205184
+   ],
+   "J_d": [
+    28.414873755772685,
+    0.6534810628031125
+   ]
+  },
+  {
+   "rank": 2,
+   "name": "FIXED 4-phase cycle, 20 s greens (no learning)",
+   "exp": "fix316g20",
+   "best_ep": 0,
+   "rel_vs_best_all_stopped_time_pct": 27.29765370561179,
+   "best_wins_over_this": 10,
+   "t_all": [
+    23.317358517155547,
+    0.19889872925606267
+   ],
+   "t_car": [
+    23.439353099730457,
+    0.19727254390581414
+   ],
+   "t_bus": [
+    20.8875,
+    0.5227630916581621
+   ],
+   "t_ambulance": [
+    28.583333333333332,
+    13.723712244789226
+   ],
+   "J_t": [
+    24.92979657457322,
+    0.23850854627585608
+   ],
+   "e_all": [
+    0.7842802304561427,
+    0.0053473583789988375
+   ],
+   "e_car": [
+    0.7859838274932613,
+    0.005929919137466332
+   ],
+   "e_bus": [
+    0.7474999999999999,
+    0.013462912017836273
+   ],
+   "J_e": [
+    0.8398435601976638,
+    0.005172731090934808
+   ],
+   "d_all": [
+    31.760602657872703,
+    0.20542135596049663
+   ],
+   "d_car": [
+    31.8776576819407,
+    0.20209357478646417
+   ],
+   "d_bus": [
+    29.329724999999996,
+    0.60849952187738
+   ],
+   "d_ambulance": [
+    38.940000000000005,
+    14.162328021903745
+   ],
+   "J_d": [
+    33.99657243807278,
+    0.24439663595294123
+   ]
+  },
+  {
+   "rank": 3,
    "name": "8STD + log-wait",
    "exp": 327,
    "best_ep": 1300,
-   "rel_vs_best_all_stopped_time_pct": 0.0,
-   "best_wins_over_this": null,
+   "rel_vs_best_all_stopped_time_pct": 48.477926361857996,
+   "best_wins_over_this": 10,
    "t_all": [
     27.19699020431073,
     1.3983348765703576
@@ -78,12 +206,12 @@
    ]
   },
   {
-   "rank": 2,
+   "rank": 4,
    "name": "8STD + both obs",
    "exp": 316,
    "best_ep": 1475,
-   "rel_vs_best_all_stopped_time_pct": 3.111027452381876,
-   "best_wins_over_this": 7,
+   "rel_vs_best_all_stopped_time_pct": 53.097115411702745,
+   "best_wins_over_this": 10,
    "t_all": [
     28.043096035788448,
     1.8201589795469473
@@ -142,11 +270,11 @@
    ]
   },
   {
-   "rank": 3,
+   "rank": 5,
    "name": "FRAP learned + both obs",
    "exp": 323,
    "best_ep": 1330,
-   "rel_vs_best_all_stopped_time_pct": 8.98022714090445,
+   "rel_vs_best_all_stopped_time_pct": 61.81158140325766,
    "best_wins_over_this": 10,
    "t_all": [
     29.639341700147366,
@@ -206,12 +334,12 @@
    ]
   },
   {
-   "rank": 4,
+   "rank": 6,
    "name": "FRAP pressure + header",
    "exp": 318,
    "best_ep": 335,
-   "rel_vs_best_all_stopped_time_pct": 11.414480159915485,
-   "best_wins_over_this": 9,
+   "rel_vs_best_all_stopped_time_pct": 65.42590980828619,
+   "best_wins_over_this": 10,
    "t_all": [
     30.30138525527594,
     2.0178369677297443
@@ -270,11 +398,11 @@
    ]
   },
   {
-   "rank": 5,
+   "rank": 7,
    "name": "8STD perphase (main fig.)",
    "exp": 274,
    "best_ep": 1325,
-   "rel_vs_best_all_stopped_time_pct": 13.491565064842437,
+   "rel_vs_best_all_stopped_time_pct": 68.50992240389688,
    "best_wins_over_this": 10,
    "t_all": [
     30.866289833404135,
@@ -334,11 +462,11 @@
    ]
   },
   {
-   "rank": 6,
+   "rank": 8,
    "name": "menu-Q, standard 8",
    "exp": 322,
    "best_ep": 1375,
-   "rel_vs_best_all_stopped_time_pct": 14.331363539787233,
+   "rel_vs_best_all_stopped_time_pct": 69.75683776511346,
    "best_wins_over_this": 10,
    "t_all": [
     31.094689742370825,
@@ -398,11 +526,11 @@
    ]
   },
   {
-   "rank": 7,
+   "rank": 9,
    "name": "FRAP pressure + green-elapsed",
    "exp": 319,
    "best_ep": 1275,
-   "rel_vs_best_all_stopped_time_pct": 15.512521149987425,
+   "rel_vs_best_all_stopped_time_pct": 71.51059609180395,
    "best_wins_over_this": 10,
    "t_all": [
     31.415929061914436,
@@ -462,12 +590,12 @@
    ]
   },
   {
-   "rank": 8,
+   "rank": 10,
    "name": "8STD + both + green-elapsed",
    "exp": 320,
    "best_ep": 805,
-   "rel_vs_best_all_stopped_time_pct": 15.560248450173608,
-   "best_wins_over_this": 9,
+   "rel_vs_best_all_stopped_time_pct": 71.58146059742889,
+   "best_wins_over_this": 10,
    "t_all": [
     31.428909451070858,
     2.320598844893808
@@ -526,12 +654,12 @@
    ]
   },
   {
-   "rank": 9,
+   "rank": 11,
    "name": "FRAP pressure + both obs",
    "exp": 317,
    "best_ep": 960,
-   "rel_vs_best_all_stopped_time_pct": 16.868169953127055,
-   "best_wins_over_this": 9,
+   "rel_vs_best_all_stopped_time_pct": 73.52343532345502,
+   "best_wins_over_this": 10,
    "t_all": [
     31.78462473410918,
     3.04003596837333
@@ -590,11 +718,11 @@
    ]
   },
   {
-   "rank": 10,
+   "rank": 12,
    "name": "FRAP learned + green-elapsed",
    "exp": 325,
    "best_ep": 500,
-   "rel_vs_best_all_stopped_time_pct": 18.758961101068095,
+   "rel_vs_best_all_stopped_time_pct": 76.33084281175147,
    "best_wins_over_this": 10,
    "t_all": [
     32.29886301739868,
@@ -654,11 +782,11 @@
    ]
   },
   {
-   "rank": 11,
+   "rank": 13,
    "name": "old GS FRAP (main fig., seed 1)",
    "exp": 263,
    "best_ep": 1370,
-   "rel_vs_best_all_stopped_time_pct": 22.788392564659365,
+   "rel_vs_best_all_stopped_time_pct": 82.31365909306403,
    "best_wins_over_this": 10,
    "t_all": [
     33.39474709784101,
@@ -718,11 +846,11 @@
    ]
   },
   {
-   "rank": 12,
+   "rank": 14,
    "name": "8STD + since-green",
    "exp": 326,
    "best_ep": 1485,
-   "rel_vs_best_all_stopped_time_pct": 30.097397104393565,
+   "rel_vs_best_all_stopped_time_pct": 93.16591747135546,
    "best_wins_over_this": 10,
    "t_all": [
     35.38257634654515,
@@ -782,11 +910,11 @@
    ]
   },
   {
-   "rank": 13,
+   "rank": 15,
    "name": "menu-Q, enumerated 12",
    "exp": 321,
    "best_ep": 1470,
-   "rel_vs_best_all_stopped_time_pct": 31.05608343541477,
+   "rel_vs_best_all_stopped_time_pct": 94.58935505597033,
    "best_wins_over_this": 10,
    "t_all": [
     35.643310174083055,
@@ -846,11 +974,11 @@
    ]
   },
   {
-   "rank": 14,
+   "rank": 16,
    "name": "FRAP learned + header",
    "exp": 324,
    "best_ep": 1365,
-   "rel_vs_best_all_stopped_time_pct": 72.13548401602894,
+   "rel_vs_best_all_stopped_time_pct": 155.58319719994725,
    "best_wins_over_this": 10,
    "t_all": [
     46.81567072598225,
