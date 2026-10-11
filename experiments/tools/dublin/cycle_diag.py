@@ -1,5 +1,5 @@
-"""相位序列诊断 (2026-10-11, 只读): 单路口场景逐决策步记录绿相位, 算有效相位数 (熵)、枚举多出相位占比、运动服务间隔均值/标准差/最大、局部切换比例、每集完整轮次。用法: python experiments/tools/dublin/cycle_diag.py <exp> <ckpt> <seed>"""
-(c) 每个运动的服务间隔 (两次被放行之间的秒数) 均值/最大, (d) '局部切换' 比例 (新相位与上一相位共享运动), (e) 每千秒完整轮次数 (8 个非右转运动都被服务一次)。"""
+"""相位序列诊断 (2026-10-11, 只读): 单路口场景逐决策步记录绿相位, 算有效相位数 (熵)、枚举多出相位占比、运动服务间隔均值/标准差/最大、局部切换比例、每集完整轮次。
+用法: python experiments/tools/dublin/cycle_diag.py <exp> <ckpt> <seed>"""
 import os, sys, json, numpy as np
 sys.path.insert(0, "/home/xiaowen/sumo-rl/experiments/tools/dublin"); import ckpt_env
 exp, ckpt, seed = sys.argv[1], sys.argv[2], int(sys.argv[3])

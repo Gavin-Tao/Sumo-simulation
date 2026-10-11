@@ -1,7 +1,6 @@
 """固定周期基线评估 (2026-10-11, 只读, 不训练): 按某个 8STD 配置构造环境, 每个路口按自己的绿相位顺序轮转 (或用第 4 个参数指定相位列表, 单路口场景), 每相位 G 秒;
 收集器口径 (停车时间/次数 per visit) + tripinfo 吞吐 (进入/完成/出发延迟/整趟 timeLoss); 另存 eval_pervehicle 同构 JSON expfix<exp>g<G>_ep00000_seed<seed>_best_coll.json 供出图脚本当一臂读。
 用法: python experiments/tools/dublin/fixed_cycle_eval.py <exp> <green_s> <seed> [phase,list]"""
-用法: python fixed_cycle_any.py <exp> <green_s> <seed>"""
 import os, sys, functools, yaml, glob, numpy as np, xml.etree.ElementTree as ET
 os.environ.setdefault("SUMO_RL_LIBSUMO", "1")
 REPO="/home/xiaowen/sumo-rl"; sys.path.insert(0, REPO); sys.path.insert(0, f"{REPO}/experiments"); os.chdir(f"{REPO}/experiments")
