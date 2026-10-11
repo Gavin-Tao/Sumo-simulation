@@ -591,8 +591,13 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  since_green_cap: float = 600.0,
                  awt_log: bool = False,
                  include_green_elapsed: bool = False,
-                 green_elapsed_cap: float = 600.0):
+                 green_elapsed_cap: float = 600.0,
+                 include_header: bool = True):
         super().__init__(ts)
+        # include_header (2026-10-11, 用户批准; 默认 True → 旧配置逐位不变): perphase 编码下是否输出头部两维
+        # [min_green_ok, 相位已持续时间/100]。关掉后向量只含 12 槽, 两臂 (8STD MLP / FRAP) 输入逐位相同; 头部信息可由
+        # 逐槽 green_elapsed 重建 (绿槽最小值 > 0 ⇔ min_green 满足; 最小值 + 5 s = 已持续时间)。legacy 编码不支持关闭。
+        self.include_header = bool(include_header)
         # since_green (2026-09-30, 用户批准; 默认关 → 旧配置逐位不变): 每槽位末尾追加 "距该 movement 上次被放行的秒数"
         # (min(·, cap)/100)。对空方向也有定义、不饱和, 是饿死的直接表征; 每集 (对象重建) 自动重置。
         self.include_since_green = bool(include_since_green)
@@ -616,6 +621,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
         self.fields = tuple(fields)
         self.phase_state = phase_state
         self._is_legacy = (phase_state == "legacy")
+        if self._is_legacy and not self.include_header:
+            raise ValueError("include_header=False 仅支持 perphase 编码 (legacy 头部含相位独热, 不可去)")
         self.normalize = normalize
         self.awt_scale = awt_scale
         # ψ downstream block (E1b, user-revised 2026-06-11): per slot,
@@ -893,7 +900,7 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 obs = [1.0 if ts.green_phase == i else 0.0 for i in range(ts.num_green_phases)]
             obs.append(min_green_ok)
         else:
-            obs = [min_green_ok, ts.time_since_last_phase_change / 100.0]
+            obs = [min_green_ok, ts.time_since_last_phase_change / 100.0] if self.include_header else []
 
         served = self._phase_serves.get(ts.green_phase, set())
         if self.include_since_green:
@@ -988,7 +995,7 @@ class PriorityMovementObservationFunction(ObservationFunction):
         if self._is_legacy:
             dim = (K + 1) + self.N_SLOTS * slot_dim
         else:
-            dim = 2 + self.N_SLOTS * (1 + slot_dim)
+            dim = (2 if getattr(self, "include_header", True) else 0) + self.N_SLOTS * (1 + slot_dim)
         return spaces.Box(
             low=np.zeros(dim, dtype=np.float32),
             high=np.full(dim, np.inf, dtype=np.float32),

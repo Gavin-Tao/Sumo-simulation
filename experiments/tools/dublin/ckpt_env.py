@@ -42,6 +42,7 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_g
     if "obs_since_green" in cfg: kw["include_since_green"] = bool(cfg["obs_since_green"])
     if "obs_awt_log" in cfg: kw["awt_log"] = bool(cfg["obs_awt_log"])
     if "obs_green_elapsed" in cfg: kw["include_green_elapsed"] = bool(cfg["obs_green_elapsed"])
+    if "obs_header" in cfg: kw["include_header"] = bool(cfg["obs_header"])
     assert cfg["observation_class"] == "PriorityMovement", cfg["observation_class"]
     obs_class = functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
     reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))

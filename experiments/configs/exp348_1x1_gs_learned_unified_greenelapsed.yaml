@@ -81,3 +81,5 @@ frap:
   pair_dim: 16
 
 obs_green_elapsed: true      # 2026-10-11: 每槽 "本次连续放行秒数" min(·,600)/100 (运动级的已持续时间)
+
+obs_header: false            # 2026-10-11: 不输出头部两维, 两臂输入逐位相同 (时间信息只在逐槽 green_elapsed)

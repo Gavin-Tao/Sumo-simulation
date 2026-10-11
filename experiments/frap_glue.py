@@ -42,7 +42,7 @@ def build_frap_agent(cfg, tables, env, device):
     header [min_green_ok, elapsed/100] + 12 slots)."""
     from sumo_rl.agents.frap_agent import FRAPAgent
     obs_dim = env.observation_space.shape[0]
-    header_dim = 2
+    header_dim = 2 if cfg.get("obs_header", True) else 0   # 2026-10-11: obs_header false → 头部不输出, FRAP 切片从 0 起
     assert cfg.get("obs_phase_state") == "perphase", \
         "enum_frap requires obs_phase_state: perphase"
     slot_dim, rem = divmod(obs_dim - header_dim, 12)
@@ -111,7 +111,7 @@ def build_mtt_colight_agent(cfg, tables, env, device, n_neighbors=4):
     the agent only needs n_neighbors for its qnet."""
     from sumo_rl.agents.frap_agent import MTTCoLightAgent
     obs_dim = env.observation_space.shape[0]
-    header_dim = 2
+    header_dim = 2 if cfg.get("obs_header", True) else 0   # 2026-10-11: obs_header false → 头部不输出, FRAP 切片从 0 起
     assert cfg.get("obs_phase_state") == "perphase", \
         "mtt_colight requires obs_phase_state: perphase"
     slot_dim, rem = divmod(obs_dim - header_dim, 12)

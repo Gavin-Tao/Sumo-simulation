@@ -44,7 +44,7 @@ def main():
                      ("obs_awt_cap", "awt_cap"), ("obs_awt_basis", "awt_basis"),
                      ("obs_slot_stats", "slot_stats"),
                      ("obs_since_green", "include_since_green"), ("obs_awt_log", "awt_log"),   # 2026-10-10 补映射 (旧配置无这些键 → 摘要不变)
-                     ("obs_green_elapsed", "include_green_elapsed")]:
+                     ("obs_green_elapsed", "include_green_elapsed"), ("obs_header", "include_header")]:
         if src in cfg:
             v = cfg[src]
             obs_kwargs[dst] = tuple(v) if isinstance(v, list) else v

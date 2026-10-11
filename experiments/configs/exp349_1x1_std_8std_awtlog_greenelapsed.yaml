@@ -1,4 +1,4 @@
-# exp349_1x1_std_8std_awtlog_greenelapsed (2026-10-11): exp327 逐位, 只加 obs_green_elapsed。349 vs 327 = 运动级绿灯时长对 8STD 的价值 (头部已持续时间仍在, 看是否冗余/有害; 1x1 的 320 是在含 since_green 的 316 上加, +12%)。
+# exp349_1x1_std_8std_awtlog_greenelapsed (2026-10-11, 用户定稿): exp327 逐位 + obs_green_elapsed + obs_header false (去掉头部两维) → 8STD 的输入与 348 逐位相同 (204 维), 时间信息只在逐槽 green_elapsed。349 vs 327 = "运动级时长、无头部" 对 "路口级头部、无逐槽时长"; 349 vs 348 = 同输入下 8STD 头 vs FRAP 头。
 # exp327_1x1_std_8std_awtlog_only (2026-10-10 用户令, 观测消融): exp316 逐位, 只去掉 obs_since_green, 保留 obs_awt_log。316 vs 327 = since_green 的价值 (8STD, 1x1)。未启动。
 # 注: 不加 target_clip_min -50 (两臂都不加, 保持对等): 1x1 用 γ=0.99, best 策略的 Q 量级约 -60..-95 (每步奖励 -0.6..-0.9), -50 会在正常目标上持续触发; Dublin 是 γ=0.95、Q≈-6, -50 只在崩盘时触发。1x1 两臂历史上都没崩过, 下限是 Dublin 的稳定化手段, 这里省略。
 # exp274_1x1_std_8std_full_g099_perphase (2026-09-02 用户令, 论文主方法 std 格): exp256_1x1_std_8std_full_g099 逐位 + 唯一变量 观测 legacy->perphase。
@@ -63,4 +63,6 @@ eval_seed:     123
 logging_mode: "basic"
 obs_awt_log: true            # 2026-10-10: 与 exp317 对等 (1x1 无 awt_cap, 原为 /100 线性; 现为对数刻度)
 
-obs_green_elapsed: true      # 2026-10-11: 每槽 "本次连续放行秒数" (与 348 对称; 头部仍保留)
+obs_green_elapsed: true      # 2026-10-11: 每槽 "本次连续放行秒数" (与 348 对称)
+
+obs_header: false            # 2026-10-11: 不输出头部两维, 两臂输入逐位相同 (时间信息只在逐槽 green_elapsed)
