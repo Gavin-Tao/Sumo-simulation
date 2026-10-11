@@ -597,8 +597,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  green_elapsed_exact: bool = False):
         super().__init__(ts)
         # green_elapsed_exact (2026-10-11, 用户指出 "少 5 秒就不是持续时间"; 默认 False → 旧配置逐位不变): True 时新放行运动的起点取
-        # 相位切换瞬间 (now − time_since_last_phase_change, 含黄灯), 而不是 "切换后第一次观测" 的时刻 → 逐槽值与头部已持续时间同一口径,
-        # min_green 满足 ⇔ 绿槽值 ≥ (min_green+yellow)/100。False 时保留原来晚一个决策步的记账 (319/320/325 所用)。
+        # 真实放行开始 = 相位切换瞬间 + 黄灯 (不含黄灯; 头部计时器含黄灯, 二者差 yellow_time), 而不是 "切换后第一次观测" 的时刻;
+        # min_green 满足 ⇔ 绿槽值 ≥ min_green/100 = 0.05。False 时保留原来晚一个决策步的记账 (319/320/325 所用)。
         self.green_elapsed_exact = bool(green_elapsed_exact)
         # green_elapsed_reset (2026-10-11, 用户批准; 默认 False → 旧配置逐位不变): True 时每次相位切换把新相位全部成员的
         # green_elapsed 重新起算 (相位级语义: 绿槽值 = 相位已持续时间, 红槽 0), 不再跨相位累加; 常绿运动因此不会顶在上限。
@@ -921,7 +921,14 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 self._last_green[_s] = _now
         if self.include_green_elapsed:
             _now_g = float(ts.sumo.simulation.getTime())
-            _start = (_now_g - float(ts.time_since_last_phase_change)) if self.green_elapsed_exact else _now_g   # 起点: 切换瞬间 / 本次观测
+            # 起点 (exact): 真实放行开始 = 切换瞬间 + 黄灯 (新放行运动要等黄灯结束才变绿); 集首相位无黄灯 → 起点 = 集首。
+            # 与头部 (相位计时器, 从切换瞬间起算、含黄灯) 的口径差恰好 yellow_time; 非 exact 保留原 "本次观测" 起点。
+            if self.green_elapsed_exact:
+                _tslpc = float(ts.time_since_last_phase_change)
+                _start = _now_g - _tslpc + (float(ts.yellow_time) if self._ge_last_phase is not None or self._green_since else 0.0)
+                _start = min(_start, _now_g)
+            else:
+                _start = _now_g
             if self.green_elapsed_reset:
                 if self._ge_last_phase is not None and ts.green_phase != self._ge_last_phase:
                     for _s in served:

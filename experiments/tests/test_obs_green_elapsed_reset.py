@@ -44,13 +44,17 @@ def test_reset_differs_from_continuous_only_after_switch_with_shared_movements()
     assert not np.array_equal(a[5], b[5])                          # 切换后: 跨相位共享的运动在连续语义下更大
     ge_a = max(a[5][2 + sl * SD + SD - 1] for sl in range(12)); ge_b = max(b[5][2 + sl * SD + SD - 1] for sl in range(12)); assert ge_a > ge_b
 
-def test_exact_anchor_matches_header_elapsed_exactly():
-    """green_elapsed_exact + reset: 每一步绿槽值 == 头部已持续时间 (同口径, 含黄灯), 不再差 5 s。"""
+def test_exact_anchor_is_true_green_time():
+    """green_elapsed_exact + reset: 切换后绿槽值 == 头部相位计时器 − 黄灯 (0.02), 即真实放行时间; 集首相位 (无黄灯) == 头部; min_green ⇔ 值 ≥ 0.05。"""
     acts = [0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 3, 3]
-    seq = _roll(_env(green_elapsed_reset=True, green_elapsed_exact=True), acts)
+    seq = _roll(_env(green_elapsed_reset=True, green_elapsed_exact=True), acts); switched = False; prev = None
     for v in seq[1:]:
-        ge = [v[2 + sl * SD + SD - 1] for sl in range(12) if v[2 + sl * SD] > 0.5]
-        assert ge and max(ge) - min(ge) < 1e-9 and abs(ge[0] - v[1]) < 1e-6
+        ge = [v[2 + sl * SD + SD - 1] for sl in range(12) if v[2 + sl * SD] > 0.5]; cur = tuple(int(v[2 + sl * SD] > 0.5) for sl in range(12))
+        if prev is not None and cur != prev: switched = True
+        prev = cur
+        assert ge and max(ge) - min(ge) < 1e-9
+        assert abs(ge[0] - (v[1] - (0.02 if switched else 0.0))) < 1e-6
+        if switched: assert (ge[0] >= 0.05 - 1e-9) == bool(v[0] > 0.5)   # 切换后: min_green_ok ⇔ 真实放行 ≥ 5 s (集首相位环境按 7 s 计, 不检验)
 
 def test_exact_default_off_unchanged():
     acts = [0, 0, 1, 1, 2, 2]
