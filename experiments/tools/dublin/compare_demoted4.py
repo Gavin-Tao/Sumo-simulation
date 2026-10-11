@@ -1,5 +1,5 @@
 """(2026-10-11) 临时路网版本见 scratchpad; 本副本只为复现表格: 读取 analysis/data/pervehicle 下 *_ckpt_coll 与 *_demoted4_coll 文件。
-"""301 ep800 vs 311 ep150: 原网 (18 信号) vs 4 路口降级网 (14 信号, 零样本) 完整对比表。口径: (a) 收集器官方汇总 (该网全部 RL 路口); (b) 限定共同 14 路口重算 (逐车记录);
+301 ep800 vs 311 ep150: 原网 (18 信号) vs 4 路口降级网 (14 信号, 零样本) 完整对比表。口径: (a) 收集器官方汇总 (该网全部 RL 路口); (b) 限定共同 14 路口重算 (逐车记录);
 (c) 整趟 timeLoss/车; (d) RL 路口延误/visit 与 全网 timeLoss/车 (rldelay 文件)。每格 mean ± sd (种子), 另给 311 对 301 的配对胜场。"""
 import glob, json, numpy as np, collections
 PV="analysis/data/pervehicle"; CL=("car","bus","ambulance","all")
