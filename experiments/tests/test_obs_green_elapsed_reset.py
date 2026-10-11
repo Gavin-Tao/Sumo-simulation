@@ -43,3 +43,16 @@ def test_reset_differs_from_continuous_only_after_switch_with_shared_movements()
     for x, y in zip(a[:4], b[:4]): assert np.array_equal(x, y)     # 切换前 (含切换当步) 相同
     assert not np.array_equal(a[5], b[5])                          # 切换后: 跨相位共享的运动在连续语义下更大
     ge_a = max(a[5][2 + sl * SD + SD - 1] for sl in range(12)); ge_b = max(b[5][2 + sl * SD + SD - 1] for sl in range(12)); assert ge_a > ge_b
+
+def test_exact_anchor_matches_header_elapsed_exactly():
+    """green_elapsed_exact + reset: 每一步绿槽值 == 头部已持续时间 (同口径, 含黄灯), 不再差 5 s。"""
+    acts = [0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 3, 3]
+    seq = _roll(_env(green_elapsed_reset=True, green_elapsed_exact=True), acts)
+    for v in seq[1:]:
+        ge = [v[2 + sl * SD + SD - 1] for sl in range(12) if v[2 + sl * SD] > 0.5]
+        assert ge and max(ge) - min(ge) < 1e-9 and abs(ge[0] - v[1]) < 1e-6
+
+def test_exact_default_off_unchanged():
+    acts = [0, 0, 1, 1, 2, 2]
+    a = _roll(_env(), acts); b = _roll(_env(green_elapsed_exact=False), acts)
+    for x, y in zip(a, b): assert np.array_equal(x, y)

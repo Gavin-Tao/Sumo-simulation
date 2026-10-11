@@ -86,3 +86,4 @@ obs_green_elapsed: true      # 2026-10-11: 每槽 "本次连续放行秒数" min
 obs_header: false            # 2026-10-11: 不输出头部两维, 两臂输入逐位相同 (时间信息只在逐槽 green_elapsed)
 
 obs_green_elapsed_reset: true   # 2026-10-11: 相位切换时新相位成员重新起算 (相位级语义; 绿槽值 = 相位已持续时间, 常绿运动不再顶上限)
+obs_green_elapsed_exact: true   # 2026-10-11: 起点取相位切换瞬间 (与头部已持续时间同口径, 不再少 5 s)

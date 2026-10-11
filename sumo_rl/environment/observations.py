@@ -593,8 +593,13 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  include_green_elapsed: bool = False,
                  green_elapsed_cap: float = 600.0,
                  include_header: bool = True,
-                 green_elapsed_reset: bool = False):
+                 green_elapsed_reset: bool = False,
+                 green_elapsed_exact: bool = False):
         super().__init__(ts)
+        # green_elapsed_exact (2026-10-11, 用户指出 "少 5 秒就不是持续时间"; 默认 False → 旧配置逐位不变): True 时新放行运动的起点取
+        # 相位切换瞬间 (now − time_since_last_phase_change, 含黄灯), 而不是 "切换后第一次观测" 的时刻 → 逐槽值与头部已持续时间同一口径,
+        # min_green 满足 ⇔ 绿槽值 ≥ (min_green+yellow)/100。False 时保留原来晚一个决策步的记账 (319/320/325 所用)。
+        self.green_elapsed_exact = bool(green_elapsed_exact)
         # green_elapsed_reset (2026-10-11, 用户批准; 默认 False → 旧配置逐位不变): True 时每次相位切换把新相位全部成员的
         # green_elapsed 重新起算 (相位级语义: 绿槽值 = 相位已持续时间, 红槽 0), 不再跨相位累加; 常绿运动因此不会顶在上限。
         self.green_elapsed_reset = bool(green_elapsed_reset)
@@ -916,13 +921,14 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 self._last_green[_s] = _now
         if self.include_green_elapsed:
             _now_g = float(ts.sumo.simulation.getTime())
+            _start = (_now_g - float(ts.time_since_last_phase_change)) if self.green_elapsed_exact else _now_g   # 起点: 切换瞬间 / 本次观测
             if self.green_elapsed_reset:
                 if self._ge_last_phase is not None and ts.green_phase != self._ge_last_phase:
                     for _s in served:
-                        self._green_since[_s] = _now_g         # 相位切换: 新相位成员一律重新起算
+                        self._green_since[_s] = _start         # 相位切换: 新相位成员一律重新起算
                 self._ge_last_phase = ts.green_phase
             for _s in served:
-                self._green_since.setdefault(_s, _now_g)       # 本次放行的起点 (已在放行中则保持)
+                self._green_since.setdefault(_s, _start)       # 本次放行的起点 (已在放行中则保持)
             for _s in [k for k in self._green_since if k not in served]:
                 del self._green_since[_s]                      # 不再放行 → 清零
         for slot in range(self.N_SLOTS):

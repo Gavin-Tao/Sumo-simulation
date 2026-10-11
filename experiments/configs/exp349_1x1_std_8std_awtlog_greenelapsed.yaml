@@ -66,3 +66,4 @@ obs_awt_log: true            # 2026-10-10: 与 exp317 对等 (1x1 无 awt_cap, �
 obs_green_elapsed: true      # 2026-10-11: 每槽 "本次连续放行秒数" (与 348 对称)
 
 obs_header: false            # 2026-10-11: 不输出头部两维, 两臂输入逐位相同 (时间信息只在逐槽 green_elapsed)
+obs_green_elapsed_exact: true   # 2026-10-11: 起点取相位切换瞬间 (与头部已持续时间同口径, 不再少 5 s)
