@@ -592,8 +592,13 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  awt_log: bool = False,
                  include_green_elapsed: bool = False,
                  green_elapsed_cap: float = 600.0,
-                 include_header: bool = True):
+                 include_header: bool = True,
+                 green_elapsed_reset: bool = False):
         super().__init__(ts)
+        # green_elapsed_reset (2026-10-11, 用户批准; 默认 False → 旧配置逐位不变): True 时每次相位切换把新相位全部成员的
+        # green_elapsed 重新起算 (相位级语义: 绿槽值 = 相位已持续时间, 红槽 0), 不再跨相位累加; 常绿运动因此不会顶在上限。
+        self.green_elapsed_reset = bool(green_elapsed_reset)
+        self._ge_last_phase = None
         # include_header (2026-10-11, 用户批准; 默认 True → 旧配置逐位不变): perphase 编码下是否输出头部两维
         # [min_green_ok, 相位已持续时间/100]。关掉后向量只含 12 槽, 两臂 (8STD MLP / FRAP) 输入逐位相同; 头部信息可由
         # 逐槽 green_elapsed 重建 (绿槽最小值 > 0 ⇔ min_green 满足; 最小值 + 5 s = 已持续时间)。legacy 编码不支持关闭。
@@ -911,6 +916,11 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 self._last_green[_s] = _now
         if self.include_green_elapsed:
             _now_g = float(ts.sumo.simulation.getTime())
+            if self.green_elapsed_reset:
+                if self._ge_last_phase is not None and ts.green_phase != self._ge_last_phase:
+                    for _s in served:
+                        self._green_since[_s] = _now_g         # 相位切换: 新相位成员一律重新起算
+                self._ge_last_phase = ts.green_phase
             for _s in served:
                 self._green_since.setdefault(_s, _now_g)       # 本次放行的起点 (已在放行中则保持)
             for _s in [k for k in self._green_since if k not in served]:

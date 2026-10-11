@@ -207,6 +207,8 @@ def train(cfg: dict, timestamp: str):
         obs_kwargs["include_green_elapsed"] = bool(cfg["obs_green_elapsed"])
     if "obs_header" in cfg:          # 2026-10-11 (B only, perphase): false → 不输出头部两维 [min_green_ok, elapsed/100], 默认 true
         obs_kwargs["include_header"] = bool(cfg["obs_header"])
+    if "obs_green_elapsed_reset" in cfg:   # 2026-10-11 (B only): true → green_elapsed 每次相位切换重新起算 (相位级语义), 默认 false
+        obs_kwargs["green_elapsed_reset"] = bool(cfg["obs_green_elapsed_reset"])
     if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
         obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
     if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count
