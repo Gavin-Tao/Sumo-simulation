@@ -60,3 +60,14 @@ def test_exact_default_off_unchanged():
     acts = [0, 0, 1, 1, 2, 2]
     a = _roll(_env(), acts); b = _roll(_env(green_elapsed_exact=False), acts)
     for x, y in zip(a, b): assert np.array_equal(x, y)
+
+def test_slot_min_green_default_off_and_semantics():
+    acts = [0, 0, 1, 1, 1, 2, 2, 0]
+    a = _roll(_env(), acts); b = _roll(_env(include_slot_min_green=False), acts)
+    for x, y in zip(a, b): assert np.array_equal(x, y)                           # 默认关逐位不变
+    c = _roll(_env(include_slot_min_green=True, green_elapsed_reset=True, green_elapsed_exact=True), acts); sd = SD + 1
+    for x, v in zip(a, c):
+        assert len(v) == len(x) + 12
+        for sl in range(12):
+            g = v[2 + sl * sd] > 0.5; bit = v[2 + sl * sd + sd - 1]
+            assert bit == (v[0] if g else 0.0)                                     # 绿槽 = 头部 min_green_ok, 红槽 0

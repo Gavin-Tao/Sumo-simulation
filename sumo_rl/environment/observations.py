@@ -594,8 +594,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  green_elapsed_cap: float = 600.0,
                  include_header: bool = True,
                  green_elapsed_reset: bool = False,
-                 green_elapsed_exact: bool = False):
+                 green_elapsed_exact: bool = False,
+                 include_slot_min_green: bool = False):
         super().__init__(ts)
+        # slot_min_green (2026-10-12, 用户令; 默认 False → 旧配置逐位不变): 每槽末尾 (green_elapsed 之后) 追加一位:
+        # 绿槽 = 环境自身的 min_green 判定 (time_since_last_phase_change ≥ min_green + yellow, 与切换合法性同一规则), 红槽 = 0。
+        self.include_slot_min_green = bool(include_slot_min_green)
         # green_elapsed_exact (2026-10-11, 用户指出 "少 5 秒就不是持续时间"; 默认 False → 旧配置逐位不变): True 时新放行运动的起点取
         # 真实放行开始 = 相位切换瞬间 + 黄灯 (不含黄灯; 头部计时器含黄灯, 二者差 yellow_time), 而不是 "切换后第一次观测" 的时刻;
         # min_green 满足 ⇔ 绿槽值 ≥ min_green/100 = 0.05。False 时保留原来晚一个决策步的记账 (319/320/325 所用)。
@@ -1006,6 +1010,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
             if self.include_green_elapsed:
                 obs.append(min(_now_g - self._green_since[slot], self.green_elapsed_cap) / 100.0
                            if slot in served else 0.0)
+            if self.include_slot_min_green:
+                obs.append(min_green_ok if slot in served else 0.0)
         return np.array(obs, dtype=np.float32)
 
     def observation_space(self) -> spaces.Box:
@@ -1014,7 +1020,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
             if self.include_downstream else 0
         slot_dim = self._phi_dim + psi_dim + (1 if self.include_lane_occ else 0) \
             + (1 if getattr(self, "include_since_green", False) else 0) \
-            + (1 if getattr(self, "include_green_elapsed", False) else 0)
+            + (1 if getattr(self, "include_green_elapsed", False) else 0)\
+            + (1 if getattr(self, "include_slot_min_green", False) else 0)
         if self._is_legacy:
             dim = (K + 1) + self.N_SLOTS * slot_dim
         else:

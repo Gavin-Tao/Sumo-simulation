@@ -27,6 +27,7 @@ if "obs_green_elapsed" in cfg: kw["include_green_elapsed"]=bool(cfg["obs_green_e
 if "obs_header" in cfg: kw["include_header"]=bool(cfg["obs_header"])
 if "obs_green_elapsed_reset" in cfg: kw["green_elapsed_reset"]=bool(cfg["obs_green_elapsed_reset"])
 if "obs_green_elapsed_exact" in cfg: kw["green_elapsed_exact"]=bool(cfg["obs_green_elapsed_exact"])
+if "obs_slot_min_green" in cfg: kw["include_slot_min_green"]=bool(cfg["obs_slot_min_green"])
 print(f"[{exp}] {os.path.basename(cfg_path)}\n  obs kwargs: {kw}")
 obs_class=functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
 reward_fn=make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
@@ -39,7 +40,7 @@ dims=sorted({len(v) for v in states.values()}); print(f"  18 路口观测维度�
 ts_ids=list(env.ts_ids); K={t: env.traffic_signals[t].num_green_phases for t in ts_ids}
 legacy=(kw.get("phase_state")=="legacy"); fields=kw.get("fields",("count","queue","mean_awt","max_awt")); phi=len(fields)*len(PRIORITY_LEVELS)
 psi=len(PRIORITY_LEVELS)*len(kw.get("downstream_fields",("count","queue"))) if kw.get("include_downstream") else 0
-slot_dim=phi+psi+(1 if kw.get("include_lane_occ") else 0)+(1 if kw.get("include_since_green") else 0)+(1 if kw.get("include_green_elapsed") else 0)
+slot_dim=phi+psi+(1 if kw.get("include_lane_occ") else 0)+(1 if kw.get("include_since_green") else 0)+(1 if kw.get("include_green_elapsed") else 0)+(1 if kw.get("include_slot_min_green") else 0)
 head=(8+1) if legacy else (2 if cfg.get("obs_header",True) else 0); per_slot=slot_dim+(0 if legacy else 1)
 print(f"  布局: 头 {head} + 12 槽 × {per_slot} (is_green {0 if legacy else 1} + φ {phi} + ψ {psi} + lane_occ {1 if kw.get('include_lane_occ') else 0} + since_green {1 if kw.get('include_since_green') else 0} + green_elapsed {1 if kw.get('include_green_elapsed') else 0}) = {head+12*per_slot}")
 def slot_view(vec, slot):
@@ -50,6 +51,7 @@ def slot_view(vec, slot):
     if kw.get("include_lane_occ"): d["occ"]=vec[o]; o+=1
     if kw.get("include_since_green"): d["since_green"]=vec[o]; o+=1
     if kw.get("include_green_elapsed"): d["green_elapsed"]=vec[o]; o+=1
+    if kw.get("include_slot_min_green"): d["slot_min_green"]=vec[o]; o+=1
     return d
 watch=[t for t in ["389281","cluster_135109528_9101656"] if t in ts_ids] or ts_ids[:2]   # Dublin 看两个大路口; 其它路网 (1x1/1x3) 看前两个
 probs=[]; allvals=[]

@@ -211,6 +211,8 @@ def train(cfg: dict, timestamp: str):
         obs_kwargs["green_elapsed_reset"] = bool(cfg["obs_green_elapsed_reset"])
     if "obs_green_elapsed_exact" in cfg:   # 2026-10-11 (B only): true → green_elapsed 起点取相位切换瞬间 (与头部同口径), 默认 false
         obs_kwargs["green_elapsed_exact"] = bool(cfg["obs_green_elapsed_exact"])
+    if "obs_slot_min_green" in cfg:  # 2026-10-12 (B only): 每槽一位 min_green_ok (绿槽取环境判定, 红槽 0), 默认 false
+        obs_kwargs["include_slot_min_green"] = bool(cfg["obs_slot_min_green"])
     if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
         obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
     if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count
