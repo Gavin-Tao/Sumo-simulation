@@ -296,11 +296,19 @@ class FRAPReplayBuffer:
     def __init__(self, capacity):
         self.buffer = collections.deque(maxlen=capacity)
 
-    def add(self, state, action, reward, next_state, done, tls_id):
-        self.buffer.append((state, action, reward, next_state, done, tls_id))
+    def add(self, state, action, reward, next_state, done, tls_id, next_mask=None):
+        # next_mask (2026-10-12 F1, 默认 None → 与旧版逐位相同): s' 时刻的动态可选相位 (最短绿未满足时只有当前相位)
+        if next_mask is None:
+            self.buffer.append((state, action, reward, next_state, done, tls_id))
+        else:
+            self.buffer.append((state, action, reward, next_state, done, tls_id, np.asarray(next_mask, dtype=bool)))
 
     def sample(self, batch_size):
-        s, a, r, ns, d, t = zip(*random.sample(self.buffer, batch_size))
+        batch = random.sample(self.buffer, batch_size)
+        if len(batch[0]) == 7:
+            s, a, r, ns, d, t, nm = zip(*batch)
+            return np.array(s), a, r, np.array(ns), d, t, np.array(nm)
+        s, a, r, ns, d, t = zip(*batch)
         return np.array(s), a, r, np.array(ns), d, t
 
     def size(self):
@@ -389,17 +397,22 @@ class FRAPAgent:
     def _tensors(self, idx):
         return self.PM[idx], self.REL[idx], self.EXIST[idx], self.MASK[idx]
 
-    def take_action(self, state, tls_id):
-        """Returns a PHASE INDEX (dense green index) — always mask-valid."""
+    def take_action(self, state, tls_id, mask=None):
+        """Returns a PHASE INDEX (dense green index) — always mask-valid.
+        mask (2026-10-12 F1, 默认 None → 不变): 额外的动态可选相位 (K_max bool), 与路口固定掩码取交集。"""
         i = self._idx[tls_id]
+        valid = self.MASK[i].cpu().numpy()
+        if mask is not None:
+            valid = valid & np.asarray(mask, dtype=bool)
         if np.random.random() < self.epsilon:
-            return int(np.random.choice(np.flatnonzero(self.MASK[i].cpu().numpy())))
+            return int(np.random.choice(np.flatnonzero(valid)))
         x = torch.tensor(np.asarray(state, dtype=np.float32),
                          device=self.device).unsqueeze(0)
         ii = torch.tensor([i], device=self.device)
-        pm, rel, exist, mask = self._tensors(ii)
+        pm, rel, exist, _m = self._tensors(ii)
+        vm = torch.as_tensor(valid, dtype=torch.bool, device=self.device).unsqueeze(0)
         with torch.no_grad():
-            q = self.q_net(x, pm, rel, exist).masked_fill(~mask, NEG)
+            q = self.q_net(x, pm, rel, exist).masked_fill(~vm, NEG)
         return int(q.argmax().item())
 
     def learn_step(self):
@@ -411,9 +424,12 @@ class FRAPAgent:
             # 纯最大压力基线: Q 不含可学参数, 跳过梯度步 (日志量置 0)
             self.start_train = True; self.loss = 0.0; self.grad_norm = 0.0; self.q_mean = 0.0; self.q_abs_max = 0.0; return
         self.start_train = True
-        s, a, r, ns, d, tids = self.replay_buffer.sample(self.batch_size)
+        _smp = self.replay_buffer.sample(self.batch_size)
+        s, a, r, ns, d, tids = _smp[:6]
         idx = torch.tensor([self._idx[t] for t in tids], device=self.device)
         pm, rel, exist, mask = self._tensors(idx)
+        if len(_smp) == 7:   # F1: s' 的动态掩码与固定掩码取交集, 目标 max 只在 s' 可执行的相位上取
+            mask = mask & torch.as_tensor(_smp[6], dtype=torch.bool, device=self.device)
         states = torch.tensor(s, dtype=torch.float, device=self.device)
         next_states = torch.tensor(ns, dtype=torch.float, device=self.device)
         actions = torch.tensor(a, device=self.device).view(-1, 1)

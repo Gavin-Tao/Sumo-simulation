@@ -310,6 +310,41 @@ def train(cfg: dict, timestamp: str):
     # mapped green-phase index; the buffer stores the executed STD action and
     # the junction's mask (for the masked target max).
     action_meta_file = cfg.get("action_meta_file")
+    # ── F1 (2026-10-12, 用户批准; 默认关 → 旧配置逐位不变): 动态最短绿掩码 ──
+    # 最短绿未满足 (time_since_last_phase_change < min_green + yellow_time, 与环境 set_next_phase 同一规则) 时,
+    # 选动作与 TD 目标的 max 都只允许当前相位 (环境此时本就忽略切换请求; 这些状态里其它相位的 Q 从未被训练)。
+    # 支持 8STD (action_meta_file) 与 enum_frap 两条路径; 回放逐条存 s' 的动态掩码。
+    mask_min_green = bool(cfg.get("mask_min_green", False))
+
+    def _mg_ok(_tsobj):
+        return _tsobj.time_since_last_phase_change >= _tsobj.min_green + _tsobj.yellow_time
+
+    def _dyn_mask_std(_env, _ts):
+        """8STD: 固定 std 掩码; F1 开且最短绿未满足 → 只留当前 std 动作。"""
+        _m = ts_mask[_ts]
+        if not mask_min_green:
+            return _m
+        _tso = _env.traffic_signals[_ts]
+        if _mg_ok(_tso):
+            return _m
+        _m = np.zeros_like(_m); _m[int(green2std[_ts][_tso.green_phase])] = True
+        return _m
+
+    def _dyn_mask_enum(_env, _ts, _kmax):
+        """enum_frap: F1 开且最短绿未满足 → 只留当前绿相位 (K_max bool); 否则 None (全部按固定掩码)。"""
+        if not mask_min_green:
+            return None
+        _tso = _env.traffic_signals[_ts]
+        if _mg_ok(_tso):
+            return np.ones(_kmax, dtype=bool)
+        _m = np.zeros(_kmax, dtype=bool); _m[int(_tso.green_phase)] = True
+        return _m
+
+    if mask_min_green and not (
+            action_meta_file
+            or (cfg.get("action_scheme") == "enum_frap"
+                and str((cfg.get("frap", {}) or {}).get("arch", "frap")) != "mtt_colight")):
+        sys.exit("mask_min_green 只支持 8STD (action_meta_file) 与 enum_frap (非 mtt_colight) 路径")
     if action_meta_file and cfg.get("use_per"):
         sys.exit("action_meta_file + use_per: masked PER not implemented yet")
     ts_mask, std2green, green2std = {}, {}, {}
@@ -636,11 +671,16 @@ def train(cfg: dict, timestamp: str):
                             for ts in env.ts_ids}
                     elif enum_tables is not None:
                         # enum_frap: action IS the dense green-phase index (identity)
-                        actions = {ts: agent.take_action(initial_states[ts], ts)
-                                   for ts in env.ts_ids}
+                        if mask_min_green:   # F1: 最短绿未满足时只允许当前相位
+                            _K = agent.MASK.shape[1]
+                            actions = {ts: agent.take_action(initial_states[ts], ts, mask=_dyn_mask_enum(env, ts, _K))
+                                       for ts in env.ts_ids}
+                        else:
+                            actions = {ts: agent.take_action(initial_states[ts], ts)
+                                       for ts in env.ts_ids}
                     elif action_meta_file:
                         actions = {ts: int(std2green[ts][agent.take_action(
-                            initial_states[ts], mask=ts_mask[ts])]) for ts in env.ts_ids}
+                            initial_states[ts], mask=_dyn_mask_std(env, ts))]) for ts in env.ts_ids}
                     else:
                         actions = {ts: agent.take_action(initial_states[ts]) for ts in env.ts_ids}
                     s, r, done, info = env.step(action=actions)
@@ -701,17 +741,24 @@ def train(cfg: dict, timestamp: str):
                         elif enum_tables is not None:
                             # enum_frap: executed dense green index == action;
                             # transition carries its junction id (tensor lookup)
-                            agent.replay_buffer.add(
-                                initial_states[ts], actual_action,
-                                ts_reward, ts_next_state, ts_done, ts,
-                            )
+                            if mask_min_green:   # F1: 存 s' 的动态掩码 (此处 env 已在 s')
+                                agent.replay_buffer.add(
+                                    initial_states[ts], actual_action,
+                                    ts_reward, ts_next_state, ts_done, ts,
+                                    next_mask=_dyn_mask_enum(env, ts, agent.MASK.shape[1]),
+                                )
+                            else:
+                                agent.replay_buffer.add(
+                                    initial_states[ts], actual_action,
+                                    ts_reward, ts_next_state, ts_done, ts,
+                                )
                         elif action_meta_file:
                             # buffer stores the executed CANONICAL STD action
                             actual_action = int(green2std[ts][actual_action])
                             agent.replay_buffer.add(
                                 initial_states[ts], actual_action,
                                 ts_reward, ts_next_state, ts_done,
-                                next_mask=ts_mask[ts],
+                                next_mask=_dyn_mask_std(env, ts),   # F1 关时 = ts_mask[ts] (不变)
                             )
                         else:
                             agent.replay_buffer.add(
