@@ -44,7 +44,7 @@ def main():
                      ("obs_awt_cap", "awt_cap"), ("obs_awt_basis", "awt_basis"),
                      ("obs_slot_stats", "slot_stats"),
                      ("obs_since_green", "include_since_green"), ("obs_awt_log", "awt_log"),   # 2026-10-10 补映射 (旧配置无这些键 → 摘要不变)
-                     ("obs_green_elapsed", "include_green_elapsed"), ("obs_header", "include_header"), ("obs_green_elapsed_reset", "green_elapsed_reset"), ("obs_green_elapsed_exact", "green_elapsed_exact"), ("obs_slot_min_green", "include_slot_min_green"), ("obs_green_elapsed_include_yellow", "green_elapsed_include_yellow")]:
+                     ("obs_green_elapsed", "include_green_elapsed"), ("obs_header", "include_header"), ("obs_green_elapsed_reset", "green_elapsed_reset"), ("obs_green_elapsed_exact", "green_elapsed_exact"), ("obs_slot_min_green", "include_slot_min_green"), ("obs_green_elapsed_include_yellow", "green_elapsed_include_yellow"), ("obs_green_elapsed_cap", "green_elapsed_cap")]:
         if src in cfg:
             v = cfg[src]
             obs_kwargs[dst] = tuple(v) if isinstance(v, list) else v

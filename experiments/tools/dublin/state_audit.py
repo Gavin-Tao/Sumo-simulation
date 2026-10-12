@@ -29,6 +29,7 @@ if "obs_green_elapsed_reset" in cfg: kw["green_elapsed_reset"]=bool(cfg["obs_gre
 if "obs_green_elapsed_exact" in cfg: kw["green_elapsed_exact"]=bool(cfg["obs_green_elapsed_exact"])
 if "obs_slot_min_green" in cfg: kw["include_slot_min_green"]=bool(cfg["obs_slot_min_green"])
 if "obs_green_elapsed_include_yellow" in cfg: kw["green_elapsed_include_yellow"]=bool(cfg["obs_green_elapsed_include_yellow"])
+if "obs_green_elapsed_cap" in cfg: kw["green_elapsed_cap"]=float(cfg["obs_green_elapsed_cap"])
 print(f"[{exp}] {os.path.basename(cfg_path)}\n  obs kwargs: {kw}")
 obs_class=functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
 reward_fn=make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
