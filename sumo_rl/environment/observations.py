@@ -571,7 +571,7 @@ class PriorityMovementObservationFunction(ObservationFunction):
     (both immutable per vehicle).
     """
 
-    _ALL_FIELDS = ("count", "queue", "mean_awt", "max_awt")
+    _ALL_FIELDS = ("count", "queue", "mean_awt", "max_awt", "mean_awt_log")   # 2026-10-12: mean_awt_log = 对数刻度平均等待, 可与线性 mean_awt 同时给 (默认字段不含, 旧配置不变)
     _PHASE_STATES = ("legacy", "perphase")
     _APPROACHES = ("N", "E", "S", "W")
     _TURNS = ("L", "T", "R")
@@ -957,6 +957,7 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 if self.awt_cap is not None and not self.awt_log:   # F2: bound in raw seconds
                     mean = min(mean, self.awt_cap)
                     mw = min(mw, self.awt_cap)
+                _mean_raw = (sw / c) if c else 0.0           # mean_awt_log 用未截断的原始均值
                 if self.normalize:
                     if self.awt_log:
                         vals = {"count": c / cap, "queue": q / cap,
@@ -964,8 +965,9 @@ class PriorityMovementObservationFunction(ObservationFunction):
                     else:
                         vals = {"count": c / cap, "queue": q / cap,
                                 "mean_awt": mean / self.awt_scale, "max_awt": mw / self.awt_scale}
+                    vals["mean_awt_log"] = _awt_log(_mean_raw)
                 else:
-                    vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw}
+                    vals = {"count": c, "queue": q, "mean_awt": mean, "max_awt": mw, "mean_awt_log": _mean_raw}
                 obs += [vals[f] for f in self.fields]
             if self.include_downstream:
                 cnt = {p: 0 for p in PRIORITY_LEVELS}
