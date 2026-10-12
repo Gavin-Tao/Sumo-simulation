@@ -57,12 +57,19 @@ def build_frap_agent(cfg, tables, env, device):
         if "queue" not in fields:
             raise SystemExit("frap.score pressure* requires 'queue' in obs_fields")
         nl = len(PRIORITY_LEVELS)
-        queue_idx = [1 + (k) * len(fields) + fields.index("queue") for k in range(nl)]
+        # frap.pressure_field (2026-10-12, 用户批准; 默认 "queue" → 旧配置逐位不变): 压力取哪个字段。
+        #   "queue" = 停驶车辆 (速度 < 0.1 m/s), 逼近中的车不计 (原实现); "count" = 全部车辆 (与标准 max-pressure 的车辆数之差一致)。
+        pf = str(fp.get("pressure_field", "queue"))
+        if pf not in ("queue", "count"):
+            raise SystemExit(f"frap.pressure_field must be queue|count, got {pf}")
+        if pf not in fields:
+            raise SystemExit(f"frap.pressure_field {pf} requires '{pf}' in obs_fields")
+        queue_idx = [1 + (k) * len(fields) + fields.index(pf) for k in range(nl)]
         down_idx = None
         if cfg.get("obs_downstream"):
             dfs = tuple(cfg.get("obs_downstream_fields", ("count", "queue")))
-            if "queue" in dfs:
-                down_idx = [1 + nl * len(fields) + dfs.index("queue") * nl + k for k in range(nl)]
+            if pf in dfs:
+                down_idx = [1 + nl * len(fields) + dfs.index(pf) * nl + k for k in range(nl)]
         layout = dict(queue_idx=queue_idx, down_queue_idx=down_idx, levels=[float(l) for l in PRIORITY_LEVELS])
         if down_idx is None:
             print("  → frap.score: 无下游 queue 特征, 压力退化为进口需求 (无出口项)")
