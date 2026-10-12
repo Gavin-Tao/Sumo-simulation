@@ -53,3 +53,12 @@ def test_grad_and_agent_plumbing():
     assert a.take_action(np.random.default_rng(0).random(H + 12 * SD).astype(np.float32), "J") in (0, 1)
     with pytest.raises(ValueError): FRAPAgent(**kw, arch="gsg", gsg_kw=dict(gt_in_slot=False))
     with pytest.raises(ValueError): GSGQNet(0, SD)
+
+def test_free_sign_variant():
+    pm, rel, ex = _tables(); x = _x(pm[0, 0]); P, R, E = pm.expand(2, -1, -1), rel.expand(2, -1, -1), ex.expand(2, -1)
+    torch.manual_seed(0); net = GSGQNet(H, SD, k_max=K, cost_sign="free")
+    feat = x[:, H:].reshape(2, 12, SD)[:, :, :SD - 1].reshape(2, -1)
+    assert torch.allclose(net(x, P, R, E), net.core(feat, P, R, E), atol=1e-7)     # 零初始化 → 起点无代价
+    torch.nn.init.constant_(net.kappa_cut[2].bias, -1.0)
+    d = net.core(feat, P, R, E) - net(x, P, R, E); assert (d[:, 2] < 0).all()      # 代价可为负 (切换可"加分")
+    with pytest.raises(ValueError): GSGQNet(H, SD, cost_sign="bad")

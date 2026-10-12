@@ -96,7 +96,8 @@ def build_frap_agent(cfg, tables, env, device):
         menu_hidden=int(fp.get("menu_hidden", 128)),  # 2026-10-10: 仅 arch menuq 用 (菜单条件化 Q 的 MLP 宽度/层数)
         menu_layers=int(fp.get("menu_layers", 2)),
         gsg_kw=(dict(gt_in_slot=bool(cfg.get("obs_green_elapsed", False)), gt_clip=float(fp.get("gsg_gt_clip", 1.2)),
-                     cost_hidden=int(fp.get("gsg_cost_hidden", 8))) if str(fp.get("arch", "frap")) == "gsg" else None))
+                     cost_hidden=int(fp.get("gsg_cost_hidden", 8)), cost_sign=str(fp.get("gsg_cost_sign", "nonneg")))
+                if str(fp.get("arch", "frap")) == "gsg" else None))
 
 
 def load_neighbor_map(path, n_neighbors=4):

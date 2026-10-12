@@ -18,7 +18,7 @@ from .frap_agent import FRAPQNet
 
 class GSGQNet(torch.nn.Module):
     def __init__(self, header_dim, slot_dim, embed_dim=16, pair_dim=16, k_max=11,
-                 gt_in_slot=True, gt_clip=1.2, cost_hidden=8):
+                 gt_in_slot=True, gt_clip=1.2, cost_hidden=8, cost_sign="nonneg"):
         super().__init__()
         if header_dim != 2:
             raise ValueError("GS-G 需要头部两维 [min_green_ok, 已持续时间] (obs_phase_state perphase, obs_header true)")
@@ -26,11 +26,18 @@ class GSGQNet(torch.nn.Module):
             raise ValueError("GS-G 需要逐运动放行时长 (obs_green_elapsed: true), 位于每槽最后一维")
         self.header_dim, self.slot_dim, self.k_max = header_dim, slot_dim, k_max
         self.gt_clip = float(gt_clip)
+        # cost_sign (2026-10-12 消融, 默认 "nonneg" 不变): "nonneg" = softplus (切换只有代价); "free" = 不加约束 (可为负), 末层零初始化 → 起点代价 0。
+        if cost_sign not in ("nonneg", "free"):
+            raise ValueError(f"cost_sign must be nonneg|free, got {cost_sign}")
+        self.cost_sign = cost_sign
         self.core_slot = slot_dim - 1                       # 编码器看不到 gt_i
         self.core = FRAPQNet(0, self.core_slot, embed_dim, pair_dim, k_max)
         def _cost(in_dim):
             m = torch.nn.Sequential(torch.nn.Linear(in_dim, cost_hidden), torch.nn.ReLU(), torch.nn.Linear(cost_hidden, 1))
-            torch.nn.init.constant_(m[2].bias, -4.0)
+            if cost_sign == "nonneg":
+                torch.nn.init.constant_(m[2].bias, -4.0)
+            else:
+                torch.nn.init.zeros_(m[2].weight); torch.nn.init.zeros_(m[2].bias)
             return m
         self.kappa_cut = _cost(embed_dim + 3)               # [e_i, gt_i, tau, mg]
         self.kappa_new = _cost(embed_dim + 2)               # [e_i, tau, mg]
@@ -49,8 +56,9 @@ class GSGQNet(torch.nn.Module):
         e = self.core.encode(feat.reshape(B, 12 * self.core_slot))          # (B,12,E)
         hdr = x[:, :2]                                                      # [mg, tau]
         tau = hdr[:, 1:2].unsqueeze(1).expand(B, 12, 1); mg = hdr[:, 0:1].unsqueeze(1).expand(B, 12, 1)
-        k_cut = torch.nn.functional.softplus(self.kappa_cut(torch.cat([e, gt.unsqueeze(-1), tau, mg], -1))).squeeze(-1)
-        k_new = torch.nn.functional.softplus(self.kappa_new(torch.cat([e, tau, mg], -1))).squeeze(-1)
+        act = torch.nn.functional.softplus if self.cost_sign == "nonneg" else (lambda z: z)
+        k_cut = act(self.kappa_cut(torch.cat([e, gt.unsqueeze(-1), tau, mg], -1))).squeeze(-1)
+        k_new = act(self.kappa_new(torch.cat([e, tau, mg], -1))).squeeze(-1)
         return k_cut, k_new, feat[:, :, 0]
 
     def forward(self, x, pm, rel, exist):
