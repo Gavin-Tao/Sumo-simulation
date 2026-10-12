@@ -531,31 +531,31 @@
   ],
   "arms": [
    [
-    "8STD, header + log-wait (ref.) exp327",
+    "8STD header+log-wait (ref.) exp327",
     327
    ],
    [
-    "8STD, no header (192-d) exp352",
+    "8STD no header 192-d exp352",
     352
    ],
    [
-    "FRAP, same 192-d input exp347",
+    "FRAP same 192-d exp347",
     347
    ],
    [
-    "8STD + per-movement green time, continuous exp349",
+    "8STD + green time continuous exp349",
     349
    ],
    [
-    "FRAP + same (continuous) exp348",
+    "FRAP + green time continuous exp348",
     348
    ],
    [
-    "8STD + per-movement green time, phase-reset exp351",
+    "8STD + green time phase-reset exp351",
     351
    ],
    [
-    "FRAP + same (phase-reset) exp350",
+    "FRAP + green time phase-reset exp350",
     350
    ]
   ],

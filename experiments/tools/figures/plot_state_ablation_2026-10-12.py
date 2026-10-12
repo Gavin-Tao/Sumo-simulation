@@ -13,9 +13,9 @@ PANELS = [("1x1: unified-state component ablation (base = exp327: perphase heade
            [("no log-wait\nexp274", 274), ("BASE: perphase + log-wait\nexp327", 327), ("legacy header\nexp335", 335), ("+ downstream ψ\nexp336", 336), ("+ lane_occ\nexp337", 337),
             ("+ since-green\nexp316", 316), ("+ since-green + green-elapsed\nexp320", 320)]),
           ("1x1: input-matched head comparison (no header; time feature only inside the 12 slots)", "1x1",
-           [("8STD, header + log-wait (ref.)\nexp327", 327), ("8STD, no header (192-d)\nexp352", 352), ("FRAP, same 192-d input\nexp347", 347),
-            ("8STD + per-movement green time, continuous\nexp349", 349), ("FRAP + same (continuous)\nexp348", 348),
-            ("8STD + per-movement green time, phase-reset\nexp351", 351), ("FRAP + same (phase-reset)\nexp350", 350)]),
+           [("8STD header+log-wait\n(ref.) exp327", 327), ("8STD no header\n192-d exp352", 352), ("FRAP same 192-d\nexp347", 347),
+            ("8STD + green time\ncontinuous exp349", 349), ("FRAP + green time\ncontinuous exp348", 348),
+            ("8STD + green time\nphase-reset exp351", 351), ("FRAP + green time\nphase-reset exp350", 350)]),
           ("1x3: unified-state component ablation (base = exp338: unified state)", "1x3",
            [("no log-wait (main-figure arm)\nexp275", 275), ("BASE: unified state\nexp338", 338), ("− downstream ψ\nexp339", 339), ("− lane_occ\nexp340", 340)])]
 def best_files(e):
