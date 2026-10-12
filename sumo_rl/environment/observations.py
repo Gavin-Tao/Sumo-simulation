@@ -595,8 +595,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  include_header: bool = True,
                  green_elapsed_reset: bool = False,
                  green_elapsed_exact: bool = False,
-                 include_slot_min_green: bool = False):
+                 include_slot_min_green: bool = False,
+                 green_elapsed_include_yellow: bool = False):
         super().__init__(ts)
+        # green_elapsed_include_yellow (2026-10-12, 用户令 "改成跟头部一样"; 默认 False → 已跑臂 348-351 逐位不变): 与 exact 同用时,
+        # 起点取相位切换瞬间 (含黄灯), 绿槽值 == 头部已持续时间, min_green 门槛 = (min_green+yellow)/100 与环境一致。
+        self.green_elapsed_include_yellow = bool(green_elapsed_include_yellow)
         # slot_min_green (2026-10-12, 用户令; 默认 False → 旧配置逐位不变): 每槽末尾 (green_elapsed 之后) 追加一位:
         # 绿槽 = 环境自身的 min_green 判定 (time_since_last_phase_change ≥ min_green + yellow, 与切换合法性同一规则), 红槽 = 0。
         self.include_slot_min_green = bool(include_slot_min_green)
@@ -929,7 +933,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
             # 与头部 (相位计时器, 从切换瞬间起算、含黄灯) 的口径差恰好 yellow_time; 非 exact 保留原 "本次观测" 起点。
             if self.green_elapsed_exact:
                 _tslpc = float(ts.time_since_last_phase_change)
-                _start = _now_g - _tslpc + (float(ts.yellow_time) if self._ge_last_phase is not None or self._green_since else 0.0)
+                _start = _now_g - _tslpc + (0.0 if self.green_elapsed_include_yellow else
+                                            (float(ts.yellow_time) if self._ge_last_phase is not None or self._green_since else 0.0))
                 _start = min(_start, _now_g)
             else:
                 _start = _now_g

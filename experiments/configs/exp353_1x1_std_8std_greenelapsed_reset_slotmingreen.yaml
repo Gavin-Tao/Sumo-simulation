@@ -1,4 +1,4 @@
-# exp353_1x1_std_8std_greenelapsed_reset_slotmingreen (2026-10-12, 用户令 '连续相位清0且有min green ok在槽里'): exp351 逐位, 只加 obs_slot_min_green (8STD)。353 vs 351 = 槽内显式 min_green_ok 的价值; 353 vs 354 = 同输入 (216 维) 两种头。
+# exp353_1x1_std_8std_greenelapsed_reset_slotmingreen (2026-10-12, 用户令: 头部两维按头部口径搬进槽): exp351 逐位, 只加 obs_slot_min_green (8STD)。353 vs 351 = 槽内显式 min_green_ok 的价值; 353 vs 354 = 同输入 (216 维) 两种头。 另加 obs_green_elapsed_include_yellow (含黄灯, 绿槽值 == 头部已持续时间)。关键对比: 353 vs 327 = 同一信息 头部 vs 槽内 (8STD); 354 vs 353 = 同输入两种头。
 # exp351_1x1_std_8std_awtlog_greenelapsed_reset (2026-10-11, 用户批准): exp349 逐位, 只加 obs_green_elapsed_reset。351 vs 349 = 两种时长语义 (8STD); 351 vs 327 = 头部信息以逐槽相位级时长表示 (信息等价) 的纯表示方式对比。
 # exp349_1x1_std_8std_awtlog_greenelapsed (2026-10-11, 用户定稿): exp327 逐位 + obs_green_elapsed + obs_header false (去掉头部两维) → 8STD 的输入与 348 逐位相同 (204 维), 时间信息只在逐槽 green_elapsed。349 vs 327 = "运动级时长、无头部" 对 "路口级头部、无逐槽时长"; 349 vs 348 = 同输入下 8STD 头 vs FRAP 头。
 # exp327_1x1_std_8std_awtlog_only (2026-10-10 用户令, 观测消融): exp316 逐位, 只去掉 obs_since_green, 保留 obs_awt_log。316 vs 327 = since_green 的价值 (8STD, 1x1)。未启动。
@@ -72,3 +72,4 @@ obs_header: false            # 2026-10-11: 不输出头部两维, 两臂输入�
 obs_green_elapsed_reset: true   # 2026-10-11: 相位切换时重新起算 (相位级语义)
 obs_green_elapsed_exact: true   # 2026-10-11: 起点取相位切换瞬间 (与头部已持续时间同口径, 不再少 5 s)
 obs_slot_min_green: true     # 2026-10-12: 每槽一位 min_green_ok (绿槽取环境判定, 红槽 0)
+obs_green_elapsed_include_yellow: true   # 2026-10-12: 与头部同口径 (含黄灯); 槽内 = 头部两维逐运动搬入

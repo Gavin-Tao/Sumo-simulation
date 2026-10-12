@@ -71,3 +71,12 @@ def test_slot_min_green_default_off_and_semantics():
         for sl in range(12):
             g = v[2 + sl * sd] > 0.5; bit = v[2 + sl * sd + sd - 1]
             assert bit == (v[0] if g else 0.0)                                     # 绿槽 = 头部 min_green_ok, 红槽 0
+
+def test_include_yellow_matches_header_exactly():
+    """reset + exact + include_yellow + slot_min_green: 每步绿槽 green_elapsed == 头部已持续时间, 绿槽 min_green 位 == 头部 min_green_ok。"""
+    acts = [0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 3, 3]
+    seq = _roll(_env(green_elapsed_reset=True, green_elapsed_exact=True, green_elapsed_include_yellow=True, include_slot_min_green=True), acts); sd = SD + 1
+    for v in seq[1:]:
+        for sl in range(12):
+            if v[2 + sl * sd] > 0.5:
+                assert abs(v[2 + sl * sd + sd - 2] - v[1]) < 1e-6 and v[2 + sl * sd + sd - 1] == v[0]

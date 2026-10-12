@@ -1,4 +1,4 @@
-# exp354_1x1_gs_learned_unified_greenelapsed_reset_slotmingreen (2026-10-12, 用户令 '连续相位清0且有min green ok在槽里'): exp350 逐位, 只加 obs_slot_min_green (FRAP 学习)。354 vs 350 = 槽内显式 min_green_ok 的价值; 353 vs 354 = 同输入 (216 维) 两种头。
+# exp354_1x1_gs_learned_unified_greenelapsed_reset_slotmingreen (2026-10-12, 用户令: 头部两维按头部口径搬进槽): exp350 逐位, 只加 obs_slot_min_green (FRAP 学习)。354 vs 350 = 槽内显式 min_green_ok 的价值; 353 vs 354 = 同输入 (216 维) 两种头。 另加 obs_green_elapsed_include_yellow (含黄灯, 绿槽值 == 头部已持续时间)。关键对比: 353 vs 327 = 同一信息 头部 vs 槽内 (8STD); 354 vs 353 = 同输入两种头。
 # exp350_1x1_gs_learned_unified_greenelapsed_reset (2026-10-11, 用户批准): exp348 逐位, 只加 obs_green_elapsed_reset (green_elapsed 改为相位切换清零的相位级语义)。350 vs 348 = 两种时长语义 (GS); 350 vs 351 = 同输入下 FRAP 头 vs 8STD 头 (相位级语义)。
 # exp348_1x1_gs_learned_unified_greenelapsed (2026-10-11): exp347 逐位, 只加 obs_green_elapsed。348 vs 347 = 运动级绿灯时长对 GS 的价值; 348 vs 349 = 两臂都带运动级时长 (8STD 另有头部) 的对比。
 # exp323_1x1_unified_gs_obsfix_learned (2026-10-10 用户令, 无压力打分对照): exp317 逐位, 只去掉 frap.score: pressure (打分回到 learned), 保留 since_green/awt_log。与 Dublin 的 309 同构; 1x1 上 317 vs 323 = 压力打分的价值, 323 vs 316 = FRAP learned 对 8STD MLP。未启动。
@@ -89,3 +89,4 @@ obs_header: false            # 2026-10-11: 不输出头部两维, 两臂输入�
 obs_green_elapsed_reset: true   # 2026-10-11: 相位切换时新相位成员重新起算 (相位级语义; 绿槽值 = 相位已持续时间, 常绿运动不再顶上限)
 obs_green_elapsed_exact: true   # 2026-10-11: 起点取相位切换瞬间 (与头部已持续时间同口径, 不再少 5 s)
 obs_slot_min_green: true     # 2026-10-12: 每槽一位 min_green_ok (绿槽取环境判定, 红槽 0)
+obs_green_elapsed_include_yellow: true   # 2026-10-12: 与头部同口径 (含黄灯); 槽内 = 头部两维逐运动搬入
