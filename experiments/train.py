@@ -708,7 +708,9 @@ def train(cfg: dict, timestamp: str):
                             # scalar r[ts] (identical composite) stays in
                             # the episode logs untouched
                             ts_reward = mh_reward_cache[ts]
-                        ts_next_state = tuple(s[ts])  # type: ignore[index]
+                        # 2026-10-13 (用户批准): 存数组 (复制一份, dtype 不变) 而非 Python 元组 —— 回放内存约降为 1/5;
+                        # 各回放缓冲区取样时都对整批做 np.array/np.asarray, 得到的批与存元组时逐位相同 (已用整段训练逐位比对)
+                        ts_next_state = np.array(s[ts])  # type: ignore[index]
                         ts_done = done[ts]  # type: ignore[index]
                         if moe is not None:
                             # MoE: the gate's action is the CHOSEN expert k —
