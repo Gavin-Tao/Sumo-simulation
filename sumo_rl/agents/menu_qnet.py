@@ -7,13 +7,21 @@
 说明书用运动语言, 任意菜单、任意路口共享一张网; 整条状态让它能学 "保持" 与 "集中绿灯"; 容量与 8STD 的 MLP 同量级。
 is_current_k = 1 当且仅当候选 k 的放行集合与当前 is_green 位 (perphase 槽特征 0) 在所有存在的槽上一致 (与 hold_bias 同法)。
 前向签名与 FRAPQNet 相同: forward(x, pm, rel, exist) -> (B, K_max); rel 不使用 (保留签名)。
+current_from (2026-10-13, 用户批准; 默认 "slots" → 上述行为逐位不变):
+  "legacy_header" = 观测为 legacy 编码 (头部 = 路口全部绿相位的独热 + min_green_ok, 槽里没有 is_green) 时,
+                    is_current_k 直接取头部独热第 k 位 (枚举路网上独热位置 = 枚举相位编号); 只适用于各路口相位数相同的路网 (如 1x1)。
 """
 import torch
 
 
 class MenuQNet(torch.nn.Module):
-    def __init__(self, header_dim, slot_dim, k_max=11, hidden=128, n_layers=2):
+    def __init__(self, header_dim, slot_dim, k_max=11, hidden=128, n_layers=2, current_from="slots"):
         super().__init__()
+        if current_from not in ("slots", "legacy_header"):
+            raise ValueError(f"current_from must be slots|legacy_header, got {current_from}")
+        if current_from == "legacy_header" and header_dim < 2:
+            raise ValueError("current_from=legacy_header 需要 legacy 头部 (相位独热 + min_green_ok, 至少 2 维)")
+        self.current_from = current_from
         self.header_dim, self.slot_dim, self.k_max = header_dim, slot_dim, k_max
         obs_dim = header_dim + 12 * slot_dim
         in_dim = obs_dim + 12 + 1                      # 状态 + 说明书 (12) + is_current (1)
@@ -26,6 +34,11 @@ class MenuQNet(torch.nn.Module):
     def descriptors(self, x, pm, exist):
         """(B,obs),(B,K,12),(B,12) -> (B,K,13): [pm_k, is_current_k]。"""
         B = x.shape[0]
+        if self.current_from == "legacy_header":                                        # 头部独热第 k 位 = 候选 k 是否当前相位
+            n_ph = self.header_dim - 1; K = pm.shape[1]; n = min(n_ph, K)
+            match = torch.zeros(B, K, dtype=pm.dtype, device=pm.device)
+            match[:, :n] = x[:, :n].to(pm.dtype)
+            return torch.cat([pm, match.unsqueeze(-1)], dim=-1)
         green = x[:, self.header_dim:].reshape(B, 12, self.slot_dim)[:, :, 0]          # (B,12) is_green
         match = ((pm == green.unsqueeze(1)) | (exist.unsqueeze(1) == 0)).all(-1)        # (B,K) bool
         return torch.cat([pm, match.float().unsqueeze(-1)], dim=-1)

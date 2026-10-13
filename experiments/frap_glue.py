@@ -42,12 +42,26 @@ def build_frap_agent(cfg, tables, env, device):
     header [min_green_ok, elapsed/100] + 12 slots)."""
     from sumo_rl.agents.frap_agent import FRAPAgent
     obs_dim = env.observation_space.shape[0]
-    header_dim = 2 if cfg.get("obs_header", True) else 0   # 2026-10-11: obs_header false → 头部不输出, FRAP 切片从 0 起
-    assert cfg.get("obs_phase_state") == "perphase", \
-        "enum_frap requires obs_phase_state: perphase"
-    slot_dim, rem = divmod(obs_dim - header_dim, 12)
-    assert rem == 0, f"obs dim {obs_dim} is not header(2) + 12*slot_dim"
     fp = cfg.get("frap", {}) or {}
+    menu_current_from = "slots"
+    if cfg.get("obs_phase_state") == "legacy" and str(fp.get("arch", "frap")) == "menuq":
+        # 2026-10-13 (用户批准): legacy 观测只对枚举条件化 (arch menuq) 开放, FRAP/GS-G 仍只用 perphase。
+        # legacy 头部 = 路口全部绿相位独热 + min_green_ok (槽里无 is_green), menuq 从头部独热读 "候选是否当前相位"。
+        # 独热长度随路口相位数变, 只能用于各路口相位数相同的路网 (如 1x1)。
+        _ks = {env.traffic_signals[_t].num_green_phases for _t in env.ts_ids}
+        if len(_ks) != 1:
+            raise SystemExit(f"enum_frap + legacy: 各路口绿相位数不同 {sorted(_ks)}, 头部长度不一致, 不支持")
+        _k = _ks.pop()
+        if _k > tables["k_max"]:
+            raise SystemExit(f"enum_frap + legacy: 绿相位数 {_k} > k_max {tables['k_max']}")
+        header_dim = _k + 1
+        menu_current_from = "legacy_header"
+    else:
+        header_dim = 2 if cfg.get("obs_header", True) else 0   # 2026-10-11: obs_header false → 头部不输出, FRAP 切片从 0 起
+        assert cfg.get("obs_phase_state") == "perphase", \
+            "enum_frap requires obs_phase_state: perphase (legacy 只对 frap.arch menuq 开放)"
+    slot_dim, rem = divmod(obs_dim - header_dim, 12)
+    assert rem == 0, f"obs dim {obs_dim} is not header({header_dim}) + 12*slot_dim"
     # frap.score (2026-09-30): learned (默认) | pressure | pressure_only。压力模式需要槽位内 queue / 下游 queue 的位置:
     # perphase 槽位布局 = [is_green] + φ(5 级 × fields) + ψ(downstream_fields × 5 级, 若开) + lane_occ(若开) + since_green(若开)。
     score_mode = str(fp.get("score", "learned")); layout = None
@@ -95,6 +109,7 @@ def build_frap_agent(cfg, tables, env, device):
         header_in=bool(fp.get("header_in", False)),   # 2026-10-10: 观测头部拼入编码器 (与 8STD 信息对等), 默认关
         menu_hidden=int(fp.get("menu_hidden", 128)),  # 2026-10-10: 仅 arch menuq 用 (菜单条件化 Q 的 MLP 宽度/层数)
         menu_layers=int(fp.get("menu_layers", 2)),
+        menu_current_from=menu_current_from,          # 2026-10-13: legacy 观测时 menuq 从头部独热读当前相位 (默认 slots)
         gsg_kw=(dict(gt_in_slot=bool(cfg.get("obs_green_elapsed", False)), gt_clip=float(fp.get("gsg_gt_clip", 1.2)),
                      cost_hidden=int(fp.get("gsg_cost_hidden", 8)), cost_sign=str(fp.get("gsg_cost_sign", "nonneg")),
                      time_inputs=str(fp.get("gsg_time_inputs", "full")))   # 2026-10-13: "none" = 代价项不读时间量 (默认 full 不变)
