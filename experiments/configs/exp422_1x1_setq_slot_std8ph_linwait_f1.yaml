@@ -1,0 +1,91 @@
+# exp422_1x1_setq_slot_std8ph_linwait_f1 (2026-10-14, 用户批准方案 B: 集合式相位头 (arch setq) = FRAP 运动编码器 + 相位级联合打分 (放行/被压运动编码均值 + 数量占比 + 是否当前相位 → MLP), 无运动分相加与对决项; 观测 12 槽, 全部开 F1; 设计见 analysis/GRID1X1_F1_STATE_GRID_2026-10-13.txt §18): exp402_1x1_gs_legacyequiv_noheader_linwait_std8phases_f1 逐位, 只改 frap 段 (arch setq, embed_dim 32)。
+# exp402_1x1_gs_legacyequiv_noheader_linwait_std8phases_f1 (2026-10-13, 用户令: 补齐 8 个标准相位下四种结构 (MLP/枚举条件化/FRAP/GS-G) × 三种等待刻度的比较表, 全部开 F1; 设计见 analysis/GRID1X1_F1_STATE_GRID_2026-10-13.txt §11): FRAP, 8 个标准相位, 线性等待 (= 386 的线性版)。exp380_1x1_gs_legacyequiv_noheader_linwait_f1 逐位, 只把元数据换成只保留 8 个标准相位的版本。
+# exp380_1x1_gs_legacyequiv_noheader_linwait_f1 (2026-10-13, 用户令: 无绿灯时长的状态编码 × 等待刻度 网格, 全部开 F1 (mask_min_green); 设计与判读方式见 analysis/GRID1X1_F1_STATE_GRID_2026-10-13.txt): GS (FRAP 学习打分, 无压力) 12槽 同 377 观测, 线性等待。exp367_1x1_gs_legacyequiv_noheader_linwait 逐位, 只加 mask_min_green: true
+# exp367_1x1_gs_legacyequiv_noheader_linwait (2026-10-12, 用户令 '362 363 364 再做线性等待版'): exp364 逐位, 只去掉 obs_awt_log (等待回到 /100 线性, 与 256 相同)。365 去掉头部 (204 维, 与 366 形式一致)。
+# exp364_1x1_gs_legacyequiv_noheader (2026-10-12, 用户令): exp362 逐位, 只加 obs_header false。FRAP 本就切掉头部, 网络与 362 相同, 观测向量从 206 维变 204 维, 与 363 输入形式完全一致。预期与 362 结果一致 (兼作可复现性检查)。
+# exp347_1x1_gs_learned_unified (2026-10-11, 用户令 '让 8STD 也一样的 state, 先在 1x1 跑'): exp323 逐位, 只去掉 obs_since_green → FRAP 学习打分 + 统一状态 (perphase 头 FRAP 不读, 对数等待, 无 since_green/green_elapsed), 观测与 exp327 完全相同。347 vs 327 = 同状态下 FRAP 头 vs 8STD 头 (仍差头部两维的读取); 347 vs 323 = since_green 对 GS 的影响。
+# exp323_1x1_unified_gs_obsfix_learned (2026-10-10 用户令, 无压力打分对照): exp317 逐位, 只去掉 frap.score: pressure (打分回到 learned), 保留 since_green/awt_log。与 Dublin 的 309 同构; 1x1 上 317 vs 323 = 压力打分的价值, 323 vs 316 = FRAP learned 对 8STD MLP。未启动。
+# 注: 不加 target_clip_min -50 (两臂都不加, 保持对等): 1x1 用 γ=0.99, best 策略的 Q 量级约 -60..-95 (每步奖励 -0.6..-0.9), -50 会在正常目标上持续触发; Dublin 是 γ=0.95、Q≈-6, -50 只在崩盘时触发。1x1 两臂历史上都没崩过, 下限是 Dublin 的稳定化手段, 这里省略。
+# exp249 = exp241 逐位 + 唯一变量 gamma 0.95->0.99 (2026-08-31 用户令).
+# 目的: 钉死 241 car+60% 轮转模式的主犯 — γ视界 vs buffer/target 慢更新。
+# car 恢复 ~32 => γ 定罪; 不恢复 => 下一嫌疑 target_update/capacity。
+# 统一族 v3 (2026-08-31 用户定案, 覆盖 v2.1):
+# = exp217(std)/exp220(gs) 逐位复制, 只改两处:
+#   (1) DQN 层 16 键全同 exp208/211 稳定配方: gamma 0.95, use_double, target_clip_max 0.0,
+#       eps 0.05/30k, huber, grad_clip 1.0, target_update 720, capacity 300k
+#       (lr/batch/hidden/mini 本就相同)。
+#   (2) reward 换表驱动 priority-avg-waiting + 显式 priority_source 531 —— 与旧
+#       "5-3-1-avg-waiting-time" 数值等价 (rewards.py 文档: 同一遍累加, <=1e-12 漂移),
+#       但桶=权重对齐 (旧默认表 bus 进 4 号桶而 reward 计价 3, 语义不一致), 且为
+#       后续 541/521 扫描提供同一机制。
+# obs 回归 217/220 原样 (cqm, 无 psi 下游/lane_occ/awt 规整 —— 单路口无下游, 不硬塞
+# Dublin 动机特征; 槽维 16, 与 Dublin 的 27 维 schema 不同, 跨场景为定性比较)。
+# 仿真层不动: 1000s 集长, 2000 集, eval 5/123, 同场景文件。
+name: "exp422_1x1_setq_slot_std8ph_linwait_f1"
+
+wandb_project: "sumo-rl-1x1"
+
+net_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum.net.xml"
+route_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb.rou.xml"
+cfg_file:   "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb_enum.sumocfg"
+
+# Environment
+observation_class: "PriorityMovement"
+obs_phase_state:   "perphase"
+obs_fields:        ["count", "queue", "mean_awt"]
+priority_source:   {ambulance: 5, bus: 3, car: 1}   # v3 改动 2: 桶=权重对齐
+reward_fn:         "priority-avg-waiting"           # 与 5-3-1 legacy 数值等价
+num_seconds:       1000
+delta_time:        5
+yellow_time:       2
+min_green:         5
+use_gui:           false
+use_max_green:     true
+max_green:         50
+
+# Action: enumerated protected phases + movement-duel FRAP agent (spec FRAP_ENUM_DESIGN_2026-07-02)
+action_scheme:  "enum_frap"
+enum_meta_file: "../nets/syc/1x1/Eq_350_BC_Wstr_Estr-Wleft_Eleft/Eq_350_20-80-99-1-Bus-Car-Amb_WEstr_only_NSamb/syc_4phases_enum_std8_meta.json"
+frap:
+  embed_dim: 32                # 2026-10-14: setq 运动编码维 (FRAP 为 16); 参数约 9.5 千, 与 FRAP 加大版 388 (9794) 同量级
+  pair_dim:  16                # setq 不使用
+  arch: setq
+  setq_hidden: 128
+  setq_layers: 1
+
+# DQN hyperparameters: 16 键全同 exp208/211 (v3 改动 1)
+hidden_dim:    128
+lr:            0.001
+gamma:         0.99          # ← 消融臂: 唯一改动, 回 217/220 值 (241: 0.95)
+epsilon:       0.1
+eps_start:     0.9
+eps_end:       0.05          # ← 208/211 值 (217/220: 0.01)
+eps_decay:     30000         # ← 208/211 值 (217/220: 5000)
+target_update: 720           # ← 208/211 值 (217/220: 20)
+capacity:      300000        # ← 208/211 值 (217/220: 50k)
+mini_size:     1000
+batch_size:    256
+loss_fn:       huber         # ← 208/211 值 (217/220: MSE)
+grad_clip:     1.0           # ← 208/211 值 (217/220: 无)
+use_double:      true        # ← 208/211 值 (217/220: false)
+target_clip_max: 0.0         # ← 208/211 值 (Q≤0 钳位; 217/220: 无)
+use_per:         false
+
+# Training
+seed:                0
+episodes:            1500          # 用户定案 2026-08-31 (217/220: 2000)
+checkpoint_interval: 50
+runs:                1
+
+# Evaluation during training
+eval_interval: 5
+eval_seed:     123
+
+# Logging
+logging_mode: "basic"
+# (2026-10-13: 删去重复的 frap 段, 与上方 frap 段内容相同; 解析结果不变)
+
+obs_slot_min_green: true     # 2026-10-12: 每个绿灯槽一位 min_green_ok (红灯槽 0); 12 槽 is_green + 该位 = legacy 的信号灯信息 (相位 + min_green), 不含已持续时间
+obs_header: false            # 2026-10-12: 观测直接不输出头部两维 (FRAP 本来就不读), 观测 204 维, 与 363 形式一致
+
+mask_min_green: true          # F1: 动态最短绿掩码 (选动作 + TD 目标)

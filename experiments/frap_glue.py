@@ -110,6 +110,8 @@ def build_frap_agent(cfg, tables, env, device):
         menu_hidden=int(fp.get("menu_hidden", 128)),  # 2026-10-10: 仅 arch menuq 用 (菜单条件化 Q 的 MLP 宽度/层数)
         menu_layers=int(fp.get("menu_layers", 2)),
         menu_current_from=menu_current_from,          # 2026-10-13: legacy 观测时 menuq 从头部独热读当前相位 (默认 slots)
+        setq_hidden=int(fp.get("setq_hidden", 128)),  # 2026-10-14: 仅 arch setq 用 (集合式相位头的 MLP 宽度/层数)
+        setq_layers=int(fp.get("setq_layers", 1)),
         gsg_kw=(dict(gt_in_slot=bool(cfg.get("obs_green_elapsed", False)), gt_clip=float(fp.get("gsg_gt_clip", 1.2)),
                      cost_hidden=int(fp.get("gsg_cost_hidden", 8)), cost_sign=str(fp.get("gsg_cost_sign", "nonneg")),
                      time_inputs=str(fp.get("gsg_time_inputs", "full")))   # 2026-10-13: "none" = 代价项不读时间量 (默认 full 不变)
