@@ -14,14 +14,17 @@ import torch
 
 
 class SetQNet(torch.nn.Module):
-    def __init__(self, header_dim, slot_dim, embed_dim=32, k_max=11, hidden=128, n_layers=1, unserved_max=False):
+    def __init__(self, header_dim, slot_dim, embed_dim=32, k_max=11, hidden=128, n_layers=1, unserved_max=False, served_max=False):
         super().__init__()
         self.header_dim, self.slot_dim, self.embed_dim, self.k_max = header_dim, slot_dim, embed_dim, k_max
         # unserved_max (2026-10-14, 用户批准 "被压运动除了取平均, 再加一个取最大"; 默认 False → 旧配置逐位不变):
         #   相位头另读被压运动编码的逐维最大值 u_max, 让单个运动上的急情 (如一辆救护车) 不被约 10 个被压运动的平均稀释。
         self.unserved_max = bool(unserved_max)
+        # served_max (2026-10-14, 用户令 "你来决定" → 两侧都用 平均 + 最大; 默认 False → 旧配置逐位不变): 相位头另读放行运动编码的逐维最大值 s_max。
+        #   理由: 都柏林枚举相位放行侧多为 3 个运动、被压侧 1-6 个, 两侧都会被平均稀释; 最大值不随集合大小变化, 适合相位数不同的路口共用一张网。
+        self.served_max = bool(served_max)
         self.enc = torch.nn.Sequential(torch.nn.Linear(slot_dim, embed_dim), torch.nn.ReLU(), torch.nn.LayerNorm(embed_dim))
-        layers, d = [], 2 * embed_dim + 2 + 1 + (embed_dim if self.unserved_max else 0)
+        layers, d = [], 2 * embed_dim + 2 + 1 + (embed_dim if self.unserved_max else 0) + (embed_dim if self.served_max else 0)
         for _ in range(max(int(n_layers), 1)):
             layers += [torch.nn.Linear(d, hidden), torch.nn.ReLU()]; d = hidden
         layers.append(torch.nn.Linear(d, 1))
@@ -33,7 +36,7 @@ class SetQNet(torch.nn.Module):
 
     def features(self, x, pm, exist):
         """(B,obs),(B,K,12),(B,12) -> (B,K,2E+3): [served mean, unserved mean, n_served/12, n_unserved/12, is_current];
-        unserved_max 时再接 unserved max (共 3E+3)。"""
+        unserved_max 时再接 unserved max, served_max 时再接 served max (两者都开共 4E+3)。"""
         B = x.shape[0]
         e = self.encode(x)                                                                      # (B,12,E)
         ex = exist.unsqueeze(1)                                                                 # (B,1,12)
@@ -47,6 +50,10 @@ class SetQNet(torch.nn.Module):
             m = (us > 0.5).unsqueeze(-1)                                                       # (B,K,12,1)
             u_max = e.unsqueeze(1).expand(-1, us.shape[1], -1, -1).masked_fill(~m, -1e4).amax(dim=2)   # (B,K,E)
             feats.append(torch.where(nu > 0, u_max, torch.zeros_like(u_max)))
+        if self.served_max:     # 放行运动编码逐维最大值; 放行集合为空的候选取 0
+            m = (sv > 0.5).unsqueeze(-1)
+            s_max = e.unsqueeze(1).expand(-1, sv.shape[1], -1, -1).masked_fill(~m, -1e4).amax(dim=2)
+            feats.append(torch.where(ns > 0, s_max, torch.zeros_like(s_max)))
         return torch.cat(feats, dim=-1)
 
     def forward(self, x, pm, rel, exist):

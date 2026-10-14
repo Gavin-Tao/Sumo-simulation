@@ -330,13 +330,15 @@ class FRAPAgent:
                  mtt_heads=4, mtt_layers=2, hold_bias=False,
                  score_mode="learned", layout=None, header_in=False,
                  menu_hidden=128, menu_layers=2, gsg_kw=None, menu_current_from="slots",
-                 setq_hidden=128, setq_layers=1, setq_unserved_max=False):
+                 setq_hidden=128, setq_layers=1, setq_unserved_max=False, setq_served_max=False):
         self.device = torch.device(device)
         # arch: "frap" (default, unchanged) | "mtt" (movement-token transformer,
         # same forward contract). Absent key -> "frap" -> byte-identical legacy.
         if menu_current_from != "slots" and arch != "menuq":   # 2026-10-13: legacy 观测只对枚举条件化 (menuq) 开放, FRAP/GS-G 仍只用 perphase
             raise ValueError("menu_current_from 只用于 arch menuq")
         def _mk():
+            if (setq_unserved_max or setq_served_max) and arch != "setq":
+                raise ValueError("frap.setq_unserved_max / setq_served_max 只用于 arch setq")
             if arch in ("mtt", "mtt_pure") and score_mode != "learned":
                 raise ValueError("frap.score pressure* only supported for arch frap")
             if arch == "menuq":   # 2026-10-10 菜单条件化 Q (用户批准): 整条状态 + 候选相位说明书 -> 标量 Q; 见 menu_qnet.py
@@ -344,13 +346,11 @@ class FRAPAgent:
                     raise ValueError("arch menuq 不支持 frap.score pressure* / hold_bias / header_in (它本身读整条状态含头部)")
                 from .menu_qnet import MenuQNet
                 return MenuQNet(header_dim, slot_dim, k_max, hidden=menu_hidden, n_layers=menu_layers, current_from=menu_current_from)
-            if setq_unserved_max and arch != "setq":
-                raise ValueError("frap.setq_unserved_max 只用于 arch setq")
             if arch == "setq":   # 2026-10-14 集合式相位头 (用户批准): 运动编码器 + 相位级联合打分, 无运动分相加与对决项; 见 setq_qnet.py
                 if score_mode != "learned" or hold_bias or header_in:
                     raise ValueError("arch setq 不支持 frap.score pressure* / hold_bias / header_in")
                 from .setq_qnet import SetQNet
-                return SetQNet(header_dim, slot_dim, embed_dim, k_max, hidden=setq_hidden, n_layers=setq_layers, unserved_max=setq_unserved_max)
+                return SetQNet(header_dim, slot_dim, embed_dim, k_max, hidden=setq_hidden, n_layers=setq_layers, unserved_max=setq_unserved_max, served_max=setq_served_max)
             if arch == "gsg":   # 2026-10-12 GS-G (用户批准): 原 FRAP 学习打分 + 按运动的截断/起动代价; 见 gsg_qnet.py
                 if score_mode != "learned" or hold_bias or header_in:
                     raise ValueError("arch gsg 不支持 frap.score pressure* / hold_bias / header_in")
