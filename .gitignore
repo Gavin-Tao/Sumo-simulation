@@ -51,3 +51,6 @@ dublin_sumo_files/bus/stop_times.txt
 experiments/model/
 68d2ae4195ae238a4db0cb95/
 experiments/analysis/data/pervehicle/
+
+# 2026-10-14: 1x1 末段检查点评估 (只读分析产物, 2.2 GB), 不进 git
+experiments/analysis/data/pervehicle_late_2026-10-14/
