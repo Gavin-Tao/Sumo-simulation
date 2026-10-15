@@ -11,6 +11,13 @@ import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 KIND = sys.argv[sys.argv.index("--kind") + 1] if "--kind" in sys.argv else "best"
 PER_SECOND = "--per-second" in sys.argv   # 2026-10-15 用户令 "best 10 种子验证要每秒采集": 停车时间/停车次数/访问用逐秒口径 (eval_pervehicle --collector-1s)
+EXCL_ALL = [int(x) for x in sys.argv[sys.argv.index("--exclude-all") + 1].split(",")] if "--exclude-all" in sys.argv else []   # 2026-10-15 用户令 "521 去掉那个差的 seed"
+EXCL_ARM = {}
+if "--exclude" in sys.argv:
+    for tok in sys.argv[sys.argv.index("--exclude") + 1].split(","):
+        _e, _s = tok.split(":"); EXCL_ARM.setdefault(int(_e), set()).add(int(_s))
+def seeds_of(e):
+    return [s for s in SEEDS if s not in EXCL_ALL and s not in EXCL_ARM.get(int(e), set())]
 DELAY_LABEL = "--old-labels" not in sys.argv   # 2026-10-15 用户令: 图里不写 RL-junction, 写 Average delay / visit (定义不变, 仍只算 RL 路口)
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"; PL = "experiments/analysis/data/pervehicle_late_2026-10-14"
 SH18 = {"car": .9568, "bus": .0430, "ambulance": .0002}; WT = {"car": 1, "bus": 3, "ambulance": 5}
@@ -37,6 +44,7 @@ def files(e, name):
         s = int(f.split("_seed")[1].split("_")[0])
         if s in out: out[s].append(f)
     need = 1 if KIND == "best" else 5
+    out = {s: out[s] for s in seeds_of(e)}
     assert all(len(v) == need for v in out.values()), (e, {s: len(v) for s, v in out.items()})
     return out
 
@@ -44,7 +52,7 @@ def files(e, name):
 def per_seed(e, name, metric):
     """{类: 长度 10 的数组}; J 按每个文件先算再在检查点上平均。"""
     F = files(e, name); res = {c: [] for c in CLS + ("J",)}
-    for s in SEEDS:
+    for s in seeds_of(e):
         rows = []
         for f in F[s]:
             sm = json.load(open(f))["collector"]["summary"]
@@ -60,7 +68,7 @@ def rl_delay_per_seed(e, name):
     all = 各类 timeLoss 之和 / 进入次数之和; J(531) 用 18h 份额。late: 5 个检查点逐种子平均。"""
     eps = [best_ep(name)] if KIND == "best" else [600, 650, 700, 750, 800]
     res = {c: [] for c in CLS + ("J",)}
-    for s in SEEDS:
+    for s in seeds_of(e):
         rows = []
         for ep in eps:
             C = json.load(open(f"{PV}/exp{e}_ep{ep:05d}_seed{s}_rldelay.json"))["classes"]
@@ -73,7 +81,7 @@ def rl_delay_per_seed(e, name):
 
 
 def main():
-    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "arms": {a: e for a, e, _ in ARMS}}
+    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "excluded_all": EXCL_ALL, "excluded_by_arm": {str(k): sorted(v) for k, v in EXCL_ARM.items()}, "arms": {a: e for a, e, _ in ARMS}}
     if KIND == "best":
         dump["best_episode"] = {a: best_ep(n) for a, e, n in ARMS}
     cells.append([""] * 5); colors.append([HEAD] * 5); hdr_rows = [1]
@@ -101,14 +109,17 @@ def main():
     else:
         sub = "last 5 checkpoints (episodes 600/650/700/750/800) averaged per seed"
     tail = "; metrics collected every simulation second" if PER_SECOND else ""
-    ax.set_title(f"8STD (12-slot state + F1), priority weights ambulance/bus/car (111 = no priority)\n{sub}{tail}; mean ± s.d. over 10 evaluation seeds, per visit" + ("" if DELAY_LABEL else "; delay = RL-junction approaches only"),
+    nlab = "10 evaluation seeds"
+    if EXCL_ALL: nlab = f"9 evaluation seeds (seed {','.join(map(str, EXCL_ALL))} excluded in all columns)" if len(EXCL_ALL) == 1 else f"{10 - len(EXCL_ALL)} evaluation seeds (seeds {EXCL_ALL} excluded in all columns)"
+    if EXCL_ARM: nlab = "10 evaluation seeds, except " + "; ".join(f"{[a for a, e2, _ in ARMS if e2 == e][0]}: seed {','.join(map(str, sorted(v)))} excluded (n = {len(seeds_of(e))})" for e, v in EXCL_ARM.items())
+    ax.set_title(f"8STD (12-slot state + F1), priority weights ambulance/bus/car (111 = no priority)\n{sub}{tail}; mean ± s.d. over {nlab}, per visit" + ("" if DELAY_LABEL else "; delay = RL-junction approaches only"),
                  fontsize=12, pad=6)
     fig.canvas.draw(); ren = fig.canvas.get_renderer(); inv = fig.transFigure.inverted()
     bb = tbl[1, 0].get_window_extent(ren); x0, y0 = inv.transform((bb.x0, bb.y0)); _, y1 = inv.transform((bb.x1, bb.y1))
     fig.text(x0 + 0.004, (y0 + y1) / 2, block, ha="left", va="center", fontsize=11, weight="bold", zorder=10)
     tb = tbl.get_window_extent(ren); tt = ax.title.get_window_extent(ren); bb = Bbox.union([tb, tt]); pad = 0.15 * fig.dpi
     crop = Bbox.from_extents((bb.x0 - pad) / fig.dpi, (bb.y0 - pad) / fig.dpi, (bb.x1 + pad) / fig.dpi, (bb.y1 + pad) / fig.dpi)
-    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
+    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}{('_excl' + '-'.join(map(str, EXCL_ALL)) + 'all') if EXCL_ALL else ''}{''.join(f'_excl{e}s' + '-'.join(map(str, sorted(v))) for e, v in EXCL_ARM.items())}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)
 
 
