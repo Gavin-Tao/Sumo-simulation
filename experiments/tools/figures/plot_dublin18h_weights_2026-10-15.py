@@ -10,6 +10,8 @@ import json, glob, sys, numpy as np
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 KIND = sys.argv[sys.argv.index("--kind") + 1] if "--kind" in sys.argv else "best"
+PER_SECOND = "--per-second" in sys.argv   # 2026-10-15 用户令 "best 10 种子验证要每秒采集": 停车时间/停车次数/访问用逐秒口径 (eval_pervehicle --collector-1s)
+DELAY_LABEL = "--old-labels" not in sys.argv   # 2026-10-15 用户令: 图里不写 RL-junction, 写 Average delay / visit (定义不变, 仍只算 RL 路口)
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"; PL = "experiments/analysis/data/pervehicle_late_2026-10-14"
 SH18 = {"car": .9568, "bus": .0430, "ambulance": .0002}; WT = {"car": 1, "bus": 3, "ambulance": 5}
 ARMS = [("111", 458, "exp458_dublin18h_reroute_v2_amb11h_noprio_avgwait_8std_slot12_f1"), ("521", 456, "exp456_dublin18h_reroute_v2_amb11h_521_8std_slot12_f1"),
@@ -28,7 +30,7 @@ def files(e, name):
     """返回 {种子: [评估文件, ...]} (best: 每种子 1 个; late: 每种子 5 个)。"""
     out = {s: [] for s in SEEDS}
     if KIND == "best":
-        ep = best_ep(name); fs = glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll.json")
+        ep = best_ep(name); fs = glob.glob(f"{PV}/exp{e}_ep{ep:05d}_seed*_best_coll{'1s' if PER_SECOND else ''}.json")
     else:
         fs = glob.glob(f"{PL}/exp{e}_ep00[67][05]0_seed*_late_coll.json") + glob.glob(f"{PV}/exp{e}_ep00800_seed*_ckpt_coll.json")
     for f in fs:
@@ -71,11 +73,12 @@ def rl_delay_per_seed(e, name):
 
 
 def main():
-    cells, colors, dump = [], [], {"kind": KIND, "seeds": SEEDS, "arms": {a: e for a, e, _ in ARMS}}
+    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "arms": {a: e for a, e, _ in ARMS}}
     if KIND == "best":
         dump["best_episode"] = {a: best_ep(n) for a, e, n in ARMS}
     cells.append([""] * 5); colors.append([HEAD] * 5); hdr_rows = [1]
-    for metric, label, jlabel, d in METRICS + (("rl_delay", "RL-junction delay / visit (s)", "J(531) weighted RL-junction delay (per visit)", 2),):
+    dl = ("Average delay / visit (s)", "J(531) weighted delay (per visit)") if DELAY_LABEL else ("RL-junction delay / visit (s)", "J(531) weighted RL-junction delay (per visit)")
+    for metric, label, jlabel, d in METRICS + (("rl_delay", dl[0], dl[1], 2),):
         V = {a: (rl_delay_per_seed(e, n) if metric == "rl_delay" else per_seed(e, n, metric)) for a, e, n in ARMS}; dump[metric] = {}
         for c in CLS + ("J",):
             lab = jlabel if c == "J" else f"{label} - {c}"
@@ -97,14 +100,15 @@ def main():
         be = dump["best_episode"]; sub = "best checkpoint selected on seed 123 (episode " + ", ".join(f"{a}: {be[a]}" for a, _, _ in ARMS) + ")"
     else:
         sub = "last 5 checkpoints (episodes 600/650/700/750/800) averaged per seed"
-    ax.set_title(f"8STD (12-slot state + F1), priority weights ambulance/bus/car (111 = no priority)\n{sub}; mean ± s.d. over 10 evaluation seeds, per visit; delay = RL-junction approaches only",
+    tail = "; metrics collected every simulation second" if PER_SECOND else ""
+    ax.set_title(f"8STD (12-slot state + F1), priority weights ambulance/bus/car (111 = no priority)\n{sub}{tail}; mean ± s.d. over 10 evaluation seeds, per visit" + ("" if DELAY_LABEL else "; delay = RL-junction approaches only"),
                  fontsize=12, pad=6)
     fig.canvas.draw(); ren = fig.canvas.get_renderer(); inv = fig.transFigure.inverted()
     bb = tbl[1, 0].get_window_extent(ren); x0, y0 = inv.transform((bb.x0, bb.y0)); _, y1 = inv.transform((bb.x1, bb.y1))
     fig.text(x0 + 0.004, (y0 + y1) / 2, block, ha="left", va="center", fontsize=11, weight="bold", zorder=10)
     tb = tbl.get_window_extent(ren); tt = ax.title.get_window_extent(ren); bb = Bbox.union([tb, tt]); pad = 0.15 * fig.dpi
     crop = Bbox.from_extents((bb.x0 - pad) / fig.dpi, (bb.y0 - pad) / fig.dpi, (bb.x1 + pad) / fig.dpi, (bb.y1 + pad) / fig.dpi)
-    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
+    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)
 
 

@@ -11,6 +11,7 @@ import ckpt_env
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀"); ap.add_argument("--collector", action="store_true", help="同时运行训练用的 EpisodeMetricsCollector (5 s 采样口径), 导出其逐车记录与 eval_* 汇总")
+    ap.add_argument("--collector-1s", action="store_true", help="(2026-10-15 用户令 \"best 10 种子验证要每秒采集\") 收集器每个仿真秒采样一次 (单步时长按 SUMO 步长计), 停车时间/停车次数/访问都按逐秒口径; 默认关 = 原 5 s 口径 (与 train.py 评估相同, 逐位不变)")
     ap.add_argument("--rl-delay", action="store_true", help="同一次仿真顺带输出 RL 路口延误 (= eval_rl_delay.py 的结果, 2026-10-10 用户批准合并): 挂 edgeData 附加输出, 另存 <同名><rl-delay-tag>.json")
     ap.add_argument("--rl-delay-tag", default="_rldelay", help="RL 路口延误文件后缀 (默认 _rldelay, 与 eval_rl_delay.py 相同)")
     a = ap.parse_args()
@@ -53,17 +54,21 @@ def main():
             r = on.pop(key); r["exit"] = now; vid, t = key
             veh[vid]["tls"].setdefault(t, []).append(r)
     _orig = env._sumo_step
-    def hooked(): _orig(); rec()
+    mc = None
+    def hooked():
+        if mc is not None and a.collector_1s: mc.collect_step(sumo)   # 逐秒口径: 每个仿真秒推进之前采一次 (收集器要求在 simulationStep 之前调用)
+        _orig(); rec()
     env._sumo_step = hooked
     mc = None
     if a.collector:   # 与 train.py 评估分支同构造: 5 s 采样, 只数受控进口道, 排除恒绿右转车道
         from sumo_rl.environment.metrics import EpisodeMetricsCollector
         ts_lane_map = {t: env.traffic_signals[t].signal_controlled_lanes for t in env.ts_ids}
         always_green = set().union(*(env.traffic_signals[t].always_green_lanes for t in env.ts_ids))
-        mc = EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green)
+        _dt = float(sumo.simulation.getDeltaT()) if a.collector_1s else env.delta_time   # 逐秒口径: 每次采样代表一个仿真步 (SUMO 步长)
+        mc = EpisodeMetricsCollector(ts_lane_map, delta_time=_dt, excluded_lanes=always_green)
     rec(); done = {"__all__": False}
     while not done["__all__"]:
-        if mc is not None: mc.collect_step(sumo)
+        if mc is not None and not a.collector_1s: mc.collect_step(sumo)   # 原 5 s 口径: 每个决策步采一次
         states, _, done, _ = env.step(action={t: act(t, states[t])[0] for t in env.ts_ids})
     if mc is not None:
         mc.collect_step(sumo); mc.finalize(sumo)
@@ -82,7 +87,7 @@ def main():
         recs = dict(getattr(mc, "_finalized", {})); recs.update(getattr(mc, "_active", {}))
         coll = {"summary": {k: (float(v) if isinstance(v, (int, float)) else v) for k, v in mc.to_flat_dict(prefix="eval").items() if isinstance(v, (int, float))},
                 "vehicles": {vid: {"type": r["type"], "k_v": len(r.get("ts_visited", set())), "stopped_sec": dict(r.get("per_ts_stopped_sec", {})), "stop_events": dict(r.get("per_ts_stop_events", {}))} for vid, r in recs.items()}}
-    out = dict(exp=a.exp, routes=a.routes, kind=B["kind"], collector=coll, ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
+    out = dict(exp=a.exp, routes=a.routes, kind=B["kind"], collector=coll, collector_dt=(None if mc is None else mc.delta_time), ckpt=B["ckpt"], ckpt_episode=B["ckpt_episode"], seed=B["seed"], cfg=B["cfg_path"], n_tripinfo=len(trip), n_vehicles=len(veh), vehicles=veh)
     os.makedirs(a.out, exist_ok=True); path = os.path.join(a.out, f"exp{a.exp}_ep{B['ckpt_episode']:05d}_seed{B['seed']}{a.tag}.json")
     json.dump(out, open(path, "w")); print("saved", path, "| vehicles", len(veh), "tripinfo", len(trip))
     if rld:   # RL 路口延误: 与 eval_rl_delay.py 同一公式同一键 (wt 按 tripinfo 的 vType 收 timeLoss, 含未完成行程)
