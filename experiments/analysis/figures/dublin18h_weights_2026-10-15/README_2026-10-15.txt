@@ -1,0 +1,34 @@
+都柏林 18:00, 8STD (12 槽状态 + F1), 四种优先级权重 111 / 521 / 531 / 541 (exp458 / 456 / 449 / 457) 的对比图 (2026-10-15)
+
+共同口径 (论文图注须写明, 标题里没写):
+- best 检查点 (按种子 123 选), 每秒采集 (eval_pervehicle --collector --collector-1s)
+- 9 个评估种子 123-132, 四列同剔种子 125
+- 误差线 = ± 标准差 (下端截在 0); 柱状图小点 = 各种子的值
+- 111 = 奖励改为全体车辆平均等待 + 三类等级全 1, 所以 111 → 521 不只是权重不同 (折线图用虚线)
+- 延误 = 只算 RL 路口进口道的 edgeData timeLoss / 进入次数
+- 救护车每集只有 1 辆, 数字只作参考
+
+文件 (改名前的原名在括号里; 出图脚本仍按原名输出, 重跑后需再改名):
+1_table_xj133307283   只剔除路口 133307283 的表图
+    (dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle_xj133307283_2026-10-15_en.png)
+    plot_dublin18h_weights_2026-10-15.py --kind best --per-second --exclude-all 125 --no-j --no-highlight --min-title --exclude-junctions 133307283
+    数据: ../dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle_xj133307283_2026-10-15_en.json
+2_table_xjfake4       剔除 4 个现实中无信号的路口 (659802, 133307283, 32236377, 135109534) 的表图
+    (..._noJ_nohl_mintitle_xjfake4_2026-10-15_en.png)
+    同上, --exclude-junctions 659802,133307283,32236377,135109534 --xj-tag _xjfake4
+    数据: ../dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle_xjfake4_2026-10-15_en.json
+3_bars_xjfake4        柱状图 (数据同 2)
+    (..._excl125all_xjfake4_bars_2026-10-15_en.{png,pdf})
+    plot_dublin18h_weights_bars_2026-10-15.py --src-tag xjfake4
+4_lines_xjfake4       总折线图 (数据同 2)
+    (..._excl125all_xjfake4_lines_2026-10-15_en.{png,pdf})
+    plot_dublin18h_weights_lines_2026-10-15.py --src-tag xjfake4
+5_lines_buslanes_xjfake4    折线图: 公交和小汽车共用的进口车道 (公交 + 小汽车)
+    (..._excl125all_xjfake4_buslanes_lines_2026-10-15_en.{png,pdf})
+6_lines_nobuslanes_xjfake4  折线图: 没有公交经过的进口车道 (只小汽车)
+    (..._excl125all_xjfake4_nobuslanes_lines_2026-10-15_en.{png,pdf})
+    5 和 6 都由 plot_dublin18h_weights_buslane_2026-10-15.py 生成, 数据: ../dublin18h_8std_slot12_f1_weights_best_1s_excl125all_xjfake4_buslane_split_2026-10-15_en.json
+    分组: 按车道 (公交车道 = 四臂 × 9 种子中公交走过的受控进口车道, 保留的 14 个路口共 51 条中的 25 条), 不按 "同一时刻同一车道有公交" (停得越久越容易碰上公交, 有偏);
+    5 和 6 纵轴范围相同; 只画停车时间与停车次数 (延误只存到路口一级, 拆不到车道)。
+
+脚本都在 experiments/tools/figures/, 在仓库根目录运行。
