@@ -9,8 +9,10 @@ import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 FIG = "experiments/analysis/figures"
-SRC = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle_2026-10-15_en.json"
-OUT = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all_lines_2026-10-15_en"
+import sys
+SRC_TAG = sys.argv[sys.argv.index("--src-tag") + 1] if "--src-tag" in sys.argv else ""   # 2026-10-15: 例 xjfake4 = 去掉 4 个虚构信号路口的表图数据 (剔除记在 json)
+SRC = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle{('_' + SRC_TAG) if SRC_TAG else ''}_2026-10-15_en.json"
+OUT = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all{('_' + SRC_TAG) if SRC_TAG else ''}_lines_2026-10-15_en"
 ARMS = ["111", "521", "531", "541"]
 XLAB = ["111\n(no priority)", "521", "531", "541"]
 SERIES = [("car", "Car", "#B64342", "o"), ("bus", "Bus", "#0F4D92", "s"), ("ambulance", "Ambulance (1 vehicle / episode)", "#42949E", "^"), ("all", "All vehicles", "#555555", "D")]

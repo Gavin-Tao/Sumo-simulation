@@ -8,8 +8,10 @@ import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
 FIG = "experiments/analysis/figures"
-SRC = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle_2026-10-15_en.json"
-OUT = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all_bars_2026-10-15_en"
+import sys
+SRC_TAG = sys.argv[sys.argv.index("--src-tag") + 1] if "--src-tag" in sys.argv else ""   # 2026-10-15: 例 xjfake4 = 去掉 4 个虚构信号路口的表图数据 (剔除记在 json)
+SRC = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all_noJ_nohl_mintitle{('_' + SRC_TAG) if SRC_TAG else ''}_2026-10-15_en.json"
+OUT = f"{FIG}/dublin18h_8std_slot12_f1_weights_best_1s_excl125all{('_' + SRC_TAG) if SRC_TAG else ''}_bars_2026-10-15_en"
 ARMS = ["111", "521", "531", "541"]
 COLORS = {"111": "#BDBDBD", "521": "#A9C8E8", "531": "#3775BA", "541": "#0F4D92"}   # 灰 = 无优先级; 浅→深蓝 = 公交权重由低到高
 CLASSES = [("car", "Car"), ("bus", "Bus"), ("all", "All")]          # 主坐标轴
