@@ -22,6 +22,8 @@ NO_J = "--no-j" in sys.argv                 # 2026-10-15 用户令: 去掉 J 行
 NO_GREEN = "--no-highlight" in sys.argv     # 2026-10-15 用户令: 不标绿
 MIN_TITLE = "--min-title" in sys.argv       # 2026-10-15 用户令: 标题也不写 best 检查点选择与集数 (这些写在 json 与论文图注)
 PLAIN_TITLE = "--plain-title" in sys.argv or MIN_TITLE   # 2026-10-15 用户令: 标题不写种子数与剔除说明 (剔除仍记在 json; 论文图注须写明)
+XJ = [x for x in sys.argv[sys.argv.index("--exclude-junctions") + 1].split(",") if x] if "--exclude-junctions" in sys.argv else None   # 2026-10-15 用户令 "去掉路口 133307283 重新算"
+XJ_TAG = sys.argv[sys.argv.index("--xj-tag") + 1] if "--xj-tag" in sys.argv else (("_xj" + "-".join(XJ)) if XJ else "")
 DELAY_LABEL = "--old-labels" not in sys.argv   # 2026-10-15 用户令: 图里不写 RL-junction, 写 Average delay / visit (定义不变, 仍只算 RL 路口)
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"; PL = "experiments/analysis/data/pervehicle_late_2026-10-14"
 SH18 = {"car": .9568, "bus": .0430, "ambulance": .0002}; WT = {"car": 1, "bus": 3, "ambulance": 5}
@@ -67,6 +69,43 @@ def per_seed(e, name, metric):
     return {c: np.array(v, float) for c, v in res.items()}
 
 
+_CL = None
+def ctrl_lanes():
+    """各 RL 路口的受控进口车道 (不含恒绿车道), 与收集器 ts_lane_map 相同; 四臂同一路网。"""
+    global _CL
+    if _CL is None:
+        import os, yaml; os.environ.setdefault("SUMO_RL_LIBSUMO", "1")
+        sys.path.insert(0, "/home/xiaowen/sumo-rl")
+        from sumo_rl.environment.env import SumoEnvironment
+        cfg = yaml.safe_load(open(glob.glob("experiments/configs/exp449_*.yaml")[0]))
+        cwd = os.getcwd(); os.chdir("experiments")
+        env = SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"], cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False, num_seconds=10,
+                              min_green=5, max_green=50, single_agent=False, yellow_time=2, delta_time=5, sumo_seed=0, sumo_warnings=False)
+        env.reset(123); _CL = {t: set(env.traffic_signals[t].signal_controlled_lanes) for t in env.ts_ids}; env.close(); os.chdir(cwd)
+    return _CL
+
+
+def per_seed_recomputed(e, name, metric):
+    """逐车重算 停车时间/visit 或 停车次数/visit, 剔除 XJ 中的路口: 每辆车扣掉在这些路口的停车 (次数) 与访问 (受控车道上出现过即算一次),
+    再按收集器口径 (每车 Σ/访问路口数, 跳过访问数为 0 的车, 再对车平均)。XJ 为空时与收集器汇总逐项相同 (已核对)。"""
+    field = {"avg_stopped_time_per_visit": "stopped_sec", "avg_stop_events_per_visit": "stop_events"}[metric]
+    F = files(e, name); CL = ctrl_lanes(); X = set(XJ or []); res = {c: [] for c in CLS + ("J",)}
+    for s in seeds_of(e):
+        d = json.load(open(F[s][0])); cv = d["collector"]["vehicles"]; V = d["vehicles"]; acc = {c: [] for c in CLS}
+        for vid, c in cv.items():
+            kv = c.get("k_v", 0)
+            if kv <= 0: continue
+            vx = {t for t in X if any(r["lane"] in CL[t] for r in V.get(vid, {}).get("tls", {}).get(t, []))}
+            kp = kv - len(vx)
+            if kp <= 0: continue
+            val = sum(x for t, x in c.get(field, {}).items() if t not in X) / kp
+            acc["all"].append(val)
+            if c["type"] in ("car", "bus", "ambulance"): acc[c["type"]].append(val)
+        v = {c: (float(np.mean(acc[c])) if acc[c] else np.nan) for c in CLS}; v["J"] = sum(SH18[c] * WT[c] * np.nan_to_num(v[c]) for c in SH18)
+        for c in CLS + ("J",): res[c].append(v[c])
+    return {c: np.array(x, float) for c, x in res.items()}
+
+
 def rl_delay_per_seed(e, name):
     """RL 路口延误 / visit (eval_rl_delay.py 的 _rldelay 文件: 18 个 RL 路口进口道边 + 内部边的 timeLoss / 进口道进入次数), 分车类;
     all = 各类 timeLoss 之和 / 进入次数之和; J(531) 用 18h 份额。late: 5 个检查点逐种子平均。"""
@@ -76,7 +115,10 @@ def rl_delay_per_seed(e, name):
         rows = []
         for ep in eps:
             C = json.load(open(f"{PV}/exp{e}_ep{ep:05d}_seed{s}_rldelay.json"))["classes"]
-            tl = {c: C[c]["rl_timeloss"] for c in C}; en = {c: C[c]["rl_entered"] for c in C}
+            if XJ is not None:   # 剔除路口: 用逐路口的时间损失与进入次数重算
+                tl = {c: sum(v["timeloss"] for j, v in C[c]["per_junction"].items() if j not in XJ) for c in C}; en = {c: sum(v["entered"] for j, v in C[c]["per_junction"].items() if j not in XJ) for c in C}
+            else:
+                tl = {c: C[c]["rl_timeloss"] for c in C}; en = {c: C[c]["rl_entered"] for c in C}
             v = {c: (tl[c] / en[c] if en.get(c) else np.nan) for c in ("car", "bus", "ambulance")}
             v["all"] = sum(tl.values()) / max(sum(en.values()), 1); v["J"] = sum(SH18[c] * WT[c] * np.nan_to_num(v[c]) for c in SH18); rows.append(v)
         for c in CLS + ("J",):
@@ -85,13 +127,13 @@ def rl_delay_per_seed(e, name):
 
 
 def main():
-    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "excluded_all": EXCL_ALL, "no_j": NO_J, "no_highlight": NO_GREEN, "plain_title": PLAIN_TITLE, "min_title": MIN_TITLE, "excluded_by_arm": {str(k): sorted(v) for k, v in EXCL_ARM.items()}, "arms": {a: e for a, e, _ in ARMS}}
+    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "excluded_all": EXCL_ALL, "no_j": NO_J, "no_highlight": NO_GREEN, "plain_title": PLAIN_TITLE, "min_title": MIN_TITLE, "excluded_junctions": XJ, "excluded_by_arm": {str(k): sorted(v) for k, v in EXCL_ARM.items()}, "arms": {a: e for a, e, _ in ARMS}}
     if KIND == "best":
         dump["best_episode"] = {a: best_ep(n) for a, e, n in ARMS}
     cells.append([""] * 5); colors.append([HEAD] * 5); hdr_rows = [1]
     dl = ("Average delay / visit (s)", "J(531) weighted delay (per visit)") if DELAY_LABEL else ("RL-junction delay / visit (s)", "J(531) weighted RL-junction delay (per visit)")
     for metric, label, jlabel, d in METRICS + (("rl_delay", dl[0], dl[1], 2),):
-        V = {a: (rl_delay_per_seed(e, n) if metric == "rl_delay" else per_seed(e, n, metric)) for a, e, n in ARMS}; dump[metric] = {}
+        V = {a: (rl_delay_per_seed(e, n) if metric == "rl_delay" else (per_seed_recomputed(e, n, metric) if XJ is not None else per_seed(e, n, metric))) for a, e, n in ARMS}; dump[metric] = {}
         for c in CLS + (("J",) if not NO_J else ()):
             lab = jlabel if c == "J" else f"{label} - {c}"
             means = [float(np.nanmean(V[a][c])) for a, _, _ in ARMS]; sds = [float(np.nanstd(V[a][c])) for a, _, _ in ARMS]
@@ -125,7 +167,7 @@ def main():
     fig.text(x0 + 0.004, (y0 + y1) / 2, block, ha="left", va="center", fontsize=11, weight="bold", zorder=10)
     tb = tbl.get_window_extent(ren); tt = ax.title.get_window_extent(ren); bb = Bbox.union([tb, tt]); pad = 0.15 * fig.dpi
     crop = Bbox.from_extents((bb.x0 - pad) / fig.dpi, (bb.y0 - pad) / fig.dpi, (bb.x1 + pad) / fig.dpi, (bb.y1 + pad) / fig.dpi)
-    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}{('_excl' + '-'.join(map(str, EXCL_ALL)) + 'all') if EXCL_ALL else ''}{''.join(f'_excl{e}s' + '-'.join(map(str, sorted(v))) for e, v in EXCL_ARM.items())}{'_noJ' if NO_J else ''}{'_nohl' if NO_GREEN else ''}{'_mintitle' if MIN_TITLE else ('_plaintitle' if PLAIN_TITLE else '')}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
+    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}{('_excl' + '-'.join(map(str, EXCL_ALL)) + 'all') if EXCL_ALL else ''}{''.join(f'_excl{e}s' + '-'.join(map(str, sorted(v))) for e, v in EXCL_ARM.items())}{'_noJ' if NO_J else ''}{'_nohl' if NO_GREEN else ''}{'_mintitle' if MIN_TITLE else ('_plaintitle' if PLAIN_TITLE else '')}{XJ_TAG}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)
 
 
