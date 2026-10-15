@@ -18,6 +18,9 @@ if "--exclude" in sys.argv:
         _e, _s = tok.split(":"); EXCL_ARM.setdefault(int(_e), set()).add(int(_s))
 def seeds_of(e):
     return [s for s in SEEDS if s not in EXCL_ALL and s not in EXCL_ARM.get(int(e), set())]
+NO_J = "--no-j" in sys.argv                 # 2026-10-15 用户令: 去掉 J 行
+NO_GREEN = "--no-highlight" in sys.argv     # 2026-10-15 用户令: 不标绿
+PLAIN_TITLE = "--plain-title" in sys.argv   # 2026-10-15 用户令: 标题不写种子数与剔除说明 (剔除仍记在 json; 论文图注须写明)
 DELAY_LABEL = "--old-labels" not in sys.argv   # 2026-10-15 用户令: 图里不写 RL-junction, 写 Average delay / visit (定义不变, 仍只算 RL 路口)
 FIG = "experiments/analysis/figures"; PV = "experiments/analysis/data/pervehicle"; PL = "experiments/analysis/data/pervehicle_late_2026-10-14"
 SH18 = {"car": .9568, "bus": .0430, "ambulance": .0002}; WT = {"car": 1, "bus": 3, "ambulance": 5}
@@ -81,17 +84,18 @@ def rl_delay_per_seed(e, name):
 
 
 def main():
-    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "excluded_all": EXCL_ALL, "excluded_by_arm": {str(k): sorted(v) for k, v in EXCL_ARM.items()}, "arms": {a: e for a, e, _ in ARMS}}
+    cells, colors, dump = [], [], {"kind": KIND, "per_second": PER_SECOND, "delay_definition": "RL-junction approaches only (edgeData timeLoss / entries)", "seeds": SEEDS, "excluded_all": EXCL_ALL, "no_j": NO_J, "no_highlight": NO_GREEN, "plain_title": PLAIN_TITLE, "excluded_by_arm": {str(k): sorted(v) for k, v in EXCL_ARM.items()}, "arms": {a: e for a, e, _ in ARMS}}
     if KIND == "best":
         dump["best_episode"] = {a: best_ep(n) for a, e, n in ARMS}
     cells.append([""] * 5); colors.append([HEAD] * 5); hdr_rows = [1]
     dl = ("Average delay / visit (s)", "J(531) weighted delay (per visit)") if DELAY_LABEL else ("RL-junction delay / visit (s)", "J(531) weighted RL-junction delay (per visit)")
     for metric, label, jlabel, d in METRICS + (("rl_delay", dl[0], dl[1], 2),):
         V = {a: (rl_delay_per_seed(e, n) if metric == "rl_delay" else per_seed(e, n, metric)) for a, e, n in ARMS}; dump[metric] = {}
-        for c in CLS + ("J",):
+        for c in CLS + (("J",) if not NO_J else ()):
             lab = jlabel if c == "J" else f"{label} - {c}"
             means = [float(np.nanmean(V[a][c])) for a, _, _ in ARMS]; sds = [float(np.nanstd(V[a][c])) for a, _, _ in ARMS]
-            col = [GREY] * 5; col[1 + int(np.nanargmin(means))] = GREEN
+            col = [GREY] * 5
+            if not NO_GREEN: col[1 + int(np.nanargmin(means))] = GREEN
             cells.append([lab] + [f"{m:.{d}f} ± {s:.{d}f}" for m, s in zip(means, sds)]); colors.append(col)
             dump[metric][c] = {a: {"mean": m, "sd": s, "per_seed": V[a][c].tolist()} for (a, _, _), m, s in zip(ARMS, means, sds)}
     fig, ax = plt.subplots(figsize=(12.5, 0.30 * len(cells) + 1.6)); ax.axis("off")
@@ -112,14 +116,14 @@ def main():
     nlab = "10 evaluation seeds"
     if EXCL_ALL: nlab = f"9 evaluation seeds (seed {','.join(map(str, EXCL_ALL))} excluded in all columns)" if len(EXCL_ALL) == 1 else f"{10 - len(EXCL_ALL)} evaluation seeds (seeds {EXCL_ALL} excluded in all columns)"
     if EXCL_ARM: nlab = "10 evaluation seeds, except " + "; ".join(f"{[a for a, e2, _ in ARMS if e2 == e][0]}: seed {','.join(map(str, sorted(v)))} excluded (n = {len(seeds_of(e))})" for e, v in EXCL_ARM.items())
-    ax.set_title(f"8STD (12-slot state + F1), priority weights ambulance/bus/car (111 = no priority)\n{sub}{tail}; mean ± s.d. over {nlab}, per visit" + ("" if DELAY_LABEL else "; delay = RL-junction approaches only"),
+    ax.set_title(f"8STD (12-slot state + F1), priority weights ambulance/bus/car (111 = no priority)\n{sub}{tail}; mean ± s.d." + ("" if PLAIN_TITLE else f" over {nlab}") + ", per visit" + ("" if DELAY_LABEL else "; delay = RL-junction approaches only"),
                  fontsize=12, pad=6)
     fig.canvas.draw(); ren = fig.canvas.get_renderer(); inv = fig.transFigure.inverted()
     bb = tbl[1, 0].get_window_extent(ren); x0, y0 = inv.transform((bb.x0, bb.y0)); _, y1 = inv.transform((bb.x1, bb.y1))
     fig.text(x0 + 0.004, (y0 + y1) / 2, block, ha="left", va="center", fontsize=11, weight="bold", zorder=10)
     tb = tbl.get_window_extent(ren); tt = ax.title.get_window_extent(ren); bb = Bbox.union([tb, tt]); pad = 0.15 * fig.dpi
     crop = Bbox.from_extents((bb.x0 - pad) / fig.dpi, (bb.y0 - pad) / fig.dpi, (bb.x1 + pad) / fig.dpi, (bb.y1 + pad) / fig.dpi)
-    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}{('_excl' + '-'.join(map(str, EXCL_ALL)) + 'all') if EXCL_ALL else ''}{''.join(f'_excl{e}s' + '-'.join(map(str, sorted(v))) for e, v in EXCL_ARM.items())}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
+    out = f"{FIG}/dublin18h_8std_slot12_f1_weights_{KIND}{'_1s' if PER_SECOND else ''}{('_excl' + '-'.join(map(str, EXCL_ALL)) + 'all') if EXCL_ALL else ''}{''.join(f'_excl{e}s' + '-'.join(map(str, sorted(v))) for e, v in EXCL_ARM.items())}{'_noJ' if NO_J else ''}{'_nohl' if NO_GREEN else ''}{'_plaintitle' if PLAIN_TITLE else ''}_2026-10-15_en.png"; plt.savefig(out, dpi=200, bbox_inches=crop); print("saved", out)
     json.dump(dump, open(out.replace(".png", ".json"), "w"), default=float, indent=1)
 
 
