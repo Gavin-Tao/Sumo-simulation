@@ -68,6 +68,12 @@ launch() {   # $1=exp
   NAME[$e]=$n
 }
 
+# 启动前体检 (2026-10-26 用户令 "每次跑之前检查 GPU nvidia-smi 是否正常"): 训练虽走 CPU, 但这块卡掉总线会把整机带黑屏; 不正常就不起训练。
+if timeout 20 nvidia-smi --query-gpu=name,temperature.gpu,power.draw,pcie.link.width.current --format=csv,noheader > /tmp/nvsmi_preflight.txt 2>&1; then
+  log "PREFLIGHT nvidia-smi 正常: $(tr -d '\n' < /tmp/nvsmi_preflight.txt)"
+else
+  log "PREFLIGHT nvidia-smi 异常 (退出码 $? 或 20 秒无响应): $(head -c 200 /tmp/nvsmi_preflight.txt) —— 不启动训练, 请先处理 GPU"; exit 2
+fi
 log "SCHED exact_459_462 启动 (CPU 训练, systemd-inhibit=${INHIBITED:-0}): ARMS=[$ARMS] BUDGET=${BUDGET}MB RESERVE=${RESERVE}MB MAXPAR=$MAXPAR DRY=$DRY NOEVAL=$NOEVAL MemAvailable=$(mem)MB"
 for e in $ARMS; do
   while ! can_start; do
