@@ -892,6 +892,7 @@ def train(cfg: dict, timestamp: str):
                     _psc.stop()                      # 恢复 _sumo_step, 训练步不再采样
                 eval_mc.collect_step(env.sumo)       # capture final step
                 eval_mc.finalize(env.sumo)
+                assert_tracker_clean(env)            # 评估集同样不允许统计器缺条目 (下一次 reset 会清零计数, 必须在这里查)
                 eval_mean = sum(eval_ts_reward.values()) / len(env.ts_ids)
                 # B2 fix (ABT_1X3_RESULTS_2026-06-11 Part 4): the best-ckpt
                 # criterion is the SLIDING MEAN of the last K evals, not a

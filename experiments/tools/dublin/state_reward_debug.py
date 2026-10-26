@@ -216,6 +216,7 @@ def main():
         env.visit_tracker.strict = True
     meta = json.load(open(cfg["action_meta_file"]))["tls"]; ref = Ref(env, cfg, meta); groups = group_layout(ref)
     maxd = collections.defaultdict(float); first_bad = []; rdiff = 0.0; n_steps = 0
+    per_j = collections.defaultdict(lambda: [0.0, 0.0, 0])          # 路口 -> [state 最大差, reward 最大差, 车辆观测数]
     for step in range(a.steps):
         actions = {t: act(t, states[t])[0] for t in env.ts_ids}
         states, r, done, _ = env.step(action=actions); n_steps += 1
@@ -229,6 +230,7 @@ def main():
             if d.max() > TOL and len(first_bad) < 8:
                 i = int(d.argmax()); first_bad.append((env.sumo.simulation.getTime(), t[:24], i, groups[i], float(got[i]), float(exp[i])))
             rd = abs(float(r[t]) - ref.expected_reward(t)); rdiff = max(rdiff, rd)
+            pj = per_j[t]; pj[0] = max(pj[0], float(d.max())); pj[1] = max(pj[1], rd)
         if done["__all__"]:
             break
     tr_missing = env.visit_tracker.missing if env.visit_tracker is not None else None
@@ -236,10 +238,11 @@ def main():
     revisits = sum(1 for k, n in ref.visits.items() if n > 1)
     report = dict(exp=a.exp, seed=a.seed, net=a.net, basis=a.basis, all_connections=a.all_connections, memo=not a.no_memo, steps=n_steps,
                   max_diff_by_group={g: maxd[g] for g in sorted(set(groups))}, reward_max_diff=rdiff, first_mismatches=first_bad,
-                  stats=dict(ref.stats), revisits_vehicle_junction=revisits, tracker_missing=tr_missing)
+                  stats=dict(ref.stats), revisits_vehicle_junction=revisits, tracker_missing=tr_missing, per_junction={t: v[:2] for t, v in per_j.items()})
     print(f"exp{a.exp} seed{a.seed} net={a.net} basis={a.basis} all_connections={a.all_connections} memo={not a.no_memo} 步 {n_steps}")
     print("  各组最大绝对差:", {g: f"{v:.2e}" for g, v in report["max_diff_by_group"].items()})
     print(f"  奖励最大绝对差 {rdiff:.2e} | 统计器缺条目 {tr_missing}")
+    print("  逐路口 (state 最大差, reward 最大差):", {t[:18]: (f"{v[0]:.1e}", f"{v[1]:.1e}") for t, v in per_j.items()})
     print("  统计:", dict(ref.stats), "| (车辆,路口) 重访数", revisits)
     for row in first_bad:
         print("  不一致:", row)
