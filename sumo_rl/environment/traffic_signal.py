@@ -59,6 +59,7 @@ class TrafficSignal:
         begin_time: int,
         reward_fn: Union[str, Callable],
         sumo,
+        all_connections: bool = False,
     ):
         """Initializes a TrafficSignal object.
 
@@ -104,17 +105,13 @@ class TrafficSignal:
         self.lanes = list(
             dict.fromkeys(self.sumo.trafficlight.getControlledLanes(self.id))
         )  # Remove duplicates and keep order
-        self.out_lanes = [link[0][1] for link in self.sumo.trafficlight.getControlledLinks(self.id) if link]
-        c = self.sumo.trafficlight.getControlledLinks(self.id)
-        d = c[0]
-        f = d[0]
-        e=d[0][1]
-        a = [link[0][1] for link in self.sumo.trafficlight.getControlledLinks(self.id) if link]
-        b = set(self.out_lanes)
-
-        #这里set会把顺序打乱
-        # self.out_lanes = list(set(self.out_lanes))
-        #如果想不打乱顺序，可以这样，但是目前还没有必要保留顺序：
+        # all_connections (2026-10-26, 默认 False → 旧行为只取每组第一条连接的出口车道, 与观测建表同一遗漏):
+        # True 时收齐每个信号索引下全部连接的出口车道 (都柏林 389332 / 133307283 各补一条), 去重保序。
+        _links = self.sumo.trafficlight.getControlledLinks(self.id)
+        if all_connections:
+            self.out_lanes = [conn[1] for link in _links if link for conn in link]
+        else:
+            self.out_lanes = [link[0][1] for link in _links if link]
         self.out_lanes = list(OrderedDict.fromkeys(self.out_lanes))
         self.lanes_length = {lane: self.sumo.lane.getLength(lane) for lane in self.lanes + self.out_lanes}
 

@@ -118,6 +118,7 @@ class SumoEnvironment(gym.Env):
         additional_sumo_cmd: Optional[str] = None,
         render_mode: Optional[str] = None,
         wait_tracker: bool = False,
+        all_connections: bool = False,
     ) -> None:
         """Initialize the environment."""
         assert render_mode is None or render_mode in self.metadata["render_modes"], "Invalid render mode."
@@ -162,6 +163,8 @@ class SumoEnvironment(gym.Env):
         # 每次 reset 随新 SUMO 连接重建, 在 _sumo_step 的 simulationStep 之后更新。
         self.wait_tracker = bool(wait_tracker)
         self.visit_tracker = None
+        # all_connections (2026-10-26, 默认 False → 旧行为): TrafficSignal.out_lanes 收齐每个信号索引下全部连接的出口车道
+        self.all_connections = bool(all_connections)
 
         if LIBSUMO:
             traci.start([sumolib.checkBinary("sumo"), "-n", self._net])  # Start only to retrieve traffic light information
@@ -187,6 +190,7 @@ class SumoEnvironment(gym.Env):
                     self.begin_time,
                     self.reward_fn[ts],
                     conn,
+                    all_connections=self.all_connections,
                 )
                 for ts in self.reward_fn.keys()
             }
@@ -204,6 +208,7 @@ class SumoEnvironment(gym.Env):
                     self.begin_time,
                     self.reward_fn,
                     conn,
+                    all_connections=self.all_connections,
                 )
                 for ts in self.ts_ids
             }
@@ -303,6 +308,7 @@ class SumoEnvironment(gym.Env):
                     self.begin_time,
                     self.reward_fn[ts],
                     self.sumo,
+                    all_connections=self.all_connections,
                 )
                 for ts in self.reward_fn.keys()
             }
@@ -319,6 +325,7 @@ class SumoEnvironment(gym.Env):
                     self.begin_time,
                     self.reward_fn,
                     self.sumo,
+                    all_connections=self.all_connections,
                 )
                 for ts in self.ts_ids
             }
