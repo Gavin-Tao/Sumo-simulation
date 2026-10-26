@@ -48,7 +48,7 @@ from sumo_rl.agents.coefficient import CoeffDQN
 from sumo_rl.agents.colight import CoLightDQN
 from sumo_rl.agents.colight_orig import CoLightOrigDQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
-from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, reward_wait_basis
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -224,11 +224,15 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
     # Table-driven reward (exp184+ style configs): resolve to a callable, mirroring
     # the trainers — the string is not in REWARD_REGISTRY by design.
     reward_fn = cfg["reward_fn"]
+    _wb = reward_wait_basis(cfg)
     if reward_fn == "priority-avg-waiting":
         from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
         from sumo_rl.environment.priority_map import load_priority_table
         reward_fn = make_priority_avg_waiting_reward(
-            load_priority_table(cfg.get("priority_source")))
+            load_priority_table(cfg.get("priority_source")), wait_basis=_wb)
+    elif reward_fn == "avg-waiting-time" and _wb == "visit":
+        from sumo_rl.environment.rewards import make_avg_waiting_reward
+        reward_fn = make_avg_waiting_reward("visit")
     neighbor_map = cfg.get("neighbor_map", {})
 
     # ── M3 (Dublin): static per-junction action masks (ledger B3-c) ──

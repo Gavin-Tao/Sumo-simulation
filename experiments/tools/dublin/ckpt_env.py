@@ -33,7 +33,13 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_g
     kw = obs_kwargs_from_cfg(cfg)      # 2026-10-26: 与 train.py / eval_unified.py 共用
     assert cfg["observation_class"] == "PriorityMovement", cfg["observation_class"]
     obs_class = functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
-    reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
+    from exp_params import reward_wait_basis
+    from sumo_rl.environment.rewards import make_avg_waiting_reward
+    _wb = reward_wait_basis(cfg)     # legacy 时沿用原来的做法 (一律优先级奖励, 评估工具不用奖励值); visit 时按配置的 reward_fn 选
+    if _wb == "visit" and cfg.get("reward_fn") == "avg-waiting-time":
+        reward_fn = make_avg_waiting_reward("visit")
+    else:
+        reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")), wait_basis=_wb)
     env = SumoEnvironment(net_file=cfg["net_file"], route_file=(route_override or cfg["route_file"]), cfg_file=cfg["cfg_file"], out_csv_name=None,
         use_gui=use_gui, num_seconds=cfg.get("num_seconds", 1000), min_green=cfg.get("min_green", 5), max_green=cfg.get("max_green", 50),
         use_max_green=cfg.get("use_max_green", False), single_agent=False, yellow_time=cfg.get("yellow_time", 2),

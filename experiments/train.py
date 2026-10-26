@@ -43,7 +43,7 @@ else:
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
-from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table  # noqa: F401
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table, reward_wait_basis  # noqa: F401
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -180,6 +180,9 @@ def train(cfg: dict, timestamp: str):
     # Table-driven reward (reward-side dual of φ): resolve to a callable here —
     # it needs this experiment's priority table, so it can't live in the registry.
     reward_fn = cfg["reward_fn"]
+    _wb = reward_wait_basis(cfg)     # 2026-10-26: legacy (默认, 逐位不变) | visit (逐秒访问统计器)
+    if _wb == "visit" and cfg.get("agent_arch", "mlp") == "multihead":
+        sys.exit("reward_wait_basis=visit 尚不支持 agent_arch=multihead (向量奖励胶水未接统计器)")
     # ── agent_arch: multihead — B-line per-level value heads with decision-
     # time BNF weighting (MULTIHEAD_BNF_DESIGN doc). The vector reward glue
     # returns the IDENTICAL scalar (env/logging unchanged) and caches the
@@ -207,7 +210,10 @@ def train(cfg: dict, timestamp: str):
         from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
         from sumo_rl.environment.priority_map import load_priority_table
         reward_fn = make_priority_avg_waiting_reward(
-            load_priority_table(cfg.get("priority_source")))
+            load_priority_table(cfg.get("priority_source")), wait_basis=_wb)
+    elif reward_fn == "avg-waiting-time" and _wb == "visit":
+        from sumo_rl.environment.rewards import make_avg_waiting_reward
+        reward_fn = make_avg_waiting_reward("visit")
     # reward_scale (Dublin survival package, 2026-06-12): multiply the reward
     # by a constant to bring Dublin's per-step magnitudes (~35x the 1x3 ones
     # in congestion) back into the regime where the standard DQN package is

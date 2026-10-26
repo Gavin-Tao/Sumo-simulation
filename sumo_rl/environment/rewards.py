@@ -607,6 +607,29 @@ def _avg_waiting_reward(ts: "TrafficSignal") -> float:
     return -_get_plain_avg_waiting_time(ts)
 
 
+def make_avg_waiting_reward(wait_basis: str = "legacy"):
+    """普通平均等待奖励的工厂 (2026-10-26)。legacy → 原 _avg_waiting_reward (同一个函数对象, 旧配置逐位不变);
+    visit → 等待秒数改读环境的逐秒访问统计器 env.visit_tracker (本次在本路口进口边上的等待), 不读写 env.vehicles:
+        r = −(1/100) · Σ_{v 在 ts.lanes 上} W[v] / |V|,  V 为空取 0。"""
+    if wait_basis == "legacy":
+        return _avg_waiting_reward
+    if wait_basis != "visit":
+        raise ValueError(f"wait_basis 必须是 legacy 或 visit, 得到 {wait_basis!r}")
+
+    def fn_visit(ts: "TrafficSignal") -> float:
+        tr = ts.env.visit_tracker
+        if tr is None:
+            raise RuntimeError("reward wait_basis=visit 需要环境 wait_tracker=True")
+        sumo = ts.sumo; get = tr.get; ts_id = ts.id
+        total = 0.0; count = 0
+        for lane in ts.lanes:
+            for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                total += get(ts_id, vid, lane); count += 1
+        return -(total / count) / 100.0 if count > 0 else 0.0
+
+    return fn_visit
+
+
 def _get_weighted_avg_waiting_time_ctrl(ts: "TrafficSignal", alpha: float, beta: float) -> float:
     """Same as _get_weighted_avg_waiting_time but only over signal_controlled_lanes."""
     car_total = bus_total = 0.0
@@ -893,7 +916,7 @@ REWARD_REGISTRY = {
 
 
 # ── Priority-bucket reward (table-driven; the reward-side dual of φ state) ───
-def make_priority_avg_waiting_reward(table: dict):
+def make_priority_avg_waiting_reward(table: dict, wait_basis: str = "legacy"):
     """Reward = -( Σ_p  p × avg_wait(vehicles whose priority == p) ) / 100.
 
     Classes are PRIORITY LEVELS (vehicle_type → priority from `table`), not
@@ -919,6 +942,38 @@ def make_priority_avg_waiting_reward(table: dict):
     type_w = {t: float(p) for t, p in table.items()}
     default_w = float(DEFAULT_PRIORITY)
     vid_w: dict = {}            # vid → weight memo (vehicle type is immutable)
+    # wait_basis (2026-10-26): legacy = 原跨车道记账 (下面的 fn, 逐位不变); visit = 等待秒数读环境的逐秒访问统计器
+    # (本次在本路口进口边上的等待), 不再减其他车道记录, 不读写 env.vehicles; 聚合公式相同。
+    if wait_basis not in ("legacy", "visit"):
+        raise ValueError(f"wait_basis 必须是 legacy 或 visit, 得到 {wait_basis!r}")
+
+    def fn_visit(ts: "TrafficSignal") -> float:
+        if len(vid_w) > 50000:
+            vid_w.clear()
+        tr = ts.env.visit_tracker
+        if tr is None:
+            raise RuntimeError("reward wait_basis=visit 需要环境 wait_tracker=True")
+        sumo = ts.sumo; get = tr.get; ts_id = ts.id
+        totals: dict = {}
+        counts: dict = {}
+        for lane in ts.lanes:
+            for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                lane_wait = get(ts_id, vid, lane)
+                w = vid_w.get(vid)
+                if w is None:
+                    w = type_w.get(sumo.vehicle.getTypeID(vid), default_w)
+                    vid_w[vid] = w
+                if w in totals:
+                    totals[w] += lane_wait
+                    counts[w] += 1
+                else:
+                    totals[w] = lane_wait
+                    counts[w] = 1
+        r = 0.0
+        for w, tot in totals.items():
+            r += w * (tot / counts[w])
+        return -r / 100.0
+
 
     def fn(ts: "TrafficSignal") -> float:
         if len(vid_w) > 50000:  # safety valve; SUMO ids are unique, never reused
@@ -954,4 +1009,4 @@ def make_priority_avg_waiting_reward(table: dict):
             r += w * (tot / counts[w])
         return -r / 100.0
 
-    return fn
+    return fn_visit if wait_basis == "visit" else fn
