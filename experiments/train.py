@@ -43,6 +43,7 @@ else:
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table  # noqa: F401
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -121,13 +122,7 @@ def colight_nb_obs(ts_id, states, neighbor_map, obs_dim, n):
     return np.stack(row)
 
 
-def resolve_obs_priority_table(cfg: dict):
-    """obs bucket table: obs_priority_source (exp227 fine-tune line, decouples
-    obs wiring from reward re-pricing) wins over the legacy shared key;
-    None -> observation class built-in default table."""
-    if "obs_priority_source" in cfg:
-        return cfg["obs_priority_source"]
-    return cfg.get("priority_source")
+# resolve_obs_priority_table 已移到 exp_params.py (2026-10-26), 此处 import 保留原名
 
 
 def save_checkpoint(agent: DQN, episode: int, model_dir: str, filename: str = None) -> str:
@@ -179,50 +174,7 @@ def train(cfg: dict, timestamp: str):
     # ── Environment ───────────────────────────────────────────────────────────
     obs_class = OBS_REGISTRY[cfg["observation_class"]]
     # Optional obs params (A/B/T families): bind via partial so env can call obs_class(ts).
-    obs_kwargs = {}
-    if "obs_fields" in cfg:
-        obs_kwargs["fields"] = tuple(cfg["obs_fields"])
-    if "obs_phase_state" in cfg:
-        obs_kwargs["phase_state"] = cfg["obs_phase_state"]
-    _obs_prio = resolve_obs_priority_table(cfg)
-    if _obs_prio is not None:
-        obs_kwargs["priority_source"] = _obs_prio
-    if "obs_downstream" in cfg:      # ψ downstream block (E1b) — B family
-        obs_kwargs["include_downstream"] = bool(cfg["obs_downstream"])
-    if "obs_downstream_fields" in cfg:   # ψ field ablation: subset of (count, queue)
-        obs_kwargs["downstream_fields"] = tuple(cfg["obs_downstream_fields"])
-    if "obs_lane_occ" in cfg:        # I2 (B only): shared-lane physical occupancy, +1/slot
-        obs_kwargs["include_lane_occ"] = bool(cfg["obs_lane_occ"])
-    if "obs_awt_cap" in cfg:         # F2 (B only): bound mean/max_awt at N raw seconds
-        obs_kwargs["awt_cap"] = float(cfg["obs_awt_cap"])
-    if "obs_awt_basis" in cfg:       # A/B/T: mean/max_awt accounting basis (global|local)
-        obs_kwargs["awt_basis"] = str(cfg["obs_awt_basis"])
-    if "obs_slot_stats" in cfg:      # B only: intent (default) | lane_copy ablation
-        obs_kwargs["slot_stats"] = str(cfg["obs_slot_stats"])
-    if "obs_since_green" in cfg:     # 2026-09-30 (B only): 每 movement 距上次绿灯秒数特征, 默认关
-        obs_kwargs["include_since_green"] = bool(cfg["obs_since_green"])
-    if "obs_awt_log" in cfg:         # 2026-09-30 (B only): awt 特征对数刻度 (替代 awt_cap 截断), 默认关
-        obs_kwargs["awt_log"] = bool(cfg["obs_awt_log"])
-    if "obs_green_elapsed" in cfg:   # 2026-10-10 (B only): 每 movement 本次连续绿灯秒数 (未放行为 0), 默认关
-        obs_kwargs["include_green_elapsed"] = bool(cfg["obs_green_elapsed"])
-    if "obs_header" in cfg:          # 2026-10-11 (B only, perphase): false → 不输出头部两维 [min_green_ok, elapsed/100], 默认 true
-        obs_kwargs["include_header"] = bool(cfg["obs_header"])
-    if "obs_green_elapsed_reset" in cfg:   # 2026-10-11 (B only): true → green_elapsed 每次相位切换重新起算 (相位级语义), 默认 false
-        obs_kwargs["green_elapsed_reset"] = bool(cfg["obs_green_elapsed_reset"])
-    if "obs_green_elapsed_exact" in cfg:   # 2026-10-11 (B only): true → green_elapsed 起点取相位切换瞬间 (与头部同口径), 默认 false
-        obs_kwargs["green_elapsed_exact"] = bool(cfg["obs_green_elapsed_exact"])
-    if "obs_slot_min_green" in cfg:  # 2026-10-12 (B only): 每槽一位 min_green_ok (绿槽取环境判定, 红槽 0), 默认 false
-        obs_kwargs["include_slot_min_green"] = bool(cfg["obs_slot_min_green"])
-    if "obs_green_elapsed_include_yellow" in cfg:   # 2026-10-12 (B only): exact 口径下起点含黄灯 (= 头部已持续时间), 默认 false
-        obs_kwargs["green_elapsed_include_yellow"] = bool(cfg["obs_green_elapsed_include_yellow"])
-    if "obs_green_elapsed_cap" in cfg:     # 2026-10-12 (B only): green_elapsed 上限秒数 (默认 600), 两臂对等时统一设 120
-        obs_kwargs["green_elapsed_cap"] = float(cfg["obs_green_elapsed_cap"])
-    if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
-        obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
-    if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count
-        obs_kwargs["remote_slots"] = int(cfg["obs_remote_slots"])
-    if "obs_pad_tokens" in cfg:      # T on heterogeneous nets: uniform own-token count
-        obs_kwargs["pad_tokens"] = int(cfg["obs_pad_tokens"])
+    obs_kwargs = obs_kwargs_from_cfg(cfg)   # 2026-10-26: 三个入口共用 exp_params (键与转换逐条照搬原块)
     if obs_kwargs:
         obs_class = functools.partial(obs_class, **obs_kwargs)
     # Table-driven reward (reward-side dual of φ): resolve to a callable here —
@@ -297,6 +249,7 @@ def train(cfg: dict, timestamp: str):
         observation_class=obs_class,
         sumo_seed=cfg.get("seed", 0),
         sumo_warnings=True,
+        **env_extra_kwargs(cfg),      # 2026-10-26: 新增环境开关, 旧配置为空字典
     )
 
     episodes            = cfg.get("episodes", 5000)
@@ -355,8 +308,7 @@ def train(cfg: dict, timestamp: str):
         # reindexer's arbitrated mapping (compass tie-break), shared with obs
         for _tid, _t in _meta.items():
             ts_mask[_tid] = np.array(_t["mask"], dtype=bool)
-            ts_turnmap[_tid] = {int(_i): (_c[0]["approach"], _c[0]["turn"])
-                                for _i, _c in _t["links"].items()}
+            ts_turnmap[_tid] = turnmap_from_meta(_t)   # 同索引多连接标签不一致时报错
             _s2g = np.full(8, -1, dtype=int)
             for _a, _gi in _t["std_to_green_index"].items():
                 _s2g[int(_a)] = _gi

@@ -29,25 +29,8 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_g
     from sumo_rl.environment import observations as obsmod
     from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
     from sumo_rl.environment.priority_map import load_priority_table
-    kw = {}
-    if "obs_fields" in cfg: kw["fields"] = tuple(cfg["obs_fields"])
-    if "obs_phase_state" in cfg: kw["phase_state"] = cfg["obs_phase_state"]
-    kw["priority_source"] = cfg.get("obs_priority_source", cfg.get("priority_source"))
-    if "obs_downstream" in cfg: kw["include_downstream"] = bool(cfg["obs_downstream"])
-    if "obs_downstream_fields" in cfg: kw["downstream_fields"] = tuple(cfg["obs_downstream_fields"])
-    if "obs_lane_occ" in cfg: kw["include_lane_occ"] = bool(cfg["obs_lane_occ"])
-    if "obs_awt_cap" in cfg: kw["awt_cap"] = float(cfg["obs_awt_cap"])
-    if "obs_awt_basis" in cfg: kw["awt_basis"] = str(cfg["obs_awt_basis"])
-    if "obs_slot_stats" in cfg: kw["slot_stats"] = str(cfg["obs_slot_stats"])
-    if "obs_since_green" in cfg: kw["include_since_green"] = bool(cfg["obs_since_green"])
-    if "obs_awt_log" in cfg: kw["awt_log"] = bool(cfg["obs_awt_log"])
-    if "obs_green_elapsed" in cfg: kw["include_green_elapsed"] = bool(cfg["obs_green_elapsed"])
-    if "obs_header" in cfg: kw["include_header"] = bool(cfg["obs_header"])
-    if "obs_green_elapsed_reset" in cfg: kw["green_elapsed_reset"] = bool(cfg["obs_green_elapsed_reset"])
-    if "obs_green_elapsed_exact" in cfg: kw["green_elapsed_exact"] = bool(cfg["obs_green_elapsed_exact"])
-    if "obs_slot_min_green" in cfg: kw["include_slot_min_green"] = bool(cfg["obs_slot_min_green"])
-    if "obs_green_elapsed_include_yellow" in cfg: kw["green_elapsed_include_yellow"] = bool(cfg["obs_green_elapsed_include_yellow"])
-    if "obs_green_elapsed_cap" in cfg: kw["green_elapsed_cap"] = float(cfg["obs_green_elapsed_cap"])
+    from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta
+    kw = obs_kwargs_from_cfg(cfg)      # 2026-10-26: 与 train.py / eval_unified.py 共用
     assert cfg["observation_class"] == "PriorityMovement", cfg["observation_class"]
     obs_class = functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
     reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
@@ -55,7 +38,7 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_g
         use_gui=use_gui, num_seconds=cfg.get("num_seconds", 1000), min_green=cfg.get("min_green", 5), max_green=cfg.get("max_green", 50),
         use_max_green=cfg.get("use_max_green", False), single_agent=False, yellow_time=cfg.get("yellow_time", 2),
         delta_time=cfg.get("delta_time", 5), reward_fn=reward_fn, observation_class=obs_class, sumo_seed=cfg.get("seed", 0),
-        sumo_warnings=False, additional_sumo_cmd=extra_sumo)
+        sumo_warnings=False, additional_sumo_cmd=extra_sumo, **env_extra_kwargs(cfg))
     seed = seed if seed is not None else int(cfg.get("eval_seed", 123))
     _cks = list_ckpts(cfg); _po = (cfg.get("frap", {}) or {}).get("score") == "pressure_only"
     if ckpt is None and not _cks and _po:
@@ -70,7 +53,7 @@ def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_g
         meta = json.load(open(meta_file))["tls"]; ts_mask, std2green, green2std, turnmap = {}, {}, {}, {}
         for tid, t in meta.items():
             ts_mask[tid] = np.array(t["mask"], dtype=bool)
-            turnmap[tid] = {int(i): (c[0]["approach"], c[0]["turn"]) for i, c in t["links"].items()}
+            turnmap[tid] = turnmap_from_meta(t)
             s2g = np.full(8, -1, dtype=int)
             for k, gi in t["std_to_green_index"].items(): s2g[int(k)] = gi
             std2green[tid] = s2g; g2s = np.full(int(s2g.max()) + 1, -1, dtype=int)

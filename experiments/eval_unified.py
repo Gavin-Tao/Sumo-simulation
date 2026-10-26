@@ -48,6 +48,7 @@ from sumo_rl.agents.coefficient import CoeffDQN
 from sumo_rl.agents.colight import CoLightDQN
 from sumo_rl.agents.colight_orig import CoLightOrigDQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -217,29 +218,7 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
 
     obs_class    = OBS_REGISTRY[cfg["observation_class"]]
     # Optional obs params (A/B/T families): bind via partial so env can call obs_class(ts).
-    obs_kwargs = {}
-    if "obs_fields" in cfg:
-        obs_kwargs["fields"] = tuple(cfg["obs_fields"])
-    if "obs_phase_state" in cfg:
-        obs_kwargs["phase_state"] = cfg["obs_phase_state"]
-    if "priority_source" in cfg:
-        obs_kwargs["priority_source"] = cfg["priority_source"]
-    if "obs_downstream" in cfg:      # ψ downstream block (E1b) — B family
-        obs_kwargs["include_downstream"] = bool(cfg["obs_downstream"])
-    if "obs_downstream_fields" in cfg:
-        obs_kwargs["downstream_fields"] = tuple(cfg["obs_downstream_fields"])
-    if "obs_lane_occ" in cfg:        # I2 (B only): shared-lane physical occupancy, +1/slot
-        obs_kwargs["include_lane_occ"] = bool(cfg["obs_lane_occ"])
-    if "obs_awt_cap" in cfg:         # F2 (B only): bound mean/max_awt at N raw seconds
-        obs_kwargs["awt_cap"] = float(cfg["obs_awt_cap"])
-    if "obs_awt_basis" in cfg:       # A/B/T: mean/max_awt accounting basis (global|local)
-        obs_kwargs["awt_basis"] = str(cfg["obs_awt_basis"])
-    if "obs_slot_stats" in cfg:      # B only: intent (default) | lane_copy ablation
-        obs_kwargs["slot_stats"] = str(cfg["obs_slot_stats"])
-    if "obs_phase_service" in cfg:   # PriorityLaneToken only: lane-identity multi-hot (R1)
-        obs_kwargs["include_phase_service"] = bool(cfg["obs_phase_service"])
-    if "obs_remote_slots" in cfg:    # PriorityLaneTokenNb only: override auto slot count
-        obs_kwargs["remote_slots"] = int(cfg["obs_remote_slots"])
+    obs_kwargs = obs_kwargs_from_cfg(cfg)   # 2026-10-26: 与 train.py / ckpt_env 共用 (补齐原漏传的 obs_awt_log/obs_header/obs_slot_min_green)
     if obs_kwargs:
         obs_class = functools.partial(obs_class, **obs_kwargs)
     # Table-driven reward (exp184+ style configs): resolve to a callable, mirroring
@@ -273,8 +252,7 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
                 if _s2g[_a] >= 0:
                     _g2s[_s2g[_a]] = _a
             green2std[_tid] = _g2s
-            ts_turnmap[_tid] = {int(_i): (_c[0]["approach"], _c[0]["turn"])
-                                for _i, _c in _t["links"].items()}
+            ts_turnmap[_tid] = turnmap_from_meta(_t)
 
     def _masked_reset(_env, _seed):
         """env.reset + (masked mode) stash std map / rebind obs movement
@@ -307,6 +285,7 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
         reward_fn=reward_fn,
         observation_class=obs_class,
         sumo_seed=cfg.get("seed", 0),
+        **env_extra_kwargs(cfg),
     )
 
     initial_states = _masked_reset(env, env.sumo_seed)
