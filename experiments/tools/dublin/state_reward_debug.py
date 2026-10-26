@@ -51,8 +51,56 @@ class Tables:
         self.multi_idx_lanes = {conn[0] for grp in links if grp and len(grp) > 1 for conn in grp[1:]}   # 多连接索引的第二条及以后进口车道
 
 
+class OwnWaitCounter:
+    """参照用的逐秒访问等待计数器 (与 visit_wait.VisitWaitTracker 各自实现, 不共享任何状态), 挂在 env._sumo_step 之后。
+    另做与 SUMO 自身计数器的恒等式核对: 车辆出发不足 waiting_time_memory 秒时旧等待不可能过期,
+    此时 本次访问 W 必须等于 当前累计等待 − 进入前一秒的累计等待。"""
+    def __init__(self, env):
+        self.env, self.sumo = env, env.sumo
+        self.lane_key = {l: (t, l.rsplit("_", 1)[0]) for t in env.ts_ids for l in env.traffic_signals[t].lanes}
+        self.dt = float(self.sumo.simulation.getDeltaT()); self.memory = float(getattr(env, "waiting_time_memory", 1000))
+        self.W = {}; self.prev = set(); self.last_time = None
+        self.acc_prev = {}; self.depart = {}; self.entry_acc = {}
+        self.acc_checked = 0; self.acc_max_diff = 0.0
+
+    def step(self):
+        sumo = self.sumo; now = float(sumo.simulation.getTime())
+        if self.last_time is not None and now <= self.last_time:
+            return
+        self.last_time = now
+        for vid in sumo.simulation.getDepartedIDList():
+            self.depart[vid] = now
+        present = set()
+        for lane, (t, e) in self.lane_key.items():
+            for vid in sumo.lane.getLastStepVehicleIDs(lane):
+                k = (t, vid, e); present.add(k)
+                if k not in self.W:
+                    self.W[k] = 0.0; self.entry_acc[k] = self.acc_prev.get(vid, 0.0)
+                if sumo.vehicle.getWaitingTime(vid) > 0:
+                    self.W[k] += self.dt
+                if now - self.depart.get(vid, -1e9) < self.memory - 2 * self.dt:      # 不可能有过期 → 恒等式必须成立
+                    d = abs((sumo.vehicle.getAccumulatedWaitingTime(vid) - self.entry_acc[k]) - self.W[k])
+                    self.acc_checked += 1; self.acc_max_diff = max(self.acc_max_diff, d)
+        for k in self.prev - present:
+            self.W.pop(k, None); self.entry_acc.pop(k, None)
+        self.prev = present
+        for vid in sumo.vehicle.getIDList():
+            self.acc_prev[vid] = sumo.vehicle.getAccumulatedWaitingTime(vid)
+
+    def get(self, t, vid, lane):
+        return self.W.get((t, vid, lane.rsplit("_", 1)[0]), 0.0)
+
+    def compare_env_tracker(self):
+        """与环境里的 VisitWaitTracker 逐键比较; 返回 (最大差, 键集不一致数)。"""
+        tr = getattr(self.env, "visit_tracker", None)
+        if tr is None:
+            return 0.0, 0
+        keys = set(self.W) | set(tr.W)
+        return max([abs(self.W.get(k, 0.0) - tr.W.get(k, 0.0)) for k in keys] or [0.0]), len(set(self.W) ^ set(tr.W))
+
+
 class Ref:
-    """逐步独立重算。"""
+    """逐步独立重算。visit 口径的等待读自己的 OwnWaitCounter, 不读环境的统计器。"""
     def __init__(self, env, cfg, meta):
         from exp_params import turnmap_from_meta
         self.env, self.cfg, self.sumo = env, cfg, env.sumo
@@ -66,6 +114,12 @@ class Ref:
         self.prio = dict(table); self.rtable = dict(cfg.get("priority_source") or table)
         self.T = {t: Tables(self.sumo, env.traffic_signals[t], turnmap_from_meta(meta[t]), bool(cfg.get("obs_all_connections", False))) for t in env.ts_ids}
         self.entry = {}; self.vid_slot = {}; self.recs = {}
+        self.own = OwnWaitCounter(env) if (self.basis == "visit" or self.rbasis == "visit") else None
+        if self.own is not None:                          # 挂在 env._sumo_step 之后 (环境自己的统计器在 _sumo_step 内部更新)
+            _orig = env._sumo_step
+            def _hooked(_o=_orig, _own=self.own):
+                _o(); _own.step()
+            env._sumo_step = _hooked
         self.stats = collections.Counter(); self.first_seen = {}; self.visits = collections.defaultdict(int); self.on = set()
         assert not cfg.get("obs_green_elapsed"), "本工具不重算 green_elapsed"
         self.since_green = bool(cfg.get("obs_since_green", False)); self.sg_cap = float(cfg.get("obs_since_green_cap", 600.0))
@@ -79,7 +133,7 @@ class Ref:
 
     def wait(self, vid, lane, t):
         if self.basis == "visit":
-            return self.env.visit_tracker.get(t, vid, lane)
+            return self.own.get(t, vid, lane)
         acc = self.sumo.vehicle.getAccumulatedWaitingTime(vid)
         if self.basis == "global":
             return acc
@@ -172,7 +226,7 @@ class Ref:
         for lane in T.lanes:
             for vid in sumo.lane.getLastStepVehicleIDs(lane):
                 if self.rbasis == "visit":
-                    lw = self.env.visit_tracker.get(t, vid, lane)
+                    lw = self.own.get(t, vid, lane)
                 else:
                     acc = sumo.vehicle.getAccumulatedWaitingTime(vid); vl = sumo.vehicle.getLaneID(vid)
                     if vid not in self.recs:
@@ -217,6 +271,7 @@ def main():
     meta = json.load(open(cfg["action_meta_file"]))["tls"]; ref = Ref(env, cfg, meta); groups = group_layout(ref)
     maxd = collections.defaultdict(float); first_bad = []; rdiff = 0.0; n_steps = 0
     per_j = collections.defaultdict(lambda: [0.0, 0.0, 0])          # 路口 -> [state 最大差, reward 最大差, 车辆观测数]
+    own_diff = 0.0; own_keys = 0                                   # 自建计数器 vs 环境统计器: 最大差, 键集不一致累计
     for step in range(a.steps):
         actions = {t: act(t, states[t])[0] for t in env.ts_ids}
         states, r, done, _ = env.step(action=actions); n_steps += 1
@@ -231,6 +286,8 @@ def main():
                 i = int(d.argmax()); first_bad.append((env.sumo.simulation.getTime(), t[:24], i, groups[i], float(got[i]), float(exp[i])))
             rd = abs(float(r[t]) - ref.expected_reward(t)); rdiff = max(rdiff, rd)
             pj = per_j[t]; pj[0] = max(pj[0], float(d.max())); pj[1] = max(pj[1], rd)
+        if ref.own is not None:
+            od, ok_ = ref.own.compare_env_tracker(); own_diff = max(own_diff, od); own_keys += ok_
         if done["__all__"]:
             break
     tr_missing = env.visit_tracker.missing if env.visit_tracker is not None else None
@@ -238,17 +295,20 @@ def main():
     revisits = sum(1 for k, n in ref.visits.items() if n > 1)
     report = dict(exp=a.exp, seed=a.seed, net=a.net, basis=a.basis, all_connections=a.all_connections, memo=not a.no_memo, steps=n_steps,
                   max_diff_by_group={g: maxd[g] for g in sorted(set(groups))}, reward_max_diff=rdiff, first_mismatches=first_bad,
-                  stats=dict(ref.stats), revisits_vehicle_junction=revisits, tracker_missing=tr_missing, per_junction={t: v[:2] for t, v in per_j.items()})
+                  stats=dict(ref.stats), revisits_vehicle_junction=revisits, tracker_missing=tr_missing, per_junction={t: v[:2] for t, v in per_j.items()},
+                  own_vs_env_tracker=dict(max_diff=own_diff, key_mismatch=own_keys), acc_identity=(dict(checked=ref.own.acc_checked, max_diff=ref.own.acc_max_diff) if ref.own else None))
     print(f"exp{a.exp} seed{a.seed} net={a.net} basis={a.basis} all_connections={a.all_connections} memo={not a.no_memo} 步 {n_steps}")
     print("  各组最大绝对差:", {g: f"{v:.2e}" for g, v in report["max_diff_by_group"].items()})
     print(f"  奖励最大绝对差 {rdiff:.2e} | 统计器缺条目 {tr_missing}")
+    if ref.own is not None:
+        print(f"  自建计数器 vs 环境统计器: 最大差 {own_diff:.2e}, 键集不一致 {own_keys} | 与 SUMO 累计等待恒等式: 核对 {ref.own.acc_checked} 次, 最大差 {ref.own.acc_max_diff:.2e}")
     print("  逐路口 (state 最大差, reward 最大差):", {t[:18]: (f"{v[0]:.1e}", f"{v[1]:.1e}") for t, v in per_j.items()})
     print("  统计:", dict(ref.stats), "| (车辆,路口) 重访数", revisits)
     for row in first_bad:
         print("  不一致:", row)
     if a.out:
         json.dump(report, open(a.out, "w"), indent=1, ensure_ascii=False)
-    bad = max(maxd.values()) > TOL or rdiff > TOL
+    bad = max(maxd.values()) > TOL or rdiff > TOL or bool(tr_missing) or own_diff > TOL or own_keys > 0 or (ref.own is not None and ref.own.acc_max_diff > TOL)
     sys.exit(1 if bad else 0)
 
 

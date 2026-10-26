@@ -8,6 +8,7 @@ import argparse, collections, json, os, sys, xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 import ckpt_env
+from exp_params import assert_tracker_clean
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀"); ap.add_argument("--collector", action="store_true", help="同时运行训练用的 EpisodeMetricsCollector (5 s 采样口径), 导出其逐车记录与 eval_* 汇总")
@@ -70,6 +71,7 @@ def main():
     while not done["__all__"]:
         if mc is not None and not a.collector_1s: mc.collect_step(sumo)   # 原 5 s 口径: 每个决策步采一次
         states, _, done, _ = env.step(action={t: act(t, states[t])[0] for t in env.ts_ids})
+    assert_tracker_clean(env)                 # 2026-10-26: visit 口径下统计器缺条目 → 终止
     if mc is not None:
         mc.collect_step(sumo); mc.finalize(sumo)
     for key, r in on.items(): r["exit"] = None; veh[key[0]]["tls"].setdefault(key[1], []).append(r)

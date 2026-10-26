@@ -48,7 +48,7 @@ from sumo_rl.agents.coefficient import CoeffDQN
 from sumo_rl.agents.colight import CoLightDQN
 from sumo_rl.agents.colight_orig import CoLightOrigDQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
-from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, reward_wait_basis
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, reward_wait_basis, assert_tracker_clean
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -364,6 +364,7 @@ def run_eval(agent_type, cfg, ckpt_path, n_episodes, use_gui,
             steps         += 1
 
         mc.finalize(env.sumo)
+        assert_tracker_clean(env)        # 2026-10-26: visit 口径下统计器缺条目 → 终止, 与 train.py 一致
         flat = mc.to_flat_dict(prefix="eval")
         flat["eval/episode_reward"] = episode_reward
         flat["eval/steps"]          = steps
