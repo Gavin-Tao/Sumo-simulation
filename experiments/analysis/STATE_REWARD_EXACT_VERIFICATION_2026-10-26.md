@@ -79,5 +79,5 @@ exp457 种子 123 整集，旧/新口径 × 8std/8std_splitslot 四种组合，�
 
 ## 7. 决定记录（rulings）
 
-见本计划工作区 progress.md 的 Ruling 行；要点：不建 worktree 在分支上实施；流快照不入库；frap_glue 的 enum turnmap 不改；
+见 experiments/analysis/STATE_REWARD_EXACT_LEDGER_2026-10-26.md 的 Ruling 行；要点：不建 worktree 在分支上实施；流快照不入库；frap_glue 的 enum turnmap 不改；
 计划停车跟 SUMO 口径；ckpt_env 在 legacy 下沿用原奖励构造；multihead 暂不支持 visit；reindex_tls 改三元组并同步 dcc 调用方；ckpt_env 加 cfg_override。
