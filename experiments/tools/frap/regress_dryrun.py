@@ -37,7 +37,7 @@ def main():
         "PriorityMovement": "PriorityMovementObservationFunction",
         "PriorityBCA": "PriorityBCAObservationFunction",
     }[cfg["observation_class"]])
-    from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, reward_fn_from_cfg
+    from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, reward_fn_from_cfg, assert_tracker_clean
     obs_kwargs = obs_kwargs_from_cfg(cfg)      # 2026-10-26: 与 train.py 共用 (旧配置摘要不变)
     if obs_kwargs:
         obs_class = functools.partial(obs_class, **obs_kwargs)
@@ -94,6 +94,7 @@ def main():
         h.update(json.dumps([sorted(acts.items()),
                              sorted((k, len(v)) for k, v in states.items()),
                              sorted((k, round(float(v), 6)) for k, v in r.items())]).encode())
+    assert_tracker_clean(env)                 # 2026-10-26: visit 口径下统计器缺条目 → 失败
     env.close()
     print(f"DIGEST {h.hexdigest()}")
 

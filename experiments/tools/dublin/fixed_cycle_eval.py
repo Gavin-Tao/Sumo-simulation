@@ -12,7 +12,7 @@ from sumo_rl.environment.metrics import EpisodeMetricsCollector
 exp, G, seed = sys.argv[1], float(sys.argv[2]), int(sys.argv[3]); CYC=[int(x) for x in sys.argv[4].split(",")] if len(sys.argv) > 4 else None
 TMP=f"/home/xiaowen/sumo-rl/experiments/logs/tripinfo_fixed_{os.getpid()}.xml"   # CYC 可选: 只轮转给定相位 (单路口场景)
 cfg=yaml.safe_load(open([c for c in sorted(glob.glob(f"configs/exp{exp}_*.yaml")) if "traindry" not in c and "smoke" not in c][0]))
-from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, reward_fn_from_cfg
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, reward_fn_from_cfg, assert_tracker_clean
 kw=obs_kwargs_from_cfg(cfg)      # 2026-10-26: 与 train.py 共用 (旧配置逐位不变), 支持 visit 等新键
 obs=functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
 env=SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"], cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False, num_seconds=cfg.get("num_seconds",3600), min_green=cfg.get("min_green",5), max_green=cfg.get("max_green",50), use_max_green=cfg.get("use_max_green",False), single_agent=False, yellow_time=cfg.get("yellow_time",2), delta_time=cfg.get("delta_time",5), reward_fn=reward_fn_from_cfg(cfg), observation_class=obs, sumo_seed=cfg.get("seed",0), sumo_warnings=False, additional_sumo_cmd=f"--tripinfo-output {TMP} --tripinfo-output.write-unfinished true", **env_extra_kwargs(cfg))
@@ -22,6 +22,7 @@ mc=EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time, excluded_lane
 done={"__all__": False}; i=0; sp=max(int(round(G/env.delta_time)),1)
 while not done["__all__"]:
     mc.collect_step(env.sumo); a={t: (CYC[(i//sp)%len(CYC)] if CYC else (i//sp)%K[t]) for t in ts_ids}; states,_,done,_=env.step(action=a); i+=1
+assert_tracker_clean(env)                 # 2026-10-26: visit 口径下统计器缺条目 → 失败
 mc.collect_step(env.sumo); mc.finalize(env.sumo); d=mc.to_flat_dict(prefix="eval"); env.close()
 tr=[ti for ti in ET.parse(TMP).getroot().iter("tripinfo")]; os.remove(TMP)
 n=len(tr); fin=sum(1 for ti in tr if float(ti.get("arrival",-1))>=0); dd=np.mean([float(ti.get("departDelay",0)) for ti in tr]); tl=np.mean([float(ti.get("timeLoss",0)) for ti in tr])

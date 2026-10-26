@@ -779,6 +779,7 @@ def train(cfg: dict, timestamp: str):
                 print(f"\n[ERROR] SUMO error at episode {episode}, step {step_counter}:")
                 traceback.print_exc()
                 print(f"[ERROR] Resetting environment and continuing from episode {episode + 1}...\n")
+                assert_tracker_clean(env)       # 2026-10-26: 重置会清空统计器的 missing 计数, 异常分支也必须先查 (审查第三轮)
                 try:
                     initial_states = _masked_reset(env, training_seed)
                 except Exception as reset_err:
