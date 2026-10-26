@@ -689,9 +689,13 @@ class PriorityMovementObservationFunction(ObservationFunction):
         # per-junction accounting and keeps the feature distribution
         # stationary on multi-junction nets (Dublin drift: global P99
         # 1.58→5.09 within one hour vs local bounded).
-        if awt_basis not in ("global", "local"):
-            raise ValueError(f"awt_basis must be 'global' or 'local', got {awt_basis}")
+        if awt_basis not in ("global", "local", "visit"):
+            raise ValueError(f"awt_basis must be 'global', 'local' or 'visit', got {awt_basis}")
         self.awt_basis = awt_basis
+        # visit (2026-10-26, 默认不选 → 旧配置逐位不变): 等待读环境的逐秒访问统计器 env.visit_tracker (visit_wait.py),
+        # 观测里不再记基线, 起点精确到仿真步、重入从 0 起、不受 1000 秒滚动窗影响。下游 mean_awt 本批不支持。
+        if awt_basis == "visit" and include_downstream and "mean_awt" in downstream_fields:
+            raise ValueError("awt_basis=visit 暂不支持下游 mean_awt (需先把出口车道纳入统计器)")
         self._awt_entry: dict = {}          # (vid, lane) -> acc at first sighting
         # slot_stats (B_copy ablation, audit follow-up 2026-06-12):
         #   "intent"    — vehicles bucketed by route intent (from,next)->slot;
@@ -871,6 +875,10 @@ class PriorityMovementObservationFunction(ObservationFunction):
         slot_stats = {s: {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS} for s in range(self.N_SLOTS)}
         lane_n = {}                      # lane -> total vehicles (I2 lane_occ)
         _local = (self.awt_basis == "local")
+        _visit = (self.awt_basis == "visit")
+        _tracker = getattr(ts.env, "visit_tracker", None) if _visit else None
+        if _visit and _tracker is None:
+            raise RuntimeError("awt_basis=visit 需要环境 wait_tracker=True (配置 obs_awt_basis: visit 会自动打开)")
         if self._lane_copy:
             # B_copy: lane-detector aggregation — every vehicle on a lane
             # counts toward ALL slots the lane feeds (shared-lane slots get
@@ -885,9 +893,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 lstats = {p: [0, 0, 0.0, 0.0] for p in PRIORITY_LEVELS}
                 for vid in vids:
                     s = lstats[self._vehicle_priority(vid)]
-                    w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
-                    if _local:
-                        w = _local_wait(self._awt_entry, vid, lane, w)
+                    if _visit:
+                        w = _tracker.get(ts.id, vid, lane)
+                    else:
+                        w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                        if _local:
+                            w = _local_wait(self._awt_entry, vid, lane, w)
                     s[0] += 1
                     if ts.sumo.vehicle.getSpeed(vid) < 0.1:
                         s[1] += 1
@@ -910,9 +921,12 @@ class PriorityMovementObservationFunction(ObservationFunction):
                     if slot < 0:
                         continue
                     s = slot_stats[slot][self._vehicle_priority(vid)]
-                    w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
-                    if _local:
-                        w = _local_wait(self._awt_entry, vid, lane, w)
+                    if _visit:
+                        w = _tracker.get(ts.id, vid, lane)
+                    else:
+                        w = ts.sumo.vehicle.getAccumulatedWaitingTime(vid)
+                        if _local:
+                            w = _local_wait(self._awt_entry, vid, lane, w)
                     s[0] += 1
                     if ts.sumo.vehicle.getSpeed(vid) < 0.1:
                         s[1] += 1
