@@ -596,7 +596,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  green_elapsed_reset: bool = False,
                  green_elapsed_exact: bool = False,
                  include_slot_min_green: bool = False,
-                 green_elapsed_include_yellow: bool = False):
+                 green_elapsed_include_yellow: bool = False,
+                 all_connections: bool = False):
         super().__init__(ts)
         # green_elapsed_include_yellow (2026-10-12, 用户令 "改成跟头部一样"; 默认 False → 已跑臂 348-351 逐位不变): 与 exact 同用时,
         # 起点取相位切换瞬间 (含黄灯), 绿槽值 == 头部已持续时间, min_green 门槛 = (min_green+yellow)/100 与环境一致。
@@ -709,6 +710,10 @@ class PriorityMovementObservationFunction(ObservationFunction):
 
         self._prio_table = load_priority_table(priority_source)   # policy source of truth
         self._veh_len = veh_len
+        # all_connections (2026-10-26, 默认 False → 旧配置逐位不变): True 时建表遍历每个信号索引下的全部连接。
+        # SUMO 把同一进口不同车道、或一个运动分流到两条出口车道的连接合在一个索引下, 旧行为只登记第一条
+        # (都柏林 389332 的 E/W 直行漏一条进口与出口车道, 133307283 的 N 直行漏一条出口车道)。
+        self.all_connections = bool(all_connections)
         self._build_movement_tables()
 
         self._vid_prio: dict = {}
@@ -749,10 +754,17 @@ class PriorityMovementObservationFunction(ObservationFunction):
                 slot = self._slot_idx(ap, tn)
             else:
                 slot = self._slot_idx(self._approach(fl), self._turn(fl, tl))
+                if self.all_connections:      # 几何标签下同一索引的各连接必须判到同一槽, 否则槽表无法定义
+                    for conn in grp[1:]:
+                        s2 = self._slot_idx(self._approach(conn[0]), self._turn(conn[0], conn[1]))
+                        if s2 != slot:
+                            raise ValueError(f"{ts.id}: 信号索引 {i} 下各连接的几何槽标签不一致 ({slot} vs {s2})")
             self._link_slot[i] = slot
-            self._movement_by_edges[(self._edge(fl), self._edge(tl))] = slot
-            lane_feeds.setdefault(fl, set()).add(slot)
-            self._slot_out.setdefault(slot, set()).add(tl)
+            for conn in (grp if self.all_connections else grp[:1]):   # 旧行为只登记第一条连接
+                fl_k, tl_k = conn[0], conn[1]
+                self._movement_by_edges[(self._edge(fl_k), self._edge(tl_k))] = slot
+                lane_feeds.setdefault(fl_k, set()).add(slot)
+                self._slot_out.setdefault(slot, set()).add(tl_k)
 
         # per-phase served-slot sets (slot served if ANY of its links is G/g this phase)
         self._phase_serves = {}
