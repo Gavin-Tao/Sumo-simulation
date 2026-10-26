@@ -11,6 +11,11 @@
 # 用法:  cd /home/xiaowen/sumo-rl/experiments && nohup bash run_exact_459_462.sh > logs/run_exact_459_462.out 2>&1 &
 #   环境变量: ARMS="459 460 461 462" (默认四臂), BUDGET/RESERVE/MAXPAR 可覆盖, DRY=1 只演练调度不训练, NOEVAL=1 跳过训练后评估。
 set -u
+# 2026-10-26 22:37 事故: 训练一上 GPU, 内核即报 Xid 79 "GPU has fallen off the bus" (与 10-09 同), 黑屏死机只能强制重启。
+#   → 训练一律 CPU (--gpu -1; 实测 CPU 与 GPU 每集耗时相当), 并用 systemd-inhibit 阻止锁屏后 5 分钟自动休眠 (电源设置 sleep-inactive-ac 300 s)。
+if [ -z "${INHIBITED:-}" ] && command -v systemd-inhibit >/dev/null; then
+  INHIBITED=1 exec systemd-inhibit --what=sleep:idle --mode=block --who=run_exact_459_462 --why="训练中, 勿休眠" bash "$0" "$@"
+fi
 cd /home/xiaowen/sumo-rl/experiments
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 ARMS=${ARMS:-"459 460 461 462"}
@@ -57,13 +62,13 @@ launch() {   # $1=exp
   if [ "$DRY" = 1 ]; then
     ( sleep 20; log "DONE $n (演练)" ) & PID[$e]=$!
   else
-    ( python train.py --config $f > logs/${n}_train.log 2>&1; r=$?; log "DONE $n exited rc=$r"
+    ( python train.py --config $f --gpu -1 > logs/${n}_train.log 2>&1; r=$?; log "DONE $n exited rc=$r"
       [ "$NOEVAL" = 1 ] || posttrain $e $n ) & PID[$e]=$!
   fi
   NAME[$e]=$n
 }
 
-log "SCHED exact_459_462 启动: ARMS=[$ARMS] BUDGET=${BUDGET}MB RESERVE=${RESERVE}MB MAXPAR=$MAXPAR DRY=$DRY NOEVAL=$NOEVAL MemAvailable=$(mem)MB"
+log "SCHED exact_459_462 启动 (CPU 训练, systemd-inhibit=${INHIBITED:-0}): ARMS=[$ARMS] BUDGET=${BUDGET}MB RESERVE=${RESERVE}MB MAXPAR=$MAXPAR DRY=$DRY NOEVAL=$NOEVAL MemAvailable=$(mem)MB"
 for e in $ARMS; do
   while ! can_start; do
     sleep 30
