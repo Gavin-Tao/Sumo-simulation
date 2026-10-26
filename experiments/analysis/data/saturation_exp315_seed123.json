@@ -1,0 +1,832 @@
+{
+ "133307283": {
+  "entering_vph": 1046.0,
+  "n_lanes": 2,
+  "max_lane_flow": 816.0,
+  "max_vc": 0.591304347826087,
+  "max_queue": 6,
+  "fail_rate_busy": 0.020202020202020204,
+  "lanes": {
+   "-77616869#2_0": {
+    "flow_vph": 816.0,
+    "green_share": 0.7666666666666667,
+    "vc": 0.591304347826087,
+    "max_queue": 6,
+    "n_green": 82,
+    "n_fail": 2,
+    "fail_rate": 0.024390243902439025,
+    "mean_resid": 0.06097560975609756
+   },
+   "532427445#0_0": {
+    "flow_vph": 230.0,
+    "green_share": 0.9486111111111111,
+    "vc": 0.13469985358711567,
+    "max_queue": 2,
+    "n_green": 17,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "135109534": {
+  "entering_vph": 47.0,
+  "n_lanes": 3,
+  "max_lane_flow": 35.0,
+  "max_vc": 0.02040816326530612,
+  "max_queue": 1,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-14152304#3_0": {
+    "flow_vph": 4.0,
+    "green_share": 0.5208333333333334,
+    "vc": 0.004266666666666666,
+    "max_queue": 0,
+    "n_green": 171,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "-14152308_0": {
+    "flow_vph": 8.0,
+    "green_share": 0.5263888888888889,
+    "vc": 0.008443271767810026,
+    "max_queue": 1,
+    "n_green": 167,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "14152304#0_0": {
+    "flow_vph": 35.0,
+    "green_share": 0.9527777777777777,
+    "vc": 0.02040816326530612,
+    "max_queue": 1,
+    "n_green": 17,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "1430847303": {
+  "entering_vph": 522.0,
+  "n_lanes": 4,
+  "max_lane_flow": 380.0,
+  "max_vc": 0.28305400372439476,
+  "max_queue": 4,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "26545993#0_0": {
+    "flow_vph": 15.0,
+    "green_share": 0.25416666666666665,
+    "vc": 0.03278688524590164,
+    "max_queue": 1,
+    "n_green": 88,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "26545993#0_1": {
+    "flow_vph": 121.0,
+    "green_share": 0.25416666666666665,
+    "vc": 0.2644808743169399,
+    "max_queue": 3,
+    "n_green": 88,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "3791031#0_0": {
+    "flow_vph": 380.0,
+    "green_share": 0.7458333333333333,
+    "vc": 0.28305400372439476,
+    "max_queue": 4,
+    "n_green": 87,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "3791031#0_1": {
+    "flow_vph": 6.0,
+    "green_share": 0.7458333333333333,
+    "vc": 0.004469273743016759,
+    "max_queue": 1,
+    "n_green": 87,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "1448436": {
+  "entering_vph": 736.0,
+  "n_lanes": 6,
+  "max_lane_flow": 351.0,
+  "max_vc": 0.3704485488126649,
+  "max_queue": 4,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-3791745#3_0": {
+    "flow_vph": 193.0,
+    "green_share": 1.0,
+    "vc": 0.10722222222222222,
+    "max_queue": 0,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "-3791745#3_1": {
+    "flow_vph": 351.0,
+    "green_share": 0.5263888888888889,
+    "vc": 0.3704485488126649,
+    "max_queue": 4,
+    "n_green": 158,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "317003249#2_0": {
+    "flow_vph": 93.0,
+    "green_share": 0.4736111111111111,
+    "vc": 0.10909090909090909,
+    "max_queue": 2,
+    "n_green": 157,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "317003249#2_1": {
+    "flow_vph": 40.0,
+    "green_share": 0.4083333333333333,
+    "vc": 0.05442176870748299,
+    "max_queue": 2,
+    "n_green": 144,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "668344588_0": {
+    "flow_vph": 32.0,
+    "green_share": 0.5916666666666667,
+    "vc": 0.03004694835680751,
+    "max_queue": 2,
+    "n_green": 145,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "668344588_1": {
+    "flow_vph": 27.0,
+    "green_share": 0.5916666666666667,
+    "vc": 0.02535211267605634,
+    "max_queue": 1,
+    "n_green": 145,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "1448442": {
+  "entering_vph": 494.0,
+  "n_lanes": 4,
+  "max_lane_flow": 221.0,
+  "max_vc": 0.2,
+  "max_queue": 4,
+  "fail_rate_busy": 0.021798365122615803,
+  "lanes": {
+   "-554991019_0": {
+    "flow_vph": 221.0,
+    "green_share": 0.6166666666666667,
+    "vc": 0.1990990990990991,
+    "max_queue": 4,
+    "n_green": 120,
+    "n_fail": 8,
+    "fail_rate": 0.06666666666666667,
+    "mean_resid": 0.075
+   },
+   "24349650_0": {
+    "flow_vph": 139.0,
+    "green_share": 0.3861111111111111,
+    "vc": 0.2,
+    "max_queue": 2,
+    "n_green": 120,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "532427444#7_0": {
+    "flow_vph": 131.0,
+    "green_share": 0.43472222222222223,
+    "vc": 0.16741214057507986,
+    "max_queue": 2,
+    "n_green": 127,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "532427444#7_1": {
+    "flow_vph": 3.0,
+    "green_share": 0.36666666666666664,
+    "vc": 0.004545454545454545,
+    "max_queue": 0,
+    "n_green": 119,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "26165090": {
+  "entering_vph": 33.0,
+  "n_lanes": 3,
+  "max_lane_flow": 24.0,
+  "max_vc": 0,
+  "max_queue": 2,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "14039949#0_0": {
+    "flow_vph": 5.0,
+    "green_share": 1.0,
+    "vc": 0.002777777777777778,
+    "max_queue": 1,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "15464769#2_0": {
+    "flow_vph": 4.0,
+    "green_share": 0.9111111111111111,
+    "vc": 0.0024390243902439024,
+    "max_queue": 0,
+    "n_green": 23,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "2110697#0_0": {
+    "flow_vph": 24.0,
+    "green_share": 1.0,
+    "vc": 0.013333333333333334,
+    "max_queue": 2,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   }
+  }
+ },
+ "26165126": {
+  "entering_vph": 474.0,
+  "n_lanes": 3,
+  "max_lane_flow": 237.0,
+  "max_vc": 0.14152700186219738,
+  "max_queue": 3,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-5826896#0_0": {
+    "flow_vph": 190.0,
+    "green_share": 0.7458333333333333,
+    "vc": 0.14152700186219738,
+    "max_queue": 2,
+    "n_green": 85,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "372226878#0_0": {
+    "flow_vph": 237.0,
+    "green_share": 1.0,
+    "vc": 0.13166666666666665,
+    "max_queue": 3,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "554991019_0": {
+    "flow_vph": 47.0,
+    "green_share": 0.6888888888888889,
+    "vc": 0.03790322580645161,
+    "max_queue": 2,
+    "n_green": 102,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "32236377": {
+  "entering_vph": 142.0,
+  "n_lanes": 2,
+  "max_lane_flow": 125.0,
+  "max_vc": 0.06944444444444445,
+  "max_queue": 2,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "14152308_0": {
+    "flow_vph": 17.0,
+    "green_share": 0.7527777777777778,
+    "vc": 0.012546125461254613,
+    "max_queue": 1,
+    "n_green": 88,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "4919535#1_0": {
+    "flow_vph": 125.0,
+    "green_share": 1.0,
+    "vc": 0.06944444444444445,
+    "max_queue": 2,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   }
+  }
+ },
+ "389281": {
+  "entering_vph": 418.0,
+  "n_lanes": 4,
+  "max_lane_flow": 332.0,
+  "max_vc": 0.30319634703196346,
+  "max_queue": 8,
+  "fail_rate_busy": 0.03333333333333333,
+  "lanes": {
+   "-532427444#3_0": {
+    "flow_vph": 85.0,
+    "green_share": 0.6625,
+    "vc": 0.07127882599580712,
+    "max_queue": 2,
+    "n_green": 89,
+    "n_fail": 3,
+    "fail_rate": 0.033707865168539325,
+    "mean_resid": 0.033707865168539325
+   },
+   "22962979_0": {
+    "flow_vph": 332.0,
+    "green_share": 0.6083333333333333,
+    "vc": 0.30319634703196346,
+    "max_queue": 8,
+    "n_green": 121,
+    "n_fail": 4,
+    "fail_rate": 0.03305785123966942,
+    "mean_resid": 0.11570247933884298
+   },
+   "532427444#0_0": {
+    "flow_vph": 1.0,
+    "green_share": 0.39166666666666666,
+    "vc": 0.0014184397163120568,
+    "max_queue": 0,
+    "n_green": 121,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "532427444#0_1": {
+    "flow_vph": 0.0,
+    "green_share": 0.4083333333333333,
+    "vc": 0.0,
+    "max_queue": 0,
+    "n_green": 122,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "389332": {
+  "entering_vph": 461.0,
+  "n_lanes": 4,
+  "max_lane_flow": 171.0,
+  "max_vc": 0.095,
+  "max_queue": 2,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-304634278#0_0": {
+    "flow_vph": 73.0,
+    "green_share": 1.0,
+    "vc": 0.04055555555555555,
+    "max_queue": 1,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "-304634278#0_1": {
+    "flow_vph": 125.0,
+    "green_share": 0.8986111111111111,
+    "vc": 0.07727975270479134,
+    "max_queue": 2,
+    "n_green": 35,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "3791745#4_0": {
+    "flow_vph": 171.0,
+    "green_share": 1.0,
+    "vc": 0.095,
+    "max_queue": 0,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "3791745#4_1": {
+    "flow_vph": 92.0,
+    "green_share": 1.0,
+    "vc": 0.051111111111111114,
+    "max_queue": 1,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   }
+  }
+ },
+ "5166592132": {
+  "entering_vph": 218.0,
+  "n_lanes": 3,
+  "max_lane_flow": 154.0,
+  "max_vc": 0.14879227053140096,
+  "max_queue": 4,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "3790875#2_0": {
+    "flow_vph": 15.0,
+    "green_share": 0.575,
+    "vc": 0.014492753623188406,
+    "max_queue": 1,
+    "n_green": 129,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "3790875#2_1": {
+    "flow_vph": 154.0,
+    "green_share": 0.575,
+    "vc": 0.14879227053140096,
+    "max_queue": 4,
+    "n_green": 129,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "532435057#0_0": {
+    "flow_vph": 49.0,
+    "green_share": 0.425,
+    "vc": 0.06405228758169934,
+    "max_queue": 1,
+    "n_green": 129,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "659802": {
+  "entering_vph": 764.0,
+  "n_lanes": 3,
+  "max_lane_flow": 337.0,
+  "max_vc": 0.23741007194244604,
+  "max_queue": 4,
+  "fail_rate_busy": 0.057291666666666664,
+  "lanes": {
+   "-125872847#11_0": {
+    "flow_vph": 97.0,
+    "green_share": 0.2902777777777778,
+    "vc": 0.18564593301435406,
+    "max_queue": 3,
+    "n_green": 89,
+    "n_fail": 1,
+    "fail_rate": 0.011235955056179775,
+    "mean_resid": 0.011235955056179775
+   },
+   "-4074527#1_0": {
+    "flow_vph": 337.0,
+    "green_share": 0.9375,
+    "vc": 0.19970370370370372,
+    "max_queue": 4,
+    "n_green": 21,
+    "n_fail": 10,
+    "fail_rate": 0.47619047619047616,
+    "mean_resid": 0.7142857142857143
+   },
+   "4074528#0_0": {
+    "flow_vph": 330.0,
+    "green_share": 0.7722222222222223,
+    "vc": 0.23741007194244604,
+    "max_queue": 4,
+    "n_green": 82,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "cluster_135109528_9101656": {
+  "entering_vph": 77.0,
+  "n_lanes": 5,
+  "max_lane_flow": 29.0,
+  "max_vc": 0,
+  "max_queue": 2,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-14152304#1_0": {
+    "flow_vph": 2.0,
+    "green_share": 0.6777777777777778,
+    "vc": 0.001639344262295082,
+    "max_queue": 1,
+    "n_green": 83,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "-15464769#2_0": {
+    "flow_vph": 29.0,
+    "green_share": 0.675,
+    "vc": 0.023868312757201648,
+    "max_queue": 2,
+    "n_green": 90,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "15464769#0_0": {
+    "flow_vph": 24.0,
+    "green_share": 0.2111111111111111,
+    "vc": 0.06315789473684211,
+    "max_queue": 2,
+    "n_green": 49,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "26602093#0_0": {
+    "flow_vph": 8.0,
+    "green_share": 0.2375,
+    "vc": 0.01871345029239766,
+    "max_queue": 1,
+    "n_green": 79,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "26602093#0_1": {
+    "flow_vph": 14.0,
+    "green_share": 0.2013888888888889,
+    "vc": 0.038620689655172416,
+    "max_queue": 2,
+    "n_green": 71,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "cluster_1448439_2464758361": {
+  "entering_vph": 361.0,
+  "n_lanes": 3,
+  "max_lane_flow": 196.0,
+  "max_vc": 0.12043010752688173,
+  "max_queue": 3,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-317003249#1_0": {
+    "flow_vph": 196.0,
+    "green_share": 0.9041666666666667,
+    "vc": 0.12043010752688173,
+    "max_queue": 3,
+    "n_green": 20,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "5826896#1_0": {
+    "flow_vph": 112.0,
+    "green_share": 1.0,
+    "vc": 0.06222222222222222,
+    "max_queue": 0,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "5826896#1_1": {
+    "flow_vph": 53.0,
+    "green_share": 1.0,
+    "vc": 0.029444444444444443,
+    "max_queue": 1,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   }
+  }
+ },
+ "cluster_1998326407_2876012598_4781977262_658429": {
+  "entering_vph": 786.0,
+  "n_lanes": 4,
+  "max_lane_flow": 614.0,
+  "max_vc": 0.3411111111111111,
+  "max_queue": 1,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "4472590#0_0": {
+    "flow_vph": 614.0,
+    "green_share": 1.0,
+    "vc": 0.3411111111111111,
+    "max_queue": 0,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "4472590#0_1": {
+    "flow_vph": 99.0,
+    "green_share": 0.8763888888888889,
+    "vc": 0.06275752773375594,
+    "max_queue": 1,
+    "n_green": 44,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "4472590#0_2": {
+    "flow_vph": 20.0,
+    "green_share": 0.8763888888888889,
+    "vc": 0.012678288431061807,
+    "max_queue": 1,
+    "n_green": 44,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "gneE62_0": {
+    "flow_vph": 53.0,
+    "green_share": 0.12361111111111112,
+    "vc": 0.23820224719101124,
+    "max_queue": 1,
+    "n_green": 44,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "cluster_21620852_2383668110_2383668118_4009885977": {
+  "entering_vph": 512.0,
+  "n_lanes": 5,
+  "max_lane_flow": 331.0,
+  "max_vc": 0.331,
+  "max_queue": 5,
+  "fail_rate_busy": 0.01644736842105263,
+  "lanes": {
+   "317003251#0_0": {
+    "flow_vph": 331.0,
+    "green_share": 0.5555555555555556,
+    "vc": 0.331,
+    "max_queue": 5,
+    "n_green": 124,
+    "n_fail": 5,
+    "fail_rate": 0.04032258064516129,
+    "mean_resid": 0.04838709677419355
+   },
+   "37721356#0_0": {
+    "flow_vph": 0.0,
+    "green_share": 0.4444444444444444,
+    "vc": 0.0,
+    "max_queue": 0,
+    "n_green": 124,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "37721356#0_1": {
+    "flow_vph": 112.0,
+    "green_share": 0.4444444444444444,
+    "vc": 0.14,
+    "max_queue": 3,
+    "n_green": 124,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "38192816_0": {
+    "flow_vph": 3.0,
+    "green_share": 0.4166666666666667,
+    "vc": 0.004,
+    "max_queue": 1,
+    "n_green": 109,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "38192816_1": {
+    "flow_vph": 66.0,
+    "green_share": 0.15833333333333333,
+    "vc": 0.23157894736842105,
+    "max_queue": 3,
+    "n_green": 56,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+  "entering_vph": 469.0,
+  "n_lanes": 4,
+  "max_lane_flow": 187.0,
+  "max_vc": 0.10809248554913295,
+  "max_queue": 3,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "2110698#0_0": {
+    "flow_vph": 109.0,
+    "green_share": 0.9611111111111111,
+    "vc": 0.0630057803468208,
+    "max_queue": 1,
+    "n_green": 14,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "2110698#0_1": {
+    "flow_vph": 187.0,
+    "green_share": 0.9611111111111111,
+    "vc": 0.10809248554913295,
+    "max_queue": 3,
+    "n_green": 14,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "52879956_0": {
+    "flow_vph": 153.0,
+    "green_share": 1.0,
+    "vc": 0.085,
+    "max_queue": 0,
+    "n_green": 0,
+    "n_fail": 0,
+    "fail_rate": null,
+    "mean_resid": null
+   },
+   "52879956_1": {
+    "flow_vph": 20.0,
+    "green_share": 0.03888888888888889,
+    "vc": 0.2857142857142857,
+    "max_queue": 1,
+    "n_green": 14,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ },
+ "cluster_5166592137_5166592140_557198554_57744042": {
+  "entering_vph": 356.0,
+  "n_lanes": 3,
+  "max_lane_flow": 303.0,
+  "max_vc": 0.17539797395079595,
+  "max_queue": 2,
+  "fail_rate_busy": 0.0,
+  "lanes": {
+   "-53750892#4_0": {
+    "flow_vph": 19.0,
+    "green_share": 0.16111111111111112,
+    "vc": 0.06551724137931035,
+    "max_queue": 2,
+    "n_green": 43,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "523892327#0_0": {
+    "flow_vph": 34.0,
+    "green_share": 0.8791666666666667,
+    "vc": 0.021484992101105844,
+    "max_queue": 1,
+    "n_green": 42,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   },
+   "524737392#0_0": {
+    "flow_vph": 303.0,
+    "green_share": 0.9597222222222223,
+    "vc": 0.17539797395079595,
+    "max_queue": 2,
+    "n_green": 7,
+    "n_fail": 0,
+    "fail_rate": 0.0,
+    "mean_resid": 0.0
+   }
+  }
+ }
+}
