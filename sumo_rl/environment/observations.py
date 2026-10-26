@@ -597,7 +597,8 @@ class PriorityMovementObservationFunction(ObservationFunction):
                  green_elapsed_exact: bool = False,
                  include_slot_min_green: bool = False,
                  green_elapsed_include_yellow: bool = False,
-                 all_connections: bool = False):
+                 all_connections: bool = False,
+                 slot_memo: bool = True):
         super().__init__(ts)
         # green_elapsed_include_yellow (2026-10-12, 用户令 "改成跟头部一样"; 默认 False → 已跑臂 348-351 逐位不变): 与 exact 同用时,
         # 起点取相位切换瞬间 (含黄灯), 绿槽值 == 头部已持续时间, min_green 门槛 = (min_green+yellow)/100 与环境一致。
@@ -714,6 +715,10 @@ class PriorityMovementObservationFunction(ObservationFunction):
         # SUMO 把同一进口不同车道、或一个运动分流到两条出口车道的连接合在一个索引下, 旧行为只登记第一条
         # (都柏林 389332 的 E/W 直行漏一条进口与出口车道, 133307283 的 N 直行漏一条出口车道)。
         self.all_connections = bool(all_connections)
+        # slot_memo (2026-10-26, 默认 True → 旧配置逐位不变): 车辆→槽按车辆 ID 整集缓存。公交绕回同一路口时会沿用
+        # 首次的运动 (39 路第三次经过是直行仍记右转; 44 路到路线终点仍记右转)。False 时每步按 (进口边, 下一条边) 重查,
+        # 实测每步只多 0.04 ms。
+        self.slot_memo = bool(slot_memo)
         self._build_movement_tables()
 
         self._vid_prio: dict = {}
@@ -843,14 +848,15 @@ class PriorityMovementObservationFunction(ObservationFunction):
 
     def _vehicle_slot(self, vid, from_edge: str) -> int:
         """Movement slot of vid (−1 if it has no controlled next movement). Memoized."""
-        if vid in self._vid_slot:
+        if self.slot_memo and vid in self._vid_slot:
             return self._vid_slot[vid]
         sumo = self.ts.sumo
         route = sumo.vehicle.getRoute(vid)
         idx = sumo.vehicle.getRouteIndex(vid)
         nxt = route[idx + 1] if idx + 1 < len(route) else None
         slot = self._movement_by_edges.get((from_edge, nxt), -1)
-        self._vid_slot[vid] = slot
+        if self.slot_memo:
+            self._vid_slot[vid] = slot
         return slot
 
     # ── observation ───────────────────────────────────────────────────────────
