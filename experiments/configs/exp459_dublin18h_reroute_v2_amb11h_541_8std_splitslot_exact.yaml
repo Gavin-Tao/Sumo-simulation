@@ -41,7 +41,7 @@ max_green: 50
 hidden_dim: 128
 lr: 0.001
 gamma: 0.95
-epsilon: 0.1
+epsilon: 0.9              # 2026-10-26 (用户批准): 与 eps_start 相等, 开始更新前的探索率不再是 0.1, 衰减曲线从 0.9 连续起步
 eps_start: 0.9
 eps_end: 0.05
 # ---- training-side stabilization (deadly-triad, exp200-validated recipe) ----
