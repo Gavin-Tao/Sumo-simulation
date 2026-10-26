@@ -66,3 +66,6 @@ target_clip_min: -50.0
 obs_header: false
 obs_slot_min_green: true
 mask_min_green: true
+
+# ── 2026-10-26 训练中评估改逐秒采样 (只影响 eval_system 指标, 评估奖励与 best.pth 选择依据不变) ──
+eval_collector_1s: true

@@ -75,3 +75,6 @@ target_clip_min: -50.0       # 2026-10-10: 与 exp301 对等 (TD 目标下限; 8
 obs_header: false            # 去掉头部两维 (含相位已持续时间)
 obs_slot_min_green: true     # 每个绿灯槽一位 min_green_ok
 mask_min_green: true         # F1: 动态最短绿掩码 (选动作 + TD 目标)
+
+# ── 2026-10-26 训练中评估改逐秒采样 (只影响 eval_system 指标, 评估奖励与 best.pth 选择依据不变) ──
+eval_collector_1s: true

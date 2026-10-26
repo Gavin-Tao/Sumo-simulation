@@ -14,6 +14,7 @@
 | TrafficSignal.out_lanes 收齐全部连接 | all_connections | false | traffic_signal.py + env.py |
 | cluster_21620852 分槽版 8STD 网 | 新文件 dublin_8std_splitslot.* | 旧文件不动 | reindex_8std.py --split-slots |
 | 三个入口共用参数构造 | 无 | 行为不变 | exp_params.py |
+| 训练中评估的收集器按仿真秒采样（后补，用户批准） | eval_collector_1s | false | eval_hooks.py + train.py；只影响 eval_system 指标，评估奖励与 best.pth 选择依据不变 |
 
 ## 2. 旧配置逐位不变的证据（范围：train.py 与 tools/dublin/ckpt_env.py 两条路径）
 

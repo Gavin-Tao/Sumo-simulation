@@ -44,6 +44,7 @@ from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
 from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table, reward_wait_basis, assert_tracker_clean  # noqa: F401
+from eval_hooks import PerSecondCollector
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -261,6 +262,11 @@ def train(cfg: dict, timestamp: str):
     episodes            = cfg.get("episodes", 5000)
     checkpoint_interval = cfg.get("checkpoint_interval", 5)
     eval_interval       = cfg.get("eval_interval", 0)      # 0 = disabled
+    # eval_collector_1s (2026-10-26, 默认 False → 旧配置逐位不变): 训练中评估的指标收集器按仿真秒采样 (与 best×10 报表同口径);
+    # 只影响 eval_system 指标, 不影响评估奖励与 best.pth 的选择依据。
+    eval_collector_1s   = bool(cfg.get("eval_collector_1s", False))
+    if eval_collector_1s:
+        print("[eval_collector_1s] active: 训练中评估按仿真秒采样")
     training_seed       = int(cfg.get("seed", 0))
     eval_seed           = cfg.get("eval_seed", 42)         # different from training seed (0) by default
     # ── M3 (Dublin): static per-junction action masks from the reindex meta ──
@@ -829,12 +835,16 @@ def train(cfg: dict, timestamp: str):
                 eval_obs  = _masked_reset(env, eval_seed)
                 eval_done: dict = {"__all__": False}
                 eval_mc = EpisodeMetricsCollector(
-                    ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green
+                    ts_lane_map,
+                    delta_time=(float(env.sumo.simulation.getDeltaT()) if eval_collector_1s else env.delta_time),
+                    excluded_lanes=always_green,
                 )
+                _psc = PerSecondCollector(env, eval_mc).start() if eval_collector_1s else None   # 逐秒口径: 每个仿真步之前采一次
                 eval_ts_reward: dict = {ts: 0.0 for ts in env.ts_ids}
                 attn_ent: list = []; attn_mx: list = []; attn_amb: list = []
                 while not eval_done["__all__"]:
-                    eval_mc.collect_step(env.sumo)
+                    if _psc is None:
+                        eval_mc.collect_step(env.sumo)   # 原 5 秒口径: 每个决策步采一次
                     if moe is not None:
                         import moe_glue as _mg
                         eval_actions = {}
@@ -878,6 +888,8 @@ def train(cfg: dict, timestamp: str):
                     for ts in env.ts_ids:
                         eval_ts_reward[ts] += eval_rew.get(ts, 0.0)
 
+                if _psc is not None:
+                    _psc.stop()                      # 恢复 _sumo_step, 训练步不再采样
                 eval_mc.collect_step(env.sumo)       # capture final step
                 eval_mc.finalize(env.sumo)
                 eval_mean = sum(eval_ts_reward.values()) / len(env.ts_ids)
