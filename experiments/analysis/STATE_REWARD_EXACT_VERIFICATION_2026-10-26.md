@@ -15,6 +15,10 @@
 | cluster_21620852 分槽版 8STD 网 | 新文件 dublin_8std_splitslot.* | 旧文件不动 | reindex_8std.py --split-slots |
 | 三个入口共用参数构造 | 无 | 行为不变 | exp_params.py |
 | 训练中评估的收集器按仿真秒采样（后补，用户批准） | eval_collector_1s | false | eval_hooks.py + train.py；只影响 eval_system 指标，评估奖励与 best.pth 选择依据不变 |
+| DQN 初始化即同步目标网络（复查补修） | sync_target_init | false | dqn_agent_txw.py；FRAP 与多头智能体本来就同步，主线 DQN 缺这一步，旧行为第一个小批量用另一套随机权重 |
+| 训练循环只把 SUMO/TraCI 异常当作"重置后继续"（复查补修） | train_strict_errors | false | train.py + exp_params.is_sumo_error；其它异常直接抛出 |
+| info["step"] 每集清零、推进后再写（复查补修） | 无 | 直接修 | env.py；训练不消费该字段，state/reward 流不变 |
+| regress_dryrun.py、fixed_cycle_eval.py 改用共用参数构造 | 无 | 行为不变 | 新键在这两个工具里生效；旧配置回归摘要不变 |
 
 ## 2. 旧配置逐位不变的证据（范围：train.py 与 tools/dublin/ckpt_env.py 两条路径）
 
@@ -52,6 +56,14 @@ exp457 种子 123 整集，旧/新口径 × 8std/8std_splitslot 四种组合，�
   结果（种子 125）：457 核对 171585 次、338 核对 136600 次、315 核对 154728 次，最大差均为 0；自建计数器与环境统计器逐键最大差 0、键集不一致 0。
   退出判定已把统计器缺条目、自建与环境不一致、恒等式不成立都算作失败。
 - 独立评估入口 eval_unified.py 与 eval_pervehicle.py 在评估结束后同样调用 assert_tracker_clean，与 train.py 的训练内评估一致。
+
+### 3.2 复查补修（2026-10-26 深夜，用户令"确保没有遗漏"）
+
+按"所有构造环境、读统计器、初始化目标网络的位置"逐一清点后补的四项见第 1 节表末四行。另有三类按配置构造环境的工具有意不改：
+gui_eval.py、edge_waiting_collect.py、net_waiting_all.py 写死了 6 月的观测类与键（arm 专用），traincoeff / trainorico / train_ppo 是其它训练器；
+它们拿到 visit 配置会在首次观测时报 RuntimeError（缺统计器），不会无声算错。约 120 个编号实验脚本与 testing/ 下脚本不读配置，不涉及。
+复查后再验：全套 164 项通过；在分支起点 e9adaf5 的代码上重新生成 exp457/274/338 的 200 步流，与当前代码逐位相同；regress_dryrun 两条摘要不变；
+regress_dryrun 与 fixed_cycle_eval 在 exp459（新口径）上能运行。
 
 ## 4. 同一轨迹双算：旧口径驱动，新口径重算（任务 10）
 

@@ -78,3 +78,7 @@ mask_min_green: true         # F1: 动态最短绿掩码 (选动作 + TD 目标)
 
 # ── 2026-10-26 训练中评估改逐秒采样 (只影响 eval_system 指标, 评估奖励与 best.pth 选择依据不变) ──
 eval_collector_1s: true
+
+# ── 2026-10-26 复查补修 ──
+sync_target_init: true       # DQN 初始化即同步目标网络 (旧默认两套各自随机初始化)
+train_strict_errors: true    # 训练循环只把 SUMO/TraCI 异常当作 "重置后继续", 其它异常直接抛出

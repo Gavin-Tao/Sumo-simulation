@@ -12,15 +12,10 @@ from sumo_rl.environment.metrics import EpisodeMetricsCollector
 exp, G, seed = sys.argv[1], float(sys.argv[2]), int(sys.argv[3]); CYC=[int(x) for x in sys.argv[4].split(",")] if len(sys.argv) > 4 else None
 TMP=f"/home/xiaowen/sumo-rl/experiments/logs/tripinfo_fixed_{os.getpid()}.xml"   # CYC 可选: 只轮转给定相位 (单路口场景)
 cfg=yaml.safe_load(open([c for c in sorted(glob.glob(f"configs/exp{exp}_*.yaml")) if "traindry" not in c and "smoke" not in c][0]))
-kw={}
-if "obs_fields" in cfg: kw["fields"]=tuple(cfg["obs_fields"])
-if "obs_phase_state" in cfg: kw["phase_state"]=cfg["obs_phase_state"]
-kw["priority_source"]=cfg.get("obs_priority_source", cfg.get("priority_source"))
-for a,b in (("obs_downstream","include_downstream"),("obs_lane_occ","include_lane_occ"),("obs_awt_cap","awt_cap"),("obs_awt_basis","awt_basis"),("obs_since_green","include_since_green"),("obs_awt_log","awt_log")):
-    if a in cfg: kw[b]=cfg[a]
-if "obs_downstream_fields" in cfg: kw["downstream_fields"]=tuple(cfg["obs_downstream_fields"])
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, reward_fn_from_cfg
+kw=obs_kwargs_from_cfg(cfg)      # 2026-10-26: 与 train.py 共用 (旧配置逐位不变), 支持 visit 等新键
 obs=functools.partial(obsmod.PriorityMovementObservationFunction, **kw)
-env=SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"], cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False, num_seconds=cfg.get("num_seconds",3600), min_green=cfg.get("min_green",5), max_green=cfg.get("max_green",50), use_max_green=cfg.get("use_max_green",False), single_agent=False, yellow_time=cfg.get("yellow_time",2), delta_time=cfg.get("delta_time",5), reward_fn=make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source"))), observation_class=obs, sumo_seed=cfg.get("seed",0), sumo_warnings=False, additional_sumo_cmd=f"--tripinfo-output {TMP} --tripinfo-output.write-unfinished true")
+env=SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"], cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False, num_seconds=cfg.get("num_seconds",3600), min_green=cfg.get("min_green",5), max_green=cfg.get("max_green",50), use_max_green=cfg.get("use_max_green",False), single_agent=False, yellow_time=cfg.get("yellow_time",2), delta_time=cfg.get("delta_time",5), reward_fn=reward_fn_from_cfg(cfg), observation_class=obs, sumo_seed=cfg.get("seed",0), sumo_warnings=False, additional_sumo_cmd=f"--tripinfo-output {TMP} --tripinfo-output.write-unfinished true", **env_extra_kwargs(cfg))
 states=env.reset(seed); ts_ids=list(env.ts_ids); K={t: env.traffic_signals[t].num_green_phases for t in ts_ids}
 ts_lane_map={t: env.traffic_signals[t].signal_controlled_lanes for t in ts_ids}; always_green=set().union(*(env.traffic_signals[t].always_green_lanes for t in ts_ids))
 mc=EpisodeMetricsCollector(ts_lane_map, delta_time=env.delta_time, excluded_lanes=always_green)

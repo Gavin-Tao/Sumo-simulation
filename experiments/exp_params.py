@@ -67,6 +67,38 @@ def reward_wait_basis(cfg: dict) -> str:
     return v
 
 
+def is_sumo_error(exc: BaseException) -> bool:
+    """训练循环 train_strict_errors 开关用: 只有 SUMO/TraCI 自己的异常 (TraCIException / FatalTraCIError, libsumo 与 traci 两套)
+    才算 "仿真错误, 重置后继续"; 其它异常 (维度不符、更新出错等) 不应被吞掉。按类对象与类名双重判定 (libsumo 的类是 SWIG 代理)。"""
+    names = ("TraCIException", "FatalTraCIError")
+    if type(exc).__name__ in names:
+        return True
+    types = []
+    for modname in ("libsumo", "libsumo.libsumo", "libsumo.exceptions", "traci", "traci.exceptions"):
+        try:
+            mod = __import__(modname, fromlist=["_"])
+        except Exception:
+            continue
+        for name in names:
+            t = getattr(mod, name, None)
+            if isinstance(t, type):
+                types.append(t)
+    return bool(types) and isinstance(exc, tuple(types))
+
+
+def reward_fn_from_cfg(cfg: dict):
+    """只读工具用的奖励解析 (与 train.py 的解析同义, 不含 reward_scale/floor/multihead 包装):
+    priority-avg-waiting → 按表 + wait_basis 的闭包; avg-waiting-time 且 visit → visit 工厂; 其它 → 原注册名字符串 (环境按名查表)。"""
+    from sumo_rl.environment.rewards import make_priority_avg_waiting_reward, make_avg_waiting_reward
+    from sumo_rl.environment.priority_map import load_priority_table
+    name = cfg.get("reward_fn"); wb = reward_wait_basis(cfg)
+    if name == "priority-avg-waiting":
+        return make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")), wait_basis=wb)
+    if name == "avg-waiting-time" and wb == "visit":
+        return make_avg_waiting_reward("visit")
+    return name
+
+
 def assert_tracker_clean(env) -> None:
     """每集结束调用: visit 口径下统计器一次都不该缺条目 (观测/奖励读到了不在表里的车辆), 缺了说明状态定义被破坏, 响亮终止。
     放在训练循环的 try 之外, 不会被 "SUMO 错误, 重置继续" 的分支吞掉。"""

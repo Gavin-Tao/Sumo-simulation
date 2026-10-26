@@ -43,7 +43,7 @@ else:
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
-from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table, reward_wait_basis, assert_tracker_clean  # noqa: F401
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table, reward_wait_basis, assert_tracker_clean, is_sumo_error  # noqa: F401
 from eval_hooks import PerSecondCollector
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
@@ -265,6 +265,9 @@ def train(cfg: dict, timestamp: str):
     # eval_collector_1s (2026-10-26, 默认 False → 旧配置逐位不变): 训练中评估的指标收集器按仿真秒采样 (与 best×10 报表同口径);
     # 只影响 eval_system 指标, 不影响评估奖励与 best.pth 的选择依据。
     eval_collector_1s   = bool(cfg.get("eval_collector_1s", False))
+    # train_strict_errors (2026-10-26, 默认 False → 旧行为): True 时训练循环只把 SUMO/TraCI 异常当作 "重置后继续",
+    # 其它异常 (维度不符、更新出错等) 直接抛出, 不再被当作 SUMO 错误跳过。
+    train_strict_errors = bool(cfg.get("train_strict_errors", False))
     if eval_collector_1s:
         print("[eval_collector_1s] active: 训练中评估按仿真秒采样")
     training_seed       = int(cfg.get("seed", 0))
@@ -527,6 +530,7 @@ def train(cfg: dict, timestamp: str):
             per_eps=cfg.get("per_eps", 1e-6),
             q_net_factory=q_net_factory,
             grad_clip=cfg.get("grad_clip", None),
+            sync_target_init=bool(cfg.get("sync_target_init", False)),   # 2026-10-26: 初始化同步目标网络 (默认关)
         )
 
         # ── warm-start (exp227 fine-tune line): policy weights only; target
@@ -769,6 +773,8 @@ def train(cfg: dict, timestamp: str):
                                     "next_states": b_ns, "rewards": b_r, "dones": b_d,
                                 })
             except Exception as e:
+                if train_strict_errors and not is_sumo_error(e):
+                    raise                                   # 非 SUMO 异常不吞
                 import traceback
                 print(f"\n[ERROR] SUMO error at episode {episode}, step {step_counter}:")
                 traceback.print_exc()

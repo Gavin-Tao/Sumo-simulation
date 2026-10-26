@@ -62,7 +62,8 @@ class DQN:
                  per_beta_steps: int = 100_000,
                  per_eps: float = 1e-6,
                  q_net_factory=None,
-                 grad_clip: float = None):
+                 grad_clip: float = None,
+                 sync_target_init: bool = False):
         self.state = starting_state
         self.state_space = state_space
         self.action_space = action_space
@@ -80,6 +81,10 @@ class DQN:
             # 目标网络
             self.target_q_net = Qnet(self.state_space, self.hidden_dim,
                                      self.action_space).to(device)
+        # sync_target_init (2026-10-26, 默认 False → 旧行为逐位不变): 初始化即把目标网络同步成在线网络。旧行为两套各自随机初始化,
+        # 第一个小批量的 TD 目标用的是另一套随机权重 (FRAP / 多头智能体本来就在初始化时同步, 主线 DQN 缺这一步)。
+        if sync_target_init:
+            self.target_q_net.load_state_dict(self.q_net.state_dict())
         # 使用Adam优化器
         self.optimizer = torch.optim.Adam(self.q_net.parameters(),
                                           lr=learning_rate)

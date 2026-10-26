@@ -39,3 +39,10 @@ Final: minor (deferred): 测试缺口 lane_copy+all_connections 组合无显式�
 Final: minor (deferred): env_extra_kwargs 按真值过滤, 将来默认值翻转时显式 False 会被丢掉 (现无影响)
 Final: Ruling: 审查者搁置项 (multihead 不接 visit / ckpt_env legacy 奖励 / frap_glue turnmap / 下游 mean_awt / 约 30 个自建环境的旧工具未接 wait_tracker 会 RuntimeError / busStop 口径 / 重训范围 / 生成网 XML 未逐行审) — 全部维持原判: 前四项见任务 Ruling; 旧工具在 visit 配置上响亮失败是可接受的 (不会静默错), 需要时各工具自行接 env_extra_kwargs; 代价: 旧工具跑 visit 配置前须先接线
 ```
+
+## 复查补修（2026-10-26 深夜）
+
+- 第二轮外部审查两点属实并已修：独立评估入口补 assert_tracker_clean；重算工具 visit 参照改为自带计数器 + 与 SUMO 累计等待恒等式核对，退出判定纳入缺条目。
+- 全仓库清点后补修：DQN sync_target_init（默认关）；train_strict_errors（默认关，只吞 SUMO/TraCI 异常）；info["step"] 每集清零、推进后写；regress_dryrun / fixed_cycle_eval 改用 exp_params。
+- Ruling: gui_eval / edge_waiting_collect / net_waiting_all / traincoeff / trainorico / train_ppo 不改 — arm 专用或其它训练器，visit 配置在其上会响亮报错；代价: 要在它们上用新口径须先接 exp_params。
+- Ruling: 漏掉独立评估入口检查与参照不独立两处的原因是只核了自己改动的路径；补修改为按清单逐处核对。

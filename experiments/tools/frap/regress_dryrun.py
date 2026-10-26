@@ -37,31 +37,18 @@ def main():
         "PriorityMovement": "PriorityMovementObservationFunction",
         "PriorityBCA": "PriorityBCAObservationFunction",
     }[cfg["observation_class"]])
-    obs_kwargs = {}
-    for src, dst in [("obs_fields", "fields"), ("obs_phase_state", "phase_state"),
-                     ("priority_source", "priority_source"), ("obs_downstream", "include_downstream"),
-                     ("obs_downstream_fields", "downstream_fields"), ("obs_lane_occ", "include_lane_occ"),
-                     ("obs_awt_cap", "awt_cap"), ("obs_awt_basis", "awt_basis"),
-                     ("obs_slot_stats", "slot_stats"),
-                     ("obs_since_green", "include_since_green"), ("obs_awt_log", "awt_log"),   # 2026-10-10 补映射 (旧配置无这些键 → 摘要不变)
-                     ("obs_green_elapsed", "include_green_elapsed"), ("obs_header", "include_header"), ("obs_green_elapsed_reset", "green_elapsed_reset"), ("obs_green_elapsed_exact", "green_elapsed_exact"), ("obs_slot_min_green", "include_slot_min_green"), ("obs_green_elapsed_include_yellow", "green_elapsed_include_yellow"), ("obs_green_elapsed_cap", "green_elapsed_cap")]:
-        if src in cfg:
-            v = cfg[src]
-            obs_kwargs[dst] = tuple(v) if isinstance(v, list) else v
+    from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, reward_fn_from_cfg
+    obs_kwargs = obs_kwargs_from_cfg(cfg)      # 2026-10-26: 与 train.py 共用 (旧配置摘要不变)
     if obs_kwargs:
         obs_class = functools.partial(obs_class, **obs_kwargs)
-    reward_fn = cfg["reward_fn"]
-    if reward_fn == "priority-avg-waiting":
-        from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
-        from sumo_rl.environment.priority_map import load_priority_table
-        reward_fn = make_priority_avg_waiting_reward(load_priority_table(cfg.get("priority_source")))
+    reward_fn = reward_fn_from_cfg(cfg)       # 2026-10-26: 含 wait_basis
     env = SumoEnvironment(net_file=cfg["net_file"], route_file=cfg["route_file"],
         cfg_file=cfg["cfg_file"], out_csv_name=None, use_gui=False,
         num_seconds=cfg.get("num_seconds", 1000), min_green=cfg.get("min_green", 5),
         max_green=cfg.get("max_green", 50), use_max_green=cfg.get("use_max_green", False),
         single_agent=False, yellow_time=cfg.get("yellow_time", 2),
         delta_time=cfg.get("delta_time", 5), reward_fn=reward_fn,
-        observation_class=obs_class, sumo_seed=cfg.get("seed", 0), sumo_warnings=False)
+        observation_class=obs_class, sumo_seed=cfg.get("seed", 0), sumo_warnings=False, **env_extra_kwargs(cfg))
     ts_mask, std2green, green2std, ts_turnmap = {}, {}, {}, {}
     meta_file = cfg.get("action_meta_file")
     if meta_file:

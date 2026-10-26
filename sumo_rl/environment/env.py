@@ -290,6 +290,7 @@ class SumoEnvironment(gym.Env):
             # self.txw_save_csv(self.out_csv_name, self.episode)
         self.episode += 1
         self.metrics = []
+        self.sim_step_counter = 0            # 2026-10-26: 每集从 0 起 (原来跨集累加); 只影响 info["step"], 训练不消费
 
         if seed is not None:
             self.sumo_seed = seed
@@ -365,8 +366,8 @@ class SumoEnvironment(gym.Env):
         dones = self._compute_dones()
         terminated = False  # there are no 'terminal' states in this environment
         truncated = dones["__all__"]  # episode ends when sim_step >= max_steps
+        self.sim_step_counter += self.delta_time   # 2026-10-26: 先推进再写 info (原来晚一个决策步)
         info = self._compute_info()
-        self.sim_step_counter += self.delta_time
         
         if self.single_agent:
             return observations[self.ts_ids[0]], rewards[self.ts_ids[0]], terminated, truncated, info
