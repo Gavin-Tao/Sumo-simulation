@@ -21,10 +21,12 @@ def list_ckpts(cfg):
         if ep not in best or os.path.getmtime(p) > os.path.getmtime(best[ep]): best[ep] = p
     return [best[k] for k in sorted(best)]
 
-def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_gui=False):
+def build(exp, ckpt=None, seed=None, extra_sumo=None, route_override=None, use_gui=False, cfg_override=None):
     """返回 dict(env, act, states, cfg, ckpt, kind, agent)。route_override: 评估专用路由文件列表 (逗号分隔, 相对 experiments/), 只换车不换控制器。act(ts, state) -> (env 动作, 内部动作序号, Q 向量)。"""
     if ckpt: ckpt = os.path.abspath(ckpt)
     cfg_path = find_cfg(exp); cfg = yaml.safe_load(open(cfg_path))
+    if cfg_override:                 # 2026-10-26 (调试工具用): 在配置上覆盖/追加若干键, 例如换网、换等待口径; 不写文件
+        cfg = {**cfg, **cfg_override}
     from sumo_rl.environment.env import SumoEnvironment
     from sumo_rl.environment import observations as obsmod
     from sumo_rl.environment.rewards import make_priority_avg_waiting_reward
