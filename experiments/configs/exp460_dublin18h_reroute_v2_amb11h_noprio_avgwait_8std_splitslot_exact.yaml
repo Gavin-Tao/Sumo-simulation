@@ -1,0 +1,68 @@
+# exp460_dublin18h_reroute_v2_amb11h_noprio_avgwait_8std_splitslot_exact (2026-10-26, 状态/奖励修正实施计划任务 10 的配置模板, 未启动):
+#   exp458 逐位 (无优先级: 奖励为全体车辆平均等待, 三类等级全 1), 只改下面标 "2026-10-26" 的键, 改法与 exp459 对 exp457 相同:
+#   (1) 网/meta/sumocfg 换成 dublin_8std_splitslot; (2) obs_all_connections / all_connections; (3) obs_slot_memo: false;
+#   (4) obs_awt_basis: visit + reward_wait_basis: visit (avg-waiting-time 的 visit 版: 全体在场车辆的本次访问等待均值 / 100 取负)。
+#   注意: 奖励口径变了, 与 458 不可直接比较; 与 exp459 构成 "有/无优先级" 的新口径配对。
+name: exp460_dublin18h_reroute_v2_amb11h_noprio_avgwait_8std_splitslot_exact
+wandb_project: sumo-rl-dublin
+net_file: ../nets/dublin/dublin_8std_splitslot.net.xml                                      # 2026-10-26 (1)
+route_file: ../nets/dublin/weekday_18h_reroute_v2/car_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/bus_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/amb_weekday_18h_probe11h.rou.xml
+cfg_file: ../nets/dublin/weekday_18h_reroute_v2/dublin_weekday_18h_probe11h_8std_splitslot.sumocfg   # 2026-10-26 (1)
+observation_class: PriorityMovement
+obs_phase_state: perphase
+obs_fields:
+- count
+- queue
+- mean_awt
+obs_awt_basis: visit      # 2026-10-26 (4): 原 local
+obs_awt_cap: 500
+obs_lane_occ: true
+obs_all_connections: true # 2026-10-26 (2)
+all_connections: true     # 2026-10-26 (2)
+obs_slot_memo: false      # 2026-10-26 (3)
+priority_source:
+  ambulance: 1
+  bus: 1
+  car: 1
+reward_fn: avg-waiting-time
+reward_wait_basis: visit  # 2026-10-26 (4)
+num_seconds: 3600
+delta_time: 5
+yellow_time: 2
+min_green: 5
+use_gui: false
+use_max_green: true
+max_green: 50
+hidden_dim: 128
+lr: 0.001
+gamma: 0.95
+epsilon: 0.1
+eps_start: 0.9
+eps_end: 0.05
+eps_decay: 30000
+target_update: 720
+capacity: 300000
+use_double: true
+loss_fn: huber
+grad_clip: 1.0
+mini_size: 1000
+batch_size: 256
+seed: 0
+episodes: 800
+checkpoint_interval: 50
+runs: 1
+eval_interval: 5
+eval_seed: 123
+logging_mode: basic
+use_per: false
+action_meta_file: ../nets/dublin/dublin_8std_splitslot_meta.json                           # 2026-10-26 (1)
+obs_downstream: true
+obs_downstream_fields:
+- count
+- queue
+target_clip_max: 0.0
+obs_awt_log: true
+target_clip_min: -50.0
+obs_header: false
+obs_slot_min_green: true
+mask_min_green: true

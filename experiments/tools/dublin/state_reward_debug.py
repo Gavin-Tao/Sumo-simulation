@@ -67,7 +67,15 @@ class Ref:
         self.T = {t: Tables(self.sumo, env.traffic_signals[t], turnmap_from_meta(meta[t]), bool(cfg.get("obs_all_connections", False))) for t in env.ts_ids}
         self.entry = {}; self.vid_slot = {}; self.recs = {}
         self.stats = collections.Counter(); self.first_seen = {}; self.visits = collections.defaultdict(int); self.on = set()
-        assert not (cfg.get("obs_since_green") or cfg.get("obs_green_elapsed")), "本工具不重算 since_green/green_elapsed"
+        assert not cfg.get("obs_green_elapsed"), "本工具不重算 green_elapsed"
+        self.since_green = bool(cfg.get("obs_since_green", False)); self.sg_cap = float(cfg.get("obs_since_green_cap", 600.0))
+        # since_green: 观测类在 reset 时的首次观测就记下 t0 并把当时放行的槽记为 "刚放行"; 这里同样以 reset 时刻为起点
+        _t_reset = float(self.sumo.simulation.getTime())
+        self.t0 = {t: _t_reset for t in env.ts_ids}; self.last_green = collections.defaultdict(dict)
+        if self.since_green:
+            for t in env.ts_ids:
+                for s_ in self.T[t].serves.get(env.traffic_signals[t].green_phase, set()):
+                    self.last_green[t][s_] = _t_reset
 
     def wait(self, vid, lane, t):
         if self.basis == "visit":
@@ -101,6 +109,10 @@ class Ref:
         env, sumo, T = self.env, self.sumo, self.T[t]; ts = env.traffic_signals[t]
         mg_ok = 1.0 if ts.time_since_last_phase_change >= ts.min_green + ts.yellow_time else 0.0
         served = T.serves.get(ts.green_phase, set())
+        now = float(sumo.simulation.getTime())
+        if self.since_green:
+            for s_ in served:
+                self.last_green[t][s_] = now
         obs = [mg_ok, ts.time_since_last_phase_change / 100.0] if self.header else []
         stats = {s: {p: [0, 0, 0.0, 0.0] for p in LEVELS} for s in range(12)}; lane_n = {}
         present_now = set()
@@ -149,6 +161,8 @@ class Ref:
                     src = cnt if f == "count" else qd; obs += [src[p] / capo for p in LEVELS]
             if self.lane_occ:
                 obs.append(max([lane_n.get(l, 0) / T.lane_cap[l] for l in T.slot_in[s]] or [0.0]))
+            if self.since_green:
+                obs.append(min(now - self.last_green[t].get(s, self.t0[t]), self.sg_cap) / 100.0)
             if self.slot_mg:
                 obs.append(mg_ok if s in served else 0.0)
         return np.asarray(obs, dtype=np.float64)
@@ -176,7 +190,7 @@ class Ref:
 def group_layout(ref):
     """每槽内各维所属的组名 (用于按组汇总差异)。"""
     per_slot = ["is_green"] + [f"phi_{f}" for _ in LEVELS for f in ref.fields] + [f"psi_{f}" for f in ref.ds_fields for _ in LEVELS]
-    per_slot += ["lane_occ"] if ref.lane_occ else []; per_slot += ["slot_min_green"] if ref.slot_mg else []
+    per_slot += ["lane_occ"] if ref.lane_occ else []; per_slot += ["since_green"] if ref.since_green else []; per_slot += ["slot_min_green"] if ref.slot_mg else []
     return (["header"] * 2 if ref.header else []) + per_slot * 12
 
 
