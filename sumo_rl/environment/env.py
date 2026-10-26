@@ -32,6 +32,7 @@ from .metrics import CTBMetricsCollector, DirectionalMetricsCollector
 
 from .observations import DefaultObservationFunction, ObservationFunction
 from .traffic_signal import TrafficSignal
+from .visit_wait import VisitWaitTracker
 
 from datetime import datetime
 
@@ -116,6 +117,7 @@ class SumoEnvironment(gym.Env):
         sumo_warnings: bool = True,
         additional_sumo_cmd: Optional[str] = None,
         render_mode: Optional[str] = None,
+        wait_tracker: bool = False,
     ) -> None:
         """Initialize the environment."""
         assert render_mode is None or render_mode in self.metadata["render_modes"], "Invalid render mode."
@@ -156,6 +158,10 @@ class SumoEnvironment(gym.Env):
         SumoEnvironment.CONNECTION_LABEL += 1
         self.sumo = None
         self.evaluation = False
+        # wait_tracker (2026-10-26, 默认 False → 旧行为): 建逐秒访问等待统计器 (visit_wait.py), 供观测/奖励的 visit 口径只读;
+        # 每次 reset 随新 SUMO 连接重建, 在 _sumo_step 的 simulationStep 之后更新。
+        self.wait_tracker = bool(wait_tracker)
+        self.visit_tracker = None
 
         if LIBSUMO:
             traci.start([sumolib.checkBinary("sumo"), "-n", self._net])  # Start only to retrieve traffic light information
@@ -318,6 +324,8 @@ class SumoEnvironment(gym.Env):
             }
 
         self.vehicles = dict()
+        self.visit_tracker = (VisitWaitTracker(self.sumo, {ts: self.traffic_signals[ts].lanes for ts in self.traffic_signals})
+                              if self.wait_tracker else None)
 
         if self.single_agent:
             return self._compute_observations()[self.ts_ids[0]], self._compute_info()
@@ -454,6 +462,8 @@ class SumoEnvironment(gym.Env):
             # self.evaluation_metrics()
             self.evaluation_metrics_CTB()
         self.sumo.simulationStep()
+        if self.visit_tracker is not None:      # 逐秒访问等待统计 (旧指标收集在 simulationStep 之前, 互不影响)
+            self.visit_tracker.step()
 
     def _get_system_info(self):
         vehicles = self.sumo.vehicle.getIDList()
