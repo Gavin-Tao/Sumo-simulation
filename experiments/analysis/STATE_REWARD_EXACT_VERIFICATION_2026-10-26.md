@@ -15,12 +15,29 @@
 | cluster_21620852 分槽版 8STD 网 | 新文件 dublin_8std_splitslot.* | 旧文件不动 | reindex_8std.py --split-slots |
 | 三个入口共用参数构造 | 无 | 行为不变 | exp_params.py |
 
-## 2. 旧配置逐位不变的证据
+## 2. 旧配置逐位不变的证据（范围：train.py 与 tools/dublin/ckpt_env.py 两条路径）
 
 1. 流快照：exp457（都柏林 18h）、exp274（1x1）、exp338（1x3）各 200 个决策步的全部 state 向量与 reward，在任务 0 记录基线，
-   任务 1 到 10 每完成一项重跑一次比较，最大绝对差始终为 0。
+   任务 1 到 10 每完成一项重跑一次比较，最大绝对差始终为 0。快照经 ckpt_env.build 生成，存放在本计划工作区（git 忽略），
+   重生成命令：`python experiments/tools/dublin/obs_reward_dump.py <exp> --seed 123 --steps 200 --out F.npz`，`--compare A B` 比较；重跑逐位相同。
 2. train.py 回归摘要：regress_dryrun 对 exp208（都柏林 11h）与 exp136（1x3）两配置的摘要与 2026-07-02 基线一致。
-3. 测试：新增 8 个测试文件 39 项，原有测试全部通过（全套 157 项）。
+3. 测试：新增 8 个测试文件 41 项，原有测试全部通过（全套 159 项）。
+
+### 2.1 eval_unified.py 不在"逐位不变"之内：它被修正了
+
+改前的 eval_unified.py 读配置时漏了 10 个观测键：obs_since_green、obs_awt_log、obs_green_elapsed、obs_header、obs_green_elapsed_reset、
+obs_green_elapsed_exact、obs_slot_min_green、obs_green_elapsed_include_yellow、obs_green_elapsed_cap、obs_pad_tokens，
+并且不认 obs_priority_source 优先于 priority_source 的规则。改维数的键会让它在加载权重时报错；不改维数只改数值的两项
+（obs_awt_log，96 个配置写了 true；obs_priority_source，8 个配置）会让它无声地用线性等待或错误分桶跑完。
+共用 exp_params 之后这些都按训练口径传入，所以 eval_unified 的输出对这些配置**变了**，这是修正。
+影响面核查：eval_unified 的调用方（generate_seed_sweep、run_long_evals.sh、generate_long_metrics、generate_last_metrics、
+eval_ckpt_trajectory、multiseed_eval）最后修改都在 2026-05/06，早于 obs_awt_log（09-30）与 obs_header（10-11）出现；
+2026-09 之后的 best×10 与图表全部出自 eval_pervehicle → ckpt_env。结论是已引用的数字不受影响，但请用户确认 9 月 30 日之后没有用这些脚本产出过引用数字。
+提交 a40a052 的说明与早先文档里"漏传三个键"的措辞低估了范围，以本节为准。
+
+### 2.2 传送（teleport）
+
+统计器对车辆消失的处理用 vehicle.remove 测试。所有配置 time_to_teleport 取环境默认 −1（关闭传送），该路径在训练中不会触发，属备用。
 
 ## 3. 新口径与定义一致的证据（任务 9）
 

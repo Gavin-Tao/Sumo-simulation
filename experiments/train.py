@@ -43,7 +43,7 @@ else:
 from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.agents.dqn_agent_txw import DQN
 from sumo_rl.environment.metrics import EpisodeMetricsCollector
-from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table, reward_wait_basis  # noqa: F401
+from exp_params import obs_kwargs_from_cfg, env_extra_kwargs, turnmap_from_meta, resolve_obs_priority_table, reward_wait_basis, assert_tracker_clean  # noqa: F401
 from sumo_rl.environment.observations import (
     DefaultObservationFunction,
     PressLightObservationFunction,
@@ -773,6 +773,8 @@ def train(cfg: dict, timestamp: str):
                     print(f"[ERROR] Reset also failed: {reset_err}")
                     raise
                 continue
+
+            assert_tracker_clean(env)   # 2026-10-26: visit 口径下统计器缺条目即终止 (在 try 之外, 不会被当作 SUMO 错误跳过)
 
             # ── End of episode ────────────────────────────────────────────────
             if agent.start_train and logging_mode != "none":

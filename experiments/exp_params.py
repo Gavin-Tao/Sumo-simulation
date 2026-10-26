@@ -53,12 +53,26 @@ def obs_kwargs_from_cfg(cfg: dict) -> dict:
     return kw
 
 
+_VISIT_REWARDS = ("priority-avg-waiting", "avg-waiting-time")    # 已接统计器的两个奖励
+
+
 def reward_wait_basis(cfg: dict) -> str:
-    """奖励的等待口径: legacy (现行跨车道记账) | visit (逐秒访问统计器)。"""
+    """奖励的等待口径: legacy (现行跨车道记账) | visit (逐秒访问统计器)。
+    visit 只对 _VISIT_REWARDS 两个奖励名生效, 配其它奖励名会静默走旧记账 → 直接报错 (审查 2026-10-26 Important 1)。"""
     v = str(cfg.get("reward_wait_basis", "legacy"))
     if v not in ("legacy", "visit"):
         raise ValueError(f"reward_wait_basis 必须是 legacy 或 visit, 得到 {v!r}")
+    if v == "visit" and cfg.get("reward_fn") not in _VISIT_REWARDS:
+        raise ValueError(f"reward_wait_basis=visit 只支持 reward_fn 为 {_VISIT_REWARDS}, 得到 {cfg.get('reward_fn')!r}")
     return v
+
+
+def assert_tracker_clean(env) -> None:
+    """每集结束调用: visit 口径下统计器一次都不该缺条目 (观测/奖励读到了不在表里的车辆), 缺了说明状态定义被破坏, 响亮终止。
+    放在训练循环的 try 之外, 不会被 "SUMO 错误, 重置继续" 的分支吞掉。"""
+    tr = getattr(env, "visit_tracker", None)
+    if tr is not None and tr.missing:
+        raise RuntimeError(f"逐秒访问统计器本集缺条目 {tr.missing} 次, 终止训练 (请用 state_reward_debug.py --strict 定位)")
 
 
 def env_kwargs_from_cfg(cfg: dict) -> dict:
