@@ -143,9 +143,16 @@ def yellow_between(cur, nxt):
     return "".join(out)
 
 
-def reindex_tls(net, tls_id, n_state):
+def reindex_tls(net, tls_id, n_state, split=False):
+    """返回 (phases, meta, moved); split=True 时先做槽粒度修正 (enum_phases.split_merged_slots, 2026-10-26):
+    几何转向判定把路网标注不同去向的连接并进同一槽时 (cluster_21620852 的 link 2 右转→E 直行、link 6 直行→S 左转),
+    改回路网标注的转向, 标准动作/相位/掩码随新标签重新生成; 其它路口逐位不变。"""
     mov = common.tls_movements(net, tls_id)
     nodes = mov["nodes"]
+    moved = []
+    if split:
+        import enum_phases
+        moved = enum_phases.split_merged_slots(mov, nodes)
     idxs = sorted(mov["links"])
     # state length = highest real link index + 1. Do NOT inherit the source
     # program's longer state strings (trailing padding from stripped
@@ -223,7 +230,7 @@ def reindex_tls(net, tls_id, n_state):
         "arms": mov["arms"],
         "links": {str(i): mov["links"][i] for i in idxs},
     }
-    return phases, meta
+    return phases, meta, moved
 
 
 def main():
@@ -231,9 +238,25 @@ def main():
     # source: the demoted net if the demotion step has run (see
     # demote_uncontested.py), else the raw source net
     demoted = os.path.join(common.OUT_DIR, "dublin_8action_demoted.net.xml")
-    src = sys.argv[1] if len(sys.argv) > 1 else (
-        demoted if os.path.exists(demoted) else common.SRC_NET)
-    print("source net:", src)
+    # 命令行 (2026-10-26): [源网] [--split-slots] [--tag X] [--out-dir D]
+    #   --split-slots  槽粒度修正 (见 reindex_tls); --tag X 输出 dublin_8std_X.net.xml / dublin_8std_X_meta.json, 不覆盖旧文件;
+    #   --out-dir D    输出目录 (默认 nets/dublin)。不带参数时行为与原来完全相同。
+    argv = sys.argv[1:]
+    split = "--split-slots" in argv
+    tag = argv[argv.index("--tag") + 1] if "--tag" in argv else None
+    out_dir = argv[argv.index("--out-dir") + 1] if "--out-dir" in argv else None
+    skip = set()
+    for flag in ("--tag", "--out-dir"):
+        if flag in argv:
+            skip.update({argv.index(flag), argv.index(flag) + 1})
+    pos = [a for k, a in enumerate(argv) if k not in skip and a != "--split-slots"]
+    src = pos[0] if pos else (demoted if os.path.exists(demoted) else common.SRC_NET)
+    stem = f"dublin_8std_{tag}" if tag else "dublin_8std"
+    net_out = os.path.join(out_dir or common.OUT_DIR, stem + ".net.xml")
+    meta_out = os.path.join(out_dir or common.OUT_DIR, stem + "_meta.json")
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    print("source net:", src, "| split-slots:", split, "| out:", net_out)
     net = common.load_net(src)
     tree = ET.parse(src)
     root = tree.getroot()
@@ -243,10 +266,14 @@ def main():
 
     all_meta = {}
     new_programs = {}
+    slot_split = {}
     for tls_id, n_state in orig_len.items():
-        phases, meta = reindex_tls(net, tls_id, n_state)
+        phases, meta, moved = reindex_tls(net, tls_id, n_state, split=split)
         all_meta[tls_id] = meta
         new_programs[tls_id] = phases
+        if moved:
+            slot_split[tls_id] = moved
+            print(f"split-slots {tls_id}: {moved}")
 
     for tl in root.findall("tlLogic"):
         tls_id = tl.get("id")
@@ -258,7 +285,7 @@ def main():
         for dur, st in new_programs[tls_id]:
             ET.SubElement(tl, "phase", duration=dur, state=st)
 
-    tree.write(common.NET_8STD, encoding="UTF-8", xml_declaration=True)
+    tree.write(net_out, encoding="UTF-8", xml_declaration=True)
 
     entries, exits = common.boundary_edges(net)
     sidecar = {
@@ -267,7 +294,9 @@ def main():
                      "exits": sorted(e.getID() for e in exits)},
         "tls": all_meta,
     }
-    with open(common.META_8STD, "w") as f:
+    if split:                                          # 默认路径不加此键 → 旧 meta 逐位不变
+        sidecar["slot_split"] = slot_split
+    with open(meta_out, "w") as f:
         json.dump(sidecar, f, indent=1)
 
     # ---- V1 report
@@ -276,7 +305,7 @@ def main():
           f"{dict(sorted(n_valid.items()))}")
     print(f"boundary: {len(entries)} entries / {len(exits)} exits")
     res = subprocess.run(
-        ["sumo", "-n", common.NET_8STD, "--no-step-log", "-e", "0"],
+        ["sumo", "-n", net_out, "--no-step-log", "-e", "0"],
         capture_output=True, text=True)
     bad = [l for l in (res.stderr or "").splitlines() if "Error" in l]
     if res.returncode != 0 or bad:
@@ -286,7 +315,7 @@ def main():
     print(f"sumo load test: OK ({len(warn)} warnings)")
     for w in warn[:8]:
         print("  ", w)
-    print(f"wrote {common.NET_8STD}\nwrote {common.META_8STD}")
+    print(f"wrote {net_out}\nwrote {meta_out}")
 
 
 if __name__ == "__main__":

@@ -62,7 +62,7 @@ def main():
     all_meta, new_programs, skipped = {}, {}, {}
     for tls_id, n_state in orig_len.items():
         try:
-            phases, meta = R8.reindex_tls(net, tls_id, n_state)
+            phases, meta, _moved = R8.reindex_tls(net, tls_id, n_state)   # 2026-10-26: 返回三元组 (第三项为槽粒度修正记录, 此处不用)
             all_meta[tls_id] = meta
             new_programs[tls_id] = phases
         except Exception as e:                       # per-TLS fault tolerance
