@@ -1,0 +1,43 @@
+{
+ "exp": "459",
+ "ckpt": "/home/xiaowen/sumo-rl/experiments/models/exp459_dublin18h_reroute_v2_amb11h_541_8std_splitslot_exact/frozen_best_2026-10-26/best_snapshot.pth",
+ "ckpt_episode": 740,
+ "seed": 123,
+ "junction": "cluster_1998326407_2876012598_4781977262_658429",
+ "force_junction": "cluster_21620852_2383668110_2383668118_4009885977",
+ "force_std": 0,
+ "force_from": 600.0,
+ "force_until": 2400.0,
+ "state_max_diff_by_group": {
+  "is_green": 0.0,
+  "lane_occ": 4.9766984755450494e-08,
+  "phi_count": 2.917571506610983e-08,
+  "phi_mean_awt": 2.979992819174271e-08,
+  "phi_queue": 2.814472721546224e-08,
+  "psi_count": 2.917571506610983e-08,
+  "psi_queue": 2.8927545692170042e-08,
+  "slot_min_green": 0.0
+ },
+ "reward_max_diff": 0.0,
+ "first_mismatches": [],
+ "tracker_missing": 0,
+ "own_vs_env": {
+  "max_diff": 0.0,
+  "key_mismatch": 0
+ },
+ "acc_identity": {
+  "checked": 230981,
+  "max_diff": 0.0
+ },
+ "stats": {
+  "first_rl_sighting": 4414,
+  "first_rl_sighting_with_upstream_wait": 516,
+  "veh_on_shared_lane": 36283,
+  "veh_on_second_lane_of_multi_index": 906,
+  "dropped_slot_minus1": 169
+ },
+ "remaining_vehicles": 271,
+ "teleports": 0,
+ "max_W_J": 2027.0,
+ "reward_sum_J": -12293.991299999978
+}

@@ -1,0 +1,43 @@
+{
+ "exp": "461",
+ "ckpt": "/home/xiaowen/sumo-rl/experiments/models/exp461_dublin18h_reroute_v2_amb11h_531_8std_splitslot_exact/2026-10-26T22-54-52/ckpt_ep00500.pth",
+ "ckpt_episode": 500,
+ "seed": 124,
+ "junction": "389281",
+ "force_junction": "389281",
+ "force_std": null,
+ "force_from": 600,
+ "force_until": 1000000000.0,
+ "state_max_diff_by_group": {
+  "is_green": 0.0,
+  "lane_occ": 4.9766984755450494e-08,
+  "phi_count": 5.2081728485475765e-08,
+  "phi_mean_awt": 2.979992819174271e-08,
+  "phi_queue": 5.2081728485475765e-08,
+  "psi_count": 2.9679679047767138e-08,
+  "psi_queue": 2.9679679047767138e-08,
+  "slot_min_green": 0.0
+ },
+ "reward_max_diff": 0.0,
+ "first_mismatches": [],
+ "tracker_missing": 0,
+ "own_vs_env": {
+  "max_diff": 0.0,
+  "key_mismatch": 0
+ },
+ "acc_identity": {
+  "checked": 253909,
+  "max_diff": 0.0
+ },
+ "stats": {
+  "first_rl_sighting": 3822,
+  "first_rl_sighting_with_upstream_wait": 698,
+  "veh_on_shared_lane": 67693,
+  "veh_on_second_lane_of_multi_index": 1684,
+  "dropped_slot_minus1": 31
+ },
+ "remaining_vehicles": 368,
+ "teleports": 0,
+ "max_W_J": 3147.0,
+ "reward_sum_J": -9653.046939999993
+}

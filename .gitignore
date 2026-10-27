@@ -54,3 +54,4 @@ experiments/analysis/data/pervehicle/
 
 # 2026-10-14: 1x1 末段检查点评估 (只读分析产物, 2.2 GB), 不进 git
 experiments/analysis/data/pervehicle_late_2026-10-14/
+experiments/analysis/data/lock_audit_2026-10-27/runs/
