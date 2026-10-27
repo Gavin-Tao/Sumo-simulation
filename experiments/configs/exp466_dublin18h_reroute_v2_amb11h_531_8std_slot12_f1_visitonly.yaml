@@ -1,19 +1,18 @@
-# exp466_dublin18h_reroute_v2_amb11h_531_8std_slot12_f1_linwait_visitonly (2026-10-27, 用户令 "在 463 对应的旧版本基础上, 除了用精确版的 obs_awt_basis: local → visit、reward_wait_basis: legacy → visit, 其余跟 463 一样, 建一个 config"):
-#   基底 = exp449 (旧口径 531, 旧网 dublin_8std / 旧 meta, local 口径, 只登记首连接, 运动缓存开, epsilon 0.1, 无 sync_target_init / train_strict_errors / eval_collector_1s), 逐位, 只改三处:
-#   (1) obs_awt_log: true → false —— 等待特征线性刻度 min(秒, awt_cap=500)/100, 与 exp463 的等待定义相同 (463 = 461 只改这一键);
-#   (2) obs_awt_basis: local → visit —— 状态的等待秒数读逐秒访问统计器 (本次在本路口进口边上、SUMO 判定为等待的秒数; 旧 local 口径起点最多晚 4 秒、重入沿用旧基线);
-#   (3) reward_wait_basis: visit (新增, 旧 = legacy) —— 奖励等待秒数读同一个统计器, 不再做跨车道减法 (上游非 RL 路口的等待不再记给第一条 RL 车道)。
-#   精确版的其余改动本臂都不取: 分槽网 dublin_8std_splitslot (cluster_21620852 4 → 6 动作)、obs_all_connections / all_connections、obs_slot_memo false、epsilon 0.9、sync_target_init、train_strict_errors、eval_collector_1s。
-#   对照: 466 vs 463 = 精确版里 "visit 口径之外" 的全部改动 (分槽网 + 全连接建表 + 不缓存运动 + 三项训练修补 + 逐秒评估收集器) 的合并作用;
-#         466 vs 449 = visit 口径 + 线性等待 (两键混杂, 不是单因素对)。奖励口径与 449/456/457/458 不同, 不可与旧臂直接比较训练曲线。
-#   状态 336 维 (12 槽 × [is_green 1 + 车流 15 + 下游 10 + 车道占有率 1 + 槽内 min_green_ok 1], 无头部), 与 449 / 463 相同。未启动。
+# exp466_dublin18h_reroute_v2_amb11h_531_8std_slot12_f1_visitonly (2026-10-27, 用户令 "在 461 对应的旧版本基础上, 除了用精确版的 obs_awt_basis: local → visit、reward_wait_basis: legacy → visit, 其余不变, 建一个 config"; 先前误按 463 建成线性等待版, 已改回对数):
+#   基底 = exp449 (旧口径 531 = 461 的旧版本: 旧网 dublin_8std / 旧 meta, local 口径, 只登记首连接, 运动缓存开, epsilon 0.1, 无 sync_target_init / train_strict_errors / eval_collector_1s), 逐位, 只改两处:
+#   (1) obs_awt_basis: local → visit —— 状态的等待秒数读逐秒访问统计器 (本次在本路口进口边上、SUMO 判定为等待的秒数; 旧 local 口径起点最多晚 4 秒、重入沿用旧基线);
+#   (2) reward_wait_basis: visit (新增, 旧 = legacy) —— 奖励等待秒数读同一个统计器, 不再做跨车道减法 (上游非 RL 路口的等待不再记给第一条 RL 车道)。
+#   对数等待 (obs_awt_log: true) 与 449 / 461 相同。精确版的其余改动本臂都不取: 分槽网 dublin_8std_splitslot (cluster_21620852 4 → 6 动作)、obs_all_connections / all_connections、obs_slot_memo false、epsilon 0.9、sync_target_init、train_strict_errors、eval_collector_1s。
+#   对照: 466 vs 449 = 单因素 "visit 口径" (状态 + 奖励) 的作用 (注意奖励口径变了, 训练曲线不可直接比, 用 best×10 / ep800×10 的评估指标比);
+#         466 vs 461 = 精确版里 "visit 口径之外" 的全部改动 (分槽网 + 全连接建表 + 不缓存运动 + 三项训练修补 + 逐秒评估收集器) 的合并作用。
+#   状态 336 维 (12 槽 × [is_green 1 + 车流 15 + 下游 10 + 车道占有率 1 + 槽内 min_green_ok 1], 无头部), 与 449 / 461 相同。未启动。
 # 下面是 exp449 的说明:
 # exp449_dublin18h_reroute_v2_amb11h_531_8std_slot12_f1 (2026-10-14, 用户令 "新臂 (12 槽 + F1) 帮我建立一个 config 并认真检查"): exp334 逐位, 只改三处:
 #   (1) obs_header: false —— 去掉头部 [min_green_ok, 相位已持续时间/100] (已持续时间无上限, 1x1 中无益, 属于控制器自己的历史);
 #   (2) obs_slot_min_green: true —— 每个绿灯槽末尾一位 min_green_ok (红灯槽 0), 最短绿信息改放槽内 (1x1 中与头部放法等价);
 #   (3) mask_min_green: true —— F1 (选动作与 TD 目标的 max 只在可执行相位上取)。
 #   观测 = 12 槽 × (is_green 1 + 车流 15 + 下游 10 + 车道占有率 1 + 槽内 min_green_ok 1) = 336 维, 无头部。依据: analysis/GRID1X1_SYNTHESIS_2026-10-14.txt §8。
-name: exp466_dublin18h_reroute_v2_amb11h_531_8std_slot12_f1_linwait_visitonly
+name: exp466_dublin18h_reroute_v2_amb11h_531_8std_slot12_f1_visitonly
 wandb_project: sumo-rl-dublin
 net_file: ../nets/dublin/dublin_8std.net.xml
 route_file: ../nets/dublin/weekday_18h_reroute_v2/car_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/bus_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/amb_weekday_18h_probe11h.rou.xml
@@ -25,15 +24,15 @@ obs_fields:
 - queue
 - mean_awt
 # ---- obs-side fixes (audit 2026-06-12, all measured defects) ----
-obs_awt_basis: visit      # 2026-10-27 (2): 原 local; 等待秒数读逐秒访问统计器 (配置此键即自动打开 env 的 wait_tracker)
-obs_awt_cap: 500          # bound worst-case stuck-on-lane wait at feature 5.0 (本臂 awt_log 关, 此截断生效)
+obs_awt_basis: visit      # 2026-10-27 (1): 原 local; 等待秒数读逐秒访问统计器 (配置此键即自动打开 env 的 wait_tracker)
+obs_awt_cap: 500          # bound worst-case stuck-on-lane wait at feature 5.0 (awt_log 开着时不生效, 保留)
 obs_lane_occ: true        # shared-lane physical occupancy truth (+12 dims)
 priority_source:
   ambulance: 5
   bus: 3
   car: 1
 reward_fn: priority-avg-waiting
-reward_wait_basis: visit  # 2026-10-27 (3): 原 legacy (跨车道记账); 奖励等待读同一个统计器
+reward_wait_basis: visit  # 2026-10-27 (2): 原 legacy (跨车道记账); 奖励等待读同一个统计器
 num_seconds: 3600
 delta_time: 5
 yellow_time: 2
@@ -71,7 +70,7 @@ obs_downstream_fields:
 - queue
 # ---- R1 (forensics Part 7): TD target clamp at the domain bound Q<=0 ----
 target_clip_max: 0.0
-obs_awt_log: false           # 2026-10-27 (1): 原 true; 等待特征线性刻度 min(秒, 500)/100, 与 exp463 相同
+obs_awt_log: true            # 2026-10-10: 与 exp301 对等 (等待特征对数刻度, 替代 awt_cap 截断); 与 449 / 461 相同
 target_clip_min: -50.0       # 2026-10-10: 与 exp301 对等 (TD 目标下限; 8STD 的 Q 一般 -5..-20, 预计几乎不触发)
 
 # ── 2026-10-14 exp449 改动 (其余与 exp334 逐位相同) ──
