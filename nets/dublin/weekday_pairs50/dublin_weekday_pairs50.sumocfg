@@ -1,0 +1,18 @@
+<configuration>
+  <input>
+    <net-file value="../dublin_8std_splitslot.net.xml"/>
+    <additional-files value="vtypes_same.add.xml"/>
+    <route-files value="background_cars.rou.xml,pairs50_routes.rou.xml,pairs50_tt1.rou.xml"/>
+  </input>
+  <time>
+    <begin value="0"/>
+    <end value="3600"/>
+  </time>
+  <processing>
+    <ignore-junction-blocker value="60"/>
+  </processing>
+  <report>
+    <no-step-log value="true"/>
+    <duration-log.statistics value="true"/>
+  </report>
+</configuration>
