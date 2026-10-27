@@ -1,0 +1,259 @@
+{
+ "demoted_original": [
+  [
+   "cluster_3136024185_659807",
+   214
+  ],
+  [
+   "cluster_1426051358_1426100603_3206752725_3783453672_3783453675",
+   682
+  ],
+  [
+   "659805",
+   256
+  ]
+ ],
+ "other_real_signal_priority_nodes": {
+  "CLARE ST @ MERRION SQ": [
+   "659799",
+   2,
+   "priority",
+   619
+  ],
+  "MERRION ROW @ MERRION ST": [
+   "659805",
+   1,
+   "priority",
+   256
+  ],
+  "WEXFORD ST @ KEVIN ST": [
+   "gneJ47",
+   1,
+   "priority",
+   704
+  ],
+  "BAGGOT ST @ PEMBROKE ST": [
+   "cluster_2389844198_2389844201_2389844205_2389844211_6039199296",
+   9,
+   "priority",
+   142
+  ],
+  "CAMDEN ST / PLEASANTS ST": [
+   "cluster_389667_5421212978",
+   7,
+   "priority",
+   192
+  ],
+  "LEESON ST @ PEMBROKE ST": [
+   "658464",
+   6,
+   "priority",
+   1164
+  ],
+  "COLLEGE GREEN / CHURCH LANE": [
+   "cluster_1426051358_1426100603_3206752725_3783453672_3783453675",
+   9,
+   "priority",
+   682
+  ],
+  "GRAFTON ST @ SUFFOLK ST": [
+   "1488943160",
+   3,
+   "priority",
+   0
+  ],
+  "DAWSON ST @ NASSAU ST": [
+   "5207211666",
+   4,
+   "priority",
+   190
+  ],
+  "ST STEPHENS GREEN @ DAWSON ST": [
+   "cluster_389339_5593550332",
+   8,
+   "priority",
+   145
+  ],
+  "ST STEPHENS GREEN @ GRAFTON ST. (LUAS)": [
+   "2893792091",
+   5,
+   "priority",
+   18
+  ],
+  "ST STEPHENS GREEN @ KILDARE STREET": [
+   "cluster_442374639_659809",
+   2,
+   "priority",
+   457
+  ],
+  "DAME ST @ OLYMPIA": [
+   "cluster_1426051354_2705523737",
+   11,
+   "priority",
+   455
+  ],
+  "ST STEPHENS GREEN @ NEWMAN CHURCH": [
+   "9101424",
+   24,
+   "priority",
+   129
+  ],
+  "ST STEPHENS GREEN @ HUME ST": [
+   "cluster_3136024185_659807",
+   2,
+   "priority",
+   214
+  ]
+ },
+ "rl_fake": [
+  "133307283",
+  "135109534",
+  "32236377",
+  "659802"
+ ],
+ "rl_nearest_station": {
+  "659802": [
+   178,
+   "CLARE ST @ MERRION SQ"
+  ],
+  "135109534": [
+   60,
+   "AUNGIER ST @ LONGFORD ST"
+  ],
+  "32236377": [
+   72,
+   "AUNGIER ST @ LONGFORD ST"
+  ],
+  "1448436": [
+   2,
+   "DAME ST @ GEORGES ST"
+  ],
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": [
+   10,
+   "ST STEPHENS GREEN @ NORTH EAST CORNER"
+  ],
+  "cluster_5166592137_5166592140_557198554_57744042": [
+   7,
+   "KILDARE ST @ MOLESWORTH ST"
+  ],
+  "133307283": [
+   109,
+   "CAMDEN ST / PLEASANTS ST"
+  ],
+  "cluster_1998326407_2876012598_4781977262_658429": [
+   7,
+   "ST STEPHENS GREEN @ EARLSFORT TCE"
+  ],
+  "1430847303": [
+   20,
+   "LINCOLN PL @ CLARE ST"
+  ],
+  "26165126": [
+   1,
+   "GEORGES ST @ STEPHENS ST"
+  ],
+  "cluster_135109528_9101656": [
+   3,
+   "MERCER ST @ CAR PARK"
+  ],
+  "389332": [
+   10,
+   "DAME ST @ TRINITY ST"
+  ],
+  "26165090": [
+   1,
+   "MERCER ST @ YORK ST"
+  ],
+  "cluster_21620852_2383668110_2383668118_4009885977": [
+   12,
+   "ST STEPHENS GREEN @ HARCOURT ST (LUAS)"
+  ],
+  "5166592132": [
+   1,
+   "NASSAU ST @ KILDARE ST & MOLESWORTH ST"
+  ],
+  "cluster_1448439_2464758361": [
+   4,
+   "GEORGES ST @ EXCHEQUER ST"
+  ],
+  "1448442": [
+   3,
+   "AUNGIER ST @ LONGFORD ST"
+  ],
+  "389281": [
+   16,
+   "AUNGIER ST @ YORK ST"
+  ]
+ },
+ "real_signal_intersections_not_rl": {
+  "MERRION ROW @ MERRION ST": [
+   "659805",
+   256,
+   true
+  ],
+  "WEXFORD ST @ KEVIN ST": [
+   "gneJ47",
+   704,
+   false
+  ],
+  "COLLEGE GREEN / CHURCH LANE": [
+   "cluster_1426051358_1426100603_3206752725_3783453672_3783453675",
+   682,
+   true
+  ],
+  "DAWSON ST @ NASSAU ST": [
+   "5207211666",
+   190,
+   false
+  ],
+  "ST STEPHENS GREEN @ DAWSON ST": [
+   "cluster_389339_5593550332",
+   145,
+   false
+  ],
+  "ST STEPHENS GREEN @ KILDARE STREET": [
+   "cluster_442374639_659809",
+   457,
+   false
+  ],
+  "ST STEPHENS GREEN @ HUME ST": [
+   "cluster_3136024185_659807",
+   214,
+   true
+  ]
+ },
+ "real_signal_non_intersection_in_model": {
+  "CLARE ST @ MERRION SQ": [
+   "659799",
+   619
+  ],
+  "BAGGOT ST @ PEMBROKE ST": [
+   "cluster_2389844198_2389844201_2389844205_2389844211_6039199296",
+   142
+  ],
+  "CAMDEN ST / PLEASANTS ST": [
+   "cluster_389667_5421212978",
+   192
+  ],
+  "LEESON ST @ PEMBROKE ST": [
+   "658464",
+   1164
+  ],
+  "GRAFTON ST @ SUFFOLK ST": [
+   "1488943160",
+   0
+  ],
+  "ST STEPHENS GREEN @ GRAFTON ST. (LUAS)": [
+   "2893792091",
+   18
+  ],
+  "DAME ST @ OLYMPIA": [
+   "cluster_1426051354_2705523737",
+   455
+  ],
+  "ST STEPHENS GREEN @ NEWMAN CHURCH": [
+   "9101424",
+   129
+  ]
+ }
+}
