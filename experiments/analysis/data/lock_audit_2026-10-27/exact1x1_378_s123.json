@@ -1,0 +1,19 @@
+{
+ "exp": "378",
+ "ckpt_episode": 1340,
+ "seed": 123,
+ "steps_A": 200,
+ "steps_B": 200,
+ "dim": 204,
+ "actions_replayed_identical": true,
+ "max_obs_diff": 0.0,
+ "ts_steps_with_obs_diff": 0,
+ "ts_steps_total": 200,
+ "dims_ever_diff": 0,
+ "dims_ever_diff_idx": [],
+ "greedy_action_would_differ": 0,
+ "reward_sum_A": -29.294992555397993,
+ "reward_sum_B": -29.294992555397993,
+ "reward_max_abs_diff": 0.0,
+ "reward_steps_diff": 0
+}
