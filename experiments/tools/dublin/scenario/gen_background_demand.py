@@ -82,13 +82,44 @@ for key, conns in mv_conns.items():
     cands[key] = uniq
 
 jtag = {tid: (tid.replace('cluster_', 'c')[:11]) for tid in meta}      # 车辆 id 里的路口短标签 (唯一)
+ap_nnls = True
 assert len(set(jtag.values())) == len(jtag), jtag
 remaining = {(tid, mv): float(n) for tid, d in targets.items() for mv, n in d.items()}
 missing = [k for k in remaining if k not in cands or not cands[k]]
+target_of = dict(remaining)
 rng = random.Random(a.seed); vehicles = []; realized = collections.Counter(); route_use = collections.Counter()
+if ap_nnls:
+    # 非负最小二乘: A[运动, 路线] = 该路线经过该运动 (0/1), b = 目标; min ||A x - b||, x ≥ 0; 目标表外的转向也进 A (目标 0, 权重小) 以抑制额外负荷
+    import numpy as np
+    from scipy.optimize import nnls
+    routes = []; rkeys = {}
+    for key, lst in cands.items():
+        for c in lst:
+            rk = (tuple(c["edges"]), c["depart_lane"])
+            if rk in rkeys: continue
+            rkeys[rk] = len(routes); routes.append(dict(edges=list(c["edges"]), lane=c["depart_lane"], trav=c["traversals"], key=key))
+    mv_all = sorted({k for r in routes for k in r["trav"]} | set(remaining))
+    idx = {k: i for i, k in enumerate(mv_all)}; A = np.zeros((len(mv_all), len(routes))); b = np.zeros(len(mv_all)); w = np.ones(len(mv_all))
+    for j, r in enumerate(routes):
+        for k in r["trav"]: A[idx[k], j] = 1.0
+    for k, v in remaining.items(): b[idx[k]] = v
+    for k in mv_all:
+        if k not in remaining: w[idx[k]] = 0.3                       # 表外转向: 目标 0, 弱权重 (允许少量过境)
+    x, res = nnls(A * w[:, None], b * w, maxiter=20000)
+    counts = np.floor(x + 0.5).astype(int)
+    for j, r in enumerate(routes):
+        n = int(counts[j]); 
+        if n <= 0: continue
+        key = r["key"]
+        for i in range(n):
+            vehicles.append(dict(id=f"bg_{jtag[key[0]]}_{key[1]}_{route_use[key]}_{i}", depart=rng.uniform(0, a.end), edges=r["edges"], lane=r["lane"]))
+        route_use[key] += 1
+        for k in r["trav"]: remaining[k] -= n; realized[k] += n
+    print(f"NNLS: 候选路线 {len(routes)}, 用到 {int((counts > 0).sum())} 条, 残差 {res:.1f}")
+    order = []                                                           # 跳过贪心
 forced = {k: all(len(c["traversals"]) > 1 for c in cands[k]) for k in cands}      # 候选全都要穿过别的路口的转向先分配
 order = sorted(remaining, key=lambda k: (0 if forced.get(k) else 1, len(cands.get(k, [])), -remaining[k]))
-target_of = dict(remaining)
+
 for key in order:
     if key not in cands: continue
     lanes = sorted({c["lane"] for c in cands[key]})
@@ -138,7 +169,7 @@ gaps = [x for x in rows if x[4] < 0.9 or x[4] > 1.15]
 rep = {"seed": a.seed, "minlen": a.minlen, "n_vehicles": len(vehicles), "target_total": int(sum(x[2] for x in rows)), "realized_total": int(sum(x[3] for x in rows)),
        "missing_candidates": [list(k) for k in missing], "gaps": [dict(tid=x[0], mv=x[1], target=x[2], realized=x[3]) for x in gaps],
        "realized": {f"{x[0]}|{x[1]}": dict(target=x[2], realized=x[3]) for x in rows},
-       "extra_traversals": {f"{k[0]}|{k[1]}": v for k, v in realized.items() if k not in remaining or (k[0], k[1]) not in [(x[0], x[1]) for x in rows]}}
+       "extra_traversals": {f"{k[0]}|{k[1]}": v for k, v in realized.items() if k not in target_of}}
 json.dump(rep, open(os.path.join(a.scenario, "background_report.json"), "w"), indent=1, ensure_ascii=False)
 print(f"车辆 {len(vehicles)}  目标合计 {rep['target_total']}  实现合计 {rep['realized_total']}  无候选转向 {len(missing)}  缺口/超额转向 {len(gaps)}")
 for k in missing: print("  无候选:", k)

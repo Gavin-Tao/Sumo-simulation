@@ -1,0 +1,1006 @@
+{
+ "policy": "random",
+ "green": 20.0,
+ "seed": 124,
+ "routes": "background_cars.rou.xml,pairs50_routes.rou.xml,pairs50_tt1.rou.xml",
+ "running_10min": [
+  123.8,
+  131.28333333333333,
+  129.69166666666666,
+  133.55833333333334,
+  122.20833333333333,
+  125.025
+ ],
+ "running_growth_last2_vs_34": -0.0608420386198163,
+ "pending_3300": 16,
+ "planned_le3300": 7287,
+ "not_inserted_le3300": 0,
+ "tripinfo": 7929,
+ "arrived": 7800,
+ "depart_delay_mean": 2.8925589607768947,
+ "depart_delay_max": 297.7,
+ "trip_wait_gt150": 125,
+ "lock_visits_ge150": 1,
+ "lock_by_junction": {
+  "32236377": 1
+ },
+ "starve": {
+  "133307283": {
+   "events": 1,
+   "max": 60.0
+  },
+  "135109534": {
+   "events": 4,
+   "max": 105.0
+  },
+  "1430847303": {
+   "events": 1,
+   "max": 60.0
+  },
+  "1448436": {
+   "events": 9,
+   "max": 90.0
+  },
+  "1448442": {
+   "events": 31,
+   "max": 200.0
+  },
+  "26165090": {
+   "events": 5,
+   "max": 135.0
+  },
+  "26165126": {
+   "events": 2,
+   "max": 75.0
+  },
+  "32236377": {
+   "events": 3,
+   "max": 95.0
+  },
+  "389281": {
+   "events": 20,
+   "max": 145.0
+  },
+  "389332": {
+   "events": 0,
+   "max": 0.0
+  },
+  "5166592132": {
+   "events": 0,
+   "max": 0.0
+  },
+  "659802": {
+   "events": 6,
+   "max": 140.0
+  },
+  "cluster_135109528_9101656": {
+   "events": 23,
+   "max": 205.0
+  },
+  "cluster_1448439_2464758361": {
+   "events": 0,
+   "max": 0.0
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "events": 0,
+   "max": 0.0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "events": 13,
+   "max": 140.0
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "events": 0,
+   "max": 0.0
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "events": 1,
+   "max": 70.0
+  }
+ },
+ "spill": {
+  "133307283": 0,
+  "135109534": 0,
+  "1430847303": 0,
+  "1448436": 0,
+  "1448442": 0,
+  "26165090": 1,
+  "26165126": 2,
+  "32236377": 5,
+  "389281": 0,
+  "389332": 0,
+  "5166592132": 0,
+  "659802": 0,
+  "cluster_135109528_9101656": 0,
+  "cluster_1448439_2464758361": 0,
+  "cluster_1998326407_2876012598_4781977262_658429": 0,
+  "cluster_21620852_2383668110_2383668118_4009885977": 0,
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": 0,
+  "cluster_5166592137_5166592140_557198554_57744042": 0
+ },
+ "opportunities": {
+  "cluster_21620852_2383668110_2383668118_4009885977|S-L|bus": {
+   "visits": 8,
+   "with_opp": 8,
+   "red_release": 6,
+   "green_hold": 8,
+   "approach": 8,
+   "queued": 8,
+   "prio_comp": 3
+  },
+  "26165126|W-R|ambulance": {
+   "visits": 4,
+   "with_opp": 3,
+   "red_release": 2,
+   "green_hold": 3,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 1
+  },
+  "1448442|N-T|ambulance": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 4,
+   "approach": 4,
+   "queued": 4,
+   "prio_comp": 4
+  },
+  "26165090|E-R|bus": {
+   "visits": 15,
+   "with_opp": 12,
+   "red_release": 11,
+   "green_hold": 11,
+   "approach": 12,
+   "queued": 4,
+   "prio_comp": 0
+  },
+  "cluster_135109528_9101656|S-T|bus": {
+   "visits": 11,
+   "with_opp": 9,
+   "red_release": 8,
+   "green_hold": 4,
+   "approach": 8,
+   "queued": 7,
+   "prio_comp": 3
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|S-L|ambulance": {
+   "visits": 8,
+   "with_opp": 8,
+   "red_release": 8,
+   "green_hold": 8,
+   "approach": 8,
+   "queued": 8,
+   "prio_comp": 3
+  },
+  "32236377|E-T|bus": {
+   "visits": 14,
+   "with_opp": 4,
+   "red_release": 2,
+   "green_hold": 2,
+   "approach": 1,
+   "queued": 4,
+   "prio_comp": 2
+  },
+  "26165126|W-R|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 3,
+   "green_hold": 4,
+   "approach": 4,
+   "queued": 3,
+   "prio_comp": 2
+  },
+  "5166592132|W-R|bus": {
+   "visits": 11,
+   "with_opp": 9,
+   "red_release": 3,
+   "green_hold": 8,
+   "approach": 9,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "1448442|E-R|bus": {
+   "visits": 10,
+   "with_opp": 8,
+   "red_release": 8,
+   "green_hold": 6,
+   "approach": 7,
+   "queued": 8,
+   "prio_comp": 3
+  },
+  "1448442|N-T|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 3,
+   "approach": 4,
+   "queued": 4,
+   "prio_comp": 4
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|N-T|bus": {
+   "visits": 11,
+   "with_opp": 5,
+   "red_release": 4,
+   "green_hold": 3,
+   "approach": 4,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|S-R|ambulance": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 3,
+   "prio_comp": 3
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|W-T|bus": {
+   "visits": 10,
+   "with_opp": 2,
+   "red_release": 0,
+   "green_hold": 2,
+   "approach": 2,
+   "queued": 0,
+   "prio_comp": 1
+  },
+  "26165090|E-R|ambulance": {
+   "visits": 15,
+   "with_opp": 12,
+   "red_release": 12,
+   "green_hold": 10,
+   "approach": 12,
+   "queued": 8,
+   "prio_comp": 0
+  },
+  "26165126|S-T|bus": {
+   "visits": 10,
+   "with_opp": 9,
+   "red_release": 9,
+   "green_hold": 3,
+   "approach": 9,
+   "queued": 6,
+   "prio_comp": 2
+  },
+  "5166592132|W-R|ambulance": {
+   "visits": 11,
+   "with_opp": 7,
+   "red_release": 3,
+   "green_hold": 7,
+   "approach": 7,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "133307283|N-R|ambulance": {
+   "visits": 4,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 3,
+   "approach": 3,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "659802|S-T|bus": {
+   "visits": 7,
+   "with_opp": 7,
+   "red_release": 7,
+   "green_hold": 7,
+   "approach": 7,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|S-R|bus": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 2
+  },
+  "cluster_1448439_2464758361|S-R|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 1,
+   "approach": 3,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|N-T|ambulance": {
+   "visits": 11,
+   "with_opp": 6,
+   "red_release": 2,
+   "green_hold": 5,
+   "approach": 6,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "1448436|W-T|bus": {
+   "visits": 2,
+   "with_opp": 1,
+   "red_release": 0,
+   "green_hold": 1,
+   "approach": 1,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "1448436|S-R|bus": {
+   "visits": 8,
+   "with_opp": 8,
+   "red_release": 5,
+   "green_hold": 3,
+   "approach": 5,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "389281|N-T|bus": {
+   "visits": 4,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 0,
+   "approach": 1,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_135109528_9101656|S-T|ambulance": {
+   "visits": 11,
+   "with_opp": 11,
+   "red_release": 11,
+   "green_hold": 4,
+   "approach": 8,
+   "queued": 11,
+   "prio_comp": 6
+  },
+  "1430847303|E-L|bus": {
+   "visits": 7,
+   "with_opp": 7,
+   "red_release": 7,
+   "green_hold": 5,
+   "approach": 7,
+   "queued": 3,
+   "prio_comp": 1
+  },
+  "389332|W-R|bus": {
+   "visits": 4,
+   "with_opp": 3,
+   "red_release": 2,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|W-T|ambulance": {
+   "visits": 10,
+   "with_opp": 7,
+   "red_release": 2,
+   "green_hold": 5,
+   "approach": 6,
+   "queued": 3,
+   "prio_comp": 2
+  },
+  "389332|W-T|bus": {
+   "visits": 10,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "32236377|E-T|ambulance": {
+   "visits": 14,
+   "with_opp": 9,
+   "red_release": 5,
+   "green_hold": 5,
+   "approach": 5,
+   "queued": 6,
+   "prio_comp": 2
+  },
+  "133307283|N-R|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 4,
+   "approach": 4,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "1448442|E-R|ambulance": {
+   "visits": 10,
+   "with_opp": 10,
+   "red_release": 10,
+   "green_hold": 8,
+   "approach": 9,
+   "queued": 9,
+   "prio_comp": 3
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|W-R|bus": {
+   "visits": 4,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "1448436|W-T|ambulance": {
+   "visits": 2,
+   "with_opp": 1,
+   "red_release": 1,
+   "green_hold": 0,
+   "approach": 1,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "389281|W-R|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 3,
+   "green_hold": 3,
+   "approach": 2,
+   "queued": 4,
+   "prio_comp": 0
+  },
+  "659802|S-T|ambulance": {
+   "visits": 7,
+   "with_opp": 7,
+   "red_release": 5,
+   "green_hold": 7,
+   "approach": 7,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "389332|W-R|ambulance": {
+   "visits": 4,
+   "with_opp": 1,
+   "red_release": 1,
+   "green_hold": 0,
+   "approach": 1,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|N-T|bus": {
+   "visits": 4,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_135109528_9101656|N-R|bus": {
+   "visits": 7,
+   "with_opp": 6,
+   "red_release": 6,
+   "green_hold": 1,
+   "approach": 4,
+   "queued": 6,
+   "prio_comp": 5
+  },
+  "389281|N-T|ambulance": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 0,
+   "approach": 1,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "26165126|S-T|ambulance": {
+   "visits": 10,
+   "with_opp": 7,
+   "red_release": 7,
+   "green_hold": 1,
+   "approach": 6,
+   "queued": 4,
+   "prio_comp": 1
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|W-R|ambulance": {
+   "visits": 4,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "1430847303|E-L|ambulance": {
+   "visits": 7,
+   "with_opp": 6,
+   "red_release": 2,
+   "green_hold": 6,
+   "approach": 6,
+   "queued": 2,
+   "prio_comp": 1
+  },
+  "135109534|S-R|bus": {
+   "visits": 11,
+   "with_opp": 5,
+   "red_release": 5,
+   "green_hold": 3,
+   "approach": 4,
+   "queued": 4,
+   "prio_comp": 0
+  },
+  "cluster_1448439_2464758361|S-R|ambulance": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 3,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "389281|W-R|ambulance": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 3,
+   "green_hold": 1,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|N-T|ambulance": {
+   "visits": 2,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_135109528_9101656|N-R|ambulance": {
+   "visits": 7,
+   "with_opp": 5,
+   "red_release": 5,
+   "green_hold": 1,
+   "approach": 4,
+   "queued": 4,
+   "prio_comp": 5
+  },
+  "389332|W-T|ambulance": {
+   "visits": 10,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|S-T|bus": {
+   "visits": 6,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 2,
+   "approach": 2,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "135109534|S-R|ambulance": {
+   "visits": 11,
+   "with_opp": 5,
+   "red_release": 5,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 4,
+   "prio_comp": 0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|W-L|ambulance": {
+   "visits": 4,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "1448442|E-T|bus": {
+   "visits": 12,
+   "with_opp": 11,
+   "red_release": 11,
+   "green_hold": 5,
+   "approach": 11,
+   "queued": 9,
+   "prio_comp": 2
+  },
+  "32236377|S-L|ambulance": {
+   "visits": 8,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 2,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 1
+  },
+  "1448442|E-T|ambulance": {
+   "visits": 12,
+   "with_opp": 11,
+   "red_release": 10,
+   "green_hold": 8,
+   "approach": 11,
+   "queued": 8,
+   "prio_comp": 1
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|E-T|bus": {
+   "visits": 6,
+   "with_opp": 6,
+   "red_release": 6,
+   "green_hold": 4,
+   "approach": 6,
+   "queued": 5,
+   "prio_comp": 4
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|S-T|ambulance": {
+   "visits": 6,
+   "with_opp": 2,
+   "red_release": 0,
+   "green_hold": 2,
+   "approach": 2,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-R|ambulance": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 0,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 2
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|E-T|ambulance": {
+   "visits": 6,
+   "with_opp": 6,
+   "red_release": 6,
+   "green_hold": 6,
+   "approach": 6,
+   "queued": 3,
+   "prio_comp": 4
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-T|ambulance": {
+   "visits": 7,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|W-L|bus": {
+   "visits": 3,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-R|bus": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 1
+  },
+  "cluster_135109528_9101656|S-L|ambulance": {
+   "visits": 4,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 2,
+   "prio_comp": 2
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-T|bus": {
+   "visits": 7,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "32236377|S-L|bus": {
+   "visits": 6,
+   "with_opp": 5,
+   "red_release": 2,
+   "green_hold": 4,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 1
+  },
+  "cluster_135109528_9101656|E-R|ambulance": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 2,
+   "green_hold": 2,
+   "approach": 2,
+   "queued": 2,
+   "prio_comp": 1
+  },
+  "cluster_135109528_9101656|S-L|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 4,
+   "prio_comp": 2
+  },
+  "cluster_135109528_9101656|E-R|bus": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 0,
+   "approach": 3,
+   "queued": 0,
+   "prio_comp": 3
+  },
+  "cluster_1448439_2464758361|S-T|bus": {
+   "visits": 6,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "26165090|E-L|ambulance": {
+   "visits": 3,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "26165090|E-L|bus": {
+   "visits": 3,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_1448439_2464758361|S-T|ambulance": {
+   "visits": 6,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "1448436|E-L|ambulance": {
+   "visits": 3,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_1448439_2464758361|N-T|ambulance": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 0,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "26165126|N-L|ambulance": {
+   "visits": 3,
+   "with_opp": 1,
+   "red_release": 0,
+   "green_hold": 1,
+   "approach": 1,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "659802|S-R|ambulance": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 3,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "1448436|E-L|bus": {
+   "visits": 3,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_1448439_2464758361|N-T|bus": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 0,
+   "green_hold": 2,
+   "approach": 2,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "659802|S-R|bus": {
+   "visits": 3,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 3,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "26165126|N-L|bus": {
+   "visits": 3,
+   "with_opp": 1,
+   "red_release": 1,
+   "green_hold": 0,
+   "approach": 1,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "1448436|S-R|ambulance": {
+   "visits": 8,
+   "with_opp": 5,
+   "red_release": 5,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 5,
+   "prio_comp": 0
+  },
+  "1448442|E-L|ambulance": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 2,
+   "approach": 1,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "133307283|S-T|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 3,
+   "prio_comp": 0
+  },
+  "1448442|E-L|bus": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 1,
+   "approach": 1,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|W-T|bus": {
+   "visits": 4,
+   "with_opp": 1,
+   "red_release": 1,
+   "green_hold": 0,
+   "approach": 1,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "133307283|S-T|ambulance": {
+   "visits": 4,
+   "with_opp": 1,
+   "red_release": 1,
+   "green_hold": 1,
+   "approach": 1,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|S-T|bus": {
+   "visits": 4,
+   "with_opp": 3,
+   "red_release": 3,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 2,
+   "prio_comp": 0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|W-T|ambulance": {
+   "visits": 4,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 2,
+   "prio_comp": 2
+  },
+  "5166592132|S-R|bus": {
+   "visits": 4,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 1,
+   "approach": 1,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "1430847303|W-T|bus": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 3,
+   "approach": 4,
+   "queued": 2,
+   "prio_comp": 1
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|S-T|ambulance": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 3,
+   "approach": 4,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "5166592132|S-R|ambulance": {
+   "visits": 4,
+   "with_opp": 3,
+   "red_release": 1,
+   "green_hold": 2,
+   "approach": 3,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "1430847303|W-T|ambulance": {
+   "visits": 4,
+   "with_opp": 4,
+   "red_release": 4,
+   "green_hold": 3,
+   "approach": 4,
+   "queued": 2,
+   "prio_comp": 2
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|W-R|bus": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 1,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 0,
+   "prio_comp": 0
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|W-R|ambulance": {
+   "visits": 3,
+   "with_opp": 2,
+   "red_release": 2,
+   "green_hold": 1,
+   "approach": 2,
+   "queued": 1,
+   "prio_comp": 0
+  },
+  "389332|E-T|bus": {
+   "visits": 1,
+   "with_opp": 0,
+   "red_release": 0,
+   "green_hold": 0,
+   "approach": 0,
+   "queued": 0,
+   "prio_comp": 0
+  }
+ },
+ "opp_by_type": {
+  "bus": {
+   "visits": 289,
+   "with_opp": 190
+  },
+  "ambulance": {
+   "visits": 288,
+   "with_opp": 189
+  }
+ }
+}

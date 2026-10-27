@@ -1,0 +1,473 @@
+{
+ "seed": 1,
+ "minlen": 40.0,
+ "n_vehicles": 7851,
+ "target_total": 9220,
+ "realized_total": 9310,
+ "missing_candidates": [],
+ "gaps": [
+  {
+   "tid": "cluster_21620852_2383668110_2383668118_4009885977",
+   "mv": "W-L",
+   "target": 30,
+   "realized": 21
+  },
+  {
+   "tid": "cluster_135109528_9101656",
+   "mv": "S-T",
+   "target": 40,
+   "realized": 58
+  },
+  {
+   "tid": "cluster_135109528_9101656",
+   "mv": "S-L",
+   "target": 30,
+   "realized": 48
+  },
+  {
+   "tid": "cluster_135109528_9101656",
+   "mv": "N-T",
+   "target": 30,
+   "realized": 26
+  },
+  {
+   "tid": "cluster_135109528_9101656",
+   "mv": "W-R",
+   "target": 40,
+   "realized": 30
+  },
+  {
+   "tid": "389281",
+   "mv": "W-T",
+   "target": 50,
+   "realized": 37
+  },
+  {
+   "tid": "389281",
+   "mv": "S-R",
+   "target": 40,
+   "realized": 26
+  },
+  {
+   "tid": "389281",
+   "mv": "N-L",
+   "target": 30,
+   "realized": 16
+  },
+  {
+   "tid": "1430847303",
+   "mv": "W-T",
+   "target": 150,
+   "realized": 210
+  },
+  {
+   "tid": "32236377",
+   "mv": "S-L",
+   "target": 40,
+   "realized": 48
+  },
+  {
+   "tid": "32236377",
+   "mv": "S-T",
+   "target": 10,
+   "realized": 18
+  },
+  {
+   "tid": "26165090",
+   "mv": "E-R",
+   "target": 80,
+   "realized": 70
+  },
+  {
+   "tid": "26165090",
+   "mv": "N-T",
+   "target": 40,
+   "realized": 56
+  },
+  {
+   "tid": "26165090",
+   "mv": "W-R",
+   "target": 30,
+   "realized": 43
+  },
+  {
+   "tid": "26165090",
+   "mv": "E-L",
+   "target": 30,
+   "realized": 42
+  },
+  {
+   "tid": "135109534",
+   "mv": "S-T",
+   "target": 40,
+   "realized": 56
+  }
+ ],
+ "realized": {
+  "1448442|S-L": {
+   "target": 120,
+   "realized": 120
+  },
+  "1448442|N-R": {
+   "target": 100,
+   "realized": 115
+  },
+  "1448442|E-T": {
+   "target": 100,
+   "realized": 100
+  },
+  "1448442|N-T": {
+   "target": 80,
+   "realized": 92
+  },
+  "1448442|E-L": {
+   "target": 30,
+   "realized": 30
+  },
+  "1448442|E-R": {
+   "target": 30,
+   "realized": 30
+  },
+  "1448442|S-T": {
+   "target": 30,
+   "realized": 30
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|S-L": {
+   "target": 150,
+   "realized": 150
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|E-T": {
+   "target": 150,
+   "realized": 163
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|W-T": {
+   "target": 70,
+   "realized": 70
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|S-R": {
+   "target": 60,
+   "realized": 60
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|E-R": {
+   "target": 50,
+   "realized": 46
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|S-T": {
+   "target": 50,
+   "realized": 45
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977|W-L": {
+   "target": 30,
+   "realized": 21
+  },
+  "cluster_135109528_9101656|E-T": {
+   "target": 90,
+   "realized": 82
+  },
+  "cluster_135109528_9101656|S-T": {
+   "target": 40,
+   "realized": 58
+  },
+  "cluster_135109528_9101656|N-R": {
+   "target": 40,
+   "realized": 40
+  },
+  "cluster_135109528_9101656|E-R": {
+   "target": 50,
+   "realized": 50
+  },
+  "cluster_135109528_9101656|S-L": {
+   "target": 30,
+   "realized": 48
+  },
+  "cluster_135109528_9101656|N-T": {
+   "target": 30,
+   "realized": 26
+  },
+  "cluster_135109528_9101656|W-L": {
+   "target": 40,
+   "realized": 40
+  },
+  "cluster_135109528_9101656|W-R": {
+   "target": 40,
+   "realized": 30
+  },
+  "389281|W-L": {
+   "target": 120,
+   "realized": 120
+  },
+  "389281|N-T": {
+   "target": 100,
+   "realized": 100
+  },
+  "389281|W-R": {
+   "target": 80,
+   "realized": 80
+  },
+  "389281|W-T": {
+   "target": 50,
+   "realized": 37
+  },
+  "389281|S-T": {
+   "target": 50,
+   "realized": 50
+  },
+  "389281|S-R": {
+   "target": 40,
+   "realized": 26
+  },
+  "389281|N-L": {
+   "target": 30,
+   "realized": 16
+  },
+  "1430847303|E-L": {
+   "target": 450,
+   "realized": 450
+  },
+  "1430847303|W-T": {
+   "target": 150,
+   "realized": 210
+  },
+  "389332|E-T": {
+   "target": 450,
+   "realized": 450
+  },
+  "389332|W-T": {
+   "target": 250,
+   "realized": 250
+  },
+  "389332|W-R": {
+   "target": 120,
+   "realized": 120
+  },
+  "389332|E-L": {
+   "target": 50,
+   "realized": 50
+  },
+  "cluster_1448439_2464758361|N-T": {
+   "target": 250,
+   "realized": 250
+  },
+  "cluster_1448439_2464758361|S-T": {
+   "target": 180,
+   "realized": 180
+  },
+  "cluster_1448439_2464758361|S-R": {
+   "target": 120,
+   "realized": 120
+  },
+  "cluster_1448439_2464758361|N-L": {
+   "target": 40,
+   "realized": 40
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|S-L": {
+   "target": 300,
+   "realized": 300
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|S-T": {
+   "target": 160,
+   "realized": 159
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|N-T": {
+   "target": 80,
+   "realized": 80
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|N-R": {
+   "target": 50,
+   "realized": 50
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|S-R": {
+   "target": 30,
+   "realized": 30
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|W-T": {
+   "target": 250,
+   "realized": 250
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-T": {
+   "target": 130,
+   "realized": 130
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-R": {
+   "target": 100,
+   "realized": 100
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|W-R": {
+   "target": 60,
+   "realized": 60
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|N-T": {
+   "target": 280,
+   "realized": 280
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|W-R": {
+   "target": 120,
+   "realized": 120
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|W-L": {
+   "target": 40,
+   "realized": 40
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|N-R": {
+   "target": 30,
+   "realized": 30
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|S-T": {
+   "target": 30,
+   "realized": 30
+  },
+  "32236377|E-T": {
+   "target": 100,
+   "realized": 100
+  },
+  "32236377|S-L": {
+   "target": 40,
+   "realized": 48
+  },
+  "32236377|E-L": {
+   "target": 40,
+   "realized": 40
+  },
+  "32236377|E-R": {
+   "target": 30,
+   "realized": 30
+  },
+  "32236377|S-T": {
+   "target": 10,
+   "realized": 18
+  },
+  "26165090|E-R": {
+   "target": 80,
+   "realized": 70
+  },
+  "26165090|N-T": {
+   "target": 40,
+   "realized": 56
+  },
+  "26165090|W-L": {
+   "target": 40,
+   "realized": 36
+  },
+  "26165090|W-R": {
+   "target": 30,
+   "realized": 43
+  },
+  "26165090|E-L": {
+   "target": 30,
+   "realized": 42
+  },
+  "135109534|E-T": {
+   "target": 30,
+   "realized": 30
+  },
+  "135109534|E-L": {
+   "target": 10,
+   "realized": 10
+  },
+  "135109534|S-R": {
+   "target": 70,
+   "realized": 70
+  },
+  "135109534|S-T": {
+   "target": 40,
+   "realized": 56
+  },
+  "135109534|N-T": {
+   "target": 30,
+   "realized": 30
+  },
+  "5166592132|W-R": {
+   "target": 120,
+   "realized": 120
+  },
+  "5166592132|W-T": {
+   "target": 100,
+   "realized": 90
+  },
+  "5166592132|S-R": {
+   "target": 120,
+   "realized": 120
+  },
+  "659802|E-R": {
+   "target": 300,
+   "realized": 300
+  },
+  "659802|N-L": {
+   "target": 240,
+   "realized": 240
+  },
+  "659802|S-R": {
+   "target": 80,
+   "realized": 80
+  },
+  "659802|S-T": {
+   "target": 80,
+   "realized": 80
+  },
+  "659802|N-T": {
+   "target": 30,
+   "realized": 30
+  },
+  "1448436|E-T": {
+   "target": 300,
+   "realized": 300
+  },
+  "1448436|E-L": {
+   "target": 150,
+   "realized": 150
+  },
+  "1448436|S-R": {
+   "target": 120,
+   "realized": 120
+  },
+  "1448436|W-T": {
+   "target": 100,
+   "realized": 100
+  },
+  "1448436|S-L": {
+   "target": 50,
+   "realized": 50
+  },
+  "26165126|N-T": {
+   "target": 120,
+   "realized": 117
+  },
+  "26165126|W-R": {
+   "target": 100,
+   "realized": 90
+  },
+  "26165126|N-L": {
+   "target": 60,
+   "realized": 60
+  },
+  "26165126|W-T": {
+   "target": 60,
+   "realized": 60
+  },
+  "26165126|S-T": {
+   "target": 60,
+   "realized": 60
+  },
+  "26165126|W-L": {
+   "target": 100,
+   "realized": 100
+  },
+  "133307283|S-L": {
+   "target": 320,
+   "realized": 320
+  },
+  "133307283|N-T": {
+   "target": 180,
+   "realized": 180
+  },
+  "133307283|S-T": {
+   "target": 130,
+   "realized": 130
+  },
+  "133307283|N-R": {
+   "target": 80,
+   "realized": 80
+  }
+ },
+ "extra_traversals": {}
+}

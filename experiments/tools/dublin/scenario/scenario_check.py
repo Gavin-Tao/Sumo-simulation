@@ -125,6 +125,7 @@ env.close()
 tis = list(ET.parse(TRIP).getroot().iter("tripinfo")); os.remove(TRIP)
 dep = [float(t.get("departDelay")) for t in tis if float(t.get("depart", -1)) >= 0]
 arrived = sum(1 for t in tis if float(t.get("arrival", -1)) >= 0)
+pairs_total = sum(1 for t in tis if t.get("id", "").startswith("pair_")); pairs_arrived = sum(1 for t in tis if t.get("id", "").startswith("pair_") and float(t.get("arrival", -1)) >= 0)
 wait_max = [float(t.get("waitingTime")) for t in tis]
 # 未插入: 路由文件里 depart ≤ 3300 的车辆 − tripinfo 里出现的
 planned = 0; in_trip = {t.get("id") for t in tis}; not_ins = 0
@@ -143,7 +144,7 @@ for (v, tid), rec in visits.items():
 by_type = collections.defaultdict(lambda: [0, 0])
 for (tid, s, typ), o in opp.items(): by_type[typ][0] += o["visits"]; by_type[typ][1] += o["with_opp"]
 out = dict(policy=a.policy, green=a.green, seed=a.seed, routes=a.routes, running_10min=rw, running_growth_last2_vs_34=(np.mean(rw[4:6]) / max(np.mean(rw[2:4]), 1) - 1) if len(rw) >= 6 else None,
-           pending_3300=locals().get("pending_3300"), planned_le3300=planned, not_inserted_le3300=not_ins, tripinfo=len(tis), arrived=arrived,
+           pending_3300=locals().get("pending_3300"), planned_le3300=planned, not_inserted_le3300=not_ins, tripinfo=len(tis), arrived=arrived, pairs_in_tripinfo=pairs_total, pairs_arrived=pairs_arrived,
            depart_delay_mean=float(np.mean(dep)) if dep else None, depart_delay_max=float(np.max(dep)) if dep else None, trip_wait_gt150=int(sum(1 for w in wait_max if w > 150)),
            lock_visits_ge150=lock_n, lock_by_junction=dict(lock_by), starve={t: dict(events=st[t]["starve_events"], max=st[t]["starve_max"]) for t in ids}, spill={t: st[t]["spill_events"] for t in ids},
            opportunities={f"{tid}|{s}|{typ}": o for (tid, s, typ), o in opp.items()}, opp_by_type={k: dict(visits=v[0], with_opp=v[1]) for k, v in by_type.items()})
