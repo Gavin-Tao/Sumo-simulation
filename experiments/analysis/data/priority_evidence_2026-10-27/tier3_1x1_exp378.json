@@ -1,0 +1,40 @@
+{
+ "exp": "378",
+ "ckpt_episode": 1340,
+ "seed": 123,
+ "class_blind": false,
+ "with_car_queue": false,
+ "n_states": 200,
+ "summary": {
+  "bus@10s": {
+   "n": 549,
+   "flip_rate": 0.09107468123861566,
+   "change_rate": 0.10382513661202186
+  },
+  "bus@30s": {
+   "n": 549,
+   "flip_rate": 0.12386156648451731,
+   "change_rate": 0.14389799635701275
+  },
+  "ambulance@10s": {
+   "n": 621,
+   "flip_rate": 0.24798711755233493,
+   "change_rate": 0.2640901771336554
+  },
+  "ambulance@30s": {
+   "n": 621,
+   "flip_rate": 0.25442834138486314,
+   "change_rate": 0.2753623188405797
+  }
+ },
+ "per_junction": {
+  "bus@t": {
+   "n": 549,
+   "flip_rate": 0.09107468123861566
+  },
+  "ambulance@t": {
+   "n": 621,
+   "flip_rate": 0.24798711755233493
+  }
+ }
+}
