@@ -8,7 +8,7 @@ import argparse, json, os, random, collections, xml.etree.ElementTree as ET
 import sumolib
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--scenario", default="nets/dublin/weekday_pairs50"); ap.add_argument("--net", default="nets/dublin/dublin_8std_splitslot.net.xml")
+ap.add_argument("--scenario", required=True); ap.add_argument("--net", default="nets/dublin/dublin_8std_splitslot.net.xml")
 ap.add_argument("--meta", default="nets/dublin/dublin_8std_splitslot_meta.json"); ap.add_argument("--car-routes", default="nets/dublin/weekday_18h_reroute_v2/car_weekday_18h.rou.xml")
 ap.add_argument("--n-routes", type=int, default=10); ap.add_argument("--max-routes", type=int, default=12); ap.add_argument("--pairs", type=int, default=50)
 ap.add_argument("--t0", type=float, default=60.0); ap.add_argument("--gap", type=float, default=50.0); ap.add_argument("--offset", type=float, default=90.0)
@@ -20,6 +20,7 @@ MUST = [("1430847303", "W-T"), ("659802", "S-R|S-T"), ("1448436", "S-R"), ("2616
         ("cluster_5166592137_5166592140_557198554_57744042", "W-R"), ("5166592132", "S-R"), ("32236377", "S-L"),
         ("1448442", "S-L|N-R|E-T|N-T"), ("cluster_21620852_2383668110_2383668118_4009885977", "S-L|S-R|W-T|S-T"), ("cluster_135109528_9101656", "E-T|S-T|N-R|S-L"),
         ("135109534", "E-T|S-R"), ("26165090", "E-R|N-T")]
+MUST = [m for m in MUST if m[0] in meta]
 conn_mv = {}; minor_nodes = set()
 for tid, t in meta.items():
     link_slot = {int(i): grp[0]["approach"] + "-" + grp[0]["turn"] for i, grp in t["links"].items()}

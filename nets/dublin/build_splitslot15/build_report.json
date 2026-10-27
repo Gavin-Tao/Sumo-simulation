@@ -1,0 +1,13 @@
+{
+ "src": "nets/dublin/build_merge389332/dublin_8action_merged.net.xml",
+ "demote": [
+  "32236377",
+  "135109534",
+  "cluster_135109528_9101656"
+ ],
+ "join": [],
+ "net": "/home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot15.net.xml",
+ "meta": "/home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot15_meta.json",
+ "edges_gone": [],
+ "edges_new": []
+}

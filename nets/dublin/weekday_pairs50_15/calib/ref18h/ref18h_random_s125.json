@@ -1,0 +1,142 @@
+{
+ "version": 2,
+ "policy": "random",
+ "green": 20.0,
+ "seed": 125,
+ "net": "/home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot.net.xml",
+ "routes": "/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_reroute_v2_samevtype/car_weekday_18h.rou.xml,/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_reroute_v2_samevtype/bus_weekday_18h.rou.xml,/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_reroute_v2_samevtype/amb_weekday_18h_probe11h.rou.xml",
+ "running_10min": [
+  185.95833333333334,
+  234.18333333333334,
+  251.58333333333334,
+  253.26666666666668,
+  256.1666666666667,
+  263.03333333333336
+ ],
+ "running_growth_last2_vs_34": 0.028424284440923042,
+ "pending_3300": 322,
+ "planned_le3300": 5578,
+ "not_inserted_le3300": 165,
+ "tripinfo": 5722,
+ "arrived": 5465,
+ "pairs_in_tripinfo": 0,
+ "pairs_arrived": 0,
+ "depart_delay_mean": 104.72343586158686,
+ "depart_delay_max": 790.5,
+ "lane_changes": 193,
+ "visits_total": 9037,
+ "lock_visits": 134,
+ "lock_s": 150.0,
+ "lock_by_junction": {
+  "659802": 89,
+  "1448442": 25,
+  "1448436": 2,
+  "32236377": 14,
+  "cluster_21620852_2383668110_2383668118_4009885977": 4
+ },
+ "lock_by_type": {
+  "car": 134
+ },
+ "max_visit_wait": 330.0,
+ "max_visit_wait_rec": [
+  "car_2718",
+  "1448442",
+  330.0
+ ],
+ "starve": {
+  "133307283": {
+   "events": 2,
+   "max": 65.0
+  },
+  "135109534": {
+   "events": 0,
+   "max": 0.0
+  },
+  "1430847303": {
+   "events": 0,
+   "max": 0.0
+  },
+  "1448436": {
+   "events": 5,
+   "max": 100.0
+  },
+  "1448442": {
+   "events": 22,
+   "max": 235.0
+  },
+  "26165090": {
+   "events": 1,
+   "max": 90.0
+  },
+  "26165126": {
+   "events": 12,
+   "max": 85.0
+  },
+  "32236377": {
+   "events": 6,
+   "max": 100.0
+  },
+  "389281": {
+   "events": 9,
+   "max": 105.0
+  },
+  "389332": {
+   "events": 0,
+   "max": 0.0
+  },
+  "5166592132": {
+   "events": 0,
+   "max": 0.0
+  },
+  "659802": {
+   "events": 4,
+   "max": 80.0
+  },
+  "cluster_135109528_9101656": {
+   "events": 4,
+   "max": 115.0
+  },
+  "cluster_1448439_2464758361": {
+   "events": 0,
+   "max": 0.0
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "events": 0,
+   "max": 0.0
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "events": 12,
+   "max": 155.0
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "events": 0,
+   "max": 0.0
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "events": 0,
+   "max": 0.0
+  }
+ },
+ "spill": {
+  "133307283": 0,
+  "135109534": 0,
+  "1430847303": 0,
+  "1448436": 0,
+  "1448442": 0,
+  "26165090": 0,
+  "26165126": 0,
+  "32236377": 0,
+  "389281": 0,
+  "389332": 2,
+  "5166592132": 0,
+  "659802": 0,
+  "cluster_135109528_9101656": 0,
+  "cluster_1448439_2464758361": 0,
+  "cluster_1998326407_2876012598_4781977262_658429": 0,
+  "cluster_21620852_2383668110_2383668118_4009885977": 0,
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": 0,
+  "cluster_5166592137_5166592140_557198554_57744042": 0
+ },
+ "opportunities": {},
+ "opp_by_type": {}
+}
