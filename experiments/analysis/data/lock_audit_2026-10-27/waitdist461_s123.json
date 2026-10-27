@@ -1,0 +1,30 @@
+{
+ "exp": "461",
+ "ckpt_episode": 480,
+ "seed": 123,
+ "awt_log": true,
+ "awt_scale": 100.0,
+ "awt_cap": 500.0,
+ "awt_basis": "visit",
+ "slot_steps_with_cars": 13805,
+ "zero_share": 0.864469395146686,
+ "all": {
+  "q50": 0.0,
+  "q90": 1.0000000264123095,
+  "q99": 7.999999244691693,
+  "max": 38.00000379321434,
+  "mean": 0.4569396163525196
+ },
+ "nonzero": {
+  "n": 1871,
+  "q10": 0.5000000087672432,
+  "q50": 2.1666666378716295,
+  "q90": 6.9999993407468155,
+  "q99": 17.000000923546203,
+  "max": 38.00000379321434
+ },
+ "linear_feature_lt_0p1_share_nonzero": 0.9497594869053981,
+ "linear_feature_lt_0p3_share_nonzero": 0.997327632282202,
+ "share_nonzero_gt_100s": 0.0,
+ "share_nonzero_gt_500s": 0.0
+}

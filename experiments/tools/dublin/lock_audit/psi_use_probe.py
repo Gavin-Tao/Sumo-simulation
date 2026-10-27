@@ -18,8 +18,8 @@ slot_dim = 1 + phi + psi + (1 if o0.include_lane_occ else 0) + (1 if getattr(o0,
 dim = hdr + 12 * slot_dim; assert dim == len(next(iter(states.values()))), (dim, len(next(iter(states.values()))))
 psi_idx = np.array([hdr + s * slot_dim + 1 + phi + k for s in range(12) for k in range(psi)], int)
 mg_off = slot_dim - 1 if getattr(o0, "include_slot_min_green", False) else None
-q_off = 1 + 5   # 槽内 queue×5 紧跟 count×5 (fields 顺序 count, queue, ...)
-assert tuple(o0.fields[:2]) == ("count", "queue"), o0.fields
+nf = len(o0.fields); q_idx = [1 + 3 * 0 + p * nf + o0.fields.index("queue") for p in range(5)] if nf == 3 else [1 + p * nf + o0.fields.index("queue") for p in range(5)]   # 槽内按优先级为主序: is_green, (fields…)_p1, (fields…)_p2, …
+assert "queue" in o0.fields, o0.fields
 print(f"dim={dim} hdr={hdr} phi={phi} psi={psi} slot_dim={slot_dim}")
 st = {tid: dict(steps=0, flips=0, flips_q=0, qgap_q=[], qgap_nq=[], ext=collections.Counter(), ext_n=collections.Counter(), flip_by_phase=collections.Counter(), steps_by_phase=collections.Counter()) for tid in env.ts_ids}
 done = {"__all__": False}
@@ -29,7 +29,7 @@ while not done["__all__"]:
         s = np.asarray(states[t], dtype=np.float32); ea, k, q = act(t, s); acts[t] = ea; s_ = st[t]; s_["steps"] += 1
         ts = env.traffic_signals[t]; cur = ts.green_phase
         sl = s[hdr:].reshape(12, slot_dim)
-        has_q = bool((sl[:, q_off:q_off + 5].sum()) > 0)
+        has_q = bool((sl[:, q_idx].sum()) > 0)
         qs = np.sort(q[np.isfinite(q)])[::-1]; gap = float(qs[0] - qs[1]) if len(qs) > 1 else np.nan
         (s_["qgap_q"] if has_q else s_["qgap_nq"]).append(gap)
         s_["steps_by_phase"][int(cur)] += 1
