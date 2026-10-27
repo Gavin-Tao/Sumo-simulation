@@ -1,0 +1,377 @@
+{
+ "exp": "457",
+ "ckpt_episode": 505,
+ "seed": 123,
+ "junctions": {
+  "133307283": {
+   "steps": 720,
+   "steps_with_queue": 142,
+   "blocked_steps": 15,
+   "blocked_veh": 20,
+   "empty_green_steps": 118,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 177,
+   "phase_mean_dur": {
+    "0": 27.4,
+    "4": 10.4,
+    "5": 23.2,
+    "2": 10.0
+   },
+   "phase_n": {
+    "0": 78,
+    "4": 65,
+    "5": 33,
+    "2": 1
+   }
+  },
+  "135109534": {
+   "steps": 720,
+   "steps_with_queue": 1,
+   "blocked_steps": 1,
+   "blocked_veh": 1,
+   "empty_green_steps": 1,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 20,
+   "phase_mean_dur": {
+    "0": 330.0,
+    "1": 15.0,
+    "2": 297.8
+   },
+   "phase_n": {
+    "0": 1,
+    "1": 10,
+    "2": 9
+   }
+  },
+  "1430847303": {
+   "steps": 720,
+   "steps_with_queue": 183,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 46,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 132,
+   "phase_mean_dur": {
+    "1": 12.3,
+    "6": 42.1
+   },
+   "phase_n": {
+    "1": 66,
+    "6": 66
+   }
+  },
+  "1448436": {
+   "steps": 720,
+   "steps_with_queue": 175,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 164,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 178,
+   "phase_mean_dur": {
+    "1": 27.5,
+    "2": 13.0,
+    "7": 10.0
+   },
+   "phase_n": {
+    "1": 89,
+    "2": 86,
+    "7": 3
+   }
+  },
+  "1448442": {
+   "steps": 720,
+   "steps_with_queue": 287,
+   "blocked_steps": 54,
+   "blocked_veh": 70,
+   "empty_green_steps": 273,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 326,
+   "phase_mean_dur": {
+    "0": 10.3,
+    "5": 12.2,
+    "3": 11.2,
+    "4": 10.3,
+    "2": 10.9,
+    "1": 11.2
+   },
+   "phase_n": {
+    "0": 61,
+    "5": 61,
+    "3": 25,
+    "4": 61,
+    "2": 33,
+    "1": 85
+   }
+  },
+  "26165090": {
+   "steps": 720,
+   "steps_with_queue": 39,
+   "blocked_steps": 38,
+   "blocked_veh": 42,
+   "empty_green_steps": 39,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 343,
+   "phase_mean_dur": {
+    "0": 10.2,
+    "3": 10.9,
+    "7": 10.1
+   },
+   "phase_n": {
+    "0": 46,
+    "3": 150,
+    "7": 147
+   }
+  },
+  "26165126": {
+   "steps": 720,
+   "steps_with_queue": 72,
+   "blocked_steps": 53,
+   "blocked_veh": 65,
+   "empty_green_steps": 67,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 183,
+   "phase_mean_dur": {
+    "0": 28.8,
+    "3": 11.3,
+    "1": 11.3
+   },
+   "phase_n": {
+    "0": 87,
+    "3": 58,
+    "1": 38
+   }
+  },
+  "32236377": {
+   "steps": 720,
+   "steps_with_queue": 12,
+   "blocked_steps": 9,
+   "blocked_veh": 12,
+   "empty_green_steps": 12,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 180,
+   "phase_mean_dur": {
+    "0": 57.5,
+    "1": 11.6,
+    "3": 26.0
+   },
+   "phase_n": {
+    "0": 6,
+    "1": 89,
+    "3": 85
+   }
+  },
+  "389281": {
+   "steps": 720,
+   "steps_with_queue": 59,
+   "blocked_steps": 41,
+   "blocked_veh": 49,
+   "empty_green_steps": 59,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 251,
+   "phase_mean_dur": {
+    "0": 13.9,
+    "4": 16.4,
+    "3": 12.3,
+    "1": 13.5
+   },
+   "phase_n": {
+    "0": 66,
+    "4": 92,
+    "3": 73,
+    "1": 20
+   }
+  },
+  "389332": {
+   "steps": 720,
+   "steps_with_queue": 7,
+   "blocked_steps": 2,
+   "blocked_veh": 2,
+   "empty_green_steps": 7,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 8,
+   "phase_mean_dur": {
+    "1": 776.2,
+    "3": 10.0
+   },
+   "phase_n": {
+    "1": 4,
+    "3": 4
+   }
+  },
+  "5166592132": {
+   "steps": 720,
+   "steps_with_queue": 34,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 32,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 131,
+   "phase_mean_dur": {
+    "1": 26.3,
+    "2": 28.5
+   },
+   "phase_n": {
+    "1": 66,
+    "2": 65
+   }
+  },
+  "659802": {
+   "steps": 720,
+   "steps_with_queue": 294,
+   "blocked_steps": 69,
+   "blocked_veh": 113,
+   "empty_green_steps": 273,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 155,
+   "phase_mean_dur": {
+    "0": 12.3,
+    "3": 36.2,
+    "2": 10.0
+   },
+   "phase_n": {
+    "0": 13,
+    "3": 76,
+    "2": 66
+   }
+  },
+  "cluster_135109528_9101656": {
+   "steps": 720,
+   "steps_with_queue": 29,
+   "blocked_steps": 5,
+   "blocked_veh": 5,
+   "empty_green_steps": 29,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 121,
+   "phase_mean_dur": {
+    "0": 10.3,
+    "7": 53.3,
+    "6": 49.7,
+    "5": 10.0,
+    "4": 10.0,
+    "3": 10.0,
+    "2": 10.0,
+    "1": 10.0
+   },
+   "phase_n": {
+    "0": 30,
+    "7": 23,
+    "6": 34,
+    "5": 5,
+    "4": 15,
+    "3": 10,
+    "2": 3,
+    "1": 1
+   }
+  },
+  "cluster_1448439_2464758361": {
+   "steps": 720,
+   "steps_with_queue": 3,
+   "blocked_steps": 1,
+   "blocked_veh": 1,
+   "empty_green_steps": 3,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 40,
+   "phase_mean_dur": {
+    "0": 165.8,
+    "2": 11.0
+   },
+   "phase_n": {
+    "0": 20,
+    "2": 20
+   }
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "steps": 720,
+   "steps_with_queue": 202,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 185,
+   "starve_events": 3,
+   "starve_max": 95.0,
+   "switches": 78,
+   "phase_mean_dur": {
+    "0": 58.3,
+    "4": 31.3
+   },
+   "phase_n": {
+    "0": 39,
+    "4": 39
+   }
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "steps": 720,
+   "steps_with_queue": 249,
+   "blocked_steps": 4,
+   "blocked_veh": 5,
+   "empty_green_steps": 109,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 288,
+   "phase_mean_dur": {
+    "1": 11.2,
+    "7": 10.1,
+    "5": 14.9,
+    "2": 10.0
+   },
+   "phase_n": {
+    "1": 102,
+    "7": 64,
+    "5": 119,
+    "2": 3
+   }
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "steps": 720,
+   "steps_with_queue": 5,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 4,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 82,
+   "phase_mean_dur": {
+    "0": 68.4,
+    "2": 11.1
+   },
+   "phase_n": {
+    "0": 41,
+    "2": 41
+   }
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "steps": 720,
+   "steps_with_queue": 10,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 10,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 240,
+   "phase_mean_dur": {
+    "0": 24.2,
+    "3": 11.4,
+    "2": 13.2
+   },
+   "phase_n": {
+    "0": 52,
+    "3": 85,
+    "2": 103
+   }
+  }
+ }
+}
