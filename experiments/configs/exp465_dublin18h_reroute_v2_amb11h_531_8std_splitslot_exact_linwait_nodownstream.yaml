@@ -1,0 +1,85 @@
+# exp465_dublin18h_reroute_v2_amb11h_531_8std_splitslot_exact_linwait_nodownstream (2026-10-27, 用户令 "在 461 基础上做三个实验: 线性等待 / 去掉 downstream / 线性且去掉 downstream"): exp461 逐位, 改两处: obs_awt_log: true → false 且 obs_downstream: true → false (= 463 与 464 的合并)。
+# 下面是 exp459 的说明:
+#   exp457 逐位, 只改下面标 "2026-10-26" 的键:
+#   (1) 网/meta/sumocfg 换成 dublin_8std_splitslot (cluster_21620852 的 link 2→E 右转、link 6→S 直行, 该路口可用动作 4→6; 其余 17 路口逐位相同);
+#   (2) obs_all_connections / all_connections: 建表遍历每个信号索引下的全部连接 (389332 E/W 直行容量与出口/供车车道、133307283 N 直行出口车道);
+#   (3) obs_slot_memo: false —— 每步按当前路线重查车辆运动, 不再按车辆 ID 整集缓存 (重访公交、路线终点);
+#   (4) obs_awt_basis: visit + reward_wait_basis: visit —— 等待秒数读逐秒访问统计器 (本次在本路口进口边上、SUMO 判定为等待的秒数),
+#       状态的 mean_awt 与奖励共用同一个数; 奖励不再做跨车道减法, 上游非 RL 路口的等待不再记给第一条 RL 车道。
+#   注意: 奖励口径变了, 与 449/456/457/458 不可直接比较; 旧检查点只能做诊断评估。
+# exp457_dublin18h_reroute_v2_amb11h_541_8std_slot12_f1 (2026-10-14, 用户令 "这是 531, 我还需要 521 541 111 的"): exp449 逐位, 优先级权重 5/4/1: 只把 priority_source.bus 由 3 改为 4 (与 exp304 对 298 的改法相同)。
+name: exp465_dublin18h_reroute_v2_amb11h_531_8std_splitslot_exact_linwait_nodownstream
+wandb_project: sumo-rl-dublin
+net_file: ../nets/dublin/dublin_8std_splitslot.net.xml                                      # 2026-10-26 (1)
+route_file: ../nets/dublin/weekday_18h_reroute_v2/car_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/bus_weekday_18h.rou.xml,../nets/dublin/weekday_18h_reroute_v2/amb_weekday_18h_probe11h.rou.xml
+cfg_file: ../nets/dublin/weekday_18h_reroute_v2/dublin_weekday_18h_probe11h_8std_splitslot.sumocfg   # 2026-10-26 (1)
+observation_class: PriorityMovement
+obs_phase_state: perphase   # 2026-10-10: 与 exp301 对等 (原 legacy)
+obs_fields:
+- count
+- queue
+- mean_awt
+# ---- obs-side fixes (audit 2026-06-12, all measured defects) ----
+obs_awt_basis: visit      # 2026-10-26 (4): 原 local
+obs_awt_cap: 500          # bound worst-case stuck-on-lane wait at feature 5.0 (本臂 awt_log 关, 此截断生效)
+obs_lane_occ: true        # shared-lane physical occupancy truth (+12 dims)
+obs_all_connections: true # 2026-10-26 (2)
+all_connections: true     # 2026-10-26 (2): TrafficSignal.out_lanes 同样收齐 (当前观测/奖励不用, 保持一致)
+obs_slot_memo: false      # 2026-10-26 (3)
+priority_source:
+  ambulance: 5
+  bus: 3
+  car: 1
+reward_fn: priority-avg-waiting
+reward_wait_basis: visit  # 2026-10-26 (4)
+num_seconds: 3600
+delta_time: 5
+yellow_time: 2
+min_green: 5
+use_gui: false
+use_max_green: true
+max_green: 50
+hidden_dim: 128
+lr: 0.001
+gamma: 0.95
+epsilon: 0.9              # 2026-10-26 (用户批准): 与 eps_start 相等, 开始更新前的探索率不再是 0.1, 衰减曲线从 0.9 连续起步
+eps_start: 0.9
+eps_end: 0.05
+# ---- training-side stabilization (deadly-triad, exp200-validated recipe) ----
+eps_decay: 30000          # exploration tail ~ep80 instead of ep30
+target_update: 720        # sync once per episode (720 steps) -> quasi-fixed TD target
+capacity: 300000          # ~23 episodes in buffer instead of 3.8
+use_double: true          # kill max-operator overestimation feedback
+loss_fn: huber            # saturate gradients on exploding TD errors
+grad_clip: 1.0
+mini_size: 1000
+batch_size: 256
+seed: 0
+episodes: 800
+checkpoint_interval: 50
+runs: 1
+eval_interval: 5
+eval_seed: 123
+logging_mode: basic
+use_per: false
+action_meta_file: ../nets/dublin/dublin_8std_splitslot_meta.json                           # 2026-10-26 (1)
+obs_downstream: false        # 2026-10-27 消融: 去掉下游 ψ (每槽 10 维 → 状态 336 → 216 维); 461 为 true; obs_downstream_fields 保留但不再使用
+obs_downstream_fields:
+- count
+- queue
+# ---- R1 (forensics Part 7): TD target clamp at the domain bound Q<=0 ----
+target_clip_max: 0.0
+obs_awt_log: false           # 2026-10-27 消融: 等待特征回到线性刻度 min(秒, awt_cap=500)/100 ∈ [0, 5] (与都柏林 GS 消融 310 同定义); 461 为 true
+target_clip_min: -50.0       # 2026-10-10: 与 exp301 对等 (TD 目标下限; 8STD 的 Q 一般 -5..-20, 预计几乎不触发)
+
+# ── 2026-10-14 exp449 改动 (其余与 exp334 逐位相同) ──
+obs_header: false            # 去掉头部两维 (含相位已持续时间)
+obs_slot_min_green: true     # 每个绿灯槽一位 min_green_ok
+mask_min_green: true         # F1: 动态最短绿掩码 (选动作 + TD 目标)
+
+# ── 2026-10-26 训练中评估改逐秒采样 (只影响 eval_system 指标, 评估奖励与 best.pth 选择依据不变) ──
+eval_collector_1s: true
+
+# ── 2026-10-26 复查补修 ──
+sync_target_init: true       # DQN 初始化即同步目标网络 (旧默认两套各自随机初始化)
+train_strict_errors: true    # 训练循环只把 SUMO/TraCI 异常当作 "重置后继续", 其它异常直接抛出
