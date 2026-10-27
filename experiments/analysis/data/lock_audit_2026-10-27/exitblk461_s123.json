@@ -1,0 +1,286 @@
+{
+ "exp": "461",
+ "ckpt_episode": 480,
+ "seed": 123,
+ "junctions": {
+  "133307283": {
+   "steps": 720,
+   "steps_with_queue": 87,
+   "psi_cnt_nz": 671,
+   "psi_q_nz": 1,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "7": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "135109534": {
+   "steps": 720,
+   "steps_with_queue": 1,
+   "psi_cnt_nz": 47,
+   "psi_q_nz": 5,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "7": 3,
+    "4": 3,
+    "8": 2,
+    "0": 2
+   },
+   "per_slot_green_blocked": {}
+  },
+  "1430847303": {
+   "steps": 720,
+   "steps_with_queue": 195,
+   "psi_cnt_nz": 671,
+   "psi_q_nz": 0,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 0,
+   "exit_q_mean_when_nz": 0.0,
+   "per_slot_exit_q_nz": {},
+   "per_slot_green_blocked": {}
+  },
+  "1448436": {
+   "steps": 720,
+   "steps_with_queue": 158,
+   "psi_cnt_nz": 434,
+   "psi_q_nz": 0,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 0,
+   "exit_q_mean_when_nz": 0.0,
+   "per_slot_exit_q_nz": {},
+   "per_slot_green_blocked": {}
+  },
+  "1448442": {
+   "steps": 720,
+   "steps_with_queue": 218,
+   "psi_cnt_nz": 596,
+   "psi_q_nz": 0,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 0,
+   "exit_q_mean_when_nz": 0.0,
+   "per_slot_exit_q_nz": {},
+   "per_slot_green_blocked": {}
+  },
+  "26165090": {
+   "steps": 720,
+   "steps_with_queue": 3,
+   "psi_cnt_nz": 83,
+   "psi_q_nz": 18,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "5": 18,
+    "9": 18
+   },
+   "per_slot_green_blocked": {}
+  },
+  "26165126": {
+   "steps": 720,
+   "steps_with_queue": 95,
+   "psi_cnt_nz": 555,
+   "psi_q_nz": 67,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 2,
+   "exit_q_mean_when_nz": 1.0895522388059702,
+   "per_slot_exit_q_nz": {
+    "1": 67,
+    "11": 67
+   },
+   "per_slot_green_blocked": {}
+  },
+  "32236377": {
+   "steps": 720,
+   "steps_with_queue": 10,
+   "psi_cnt_nz": 322,
+   "psi_q_nz": 72,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 2,
+   "exit_q_mean_when_nz": 1.1805555555555556,
+   "per_slot_exit_q_nz": {
+    "4": 72,
+    "6": 72
+   },
+   "per_slot_green_blocked": {}
+  },
+  "389281": {
+   "steps": 720,
+   "steps_with_queue": 64,
+   "psi_cnt_nz": 483,
+   "psi_q_nz": 1,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "0": 1,
+    "10": 1,
+    "8": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "389332": {
+   "steps": 720,
+   "steps_with_queue": 6,
+   "psi_cnt_nz": 523,
+   "psi_q_nz": 1,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "4": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "5166592132": {
+   "steps": 720,
+   "steps_with_queue": 20,
+   "psi_cnt_nz": 439,
+   "psi_q_nz": 79,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 2,
+   "exit_q_mean_when_nz": 1.1518987341772151,
+   "per_slot_exit_q_nz": {
+    "10": 79,
+    "8": 71
+   },
+   "per_slot_green_blocked": {}
+  },
+  "659802": {
+   "steps": 720,
+   "steps_with_queue": 218,
+   "psi_cnt_nz": 714,
+   "psi_q_nz": 1,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "3": 1,
+    "1": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "cluster_135109528_9101656": {
+   "steps": 720,
+   "steps_with_queue": 32,
+   "psi_cnt_nz": 114,
+   "psi_q_nz": 2,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "4": 1,
+    "2": 1,
+    "6": 1,
+    "3": 1,
+    "1": 1,
+    "11": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "cluster_1448439_2464758361": {
+   "steps": 720,
+   "steps_with_queue": 0,
+   "psi_cnt_nz": 502,
+   "psi_q_nz": 1,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 1,
+   "exit_q_mean_when_nz": 1.0,
+   "per_slot_exit_q_nz": {
+    "7": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "steps": 720,
+   "steps_with_queue": 37,
+   "psi_cnt_nz": 705,
+   "psi_q_nz": 88,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 3,
+   "exit_q_mean_when_nz": 1.2840909090909092,
+   "per_slot_exit_q_nz": {
+    "7": 88,
+    "2": 88
+   },
+   "per_slot_green_blocked": {}
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "steps": 720,
+   "steps_with_queue": 192,
+   "psi_cnt_nz": 602,
+   "psi_q_nz": 4,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 3,
+   "exit_q_mean_when_nz": 1.75,
+   "per_slot_exit_q_nz": {
+    "4": 3,
+    "5": 1,
+    "9": 1,
+    "7": 1
+   },
+   "per_slot_green_blocked": {}
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "steps": 720,
+   "steps_with_queue": 8,
+   "psi_cnt_nz": 479,
+   "psi_q_nz": 0,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 0,
+   "exit_q_mean_when_nz": 0.0,
+   "per_slot_exit_q_nz": {},
+   "per_slot_green_blocked": {}
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "steps": 720,
+   "steps_with_queue": 8,
+   "psi_cnt_nz": 655,
+   "psi_q_nz": 0,
+   "green_into_blocked": 0,
+   "blocked_alt": 0,
+   "veh_green_blocked": 0,
+   "exit_q_max": 0,
+   "exit_q_mean_when_nz": 0.0,
+   "per_slot_exit_q_nz": {},
+   "per_slot_green_blocked": {}
+  }
+ }
+}

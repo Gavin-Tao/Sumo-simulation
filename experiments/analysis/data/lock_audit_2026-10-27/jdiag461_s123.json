@@ -1,0 +1,379 @@
+{
+ "exp": "461",
+ "ckpt_episode": 480,
+ "seed": 123,
+ "junctions": {
+  "133307283": {
+   "steps": 720,
+   "steps_with_queue": 87,
+   "blocked_steps": 17,
+   "blocked_veh": 22,
+   "empty_green_steps": 77,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 134,
+   "phase_mean_dur": {
+    "0": 42.3,
+    "5": 18.2,
+    "4": 10.2,
+    "2": 10.0
+   },
+   "phase_n": {
+    "0": 57,
+    "5": 47,
+    "4": 29,
+    "2": 1
+   }
+  },
+  "135109534": {
+   "steps": 720,
+   "steps_with_queue": 1,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 1,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 59,
+   "phase_mean_dur": {
+    "0": 92.2,
+    "1": 10.0,
+    "2": 43.1
+   },
+   "phase_n": {
+    "0": 25,
+    "1": 8,
+    "2": 26
+   }
+  },
+  "1430847303": {
+   "steps": 720,
+   "steps_with_queue": 195,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 39,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 143,
+   "phase_mean_dur": {
+    "1": 11.3,
+    "6": 39.1
+   },
+   "phase_n": {
+    "1": 72,
+    "6": 71
+   }
+  },
+  "1448436": {
+   "steps": 720,
+   "steps_with_queue": 158,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 151,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 179,
+   "phase_mean_dur": {
+    "1": 28.3,
+    "2": 11.8,
+    "7": 10.0
+   },
+   "phase_n": {
+    "1": 90,
+    "2": 87,
+    "7": 2
+   }
+  },
+  "1448442": {
+   "steps": 720,
+   "steps_with_queue": 218,
+   "blocked_steps": 20,
+   "blocked_veh": 24,
+   "empty_green_steps": 208,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 299,
+   "phase_mean_dur": {
+    "0": 10.8,
+    "3": 16.0,
+    "4": 12.0,
+    "1": 11.2,
+    "2": 10.0,
+    "5": 10.6
+   },
+   "phase_n": {
+    "0": 73,
+    "3": 49,
+    "4": 73,
+    "1": 80,
+    "2": 15,
+    "5": 9
+   }
+  },
+  "26165090": {
+   "steps": 720,
+   "steps_with_queue": 3,
+   "blocked_steps": 2,
+   "blocked_veh": 2,
+   "empty_green_steps": 3,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 51,
+   "phase_mean_dur": {
+    "0": 11.2,
+    "7": 76.5,
+    "3": 72.4
+   },
+   "phase_n": {
+    "0": 4,
+    "7": 24,
+    "3": 23
+   }
+  },
+  "26165126": {
+   "steps": 720,
+   "steps_with_queue": 95,
+   "blocked_steps": 49,
+   "blocked_veh": 55,
+   "empty_green_steps": 91,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 178,
+   "phase_mean_dur": {
+    "0": 28.7,
+    "1": 11.6,
+    "3": 12.5
+   },
+   "phase_n": {
+    "0": 89,
+    "1": 85,
+    "3": 4
+   }
+  },
+  "32236377": {
+   "steps": 720,
+   "steps_with_queue": 10,
+   "blocked_steps": 8,
+   "blocked_veh": 8,
+   "empty_green_steps": 10,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 58,
+   "phase_mean_dur": {
+    "0": 26.1,
+    "1": 100.4,
+    "3": 15.7
+   },
+   "phase_n": {
+    "0": 23,
+    "1": 28,
+    "3": 7
+   }
+  },
+  "389281": {
+   "steps": 720,
+   "steps_with_queue": 64,
+   "blocked_steps": 20,
+   "blocked_veh": 23,
+   "empty_green_steps": 63,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 263,
+   "phase_mean_dur": {
+    "0": 14.1,
+    "4": 12.7,
+    "3": 13.2,
+    "1": 13.9
+   },
+   "phase_n": {
+    "0": 92,
+    "4": 88,
+    "3": 36,
+    "1": 47
+   }
+  },
+  "389332": {
+   "steps": 720,
+   "steps_with_queue": 6,
+   "blocked_steps": 2,
+   "blocked_veh": 2,
+   "empty_green_steps": 6,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 8,
+   "phase_mean_dur": {
+    "1": 776.2,
+    "3": 10.0
+   },
+   "phase_n": {
+    "1": 4,
+    "3": 4
+   }
+  },
+  "5166592132": {
+   "steps": 720,
+   "steps_with_queue": 20,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 17,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 41,
+   "phase_mean_dur": {
+    "1": 143.6,
+    "2": 28.8
+   },
+   "phase_n": {
+    "1": 21,
+    "2": 20
+   }
+  },
+  "659802": {
+   "steps": 720,
+   "steps_with_queue": 218,
+   "blocked_steps": 60,
+   "blocked_veh": 111,
+   "empty_green_steps": 192,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 145,
+   "phase_mean_dur": {
+    "0": 12.6,
+    "3": 38.8,
+    "2": 10.0
+   },
+   "phase_n": {
+    "0": 19,
+    "3": 72,
+    "2": 54
+   }
+  },
+  "cluster_135109528_9101656": {
+   "steps": 720,
+   "steps_with_queue": 32,
+   "blocked_steps": 5,
+   "blocked_veh": 5,
+   "empty_green_steps": 32,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 330,
+   "phase_mean_dur": {
+    "0": 10.4,
+    "6": 10.6,
+    "7": 10.0,
+    "4": 10.3,
+    "1": 32.5,
+    "2": 10.0,
+    "3": 10.0
+   },
+   "phase_n": {
+    "0": 42,
+    "6": 140,
+    "7": 115,
+    "4": 15,
+    "1": 8,
+    "2": 3,
+    "3": 7
+   }
+  },
+  "cluster_1448439_2464758361": {
+   "steps": 720,
+   "steps_with_queue": 0,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 0,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 128,
+   "phase_mean_dur": {
+    "0": 45.5,
+    "2": 10.1
+   },
+   "phase_n": {
+    "0": 64,
+    "2": 64
+   }
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "steps": 720,
+   "steps_with_queue": 37,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 31,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 92,
+   "phase_mean_dur": {
+    "0": 64.6,
+    "4": 11.0
+   },
+   "phase_n": {
+    "0": 46,
+    "4": 46
+   }
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "steps": 720,
+   "steps_with_queue": 192,
+   "blocked_steps": 12,
+   "blocked_veh": 18,
+   "empty_green_steps": 174,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 257,
+   "phase_mean_dur": {
+    "0": 19.7,
+    "1": 13.3,
+    "2": 10.4,
+    "6": 10.8,
+    "7": 12.4,
+    "3": 10.0
+   },
+   "phase_n": {
+    "0": 77,
+    "1": 45,
+    "2": 26,
+    "6": 77,
+    "7": 21,
+    "3": 11
+   }
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "steps": 720,
+   "steps_with_queue": 8,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 8,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 20,
+   "phase_mean_dur": {
+    "0": 247.0,
+    "2": 11.5
+   },
+   "phase_n": {
+    "0": 10,
+    "2": 10
+   }
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "steps": 720,
+   "steps_with_queue": 8,
+   "blocked_steps": 0,
+   "blocked_veh": 0,
+   "empty_green_steps": 8,
+   "starve_events": 0,
+   "starve_max": 0,
+   "switches": 97,
+   "phase_mean_dur": {
+    "0": 10.7,
+    "3": 18.2,
+    "2": 70.2
+   },
+   "phase_n": {
+    "0": 45,
+    "3": 11,
+    "2": 41
+   }
+  }
+ }
+}
