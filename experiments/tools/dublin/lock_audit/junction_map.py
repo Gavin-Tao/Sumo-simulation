@@ -44,8 +44,8 @@ pad = 120; ax.set_xlim(min(p[0] for p in pts.values()) - pad, max(p[0] for p in 
 ax.set_aspect("equal"); ax.set_xticks([]); ax.set_yticks([]); [s.set_visible(False) for s in ax.spines.values()]
 sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm); sm.set_array([]); cb = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.01); cb.set_label("停车时间 / visit (s), 新541 best × 10 种子" if CJK else "Stopped time / visit (s), new-541 best x 10 seeds", fontsize=9, fontproperties=CJK)
 from matplotlib.lines import Line2D
-ax.legend(handles=[Line2D([], [], marker="o", color="#000000", markerfacecolor="none", markersize=11, lw=0, markeredgewidth=1.4, label="实线黑圈: 新口径扫描里的锁死起点 (cluster_21620852, 659802, 389281)"),
-                   Line2D([], [], marker="o", color="#888888", markerfacecolor="none", markersize=11, lw=0, markeredgewidth=1.4, label="虚线黑圈: 旧口径扫描里的锁死落点 (cluster_1998326407, gneE62 侧进口)")],
+ax.legend(handles=[Line2D([], [], marker="o", color="#000000", markerfacecolor="none", markersize=11, lw=0, markeredgewidth=1.4, label="实线圈 = 新口径锁死起点 (3 个路口: cluster_21620852、659802、389281; 锁从这里开始并向外连锁)"),
+                   Line2D([], [], marker="o", color="#888888", markerfacecolor="none", markersize=11, lw=0, markeredgewidth=1.4, label="虚线圈 = 旧口径锁死落点 (1 个路口: cluster_1998326407, 只饿死它的 gneE62 侧进口, 不扩散)")],
           loc="lower left", fontsize=8, frameon=True, prop=CJK)
 ax.set_title("都柏林 18 个 RL 信号路口: 位置、停车时间与锁死落点 (weekday 18h 改道第二版)" if CJK else "Dublin: 18 RL signalised junctions, stopped time and lock locations (weekday 18h reroute v2)", fontsize=11, fontproperties=CJK)
 ax.text(0.99, 0.01, "粗体 = 停车秒数最多的 4 个路口; 灰线 = 路网; 北在上" if CJK else "bold = 4 junctions with most stopped seconds; grey = network; north up", transform=ax.transAxes, ha="right", va="bottom", fontsize=8, color="#555555", fontproperties=CJK)
