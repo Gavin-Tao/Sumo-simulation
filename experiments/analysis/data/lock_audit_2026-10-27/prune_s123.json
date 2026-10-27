@@ -1,0 +1,121 @@
+{
+ "exp": "459",
+ "seed": 123,
+ "min_green": null,
+ "meta": "/tmp/claude-1000/-home-xiaowen-sumo-rl/0cdb38c0-320d-4e7a-96ec-a2c15b468974/scratchpad/meta_prune.json",
+ "remaining": 178,
+ "network": {
+  "visits": 8813,
+  "stop_per_visit": 1.1335527062294337
+ },
+ "junctions": {
+  "133307283": {
+   "visits": 977,
+   "stop_s": 670,
+   "stop_per_visit": 0.6857727737973388,
+   "switches": 57
+  },
+  "135109534": {
+   "visits": 40,
+   "stop_s": 5,
+   "stop_per_visit": 0.125,
+   "switches": 65
+  },
+  "1430847303": {
+   "visits": 723,
+   "stop_s": 1600,
+   "stop_per_visit": 2.2130013831258646,
+   "switches": 139
+  },
+  "1448436": {
+   "visits": 878,
+   "stop_s": 1105,
+   "stop_per_visit": 1.2585421412300684,
+   "switches": 168
+  },
+  "1448442": {
+   "visits": 517,
+   "stop_s": 1935,
+   "stop_per_visit": 3.7427466150870408,
+   "switches": 298
+  },
+  "26165090": {
+   "visits": 55,
+   "stop_s": 10,
+   "stop_per_visit": 0.18181818181818182,
+   "switches": 257
+  },
+  "26165126": {
+   "visits": 483,
+   "stop_s": 390,
+   "stop_per_visit": 0.8074534161490683,
+   "switches": 229
+  },
+  "32236377": {
+   "visits": 184,
+   "stop_s": 45,
+   "stop_per_visit": 0.24456521739130435,
+   "switches": 55
+  },
+  "389281": {
+   "visits": 356,
+   "stop_s": 235,
+   "stop_per_visit": 0.6601123595505618,
+   "switches": 155
+  },
+  "389332": {
+   "visits": 487,
+   "stop_s": 55,
+   "stop_per_visit": 0.11293634496919917,
+   "switches": 8
+  },
+  "5166592132": {
+   "visits": 198,
+   "stop_s": 85,
+   "stop_per_visit": 0.4292929292929293,
+   "switches": 44
+  },
+  "659802": {
+   "visits": 1094,
+   "stop_s": 1925,
+   "stop_per_visit": 1.759597806215722,
+   "switches": 135
+  },
+  "cluster_135109528_9101656": {
+   "visits": 90,
+   "stop_s": 210,
+   "stop_per_visit": 2.3333333333333335,
+   "switches": 186
+  },
+  "cluster_1448439_2464758361": {
+   "visits": 413,
+   "stop_s": 0,
+   "stop_per_visit": 0.0,
+   "switches": 4
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "visits": 1031,
+   "stop_s": 255,
+   "stop_per_visit": 0.24733268671193018,
+   "switches": 200
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "visits": 512,
+   "stop_s": 1435,
+   "stop_per_visit": 2.802734375,
+   "switches": 301
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "visits": 444,
+   "stop_s": 25,
+   "stop_per_visit": 0.05630630630630631,
+   "switches": 14
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "visits": 331,
+   "stop_s": 5,
+   "stop_per_visit": 0.015105740181268883,
+   "switches": 23
+  }
+ }
+}

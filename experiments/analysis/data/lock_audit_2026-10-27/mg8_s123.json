@@ -1,0 +1,121 @@
+{
+ "exp": "459",
+ "seed": 123,
+ "min_green": 8,
+ "meta": null,
+ "remaining": 179,
+ "network": {
+  "visits": 8833,
+  "stop_per_visit": 1.1060794746971583
+ },
+ "junctions": {
+  "133307283": {
+   "visits": 978,
+   "stop_s": 705,
+   "stop_per_visit": 0.7208588957055214,
+   "switches": 56
+  },
+  "135109534": {
+   "visits": 42,
+   "stop_s": 10,
+   "stop_per_visit": 0.23809523809523808,
+   "switches": 69
+  },
+  "1430847303": {
+   "visits": 722,
+   "stop_s": 1730,
+   "stop_per_visit": 2.3961218836565097,
+   "switches": 145
+  },
+  "1448436": {
+   "visits": 877,
+   "stop_s": 1025,
+   "stop_per_visit": 1.168757126567845,
+   "switches": 172
+  },
+  "1448442": {
+   "visits": 519,
+   "stop_s": 1645,
+   "stop_per_visit": 3.1695568400770715,
+   "switches": 308
+  },
+  "26165090": {
+   "visits": 55,
+   "stop_s": 10,
+   "stop_per_visit": 0.18181818181818182,
+   "switches": 252
+  },
+  "26165126": {
+   "visits": 483,
+   "stop_s": 320,
+   "stop_per_visit": 0.6625258799171843,
+   "switches": 232
+  },
+  "32236377": {
+   "visits": 186,
+   "stop_s": 75,
+   "stop_per_visit": 0.4032258064516129,
+   "switches": 55
+  },
+  "389281": {
+   "visits": 356,
+   "stop_s": 205,
+   "stop_per_visit": 0.5758426966292135,
+   "switches": 156
+  },
+  "389332": {
+   "visits": 494,
+   "stop_s": 40,
+   "stop_per_visit": 0.08097165991902834,
+   "switches": 8
+  },
+  "5166592132": {
+   "visits": 198,
+   "stop_s": 85,
+   "stop_per_visit": 0.4292929292929293,
+   "switches": 45
+  },
+  "659802": {
+   "visits": 1094,
+   "stop_s": 2115,
+   "stop_per_visit": 1.93327239488117,
+   "switches": 139
+  },
+  "cluster_135109528_9101656": {
+   "visits": 91,
+   "stop_s": 140,
+   "stop_per_visit": 1.5384615384615385,
+   "switches": 185
+  },
+  "cluster_1448439_2464758361": {
+   "visits": 413,
+   "stop_s": 0,
+   "stop_per_visit": 0.0,
+   "switches": 4
+  },
+  "cluster_1998326407_2876012598_4781977262_658429": {
+   "visits": 1037,
+   "stop_s": 230,
+   "stop_per_visit": 0.22179363548698167,
+   "switches": 211
+  },
+  "cluster_21620852_2383668110_2383668118_4009885977": {
+   "visits": 513,
+   "stop_s": 1375,
+   "stop_per_visit": 2.6803118908382064,
+   "switches": 294
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+   "visits": 444,
+   "stop_s": 45,
+   "stop_per_visit": 0.10135135135135136,
+   "switches": 16
+  },
+  "cluster_5166592137_5166592140_557198554_57744042": {
+   "visits": 331,
+   "stop_s": 15,
+   "stop_per_visit": 0.045317220543806644,
+   "switches": 27
+  }
+ }
+}
