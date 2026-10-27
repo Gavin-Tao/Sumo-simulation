@@ -1,0 +1,174 @@
+{
+ "exp": "462",
+ "ckpt_episode": 495,
+ "seed": 123,
+ "class_blind": false,
+ "with_car_queue": true,
+ "n_states": 12960,
+ "summary": {
+  "car@10s": {
+   "n": 141,
+   "flip_rate": 0.5035460992907801,
+   "change_rate": 0.5460992907801419
+  },
+  "car@30s": {
+   "n": 141,
+   "flip_rate": 0.624113475177305,
+   "change_rate": 0.6453900709219859
+  },
+  "bus@10s": {
+   "n": 141,
+   "flip_rate": 0.524822695035461,
+   "change_rate": 0.6950354609929078
+  },
+  "bus@30s": {
+   "n": 141,
+   "flip_rate": 0.5035460992907801,
+   "change_rate": 0.6879432624113475
+  },
+  "ambulance@10s": {
+   "n": 141,
+   "flip_rate": 0.2765957446808511,
+   "change_rate": 0.3120567375886525
+  },
+  "ambulance@30s": {
+   "n": 141,
+   "flip_rate": 0.3049645390070922,
+   "change_rate": 0.3475177304964539
+  }
+ },
+ "per_junction": {
+  "car@133307283": {
+   "n": 4,
+   "flip_rate": 0.5
+  },
+  "bus@133307283": {
+   "n": 4,
+   "flip_rate": 1.0
+  },
+  "ambulance@133307283": {
+   "n": 4,
+   "flip_rate": 0.0
+  },
+  "car@1430847303": {
+   "n": 12,
+   "flip_rate": 0.75
+  },
+  "bus@1430847303": {
+   "n": 12,
+   "flip_rate": 1.0
+  },
+  "ambulance@1430847303": {
+   "n": 12,
+   "flip_rate": 0.0
+  },
+  "car@1448436": {
+   "n": 16,
+   "flip_rate": 0.375
+  },
+  "bus@1448436": {
+   "n": 16,
+   "flip_rate": 0.5625
+  },
+  "ambulance@1448436": {
+   "n": 16,
+   "flip_rate": 0.5625
+  },
+  "car@1448442": {
+   "n": 42,
+   "flip_rate": 0.21428571428571427
+  },
+  "bus@1448442": {
+   "n": 42,
+   "flip_rate": 0.38095238095238093
+  },
+  "ambulance@1448442": {
+   "n": 42,
+   "flip_rate": 0.19047619047619047
+  },
+  "car@26165126": {
+   "n": 2,
+   "flip_rate": 0.5
+  },
+  "bus@26165126": {
+   "n": 2,
+   "flip_rate": 0.5
+  },
+  "ambulance@26165126": {
+   "n": 2,
+   "flip_rate": 0.0
+  },
+  "car@32236377": {
+   "n": 3,
+   "flip_rate": 0.3333333333333333
+  },
+  "bus@32236377": {
+   "n": 3,
+   "flip_rate": 1.0
+  },
+  "ambulance@32236377": {
+   "n": 3,
+   "flip_rate": 1.0
+  },
+  "car@5166592132": {
+   "n": 2,
+   "flip_rate": 0.5
+  },
+  "bus@5166592132": {
+   "n": 2,
+   "flip_rate": 1.0
+  },
+  "ambulance@5166592132": {
+   "n": 2,
+   "flip_rate": 0.0
+  },
+  "car@659802": {
+   "n": 43,
+   "flip_rate": 0.6976744186046512
+  },
+  "bus@659802": {
+   "n": 43,
+   "flip_rate": 0.4418604651162791
+  },
+  "ambulance@659802": {
+   "n": 43,
+   "flip_rate": 0.2558139534883721
+  },
+  "car@cluster_135109528": {
+   "n": 3,
+   "flip_rate": 1.0
+  },
+  "bus@cluster_135109528": {
+   "n": 3,
+   "flip_rate": 0.0
+  },
+  "ambulance@cluster_135109528": {
+   "n": 3,
+   "flip_rate": 0.0
+  },
+  "car@cluster_1998326407": {
+   "n": 3,
+   "flip_rate": 0.6666666666666666
+  },
+  "bus@cluster_1998326407": {
+   "n": 3,
+   "flip_rate": 0.6666666666666666
+  },
+  "ambulance@cluster_1998326407": {
+   "n": 3,
+   "flip_rate": 0.3333333333333333
+  },
+  "car@cluster_21620852": {
+   "n": 11,
+   "flip_rate": 0.6363636363636364
+  },
+  "bus@cluster_21620852": {
+   "n": 11,
+   "flip_rate": 0.5454545454545454
+  },
+  "ambulance@cluster_21620852": {
+   "n": 11,
+   "flip_rate": 0.6363636363636364
+  }
+ }
+}

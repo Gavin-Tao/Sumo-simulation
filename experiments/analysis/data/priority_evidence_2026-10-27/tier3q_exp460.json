@@ -1,0 +1,66 @@
+{
+ "exp": "460",
+ "ckpt_episode": 575,
+ "seed": 123,
+ "class_blind": true,
+ "with_car_queue": true,
+ "n_states": 12960,
+ "summary": {
+  "car@10s": {
+   "n": 107,
+   "flip_rate": 0.5794392523364486,
+   "change_rate": 0.5887850467289719
+  },
+  "car@30s": {
+   "n": 107,
+   "flip_rate": 0.7476635514018691,
+   "change_rate": 0.7570093457943925
+  }
+ },
+ "per_junction": {
+  "car@133307283": {
+   "n": 2,
+   "flip_rate": 0.5
+  },
+  "car@1430847303": {
+   "n": 5,
+   "flip_rate": 0.6
+  },
+  "car@1448436": {
+   "n": 15,
+   "flip_rate": 0.6
+  },
+  "car@1448442": {
+   "n": 47,
+   "flip_rate": 0.46808510638297873
+  },
+  "car@26165126": {
+   "n": 5,
+   "flip_rate": 0.4
+  },
+  "car@32236377": {
+   "n": 1,
+   "flip_rate": 1.0
+  },
+  "car@659802": {
+   "n": 21,
+   "flip_rate": 0.6666666666666666
+  },
+  "car@cluster_135109528": {
+   "n": 2,
+   "flip_rate": 1.0
+  },
+  "car@cluster_1998326407": {
+   "n": 1,
+   "flip_rate": 1.0
+  },
+  "car@cluster_21620852": {
+   "n": 7,
+   "flip_rate": 1.0
+  },
+  "car@cluster_2498303858": {
+   "n": 1,
+   "flip_rate": 0.0
+  }
+ }
+}

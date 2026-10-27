@@ -1,0 +1,419 @@
+[
+ {
+  "id": "probe_01",
+  "depart": 50,
+  "src_car": "car_2811",
+  "n_edges": 12,
+  "rl_junctions": [
+   "cluster_5166592137",
+   "cluster_2498303858"
+  ]
+ },
+ {
+  "id": "probe_02",
+  "depart": 150,
+  "src_car": "car_755",
+  "n_edges": 9,
+  "rl_junctions": [
+   "389332",
+   "1448436"
+  ]
+ },
+ {
+  "id": "probe_03",
+  "depart": 250,
+  "src_car": "car_3499",
+  "n_edges": 10,
+  "rl_junctions": [
+   "cluster_1998326407",
+   "cluster_21620852",
+   "26165090",
+   "cluster_135109528",
+   "32236377",
+   "1448442"
+  ]
+ },
+ {
+  "id": "probe_04",
+  "depart": 350,
+  "src_car": "car_5610",
+  "n_edges": 8,
+  "rl_junctions": [
+   "5166592132",
+   "1430847303"
+  ]
+ },
+ {
+  "id": "probe_05",
+  "depart": 450,
+  "src_car": "car_4258",
+  "n_edges": 8,
+  "rl_junctions": [
+   "26165126",
+   "cluster_1448439",
+   "1448436"
+  ]
+ },
+ {
+  "id": "probe_06",
+  "depart": 550,
+  "src_car": "car_2754",
+  "n_edges": 8,
+  "rl_junctions": [
+   "26165126",
+   "32236377",
+   "1448442"
+  ]
+ },
+ {
+  "id": "probe_07",
+  "depart": 650,
+  "src_car": "car_314",
+  "n_edges": 10,
+  "rl_junctions": [
+   "cluster_21620852",
+   "133307283"
+  ]
+ },
+ {
+  "id": "probe_08",
+  "depart": 750,
+  "src_car": "car_26",
+  "n_edges": 11,
+  "rl_junctions": [
+   "cluster_1998326407",
+   "cluster_21620852",
+   "133307283"
+  ]
+ },
+ {
+  "id": "probe_09",
+  "depart": 850,
+  "src_car": "car_708",
+  "n_edges": 15,
+  "rl_junctions": [
+   "5166592132",
+   "cluster_5166592137",
+   "cluster_2498303858"
+  ]
+ },
+ {
+  "id": "probe_10",
+  "depart": 950,
+  "src_car": "car_1071",
+  "n_edges": 5,
+  "rl_junctions": [
+   "389281",
+   "1448442"
+  ]
+ },
+ {
+  "id": "probe_11",
+  "depart": 1050,
+  "src_car": "car_5202",
+  "n_edges": 13,
+  "rl_junctions": [
+   "cluster_5166592137",
+   "cluster_2498303858",
+   "659802",
+   "1430847303"
+  ]
+ },
+ {
+  "id": "probe_12",
+  "depart": 1150,
+  "src_car": "car_5545",
+  "n_edges": 7,
+  "rl_junctions": [
+   "1448436",
+   "389332"
+  ]
+ },
+ {
+  "id": "probe_13",
+  "depart": 1250,
+  "src_car": "car_3997",
+  "n_edges": 10,
+  "rl_junctions": [
+   "cluster_21620852",
+   "133307283"
+  ]
+ },
+ {
+  "id": "probe_14",
+  "depart": 1350,
+  "src_car": "car_1503",
+  "n_edges": 11,
+  "rl_junctions": [
+   "cluster_5166592137",
+   "cluster_2498303858",
+   "659802"
+  ]
+ },
+ {
+  "id": "probe_15",
+  "depart": 1450,
+  "src_car": "car_3229",
+  "n_edges": 25,
+  "rl_junctions": [
+   "389332",
+   "1448436",
+   "cluster_1448439",
+   "26165126",
+   "32236377",
+   "135109534",
+   "389281"
+  ]
+ },
+ {
+  "id": "probe_16",
+  "depart": 1550,
+  "src_car": "car_3857",
+  "n_edges": 13,
+  "rl_junctions": [
+   "26165126",
+   "32236377",
+   "1448442"
+  ]
+ },
+ {
+  "id": "probe_17",
+  "depart": 1650,
+  "src_car": "car_4025",
+  "n_edges": 13,
+  "rl_junctions": [
+   "5166592132",
+   "cluster_5166592137",
+   "cluster_2498303858",
+   "659802"
+  ]
+ },
+ {
+  "id": "probe_18",
+  "depart": 1750,
+  "src_car": "car_3611",
+  "n_edges": 12,
+  "rl_junctions": [
+   "cluster_1998326407",
+   "cluster_21620852",
+   "133307283"
+  ]
+ },
+ {
+  "id": "probe_19",
+  "depart": 1850,
+  "src_car": "car_4514",
+  "n_edges": 25,
+  "rl_junctions": [
+   "389332",
+   "1448436",
+   "cluster_1448439",
+   "26165126",
+   "32236377",
+   "1448442",
+   "389281"
+  ]
+ },
+ {
+  "id": "probe_20",
+  "depart": 1950,
+  "src_car": "car_3628",
+  "n_edges": 10,
+  "rl_junctions": [
+   "26165126",
+   "cluster_1448439",
+   "1448436",
+   "389332"
+  ]
+ },
+ {
+  "id": "probe_21",
+  "depart": 2050,
+  "src_car": "car_1714",
+  "n_edges": 12,
+  "rl_junctions": [
+   "389332",
+   "1448436",
+   "cluster_1448439",
+   "26165126",
+   "1448442"
+  ]
+ },
+ {
+  "id": "probe_22",
+  "depart": 2150,
+  "src_car": "car_928",
+  "n_edges": 15,
+  "rl_junctions": [
+   "389332",
+   "1448436",
+   "cluster_1448439",
+   "26165126",
+   "1448442",
+   "389281"
+  ]
+ },
+ {
+  "id": "probe_23",
+  "depart": 2250,
+  "src_car": "car_109",
+  "n_edges": 10,
+  "rl_junctions": [
+   "cluster_1998326407",
+   "cluster_21620852"
+  ]
+ },
+ {
+  "id": "probe_24",
+  "depart": 2350,
+  "src_car": "car_2158",
+  "n_edges": 13,
+  "rl_junctions": [
+   "cluster_5166592137",
+   "cluster_2498303858"
+  ]
+ },
+ {
+  "id": "probe_25",
+  "depart": 2450,
+  "src_car": "car_183",
+  "n_edges": 19,
+  "rl_junctions": [
+   "cluster_21620852",
+   "cluster_2498303858"
+  ]
+ },
+ {
+  "id": "probe_26",
+  "depart": 2550,
+  "src_car": "car_1365",
+  "n_edges": 18,
+  "rl_junctions": [
+   "32236377",
+   "cluster_1448439",
+   "1448436",
+   "389332"
+  ]
+ },
+ {
+  "id": "probe_27",
+  "depart": 2650,
+  "src_car": "car_5513",
+  "n_edges": 6,
+  "rl_junctions": [
+   "5166592132",
+   "1430847303"
+  ]
+ },
+ {
+  "id": "probe_28",
+  "depart": 2750,
+  "src_car": "car_1595",
+  "n_edges": 15,
+  "rl_junctions": [
+   "cluster_5166592137",
+   "cluster_2498303858",
+   "cluster_1998326407"
+  ]
+ },
+ {
+  "id": "probe_29",
+  "depart": 2850,
+  "src_car": "car_1945",
+  "n_edges": 11,
+  "rl_junctions": [
+   "cluster_1998326407",
+   "cluster_21620852"
+  ]
+ },
+ {
+  "id": "probe_30",
+  "depart": 2950,
+  "src_car": "car_279",
+  "n_edges": 21,
+  "rl_junctions": [
+   "389332",
+   "1448436",
+   "cluster_1448439",
+   "32236377",
+   "135109534",
+   "389281"
+  ]
+ },
+ {
+  "id": "probe_31",
+  "depart": 3050,
+  "src_car": "car_607",
+  "n_edges": 12,
+  "rl_junctions": [
+   "cluster_21620852",
+   "26165090",
+   "cluster_135109528",
+   "32236377",
+   "1448442",
+   "389281"
+  ]
+ },
+ {
+  "id": "probe_32",
+  "depart": 3150,
+  "src_car": "car_4760",
+  "n_edges": 20,
+  "rl_junctions": [
+   "cluster_21620852",
+   "cluster_2498303858",
+   "cluster_135109528",
+   "135109534",
+   "32236377",
+   "1448442"
+  ]
+ },
+ {
+  "id": "probe_33",
+  "depart": 3250,
+  "src_car": "car_4755",
+  "n_edges": 17,
+  "rl_junctions": [
+   "cluster_21620852",
+   "26165090",
+   "cluster_135109528",
+   "32236377",
+   "26165126",
+   "1448442",
+   "389281"
+  ]
+ },
+ {
+  "id": "probe_34",
+  "depart": 3350,
+  "src_car": "car_186",
+  "n_edges": 23,
+  "rl_junctions": [
+   "133307283",
+   "cluster_21620852",
+   "cluster_2498303858"
+  ]
+ },
+ {
+  "id": "probe_35",
+  "depart": 3450,
+  "src_car": "car_5486",
+  "n_edges": 12,
+  "rl_junctions": [
+   "cluster_1998326407",
+   "cluster_21620852"
+  ]
+ },
+ {
+  "id": "probe_36",
+  "depart": 3550,
+  "src_car": "car_2282",
+  "n_edges": 18,
+  "rl_junctions": [
+   "cluster_5166592137",
+   "cluster_2498303858",
+   "cluster_1998326407",
+   "cluster_21620852"
+  ]
+ }
+]

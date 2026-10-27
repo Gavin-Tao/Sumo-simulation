@@ -10,9 +10,9 @@ import ckpt_env, state_reward_debug as srd
 
 ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int, default=123)
 ap.add_argument("--junction", required=True); ap.add_argument("--force-std", type=int); ap.add_argument("--force-from", type=float, default=600)
-ap.add_argument("--force-until", type=float, default=1e9); ap.add_argument("--out", required=True); ap.add_argument("--dump", help="导出细节的路口 (默认 = --junction)")
+ap.add_argument("--force-until", type=float, default=1e9); ap.add_argument("--out", required=True); ap.add_argument("--dump", help="导出细节的路口 (默认 = --junction)"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔, 相对 experiments/)")
 a = ap.parse_args()
-B = ckpt_env.build(a.exp, ckpt=a.ckpt, seed=a.seed); env, act, states, cfg = B["env"], B["act"], B["states"], B["cfg"]; sumo = env.sumo
+B = ckpt_env.build(a.exp, ckpt=a.ckpt, seed=a.seed, route_override=a.routes); env, act, states, cfg = B["env"], B["act"], B["states"], B["cfg"]; sumo = env.sumo
 if env.visit_tracker is None:      # 旧口径配置没有统计器: 挂一个只做测量的 (不影响环境的状态/奖励)
     from sumo_rl.environment.visit_wait import VisitWaitTracker
     _mtr = VisitWaitTracker(sumo, {t: env.traffic_signals[t].lanes for t in env.ts_ids}); _o0 = env._sumo_step

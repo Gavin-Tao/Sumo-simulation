@@ -1,0 +1,182 @@
+[
+ {
+  "seed": 123,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.6260162601626016,
+  "zero": 0.8373983739837398,
+  "others_car_stop": 1.2251381215469612,
+  "forced": 51
+ },
+ {
+  "seed": 124,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.8455284552845529,
+  "zero": 0.8211382113821138,
+  "others_car_stop": 1.1902054079145874,
+  "forced": 72
+ },
+ {
+  "seed": 125,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.975609756097561,
+  "zero": 0.8211382113821138,
+  "others_car_stop": 1.2234398431191602,
+  "forced": 63
+ },
+ {
+  "seed": 126,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.8373983739837398,
+  "zero": 0.8130081300813008,
+  "others_car_stop": 1.1940470696815875,
+  "forced": 61
+ },
+ {
+  "seed": 127,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.8130081300813008,
+  "zero": 0.8699186991869918,
+  "others_car_stop": 1.275325573354846,
+  "forced": 57
+ },
+ {
+  "seed": 128,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.8130081300813008,
+  "zero": 0.8699186991869918,
+  "others_car_stop": 1.2542353347931312,
+  "forced": 60
+ },
+ {
+  "seed": 129,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 1.0406504065040652,
+  "zero": 0.8130081300813008,
+  "others_car_stop": 1.2661887141535615,
+  "forced": 64
+ },
+ {
+  "seed": 130,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.8699186991869918,
+  "zero": 0.8211382113821138,
+  "others_car_stop": 1.2089483394833949,
+  "forced": 62
+ },
+ {
+  "seed": 131,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.991869918699187,
+  "zero": 0.8048780487804879,
+  "others_car_stop": 1.3165376170114411,
+  "forced": 79
+ },
+ {
+  "seed": 132,
+  "mask": true,
+  "visits": 123,
+  "stop_per_visit": 0.9512195121951219,
+  "zero": 0.8048780487804879,
+  "others_car_stop": 1.2735348407937241,
+  "forced": 69
+ },
+ {
+  "seed": 123,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 4.1138211382113825,
+  "zero": 0.7886178861788617,
+  "others_car_stop": 1.2810231593501555,
+  "forced": 0
+ },
+ {
+  "seed": 124,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 6.739837398373984,
+  "zero": 0.7723577235772358,
+  "others_car_stop": 1.2209612044006948,
+  "forced": 0
+ },
+ {
+  "seed": 125,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 5.9105691056910565,
+  "zero": 0.7723577235772358,
+  "others_car_stop": 1.2773545706371192,
+  "forced": 0
+ },
+ {
+  "seed": 126,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 6.284552845528455,
+  "zero": 0.7479674796747967,
+  "others_car_stop": 1.2565111702743372,
+  "forced": 0
+ },
+ {
+  "seed": 127,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 6.097560975609756,
+  "zero": 0.8048780487804879,
+  "others_car_stop": 1.3197928653624855,
+  "forced": 0
+ },
+ {
+  "seed": 128,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 5.67479674796748,
+  "zero": 0.7804878048780488,
+  "others_car_stop": 1.2212726642799399,
+  "forced": 0
+ },
+ {
+  "seed": 129,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 9.016260162601625,
+  "zero": 0.7154471544715447,
+  "others_car_stop": 1.3432110197939577,
+  "forced": 0
+ },
+ {
+  "seed": 130,
+  "mask": false,
+  "visits": 122,
+  "stop_per_visit": 8.01639344262295,
+  "zero": 0.7459016393442623,
+  "others_car_stop": 1.4181019535313837,
+  "forced": 0
+ },
+ {
+  "seed": 131,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 7.065040650406504,
+  "zero": 0.6747967479674797,
+  "others_car_stop": 1.3356425355039834,
+  "forced": 0
+ },
+ {
+  "seed": 132,
+  "mask": false,
+  "visits": 123,
+  "stop_per_visit": 7.016260162601626,
+  "zero": 0.7398373983739838,
+  "others_car_stop": 1.2824577644063875,
+  "forced": 0
+ }
+]
