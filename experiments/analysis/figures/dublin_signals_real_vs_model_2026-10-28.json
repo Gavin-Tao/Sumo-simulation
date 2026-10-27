@@ -255,5 +255,21 @@
    "9101424",
    129
   ]
+ },
+ "real_signal_intersections_with_conflict_not_rl": {
+  "WEXFORD ST @ KEVIN ST": [
+   "gneJ47",
+   704,
+   false,
+   9
+  ]
+ },
+ "dropped_no_conflict": {
+  "MERRION ROW @ MERRION ST": "659805",
+  "COLLEGE GREEN / CHURCH LANE": "cluster_1426051358_1426100603_3206752725_3783453672_3783453675",
+  "DAWSON ST @ NASSAU ST": "5207211666",
+  "ST STEPHENS GREEN @ DAWSON ST": "cluster_389339_5593550332",
+  "ST STEPHENS GREEN @ KILDARE STREET": "cluster_442374639_659809",
+  "ST STEPHENS GREEN @ HUME ST": "cluster_3136024185_659807"
  }
 }
