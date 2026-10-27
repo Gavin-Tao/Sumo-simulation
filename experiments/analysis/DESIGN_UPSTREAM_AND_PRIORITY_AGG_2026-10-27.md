@@ -119,3 +119,28 @@ w 取自 priority_source (与奖励同一张表); 111 臂全 1 时三维退化�
 实施顺序 (下一场景): 最长等待掩码 + 场景路由 (对称车型、交错出发) + 531/351 两臂 → 评估加抢占基线与孪生对照 → 再决定延伸观测与加权汇总的消融臂。
 
 需要批准后实施; 若先做原 18h 的 A/B/C: 观测类两开关 + 掩码函数 → 重算工具 → 静态审计/快照对等 → 启动。
+
+## 8. 文献对照: 这些设计点别人做了没有
+
+| 设计点 | 本项目现状 → 本文方案 | 文献里的做法 |
+|---|---|---|
+| 最短绿 | 5 s, F1 决策时掩码 (训练+评估) | 普遍有: Kwesiga 等 2024 用无效动作掩码 (IAM) 约束最短绿/清空相位/相序 [1]; Müller & Sabatelli 2022 用相位图 + 掩码, 含相位专属最短时长 (如 10 s) 与心理规则 (相位 ≥ 6 s, 禁 3→1→3) [2]; 公平控制一文 7 s 最短绿、3 s 黄灯、每 5 s 决策 [3]; RESCO 把黄灯作为环境强加的约束而非动作 [4]; CityFlow 系 (PressLight/CoLight/MPLight) 按公开代码默认以固定 10 s 决策间隔充当最短绿 |
+| 最长绿 / 最长红 | 只是名义值 (未执行) → 最长等待掩码 (W_max = 60 s, 训练+评估) | 有先例且常用掩码实现: Kwesiga 2024 IAM 直接含最长绿, 另加 "最长绿前切换且本相位仍排队" 的惩罚 M [1]; Müller 2022 超过相位最长时长时掩码强制离开 [2]; CVLight 执行 40 s 最长绿 [5]; VissimRL 最短 5 / 最长 120 s [6]; CityFlow 系按公开代码默认没有最长绿 (相位可无限保持), 与本项目原状相同。本文用 "最长等待" 而非 "最长绿", 更贴近锁死根因, 也不打断没人等的长绿 |
+| 检测范围 / 上游 | 只看受控进口道 (10–373 m, 四个路口 ≤ 11 m) → 跨非 RL 节点上游延伸 120 m, 在途计数 + 接近度 | Kwesiga 2024: 假设 CV, 通信区 800 ft (244 m) 按 25 ft 分格给出公交位置与速度向量 [1]; EMVLight: 每进口一个 "救护车到路口距离" 分量 [7]; RESCO 真实路网上的工作把 < 15 m 的短车道与前驱车道合并进状态与奖励 [8]; CityFlow 系用整条进口道 (合成网 300 m); Müller 2022 逐车道 queue/wait/speed/count, 范围未说明 [2]; 英戈尔施塔特实路口研究假设 70 m 摄像头范围 |
+| 优先级车辆的状态表示 | 每槽每优先级独立的 count/queue/awt → 保留并加 Σ w·(count, queue, awt) 汇总 | 多数 RL-TSP 把公交参数放进状态, "有公交时填入, 否则置零" [1 §2.2] —— 与本项目同一结构, 同样面临稀疏; Kwesiga 2024 把公交位置/速度做成单独向量并交给单独的事件触发 TSP 智能体 [1]; EMVLight 用距离向量 [7]。按权重汇总成奖励的充分统计量, 文献里未见, 是本文的新做法 |
+| 高优先级样本稀疏 | 每集 1 辆救护车 (已证明学不到) → 每集 50 公交 + 50 救护车 (下一场景) / 加权汇总 | Kwesiga 2024 明确指出公交到达稀疏使单一智能体难以同时学会普通控制与优先, 多项研究靠 **放大公交到达量** 制造样本 (其引文 19, 20, 22, 34), 且对低频公交的泛化与对其他车的代价未见报告; 其自身方案是事件触发的独立 TSP 智能体 [1] |
+| 规则抢占 vs 学到的优先 | 奖励加权学习 → 另加救护车抢占掩码作评估基线 (训练关) | 工程实践是规则抢占 (Opticom/GPS, 数百米外触发); Kwesiga 2024 的 TSP 智能体本身就是事件触发 (公交进入通信区才接管), 奖励含 W_bd、W_bv 权重与侧路排队惩罚 [1]; EMVLight 学习 + 距离特征 [7] |
+| 对其他车/公平性的约束 | 奖励里没有 (659802 南进口 8.5 s/visit) → 最长等待掩码给出 "红灯 ≤ W_max + 最短绿" 的保证 | Kwesiga 2024 侧路排队超阈值罚 −9999 (N) [1]; 公平性专门目标的工作 [3]; Müller 2022 的心理规则 [2] |
+| 评估设计 | best × 10 种子逐秒; 换车型孪生配对 (新) | 多次重复种子是标准 (Kwesiga 10 个种子, 1 h 含 15 min 预热, 报公交延误 / 主线行程时间 / 侧路延误 [1]); 同车换型的配对对照未见报道 |
+| 路网 | 真实都柏林 18 个 RL 路口 + 非 RL 节点, 标定车流 | Kwesiga: Vissim 合成双路口 [1]; Müller: Lemgo 单个真实路口 [2]; RESCO: 科隆 / 英戈尔施塔特真实路网 [4][8]; CityFlow 系: 全受控网格 |
+
+结论: 最长绿 (本文改为最长等待)、上游/通信区检测、放大稀疏到达量、侧路惩罚, 文献里都有先例, 本项目原来都没做, 这次补上是跟上常规; 优先级加权汇总与同车换型的配对评估是本文自己的做法, 论文里要单独论证。
+
+[1] Kwesiga, Vishnoi, Guin, Hunter, Integrating Transit Signal Priority into MARL based Traffic Signal Control, arXiv 2411.19359 (2024).
+[2] Müller & Sabatelli, Safe and Psychologically Pleasant Traffic Signal Control with RL using Action Masking, ITSC 2022, arXiv 2206.10122.
+[3] A Deep RL Approach for Fair Traffic Signal Control, arXiv 2107.10146.
+[4] Ault & Sharon, RESCO: RL Benchmarks for Traffic Signal Control, NeurIPS 2021 Datasets & Benchmarks.
+[5] CVLight: Decentralized Learning for Adaptive TSC with Connected Vehicles, arXiv 2104.10340.
+[6] VissimRL, arXiv 2601.18284.
+[7] EMVLight, arXiv 2109.05429 / 2206.13441.
+[8] Deep RL for the Joint Control of Traffic Light Signaling and Vehicle Speed Advice, arXiv 2309.09881 (RESCO 路网短车道处理).
