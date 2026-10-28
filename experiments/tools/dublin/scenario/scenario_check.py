@@ -3,7 +3,7 @@
   --policy random : 每个决策步在该路口全部有效绿相位里均匀随机;  --policy fixed : 各有效绿相位依次轮转, 每相位绿 G 秒 + 黄 (决策步 5 s, 实际切换在 ≥ G+黄 的第一个决策步)。
 第二版修正: (1) 长等待按 **每次访问逐秒记录的最大等待** 统计 (第一版只在集末看统计器, 中途离开的全漏); (2) 车辆→转向一律用 meta 的 (from_edge, to_edge) 表
 (第一版用观测类的几何映射, 与 meta 在 cluster_21620852 / cluster_135109528 有 4 处错配); (3) 实验车访问逐秒登记 (分母不漏快速通过), 机会在决策步判断;
-(4) 饿死/回溢在集末把仍在持续的事件计入; (5) 回溢改为 "出口车道上停住的车排到车道起点 (队尾距起点 ≤ 10 m) 持续 ≥ 60 s"; (6) 输出换道次数 (lanechange-output) 与实验车到达数。
+(4) 饿死/回溢在集末把仍在持续的事件计入; (5) 回溢改为 "出口车道上停住的车排到车道起点 (队尾距起点 ≤ 10 m) 持续 ≥ 60 s"; (6) 输出换道次数 (lanechange-output) 与实验车到达数; (7) 记每个 RL 路口出口车道上的停车 (车·秒, 按决策步采样 ×5) 与最长出口排队 —— 这些停车不进任何 RL 路口的访问指标 (状态/奖励/逐访问停车/延误都只看进口道), 只进整趟 timeLoss。
 用法: python scenario_check.py --net N --meta M --sumocfg C --routes r1,r2 --policy random|fixed --seed 123 --out prefix [--template 461] [--green 20]"""
 import argparse, os, sys, json, random, collections, functools, glob, xml.etree.ElementTree as ET
 os.environ["OMP_NUM_THREADS"] = "1"; os.environ.setdefault("SUMO_RL_LIBSUMO", "1")
@@ -102,8 +102,9 @@ while not done["__all__"]:
             else:
                 t0 = s_["red_since"].pop(s, None)
                 if t0 is not None and now - t0 >= 60: s_["starve_events"] += 1; s_["starve_max"] = max(s_["starve_max"], now - t0)
-        for l in tt["out_lanes"]:      # 回溢: 停住的车的队尾 (最靠近车道起点的停车) 距起点 ≤ 10 m
+        for l in tt["out_lanes"]:      # 回溢: 停住的车的队尾 (最靠近车道起点的停车) 距起点 ≤ 10 m; 另记出口车道上的停车 (车·步, 不进 RL 路口的访问指标)
             halted_pos = [sumo.vehicle.getLanePosition(v) for v in sumo.lane.getLastStepVehicleIDs(l) if sumo.vehicle.getSpeed(v) < 0.1]
+            if halted_pos: s_["exit_halt_steps"] = s_.get("exit_halt_steps", 0) + len(halted_pos); s_["exit_queue_max"] = max(s_.get("exit_queue_max", 0.0), tt["out_lanes"][l] - min(halted_pos))
             if halted_pos and min(halted_pos) <= 10.0: s_["spill_since"].setdefault(l, now)
             else:
                 t0 = s_["spill_since"].pop(l, None)
@@ -162,6 +163,7 @@ out = dict(version=2, policy=a.policy, green=a.green, seed=a.seed, net=NET, rout
            depart_delay_mean=float(np.mean(dep)) if dep else None, depart_delay_max=float(np.max(dep)) if dep else None, lane_changes=n_lc,
            visits_total=len(visits), lock_visits=lock_visits, lock_s=a.lock_s, lock_by_junction=dict(lock_by), lock_by_type=dict(long_by_type), max_visit_wait=max_wait_all, max_visit_wait_rec=max_wait_rec,
            starve={t: dict(events=st[t]["starve_events"], max=st[t]["starve_max"]) for t in ids}, spill={t: st[t]["spill_events"] for t in ids},
+           exit_halt_veh_s={t: st[t].get("exit_halt_steps", 0) * 5 for t in ids}, exit_queue_max_m={t: round(st[t].get("exit_queue_max", 0.0), 1) for t in ids},
            opportunities={f"{tid}|{s}|{typ}": o for (tid, s, typ), o in opp.items()}, opp_by_type={k: dict(visits=v[0], with_opp=v[1]) for k, v in by_type.items()})
 json.dump(out, open(a.out + ".json", "w"), indent=1, ensure_ascii=False)
 print(f"{a.policy} seed{a.seed}: 在网 10min 窗均值 {[round(x) for x in rw]} 末两窗/三四窗 {out['running_growth_last2_vs_34']:+.2f}; pending@3300 {pending_3300}; 未插入(≤3300) {not_ins}/{planned}; 出发延迟 {out['depart_delay_mean']:.1f}/{out['depart_delay_max']:.0f}; 到达 {arrived}/{len(tis)} 实验车 {pairs_arrived}/{pairs_total}; 访问 {len(visits)} 其中等待≥{a.lock_s:.0f}s 的 {lock_visits} (最长 {max_wait_all:.0f} s {max_wait_rec}); 饿死 {sum(v['events'] for v in out['starve'].values())} 次 (最长 {max(v['max'] for v in out['starve'].values()):.0f}); 回溢 {sum(out['spill'].values())}; 换道 {n_lc}; 机会 {out['opp_by_type']}")

@@ -12,19 +12,20 @@ r = subprocess.run(["netconvert", "-s", a.src, "--plain-output-prefix", pre, "--
 if r.returncode != 0: sys.exit(r.stderr)
 nod = ET.parse(pre + ".nod.xml"); edg = ET.parse(pre + ".edg.xml"); con = ET.parse(pre + ".con.xml"); tll = ET.parse(pre + ".tll.xml")
 nodes = {n.get("id"): n for n in nod.getroot().iter("node")}; edges = {e.get("id"): e for e in edg.getroot().iter("edge")}
-def pts(eid):
-    e = edges[eid]
-    if e.get("shape"): return [tuple(map(float, p.split(","))) for p in e.get("shape").split()]
-    f, t = nodes[e.get("from")], nodes[e.get("to")]; return [(float(f.get("x")), float(f.get("y"))), (float(t.get("x")), float(t.get("y")))]
 renames = {}                        # 旧边 id -> 合并边 id (用于连接改名与路由改写)
 def merge(chain, keep_last):
     ids = chain.split(); keep = ids[-1] if keep_last else ids[0]
+    for before, after in zip(ids, ids[1:]):
+        assert edges[before].get("to") == edges[after].get("from"), f"边链不连续: {before} -> {after}"
     lanes = {edges[i].get("numLanes") for i in ids}; assert len(lanes) == 1, f"车道数不一致 {chain}: {lanes}"
-    shape = []
-    for i in ids:
-        p = pts(i); shape += (p if not shape else p[1:])
+    # 两个方向使用同一条道路中心线 (节点顺序相反), 由 netconvert --lefthand 分开铺设车道。
+    # 各段原 shape 已含方向偏置, 不能拼接后再按 center 铺设, 否则对向车道会交叉。
+    # 保留完整合并边; 车道长度由重建后的几何计算, RL 的容量直接读取该长度。
     first, last = edges[ids[0]], edges[ids[-1]]; new = edges[keep]
-    new.set("from", first.get("from")); new.set("to", last.get("to")); new.set("shape", " ".join(f"{x:.2f},{y:.2f}" for x, y in shape)); new.set("spreadType", "center")
+    node_ids = [first.get("from")] + [edges[i].get("to") for i in ids]
+    shape = [(float(nodes[n].get("x")), float(nodes[n].get("y"))) for n in node_ids]
+    new.set("from", first.get("from")); new.set("to", last.get("to")); new.set("shape", " ".join(f"{x:.2f},{y:.2f}" for x, y in shape))
+    new.set("spreadType", "right")
     for i in ids:
         if i != keep: edg.getroot().remove(edges[i]); renames[i] = keep
     return keep, ids
