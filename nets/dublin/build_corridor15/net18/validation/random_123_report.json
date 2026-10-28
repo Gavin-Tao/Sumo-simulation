@@ -1,0 +1,119 @@
+{
+  "planned": 369,
+  "arrived": 369,
+  "decisions": 240,
+  "state_checks": 4320,
+  "reward_checks": 4320,
+  "tracker_checks": 6536,
+  "diagnostic_mode": "local",
+  "require_no_lane_changes": true,
+  "vtypes": "nets/dublin/weekday_18h_15_southclosed_corridor/vtypes_same.add.xml",
+  "collisions": 0,
+  "teleports": 0,
+  "lane_changes": 0,
+  "body_overlap_samples": [],
+  "tracker_missing": 0,
+  "nonzero_wait_checks": 3574,
+  "lane_change_samples": [],
+  "expanded_upstream_wait_samples": {
+    "668344588": 41,
+    "532097269#1.24": 50
+  },
+  "boundary_probe_edges": {
+    "boundary_probe_north_in_0": [
+      "source_college_green_N",
+      "129212230#0",
+      "4476041#0"
+    ],
+    "boundary_probe_north_out_0": [
+      "-129212230#1",
+      "sink_college_green_N"
+    ],
+    "boundary_probe_west_in_0_0": [
+      "source_1448436_W",
+      "668344588",
+      "3791745#4"
+    ],
+    "boundary_probe_west_in_1_0": [
+      "source_1448436_W",
+      "668344588",
+      "3791745#4"
+    ],
+    "boundary_probe_west_out_0": [
+      "-668344588",
+      "129212233#0"
+    ],
+    "boundary_probe_north_in_1": [
+      "source_college_green_N",
+      "129212230#0",
+      "4476041#0"
+    ],
+    "boundary_probe_north_out_1": [
+      "-129212230#1",
+      "sink_college_green_N"
+    ],
+    "boundary_probe_west_in_0_1": [
+      "source_1448436_W",
+      "668344588",
+      "3791745#4"
+    ],
+    "boundary_probe_west_in_1_1": [
+      "source_1448436_W",
+      "668344588",
+      "3791745#4"
+    ],
+    "boundary_probe_west_out_1": [
+      "-668344588",
+      "129212233#0"
+    ],
+    "boundary_probe_north_in_2": [
+      "source_college_green_N",
+      "129212230#0",
+      "4476041#0"
+    ],
+    "boundary_probe_north_out_2": [
+      "-129212230#1",
+      "sink_college_green_N"
+    ],
+    "boundary_probe_west_in_0_2": [
+      "source_1448436_W",
+      "668344588",
+      "3791745#4"
+    ],
+    "boundary_probe_west_in_1_2": [
+      "source_1448436_W",
+      "668344588",
+      "3791745#4"
+    ],
+    "boundary_probe_west_out_2": [
+      "-668344588",
+      "129212233#0"
+    ]
+  },
+  "farthest_observed_distance": {
+    "668344588": 82.65683744206558,
+    "532097269#1.24": 124.50799843906731
+  },
+  "remaining": [],
+  "pending": [],
+  "observed_turn_lane_pairs": {
+    "133307283": 6,
+    "1430847303": 4,
+    "1448436": 7,
+    "1448442": 7,
+    "26165090": 5,
+    "26165126": 6,
+    "389281": 8,
+    "389332": 6,
+    "5166592132": 4,
+    "659802": 6,
+    "659805": 6,
+    "cluster_1426051358_1426100603_3206752725_3783453672_3783453675": 8,
+    "cluster_1448439_2464758361": 5,
+    "cluster_1998326407_2876012598_4781977262_658429": 6,
+    "cluster_21620852_2383668110_2383668118_4009885977": 8,
+    "cluster_2498303858_3624079904_6141082777_6141082778_9936781": 5,
+    "cluster_5166592137_5166592140_557198554_57744042": 6,
+    "659799": 9
+  }
+}

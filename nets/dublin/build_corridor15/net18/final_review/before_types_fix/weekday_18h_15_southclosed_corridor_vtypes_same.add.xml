@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 三类车物理参数完全一致 (用户决定 2026-10-27): 全部为 SUMO passenger 类默认 (与原 18h 的 car 相同), 只差 id 与颜色; 换道参数全 0 (不换道, 与 18h 相同) -->
+<additional>
+    <vType id="car" color="1,0,0" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
+    <vType id="bus" color="0,0,1" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
+    <vType id="ambulance" color="0,1,0" lcStrategic="0" lcCooperative="0" lcSpeedGain="0" lcKeepRight="0"/>
+</additional>

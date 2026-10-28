@@ -1,0 +1,44 @@
+{
+  "seconds": 3600,
+  "decisions": 720,
+  "state_checks": 10800,
+  "reward_checks": 10800,
+  "collisions": 0,
+  "teleports": 0,
+  "tracker_checks": 397229,
+  "tracker_missing": 0,
+  "south_farthest_from_stopline": 110.18867466737034,
+  "south_upstream_wait_seen": true,
+  "south_capacity": {
+    "532427444#7_0": 14.698666666666666,
+    "532427444#7_1": 14.698666666666666
+  },
+  "arrived_detours": [
+    "car_279",
+    "car_939",
+    "car_930",
+    "car_1469",
+    "car_2247",
+    "car_2580",
+    "car_2978",
+    "car_3227",
+    "car_3500",
+    "car_3229",
+    "car_3563",
+    "car_3378",
+    "car_4349",
+    "car_4373",
+    "car_4774"
+  ],
+  "unfinished_detours": {
+    "car_3876": {
+      "status": "in_network",
+      "lane": "14152308_0",
+      "route_index": 7,
+      "route_edges": 11
+    },
+    "car_5648": {
+      "status": "pending"
+    }
+  }
+}

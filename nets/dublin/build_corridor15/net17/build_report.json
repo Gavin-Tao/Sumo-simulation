@@ -1,0 +1,286 @@
+{
+  "inputs": {
+    "nets/dcc/dcc.net.xml": "fd83b3573b684be7a7f48bcef5f3d6522b8f2efbaed1859b897fd593786c21b7",
+    "nets/dublin/dublin_8std_splitslot15_southclosed_corridor.net.xml": "147ae1c8974580a895d95d8d7d818bf71ad75aa0184176d4e58f2170efc56da8",
+    "nets/dublin/dublin_8std_splitslot15_southclosed_corridor_meta.json": "ace9b827ff136235f00c88cd598c03a620e00ec3454b5a1d9286c82619c1e01b",
+    "nets/dublin/build_corridor15/corridor.nod.xml": "58d1411332d562fabc27963145bc54ec39a58ff0ef1d3dd52c02285319e3b0ae",
+    "nets/dublin/build_corridor15/corridor.edg.xml": "ce8afccfa1e9319364f7731adc646cd6638a8423e0f0bd72137abe98b9e0ff2c",
+    "nets/dublin/build_corridor15/corridor.con.xml": "66bc8d5e1c2c3e85234966cc30ce15562048eab72b15c7394418ac36a87b7a3b",
+    "nets/dublin/build_corridor15/corridor.tll.xml": "c6fd645f9c80935c9dea3086a5f20ea393346199f3b6e1d3cbd7c81f7888ec34"
+  },
+  "net": "nets/dublin/dublin_8std_splitslot17_southclosed_corridor.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot17_southclosed_corridor_meta.json",
+  "tls_count": 17,
+  "existing_15_action_tables_unchanged": true,
+  "existing_lane_length_changes": [
+    {
+      "lane": "-3791031#3_0",
+      "old": 125.07,
+      "new": 123.37,
+      "old_rl_inlet": false
+    },
+    {
+      "lane": "-4074528#4_0",
+      "old": 162.04,
+      "new": 161.65,
+      "old_rl_inlet": false
+    },
+    {
+      "lane": "3791031#0_0",
+      "old": 124.44,
+      "new": 122.74,
+      "old_rl_inlet": true
+    },
+    {
+      "lane": "3791031#0_1",
+      "old": 124.44,
+      "new": 122.74,
+      "old_rl_inlet": true
+    },
+    {
+      "lane": "4074528#0_0",
+      "old": 162.04,
+      "new": 161.65,
+      "old_rl_inlet": true
+    }
+  ],
+  "reference_connections": {
+    "659799": [
+      {
+        "from": "-3791031#3",
+        "to": "3791034#0",
+        "fromLane": "0",
+        "toLane": "1"
+      },
+      {
+        "from": "-3791034#1",
+        "to": "4074528#0",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "-3791034#1",
+        "to": "3791031#0",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "-3791034#1",
+        "to": "3791031#0",
+        "fromLane": "1",
+        "toLane": "1"
+      },
+      {
+        "from": "-4074528#4",
+        "to": "3791031#0",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "-4074528#4",
+        "to": "3791034#0",
+        "fromLane": "0",
+        "toLane": "1"
+      },
+      {
+        "from": "532096352#0",
+        "to": "3791034#0",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "532096352#0",
+        "to": "4074528#0",
+        "fromLane": "1",
+        "toLane": "0"
+      },
+      {
+        "from": "532096352#0",
+        "to": "3791031#0",
+        "fromLane": "2",
+        "toLane": "1"
+      }
+    ],
+    "659805": [
+      {
+        "from": "125872847#0",
+        "to": "3792491#0",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "125872847#0",
+        "to": "3792428",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "3792490#0",
+        "to": "-125872847#11",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "3792490#0",
+        "to": "3792491#0",
+        "fromLane": "0",
+        "toLane": "0"
+      },
+      {
+        "from": "3792490#0",
+        "to": "3792491#0",
+        "fromLane": "1",
+        "toLane": "1"
+      },
+      {
+        "from": "3792490#0",
+        "to": "3792428",
+        "fromLane": "1",
+        "toLane": "0"
+      }
+    ]
+  },
+  "buffers": [
+    {
+      "edge": "source_659799_N",
+      "joins": "532096352#0",
+      "lanes": 3,
+      "planned_length": 60
+    },
+    {
+      "edge": "source_659799_E",
+      "joins": "-3791034#1",
+      "lanes": 2,
+      "planned_length": 60
+    }
+  ],
+  "deleted": [
+    "source_4074528#0",
+    "source_node_4074528#0"
+  ],
+  "added_tls": {
+    "659799": {
+      "mask": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true
+      ],
+      "actions": {
+        "a0": {
+          "valid": true,
+          "state": "rrrGGGrGr"
+        },
+        "a1": {
+          "valid": true,
+          "state": "GGGGrrGrr"
+        },
+        "a2": {
+          "valid": true,
+          "state": "GrrGrGrGG"
+        },
+        "a3": {
+          "valid": false,
+          "reason": "empty-core"
+        },
+        "a4": {
+          "valid": false,
+          "reason": "dup-of-a0",
+          "state": "rrrGGGrGr"
+        },
+        "a5": {
+          "valid": false,
+          "reason": "dup-of-a2",
+          "state": "GrrGrGrGG"
+        },
+        "a6": {
+          "valid": false,
+          "reason": "dup-of-a1",
+          "state": "GGGGrrGrr"
+        },
+        "a7": {
+          "valid": true,
+          "state": "GrrGrrGGr"
+        }
+      },
+      "approaches": {
+        "-3791031#3": [
+          123.37
+        ],
+        "-3791034#1": [
+          305.34,
+          305.34
+        ],
+        "-4074528#4": [
+          161.65
+        ],
+        "532096352#0": [
+          60.88,
+          60.88,
+          60.88
+        ]
+      }
+    },
+    "659805": {
+      "mask": [
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "actions": {
+        "a0": {
+          "valid": true,
+          "state": "GGGrrr"
+        },
+        "a1": {
+          "valid": true,
+          "state": "rrGGGG"
+        },
+        "a2": {
+          "valid": false,
+          "reason": "empty-core"
+        },
+        "a3": {
+          "valid": true,
+          "state": "GrGrrG"
+        },
+        "a4": {
+          "valid": false,
+          "reason": "dup-of-a0",
+          "state": "GGGrrr"
+        },
+        "a5": {
+          "valid": false,
+          "reason": "empty-core"
+        },
+        "a6": {
+          "valid": false,
+          "reason": "empty-core"
+        },
+        "a7": {
+          "valid": false,
+          "reason": "dup-of-a1",
+          "state": "rrGGGG"
+        }
+      },
+      "approaches": {
+        "125872847#0": [
+          193.05
+        ],
+        "3792490#0": [
+          111.11,
+          111.11
+        ]
+      }
+    }
+  }
+}

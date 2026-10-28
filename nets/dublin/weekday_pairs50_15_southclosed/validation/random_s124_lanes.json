@@ -1,0 +1,6330 @@
+{
+  "seconds": 3600,
+  "collisions": 0,
+  "teleports": 0,
+  "lanes": {
+    "-14039867#2_0": {
+      "length": 86.94,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 6,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 1,
+      "longest_queue": 5,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 60,
+      "departures": 60,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.18333333333333332,
+        0.24166666666666667,
+        0.24166666666666667,
+        0.17833333333333334,
+        0.23666666666666666,
+        0.12
+      ],
+      "mean_queued_10min": [
+        0.008333333333333333,
+        0.0,
+        0.0016666666666666668,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 60,
+      "inserted": 60,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4733333333333336,
+      "depart_delay_max": 2.7000000000000455
+    },
+    "-341583777#1_0": {
+      "length": 59.78,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 27,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 2,
+      "longest_queue": 20,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 276,
+      "departures": 276,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.59,
+        0.5833333333333334,
+        0.61,
+        0.8116666666666666,
+        0.625,
+        0.5316666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.06,
+        0.0033333333333333335,
+        0.0
+      ],
+      "planned": 260,
+      "inserted": 260,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.6165384615384533,
+      "depart_delay_max": 4.900000000000091
+    },
+    "-369564011#1_0": {
+      "length": 88.81,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 6,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 437,
+      "departures": 435,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        1.4516666666666667,
+        1.4366666666666668,
+        1.53,
+        1.5316666666666667,
+        1.3,
+        1.5283333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 170,
+      "inserted": 170,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          1
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 2.3617647058823397,
+      "depart_delay_max": 11.299999999999955
+    },
+    "-3791745#5_0": {
+      "length": 47.03,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 605,
+      "departures": 605,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.0533333333333332,
+        1.2216666666666667,
+        1.07,
+        1.0016666666666667,
+        1.055,
+        1.1283333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 150,
+      "inserted": 150,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 3.7893333333333254,
+      "depart_delay_max": 27.399999999999977
+    },
+    "-3791745#5_1": {
+      "length": 47.03,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 174,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 4,
+      "longest_queue": 35,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 300,
+      "departures": 297,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        0.5116666666666667,
+        0.7616666666666667,
+        0.645,
+        0.66,
+        0.4766666666666667,
+        0.745
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.14666666666666667,
+        0.135,
+        0.06333333333333334,
+        0.0,
+        0.15666666666666668
+      ],
+      "planned": 300,
+      "inserted": 300,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5916666666666681,
+      "depart_delay_max": 4.7999999999999545
+    },
+    "-4074528#4_0": {
+      "length": 162.04,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 2,
+      "tail_near_entry_seconds": 2,
+      "max_vehicles": 11,
+      "max_queued": 1,
+      "longest_queue": 1,
+      "longest_tail_near_entry": 1,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 833,
+      "departures": 827,
+      "end_vehicles": 6,
+      "mean_vehicles_10min": [
+        5.001666666666667,
+        5.09,
+        6.213333333333333,
+        5.681666666666667,
+        4.965,
+        5.505
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0033333333333333335,
+        0.0
+      ],
+      "planned": 450,
+      "inserted": 450,
+      "max_pending": 7,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 4.170888888888881,
+      "depart_delay_max": 27.59999999999991
+    },
+    "-4475730_0": {
+      "length": 158.03,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 6,
+      "departures": 6,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.03,
+        0.11333333333333333,
+        0.06833333333333333,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 6,
+      "inserted": 6,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.0,
+      "depart_delay_max": 1.0
+    },
+    "110223240#0_0": {
+      "length": 58.01,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.025,
+        0.035,
+        0.011666666666666667,
+        0.025,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 8,
+      "inserted": 8,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          1
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.0,
+      "depart_delay_max": 1.0
+    },
+    "15464769#0_0": {
+      "length": 41.55,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 40,
+      "departures": 40,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.06166666666666667,
+        0.016666666666666666,
+        0.07833333333333334,
+        0.08833333333333333,
+        0.056666666666666664,
+        0.05333333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 40,
+      "inserted": 40,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5725000000000056,
+      "depart_delay_max": 3.099999999999909
+    },
+    "2294311#0_0": {
+      "length": 68.7,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 42,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 2,
+      "longest_queue": 34,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 449,
+      "departures": 447,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        0.9483333333333334,
+        1.3766666666666667,
+        1.165,
+        1.0566666666666666,
+        1.0816666666666668,
+        1.5683333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.013333333333333334,
+        0.0,
+        0.0,
+        0.09833333333333333
+      ],
+      "planned": 310,
+      "inserted": 309,
+      "max_pending": 4,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          1
+        ]
+      ],
+      "depart_delay_mean": 2.1928802588996867,
+      "depart_delay_max": 20.09999999999991
+    },
+    "2294384#0_0": {
+      "length": 151.08,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 9,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 469,
+      "departures": 468,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        2.535,
+        2.97,
+        2.5,
+        3.3116666666666665,
+        2.66,
+        2.111666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 457,
+      "inserted": 457,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.7890590809627982,
+      "depart_delay_max": 7.899999999999977
+    },
+    "2294384#0_1": {
+      "length": 151.08,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 30,
+      "departures": 30,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.16666666666666666,
+        0.095,
+        0.10166666666666667,
+        0.12833333333333333,
+        0.3,
+        0.21333333333333335
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 30,
+      "inserted": 30,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4866666666666397,
+      "depart_delay_max": 1.900000000000091
+    },
+    "317003249#1_0": {
+      "length": 79.67,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 334,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 10,
+      "max_queued": 10,
+      "longest_queue": 65,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 349,
+      "departures": 349,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        2.0183333333333335,
+        1.615,
+        0.9,
+        1.3333333333333333,
+        0.995,
+        1.385
+      ],
+      "mean_queued_10min": [
+        0.8566666666666667,
+        0.4483333333333333,
+        0.006666666666666667,
+        0.021666666666666667,
+        0.02666666666666667,
+        0.2916666666666667
+      ],
+      "planned": 170,
+      "inserted": 170,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.9311764705882404,
+      "depart_delay_max": 11.0
+    },
+    "341583777#0_1": {
+      "length": 59.79,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 170,
+      "departures": 170,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.32166666666666666,
+        0.4,
+        0.41833333333333333,
+        0.33166666666666667,
+        0.41,
+        0.3466666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 170,
+      "inserted": 170,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4847058823529338,
+      "depart_delay_max": 3.1000000000000227
+    },
+    "344354262_0": {
+      "length": 160.9,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 134,
+      "departures": 133,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.7316666666666667,
+        0.9466666666666667,
+        0.875,
+        0.8116666666666666,
+        0.5916666666666667,
+        0.7116666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 126,
+      "inserted": 126,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5261904761904654,
+      "depart_delay_max": 3.5
+    },
+    "357012332#1_0": {
+      "length": 60.96,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 38,
+      "departures": 38,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.095,
+        0.07666666666666666,
+        0.02666666666666667,
+        0.11833333333333333,
+        0.12833333333333333,
+        0.05333333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 30,
+      "inserted": 30,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.7000000000000004,
+      "depart_delay_max": 3.800000000000182
+    },
+    "3790875#0_0": {
+      "length": 98.35,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 77,
+      "departures": 77,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.2833333333333333,
+        0.24166666666666667,
+        0.23333333333333334,
+        0.31833333333333336,
+        0.2833333333333333,
+        0.29333333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 77,
+      "inserted": 77,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4714285714285735,
+      "depart_delay_max": 2.099999999999909
+    },
+    "3790875#0_1": {
+      "length": 98.35,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 134,
+      "departures": 134,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.33666666666666667,
+        0.4816666666666667,
+        0.5666666666666667,
+        0.39666666666666667,
+        0.4266666666666667,
+        0.7116666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 120,
+      "inserted": 120,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.532499999999995,
+      "depart_delay_max": 3.5
+    },
+    "3791745#0_0": {
+      "length": 61.55,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 468,
+      "departures": 468,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.15,
+        1.235,
+        1.0516666666666667,
+        1.1183333333333334,
+        0.855,
+        1.1116666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 250,
+      "inserted": 250,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 2.140400000000005,
+      "depart_delay_max": 10.799999999999955
+    },
+    "3791745#0_1": {
+      "length": 61.55,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 150,
+      "departures": 149,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.4033333333333333,
+        0.295,
+        0.4116666666666667,
+        0.37333333333333335,
+        0.3433333333333333,
+        0.205
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 120,
+      "inserted": 120,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.549999999999996,
+      "depart_delay_max": 4.2999999999999545
+    },
+    "3792490#0_0": {
+      "length": 111.11,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 8,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 424,
+      "departures": 421,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.99,
+        1.6133333333333333,
+        1.9966666666666666,
+        1.785,
+        1.6283333333333334,
+        1.8816666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 160,
+      "inserted": 160,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          1
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          1
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 2.4206249999999896,
+      "depart_delay_max": 12.5
+    },
+    "4074526#0_0": {
+      "length": 215.13,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 95,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 1,
+      "longest_queue": 95,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 16,
+      "departures": 16,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.3,
+        0.18166666666666667,
+        0.18666666666666668,
+        0.19166666666666668,
+        0.05,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.15833333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 16,
+      "inserted": 16,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          1
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          1
+        ],
+        [
+          2400.0,
+          1
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.0,
+      "depart_delay_max": 1.0
+    },
+    "4074526#4_0": {
+      "length": 46.53,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 703,
+      "tail_near_entry_seconds": 143,
+      "max_vehicles": 6,
+      "max_queued": 6,
+      "longest_queue": 162,
+      "longest_tail_near_entry": 94,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 196,
+      "departures": 196,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        2.3916666666666666,
+        0.8583333333333333,
+        0.7066666666666667,
+        1.9383333333333332,
+        0.5183333333333333,
+        0.30833333333333335
+      ],
+      "mean_queued_10min": [
+        1.8316666666666668,
+        0.49,
+        0.31166666666666665,
+        1.3983333333333334,
+        0.145,
+        0.0
+      ],
+      "planned": 180,
+      "inserted": 180,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 2.6161111111111115,
+      "depart_delay_max": 72.10000000000002
+    },
+    "419502786#0_0": {
+      "length": 191.12,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 138,
+      "departures": 136,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        1.0416666666666667,
+        0.6816666666666666,
+        0.7683333333333333,
+        1.165,
+        1.1333333333333333,
+        0.9266666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 130,
+      "inserted": 130,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.576923076923088,
+      "depart_delay_max": 3.5
+    },
+    "419502786#0_2": {
+      "length": 191.12,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 106,
+      "departures": 105,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.5866666666666667,
+        1.09,
+        0.8466666666666667,
+        0.41,
+        0.7433333333333333,
+        0.71
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 106,
+      "inserted": 106,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4349056603773584,
+      "depart_delay_max": 3.099999999999909
+    },
+    "42636056_0": {
+      "length": 44.42,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 33,
+      "departures": 33,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.058333333333333334,
+        0.06666666666666667,
+        0.05,
+        0.045,
+        0.06666666666666667,
+        0.03166666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 25,
+      "inserted": 25,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4999999999999591,
+      "depart_delay_max": 1.900000000000091
+    },
+    "42636056_1": {
+      "length": 44.42,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 78,
+      "departures": 78,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.11666666666666667,
+        0.08,
+        0.12666666666666668,
+        0.16333333333333333,
+        0.13666666666666666,
+        0.12
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 70,
+      "inserted": 70,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4771428571428649,
+      "depart_delay_max": 1.900000000000091
+    },
+    "43538577#3_0": {
+      "length": 66.08,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 100,
+      "departures": 100,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.26666666666666666,
+        0.21666666666666667,
+        0.255,
+        0.25833333333333336,
+        0.13,
+        0.28833333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 100,
+      "inserted": 100,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.4889999999999808,
+      "depart_delay_max": 3.1000000000000227
+    },
+    "43538577#3_1": {
+      "length": 66.08,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.05333333333333334,
+        0.023333333333333334,
+        0.03,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 8,
+      "inserted": 8,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.0,
+      "depart_delay_max": 1.0
+    },
+    "4919535#1_0": {
+      "length": 41.23,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 902,
+      "tail_near_entry_seconds": 15,
+      "max_vehicles": 6,
+      "max_queued": 6,
+      "longest_queue": 234,
+      "longest_tail_near_entry": 11,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 200,
+      "departures": 200,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.38166666666666665,
+        4.796666666666667,
+        2.28,
+        0.39166666666666666,
+        0.25166666666666665,
+        0.2833333333333333
+      ],
+      "mean_queued_10min": [
+        0.12166666666666667,
+        4.225,
+        1.38,
+        0.04833333333333333,
+        0.0016666666666666668,
+        0.0033333333333333335
+      ],
+      "planned": 170,
+      "inserted": 170,
+      "max_pending": 17,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          15
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 54.57941176470586,
+      "depart_delay_max": 405.9
+    },
+    "532097269#1.24_0": {
+      "length": 66.02,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 200,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 8,
+      "max_queued": 6,
+      "longest_queue": 27,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 512,
+      "departures": 509,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.37,
+        2.335,
+        1.185,
+        1.63,
+        1.2033333333333334,
+        1.3233333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.5283333333333333,
+        0.0,
+        0.385,
+        0.01,
+        0.0
+      ],
+      "planned": 512,
+      "inserted": 512,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.7236328125000002,
+      "depart_delay_max": 7.400000000000091
+    },
+    "532435056#1_0": {
+      "length": 61.73,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 175,
+      "departures": 175,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.40166666666666667,
+        0.37666666666666665,
+        0.445,
+        0.36833333333333335,
+        0.455,
+        0.3383333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 97,
+      "inserted": 97,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5329896907216438,
+      "depart_delay_max": 4.900000000000091
+    },
+    "53750892#0_0": {
+      "length": 212.22,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 2,
+      "tail_near_entry_seconds": 2,
+      "max_vehicles": 14,
+      "max_queued": 1,
+      "longest_queue": 2,
+      "longest_tail_near_entry": 2,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 730,
+      "departures": 718,
+      "end_vehicles": 12,
+      "mean_vehicles_10min": [
+        5.888333333333334,
+        6.776666666666666,
+        6.1866666666666665,
+        7.036666666666667,
+        5.0183333333333335,
+        5.925
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0033333333333333335,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 310,
+      "inserted": 308,
+      "max_pending": 4,
+      "pending_samples": [
+        [
+          600.0,
+          1
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          2
+        ]
+      ],
+      "depart_delay_mean": 3.473701298701298,
+      "depart_delay_max": 24.5
+    },
+    "5826896#0_0": {
+      "length": 77.55,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 279,
+      "departures": 278,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.7116666666666667,
+        0.8516666666666667,
+        0.505,
+        0.9966666666666667,
+        0.9133333333333333,
+        0.7783333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 180,
+      "inserted": 180,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          1
+        ],
+        [
+          2400.0,
+          1
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.7000000000000126,
+      "depart_delay_max": 6.5
+    },
+    "5826896#0_1": {
+      "length": 77.55,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 6,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 189,
+      "departures": 188,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.37166666666666665,
+        0.5766666666666667,
+        0.83,
+        0.4583333333333333,
+        0.5683333333333334,
+        0.43833333333333335
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 120,
+      "inserted": 120,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.6366666666666532,
+      "depart_delay_max": 7.599999999999909
+    },
+    "74233405#1_0": {
+      "length": 122.38,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 14,
+      "departures": 14,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.06666666666666667,
+        0.215,
+        0.10666666666666667,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 14,
+      "inserted": 14,
+      "max_pending": 1,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.0,
+      "depart_delay_max": 1.0
+    },
+    "7849019#2_1": {
+      "length": 68.1,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 166,
+      "departures": 166,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.4033333333333333,
+        0.4216666666666667,
+        0.515,
+        0.505,
+        0.30333333333333334,
+        0.3233333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 166,
+      "inserted": 166,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.506024096385548,
+      "depart_delay_max": 5.199999999999818
+    },
+    "8080825_0": {
+      "length": 80.36,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 298,
+      "departures": 297,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.8866666666666667,
+        0.915,
+        1.04,
+        0.8266666666666667,
+        0.7516666666666667,
+        1.0333333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 290,
+      "inserted": 290,
+      "max_pending": 3,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          1
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5703448275862057,
+      "depart_delay_max": 5.2000000000000455
+    },
+    "source_-4074527#1_0": {
+      "length": 150.0,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 6,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 300,
+      "departures": 297,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.78,
+        1.6783333333333332,
+        2.055,
+        1.3866666666666667,
+        1.3783333333333334,
+        1.6733333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 300,
+      "inserted": 300,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          1
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5399999999999985,
+      "depart_delay_max": 3.900000000000091
+    },
+    "source_-77616869#2_0": {
+      "length": 139.87,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 22,
+      "tail_near_entry_seconds": 2,
+      "max_vehicles": 7,
+      "max_queued": 4,
+      "longest_queue": 20,
+      "longest_tail_near_entry": 2,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 458,
+      "departures": 458,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        2.3533333333333335,
+        2.6933333333333334,
+        2.0166666666666666,
+        2.473333333333333,
+        2.29,
+        2.71
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.07,
+        0.0,
+        0.0,
+        0.0,
+        0.0033333333333333335
+      ],
+      "planned": 458,
+      "inserted": 458,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          1
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.6010917030567664,
+      "depart_delay_max": 4.599999999999909
+    },
+    "source_22962979_0": {
+      "length": 150.0,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 323,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 13,
+      "max_queued": 12,
+      "longest_queue": 125,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 248,
+      "departures": 245,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.515,
+        1.2283333333333333,
+        1.07,
+        1.0066666666666666,
+        1.7816666666666667,
+        4.816666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.348333333333333
+      ],
+      "planned": 248,
+      "inserted": 248,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5189516129032228,
+      "depart_delay_max": 3.900000000000091
+    },
+    "source_372226878#0_0": {
+      "length": 150.0,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 258,
+      "departures": 258,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.7333333333333334,
+        1.565,
+        1.07,
+        1.4233333333333333,
+        1.205,
+        1.5616666666666668
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 258,
+      "inserted": 258,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          0
+        ],
+        [
+          2400.0,
+          0
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.538372093023254,
+      "depart_delay_max": 4.2000000000000455
+    },
+    "source_4074528#0_0": {
+      "length": 142.8,
+      "tls": null,
+      "source": true,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 270,
+      "departures": 267,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.06,
+        1.3516666666666666,
+        1.4783333333333333,
+        1.685,
+        1.5183333333333333,
+        1.455
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "planned": 270,
+      "inserted": 270,
+      "max_pending": 2,
+      "pending_samples": [
+        [
+          600.0,
+          0
+        ],
+        [
+          1200.0,
+          0
+        ],
+        [
+          1800.0,
+          1
+        ],
+        [
+          2400.0,
+          1
+        ],
+        [
+          3000.0,
+          0
+        ],
+        [
+          3300.0,
+          0
+        ],
+        [
+          3600.0,
+          0
+        ]
+      ],
+      "depart_delay_mean": 1.5692592592592602,
+      "depart_delay_max": 4.5
+    },
+    "317003251#0_0": {
+      "length": 98.08,
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "source": false,
+      "queue_seconds": 2553,
+      "tail_near_entry_seconds": 676,
+      "max_vehicles": 13,
+      "max_queued": 13,
+      "longest_queue": 424,
+      "longest_tail_near_entry": 160,
+      "head_green_seconds": 531,
+      "head_green_stopped": 39,
+      "longest_head_green_stopped": 1,
+      "arrivals": 196,
+      "departures": 194,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        8.115,
+        5.316666666666666,
+        7.806666666666667,
+        6.618333333333333,
+        5.3966666666666665,
+        2.236666666666667
+      ],
+      "mean_queued_10min": [
+        7.005,
+        3.8633333333333333,
+        6.656666666666666,
+        4.755,
+        4.155,
+        1.415
+      ]
+    },
+    "3791745#4_1": {
+      "length": 47.07,
+      "tls": "389332",
+      "source": false,
+      "queue_seconds": 378,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 5,
+      "longest_queue": 28,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 439,
+      "head_green_stopped": 11,
+      "longest_head_green_stopped": 1,
+      "arrivals": 149,
+      "departures": 149,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.6733333333333333,
+        0.2683333333333333,
+        0.6233333333333333,
+        0.405,
+        0.5616666666666666,
+        0.30666666666666664
+      ],
+      "mean_queued_10min": [
+        0.24166666666666667,
+        0.043333333333333335,
+        0.16166666666666665,
+        0.09333333333333334,
+        0.19333333333333333,
+        0.11833333333333333
+      ]
+    },
+    "gneE49_0": {
+      "length": 11.87,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 17,
+      "tail_near_entry_seconds": 17,
+      "max_vehicles": 1,
+      "max_queued": 1,
+      "longest_queue": 15,
+      "longest_tail_near_entry": 15,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 267,
+      "departures": 267,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.10166666666666667,
+        0.09333333333333334,
+        0.11333333333333333,
+        0.19,
+        0.11166666666666666,
+        0.09666666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.028333333333333332,
+        0.0,
+        0.0
+      ]
+    },
+    "532427445#0_0": {
+      "length": 107.22,
+      "tls": "133307283",
+      "source": false,
+      "queue_seconds": 1442,
+      "tail_near_entry_seconds": 26,
+      "max_vehicles": 15,
+      "max_queued": 14,
+      "longest_queue": 139,
+      "longest_tail_near_entry": 19,
+      "head_green_seconds": 956,
+      "head_green_stopped": 50,
+      "longest_head_green_stopped": 1,
+      "arrivals": 268,
+      "departures": 267,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        1.55,
+        1.88,
+        1.5983333333333334,
+        4.786666666666667,
+        3.6083333333333334,
+        2.296666666666667
+      ],
+      "mean_queued_10min": [
+        0.39666666666666667,
+        0.7333333333333333,
+        0.38666666666666666,
+        2.3833333333333333,
+        2.02,
+        1.0383333333333333
+      ]
+    },
+    "5826896#1_0": {
+      "length": 87.11,
+      "tls": "cluster_1448439_2464758361",
+      "source": false,
+      "queue_seconds": 8,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 1,
+      "longest_queue": 8,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1574,
+      "head_green_stopped": 8,
+      "longest_head_green_stopped": 8,
+      "arrivals": 180,
+      "departures": 179,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.4816666666666667,
+        0.5166666666666667,
+        0.43833333333333335,
+        0.79,
+        0.72,
+        0.545
+      ],
+      "mean_queued_10min": [
+        0.013333333333333334,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "-53750892#4_0": {
+      "length": 211.83,
+      "tls": "cluster_5166592137_5166592140_557198554_57744042",
+      "source": false,
+      "queue_seconds": 411,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 2,
+      "longest_queue": 82,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 269,
+      "head_green_stopped": 5,
+      "longest_head_green_stopped": 1,
+      "arrivals": 38,
+      "departures": 38,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.44333333333333336,
+        0.39666666666666667,
+        0.16,
+        0.6566666666666666,
+        0.795,
+        0.21333333333333335
+      ],
+      "mean_queued_10min": [
+        0.09,
+        0.09666666666666666,
+        0.05333333333333334,
+        0.21,
+        0.2833333333333333,
+        0.016666666666666666
+      ]
+    },
+    "317003249#2_0": {
+      "length": 21.61,
+      "tls": "1448436",
+      "source": false,
+      "queue_seconds": 1217,
+      "tail_near_entry_seconds": 402,
+      "max_vehicles": 3,
+      "max_queued": 3,
+      "longest_queue": 77,
+      "longest_tail_near_entry": 57,
+      "head_green_seconds": 326,
+      "head_green_stopped": 34,
+      "longest_head_green_stopped": 1,
+      "arrivals": 170,
+      "departures": 169,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        1.2966666666666666,
+        1.1983333333333333,
+        0.54,
+        0.6716666666666666,
+        0.57,
+        0.8683333333333333
+      ],
+      "mean_queued_10min": [
+        0.985,
+        0.9066666666666666,
+        0.335,
+        0.385,
+        0.4083333333333333,
+        0.6283333333333333
+      ]
+    },
+    "-304634278#0_0": {
+      "length": 88.24,
+      "tls": "389332",
+      "source": false,
+      "queue_seconds": 1863,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 11,
+      "max_queued": 11,
+      "longest_queue": 129,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1502,
+      "head_green_stopped": 98,
+      "longest_head_green_stopped": 1,
+      "arrivals": 509,
+      "departures": 505,
+      "end_vehicles": 4,
+      "mean_vehicles_10min": [
+        4.428333333333334,
+        5.751666666666667,
+        3.76,
+        5.13,
+        3.888333333333333,
+        3.81
+      ],
+      "mean_queued_10min": [
+        1.5483333333333333,
+        2.276666666666667,
+        1.3133333333333332,
+        2.526666666666667,
+        1.5116666666666667,
+        1.3516666666666666
+      ]
+    },
+    "-3791745#3_1": {
+      "length": 61.8,
+      "tls": "1448436",
+      "source": false,
+      "queue_seconds": 2257,
+      "tail_near_entry_seconds": 272,
+      "max_vehicles": 8,
+      "max_queued": 8,
+      "longest_queue": 104,
+      "longest_tail_near_entry": 46,
+      "head_green_seconds": 780,
+      "head_green_stopped": 73,
+      "longest_head_green_stopped": 1,
+      "arrivals": 297,
+      "departures": 289,
+      "end_vehicles": 8,
+      "mean_vehicles_10min": [
+        2.275,
+        5.15,
+        4.076666666666667,
+        3.99,
+        1.5166666666666666,
+        3.7783333333333333
+      ],
+      "mean_queued_10min": [
+        1.2533333333333334,
+        3.8133333333333335,
+        2.76,
+        2.558333333333333,
+        0.655,
+        2.585
+      ]
+    },
+    "-5826896#0_0": {
+      "length": 77.07,
+      "tls": "26165126",
+      "source": false,
+      "queue_seconds": 1443,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 7,
+      "longest_queue": 122,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 642,
+      "head_green_stopped": 64,
+      "longest_head_green_stopped": 13,
+      "arrivals": 187,
+      "departures": 185,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        1.2733333333333334,
+        1.6283333333333334,
+        1.0,
+        1.7766666666666666,
+        1.7833333333333334,
+        2.1283333333333334
+      ],
+      "mean_queued_10min": [
+        0.5716666666666667,
+        0.8916666666666667,
+        0.385,
+        1.0066666666666666,
+        1.0083333333333333,
+        1.4016666666666666
+      ]
+    },
+    "523892327#0_0": {
+      "length": 107.8,
+      "tls": "cluster_5166592137_5166592140_557198554_57744042",
+      "source": false,
+      "queue_seconds": 1219,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 9,
+      "max_queued": 8,
+      "longest_queue": 94,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 677,
+      "head_green_stopped": 29,
+      "longest_head_green_stopped": 1,
+      "arrivals": 166,
+      "departures": 165,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        1.3766666666666667,
+        1.3433333333333333,
+        1.4133333333333333,
+        2.7983333333333333,
+        0.8216666666666667,
+        0.9533333333333334
+      ],
+      "mean_queued_10min": [
+        0.585,
+        0.54,
+        0.4533333333333333,
+        1.5966666666666667,
+        0.26,
+        0.34833333333333333
+      ]
+    },
+    "-125872847#11_0": {
+      "length": 192.53,
+      "tls": "659802",
+      "source": false,
+      "queue_seconds": 1089,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 10,
+      "max_queued": 8,
+      "longest_queue": 99,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1081,
+      "head_green_stopped": 31,
+      "longest_head_green_stopped": 1,
+      "arrivals": 180,
+      "departures": 179,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        2.7666666666666666,
+        1.17,
+        3.86,
+        1.88,
+        1.3316666666666668,
+        1.6516666666666666
+      ],
+      "mean_queued_10min": [
+        1.0783333333333334,
+        0.255,
+        1.4883333333333333,
+        0.49,
+        0.22,
+        0.36333333333333334
+      ]
+    },
+    "24349650_0": {
+      "length": 58.32,
+      "tls": "1448442",
+      "source": false,
+      "queue_seconds": 2310,
+      "tail_near_entry_seconds": 69,
+      "max_vehicles": 8,
+      "max_queued": 8,
+      "longest_queue": 425,
+      "longest_tail_near_entry": 35,
+      "head_green_seconds": 531,
+      "head_green_stopped": 42,
+      "longest_head_green_stopped": 1,
+      "arrivals": 200,
+      "departures": 198,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        2.8,
+        6.613333333333333,
+        6.163333333333333,
+        2.0733333333333333,
+        3.191666666666667,
+        1.4416666666666667
+      ],
+      "mean_queued_10min": [
+        2.3966666666666665,
+        5.818333333333333,
+        4.51,
+        1.2166666666666666,
+        2.558333333333333,
+        0.835
+      ]
+    },
+    "-668344588_0": {
+      "length": 10.3,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 339,
+      "departures": 339,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.11833333333333333,
+        0.11333333333333333,
+        0.12666666666666668,
+        0.15833333333333333,
+        0.11666666666666667,
+        0.14
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4074528#0_0": {
+      "length": 162.04,
+      "tls": "659802",
+      "source": false,
+      "queue_seconds": 830,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 9,
+      "max_queued": 7,
+      "longest_queue": 78,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1614,
+      "head_green_stopped": 30,
+      "longest_head_green_stopped": 1,
+      "arrivals": 266,
+      "departures": 263,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.5966666666666667,
+        1.925,
+        2.8433333333333333,
+        2.4366666666666665,
+        2.5383333333333336,
+        2.51
+      ],
+      "mean_queued_10min": [
+        0.2866666666666667,
+        0.24,
+        0.9333333333333333,
+        0.24833333333333332,
+        0.67,
+        0.7233333333333334
+      ]
+    },
+    "3791031#0_0": {
+      "length": 124.44,
+      "tls": "1430847303",
+      "source": false,
+      "queue_seconds": 1578,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 12,
+      "max_queued": 8,
+      "longest_queue": 53,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1475,
+      "head_green_stopped": 88,
+      "longest_head_green_stopped": 1,
+      "arrivals": 458,
+      "departures": 458,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        3.615,
+        3.473333333333333,
+        3.8516666666666666,
+        4.303333333333334,
+        4.0616666666666665,
+        4.466666666666667
+      ],
+      "mean_queued_10min": [
+        1.115,
+        1.1916666666666667,
+        1.0883333333333334,
+        0.99,
+        1.2266666666666666,
+        1.3533333333333333
+      ]
+    },
+    "-3791745#3_0": {
+      "length": 61.8,
+      "tls": "1448436",
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1134,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 162,
+      "departures": 161,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.2733333333333333,
+        0.38166666666666665,
+        0.4633333333333333,
+        0.36833333333333335,
+        0.4866666666666667,
+        0.32666666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "128944693#1_0": {
+      "length": 29.63,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 16,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 2,
+      "longest_queue": 5,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 305,
+      "departures": 304,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.3983333333333333,
+        0.43166666666666664,
+        0.4583333333333333,
+        0.365,
+        0.36333333333333334,
+        0.42333333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.011666666666666667,
+        0.0016666666666666668,
+        0.0,
+        0.016666666666666666,
+        0.0
+      ]
+    },
+    "524737392#0_0": {
+      "length": 61.79,
+      "tls": "cluster_5166592137_5166592140_557198554_57744042",
+      "source": false,
+      "queue_seconds": 855,
+      "tail_near_entry_seconds": 43,
+      "max_vehicles": 8,
+      "max_queued": 8,
+      "longest_queue": 91,
+      "longest_tail_near_entry": 34,
+      "head_green_seconds": 1176,
+      "head_green_stopped": 43,
+      "longest_head_green_stopped": 1,
+      "arrivals": 329,
+      "departures": 328,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        1.1266666666666667,
+        1.6616666666666666,
+        2.2283333333333335,
+        1.1733333333333333,
+        1.0383333333333333,
+        1.9216666666666666
+      ],
+      "mean_queued_10min": [
+        0.37833333333333335,
+        0.46,
+        1.0433333333333332,
+        0.245,
+        0.225,
+        0.8916666666666667
+      ]
+    },
+    "-4074527#1_0": {
+      "length": 328.6,
+      "tls": "659802",
+      "source": false,
+      "queue_seconds": 1894,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 19,
+      "max_queued": 12,
+      "longest_queue": 113,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1089,
+      "head_green_stopped": 69,
+      "longest_head_green_stopped": 1,
+      "arrivals": 297,
+      "departures": 289,
+      "end_vehicles": 8,
+      "mean_vehicles_10min": [
+        5.081666666666667,
+        6.306666666666667,
+        6.678333333333334,
+        4.4816666666666665,
+        5.266666666666667,
+        7.673333333333333
+      ],
+      "mean_queued_10min": [
+        0.9716666666666667,
+        2.025,
+        1.2033333333333334,
+        1.2416666666666667,
+        1.6216666666666666,
+        2.97
+      ]
+    },
+    "52879956_1": {
+      "length": 54.2,
+      "tls": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "source": false,
+      "queue_seconds": 314,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 4,
+      "longest_queue": 23,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 322,
+      "head_green_stopped": 9,
+      "longest_head_green_stopped": 1,
+      "arrivals": 105,
+      "departures": 105,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.19666666666666666,
+        0.6566666666666666,
+        0.44166666666666665,
+        0.20666666666666667,
+        0.35333333333333333,
+        0.31
+      ],
+      "mean_queued_10min": [
+        0.03333333333333333,
+        0.23,
+        0.145,
+        0.065,
+        0.11666666666666667,
+        0.06833333333333333
+      ]
+    },
+    "532427444#0_0": {
+      "length": 105.76,
+      "tls": "389281",
+      "source": false,
+      "queue_seconds": 1511,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 9,
+      "max_queued": 9,
+      "longest_queue": 112,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 668,
+      "head_green_stopped": 31,
+      "longest_head_green_stopped": 1,
+      "arrivals": 170,
+      "departures": 170,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.9016666666666666,
+        2.405,
+        1.7316666666666667,
+        2.815,
+        1.6466666666666667,
+        1.38
+      ],
+      "mean_queued_10min": [
+        1.28,
+        1.3816666666666666,
+        0.805,
+        1.9616666666666667,
+        0.7733333333333333,
+        0.6283333333333333
+      ]
+    },
+    "4078079#1_0": {
+      "length": 43.24,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 255,
+      "departures": 255,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.35833333333333334,
+        0.395,
+        0.3433333333333333,
+        0.5783333333333334,
+        0.43833333333333335,
+        0.395
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4472590#0_0": {
+      "length": 218.37,
+      "tls": "cluster_1998326407_2876012598_4781977262_658429",
+      "source": false,
+      "queue_seconds": 889,
+      "tail_near_entry_seconds": 4,
+      "max_vehicles": 25,
+      "max_queued": 25,
+      "longest_queue": 145,
+      "longest_tail_near_entry": 4,
+      "head_green_seconds": 2225,
+      "head_green_stopped": 51,
+      "longest_head_green_stopped": 1,
+      "arrivals": 452,
+      "departures": 448,
+      "end_vehicles": 4,
+      "mean_vehicles_10min": [
+        3.7483333333333335,
+        8.315,
+        4.435,
+        5.873333333333333,
+        5.165,
+        4.078333333333333
+      ],
+      "mean_queued_10min": [
+        0.23833333333333334,
+        2.765,
+        0.4066666666666667,
+        0.7183333333333334,
+        0.7433333333333333,
+        0.6366666666666667
+      ]
+    },
+    "-532427444#3_0": {
+      "length": 110.04,
+      "tls": "389281",
+      "source": false,
+      "queue_seconds": 1529,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 10,
+      "max_queued": 10,
+      "longest_queue": 99,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 677,
+      "head_green_stopped": 38,
+      "longest_head_green_stopped": 1,
+      "arrivals": 199,
+      "departures": 198,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        1.015,
+        1.26,
+        2.9316666666666666,
+        3.0116666666666667,
+        1.4533333333333334,
+        2.8066666666666666
+      ],
+      "mean_queued_10min": [
+        0.17,
+        0.8066666666666666,
+        1.5633333333333332,
+        1.695,
+        0.6183333333333333,
+        1.5383333333333333
+      ]
+    },
+    "-77616869#2_0": {
+      "length": 89.91,
+      "tls": "133307283",
+      "source": false,
+      "queue_seconds": 1610,
+      "tail_near_entry_seconds": 40,
+      "max_vehicles": 12,
+      "max_queued": 12,
+      "longest_queue": 111,
+      "longest_tail_near_entry": 20,
+      "head_green_seconds": 1478,
+      "head_green_stopped": 75,
+      "longest_head_green_stopped": 1,
+      "arrivals": 458,
+      "departures": 449,
+      "end_vehicles": 9,
+      "mean_vehicles_10min": [
+        3.1233333333333335,
+        6.078333333333333,
+        2.6966666666666668,
+        2.966666666666667,
+        3.665,
+        4.11
+      ],
+      "mean_queued_10min": [
+        1.1716666666666666,
+        3.1666666666666665,
+        0.9016666666666666,
+        0.8316666666666667,
+        1.705,
+        1.515
+      ]
+    },
+    "4472590#0_2": {
+      "length": 218.37,
+      "tls": "cluster_1998326407_2876012598_4781977262_658429",
+      "source": false,
+      "queue_seconds": 97,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 1,
+      "longest_queue": 15,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 319,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 30,
+      "departures": 30,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.255,
+        0.12166666666666667,
+        0.21166666666666667,
+        0.23666666666666666,
+        0.5266666666666666,
+        0.32666666666666666
+      ],
+      "mean_queued_10min": [
+        0.011666666666666667,
+        0.015,
+        0.015,
+        0.035,
+        0.07666666666666666,
+        0.008333333333333333
+      ]
+    },
+    "-317003249#1_0": {
+      "length": 79.76,
+      "tls": "cluster_1448439_2464758361",
+      "source": false,
+      "queue_seconds": 955,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 7,
+      "longest_queue": 35,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1035,
+      "head_green_stopped": 47,
+      "longest_head_green_stopped": 1,
+      "arrivals": 308,
+      "departures": 308,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.5833333333333333,
+        1.64,
+        2.23,
+        1.1533333333333333,
+        1.4466666666666668,
+        2.058333333333333
+      ],
+      "mean_queued_10min": [
+        0.44,
+        0.48,
+        0.7983333333333333,
+        0.215,
+        0.49166666666666664,
+        0.7883333333333333
+      ]
+    },
+    "372226878#0_0": {
+      "length": 111.46,
+      "tls": "26165126",
+      "source": false,
+      "queue_seconds": 703,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 5,
+      "longest_queue": 63,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1474,
+      "head_green_stopped": 60,
+      "longest_head_green_stopped": 16,
+      "arrivals": 258,
+      "departures": 256,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        1.8066666666666666,
+        1.8116666666666668,
+        1.0466666666666666,
+        1.62,
+        1.2716666666666667,
+        2.0166666666666666
+      ],
+      "mean_queued_10min": [
+        0.365,
+        0.455,
+        0.22333333333333333,
+        0.36833333333333335,
+        0.24666666666666667,
+        0.6283333333333333
+      ]
+    },
+    "668344588_0": {
+      "length": 10.3,
+      "tls": "1448436",
+      "source": false,
+      "queue_seconds": 207,
+      "tail_near_entry_seconds": 207,
+      "max_vehicles": 2,
+      "max_queued": 2,
+      "longest_queue": 17,
+      "longest_tail_near_entry": 17,
+      "head_green_seconds": 102,
+      "head_green_stopped": 9,
+      "longest_head_green_stopped": 1,
+      "arrivals": 100,
+      "departures": 99,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.12,
+        0.10333333333333333,
+        0.20666666666666667,
+        0.09,
+        0.08166666666666667,
+        0.195
+      ],
+      "mean_queued_10min": [
+        0.056666666666666664,
+        0.041666666666666664,
+        0.1,
+        0.028333333333333332,
+        0.043333333333333335,
+        0.11333333333333333
+      ]
+    },
+    "77616869#0_0": {
+      "length": 90.89,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 6,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 180,
+      "departures": 179,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.37666666666666665,
+        0.6366666666666667,
+        0.585,
+        0.7333333333333333,
+        0.8333333333333334,
+        0.5433333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "-317003249#2_0": {
+      "length": 21.61,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 161,
+      "departures": 161,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.1,
+        0.13,
+        0.15833333333333333,
+        0.12333333333333334,
+        0.17166666666666666,
+        0.11166666666666666
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "2110698#0_0": {
+      "length": 66.96,
+      "tls": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "source": false,
+      "queue_seconds": 991,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 6,
+      "longest_queue": 54,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 903,
+      "head_green_stopped": 48,
+      "longest_head_green_stopped": 1,
+      "arrivals": 264,
+      "departures": 264,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.6983333333333333,
+        1.3216666666666668,
+        1.195,
+        1.44,
+        1.16,
+        1.38
+      ],
+      "mean_queued_10min": [
+        0.72,
+        0.44,
+        0.45,
+        0.5083333333333333,
+        0.37833333333333335,
+        0.4633333333333333
+      ]
+    },
+    "3792490#0_1": {
+      "length": 111.11,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 105,
+      "departures": 105,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.2683333333333333,
+        0.6933333333333334,
+        0.51,
+        0.27166666666666667,
+        0.3983333333333333,
+        0.4483333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "3791745#4_0": {
+      "length": 47.07,
+      "tls": "389332",
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1296,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 250,
+      "departures": 250,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.3933333333333333,
+        0.495,
+        0.41,
+        0.48333333333333334,
+        0.425,
+        0.43833333333333335
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "3790875#2_0": {
+      "length": 116.29,
+      "tls": "5166592132",
+      "source": false,
+      "queue_seconds": 265,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 3,
+      "longest_queue": 35,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 437,
+      "head_green_stopped": 7,
+      "longest_head_green_stopped": 1,
+      "arrivals": 77,
+      "departures": 77,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.5183333333333333,
+        0.37166666666666665,
+        0.3466666666666667,
+        0.45666666666666667,
+        0.4633333333333333,
+        0.59
+      ],
+      "mean_queued_10min": [
+        0.13833333333333334,
+        0.051666666666666666,
+        0.051666666666666666,
+        0.04,
+        0.14333333333333334,
+        0.13
+      ]
+    },
+    "532427444#0_1": {
+      "length": 105.76,
+      "tls": "389281",
+      "source": false,
+      "queue_seconds": 741,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 3,
+      "longest_queue": 76,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 227,
+      "head_green_stopped": 5,
+      "longest_head_green_stopped": 1,
+      "arrivals": 60,
+      "departures": 59,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.705,
+        0.5816666666666667,
+        0.4666666666666667,
+        0.49,
+        0.6883333333333334,
+        0.23666666666666666
+      ],
+      "mean_queued_10min": [
+        0.4583333333333333,
+        0.25833333333333336,
+        0.18,
+        0.22333333333333333,
+        0.3283333333333333,
+        0.09166666666666666
+      ]
+    },
+    "5826896#1_1": {
+      "length": 87.11,
+      "tls": "cluster_1448439_2464758361",
+      "source": false,
+      "queue_seconds": 471,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 8,
+      "max_queued": 4,
+      "longest_queue": 35,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 661,
+      "head_green_stopped": 15,
+      "longest_head_green_stopped": 1,
+      "arrivals": 141,
+      "departures": 141,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.45666666666666667,
+        0.8,
+        1.1316666666666666,
+        0.745,
+        0.67,
+        0.43166666666666664
+      ],
+      "mean_queued_10min": [
+        0.13666666666666666,
+        0.14333333333333334,
+        0.2866666666666667,
+        0.21166666666666667,
+        0.14166666666666666,
+        0.075
+      ]
+    },
+    "532427444#7_0": {
+      "length": 110.24,
+      "tls": "1448442",
+      "source": false,
+      "queue_seconds": 961,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 10,
+      "max_queued": 8,
+      "longest_queue": 56,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1201,
+      "head_green_stopped": 39,
+      "longest_head_green_stopped": 1,
+      "arrivals": 282,
+      "departures": 276,
+      "end_vehicles": 6,
+      "mean_vehicles_10min": [
+        1.23,
+        2.1016666666666666,
+        2.22,
+        2.2216666666666667,
+        2.1983333333333333,
+        2.263333333333333
+      ],
+      "mean_queued_10min": [
+        0.24333333333333335,
+        0.655,
+        0.645,
+        0.6833333333333333,
+        0.505,
+        0.7933333333333333
+      ]
+    },
+    "-532427444#2_0": {
+      "length": 105.79,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 6,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 268,
+      "departures": 266,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        1.03,
+        0.6683333333333333,
+        1.3166666666666667,
+        1.1166666666666667,
+        1.0866666666666667,
+        1.2083333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4074527#0_0": {
+      "length": 328.6,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 12,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 318,
+      "departures": 317,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        2.7866666666666666,
+        3.645,
+        4.536666666666667,
+        5.135,
+        3.5616666666666665,
+        4.545
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "22962979_0": {
+      "length": 82.0,
+      "tls": "389281",
+      "source": false,
+      "queue_seconds": 2095,
+      "tail_near_entry_seconds": 362,
+      "max_vehicles": 11,
+      "max_queued": 11,
+      "longest_queue": 169,
+      "longest_tail_near_entry": 112,
+      "head_green_seconds": 718,
+      "head_green_stopped": 51,
+      "longest_head_green_stopped": 1,
+      "arrivals": 245,
+      "departures": 234,
+      "end_vehicles": 11,
+      "mean_vehicles_10min": [
+        4.073333333333333,
+        3.4233333333333333,
+        1.3066666666666666,
+        1.9466666666666668,
+        3.92,
+        9.191666666666666
+      ],
+      "mean_queued_10min": [
+        2.78,
+        2.405,
+        0.45666666666666667,
+        1.235,
+        2.25,
+        7.201666666666667
+      ]
+    },
+    "304634278#0_0": {
+      "length": 88.1,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 250,
+      "departures": 248,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        0.6933333333333334,
+        0.9316666666666666,
+        0.7616666666666667,
+        0.8933333333333333,
+        0.7983333333333333,
+        0.8483333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "38192816_1": {
+      "length": 43.33,
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "source": false,
+      "queue_seconds": 877,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 3,
+      "longest_queue": 73,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 145,
+      "head_green_stopped": 15,
+      "longest_head_green_stopped": 1,
+      "arrivals": 78,
+      "departures": 78,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.37666666666666665,
+        0.31166666666666665,
+        0.4666666666666667,
+        0.6766666666666666,
+        0.495,
+        0.66
+      ],
+      "mean_queued_10min": [
+        0.22166666666666668,
+        0.195,
+        0.295,
+        0.43666666666666665,
+        0.33166666666666667,
+        0.4583333333333333
+      ]
+    },
+    "4919462#0_1": {
+      "length": 21.14,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 127,
+      "departures": 127,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.135,
+        0.06166666666666667,
+        0.12,
+        0.08833333333333333,
+        0.12,
+        0.07833333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "48454248#0_0": {
+      "length": 53.97,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 399,
+      "departures": 399,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.89,
+        0.8083333333333333,
+        0.84,
+        0.85,
+        0.645,
+        0.9133333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "3790875#2_1": {
+      "length": 116.29,
+      "tls": "5166592132",
+      "source": false,
+      "queue_seconds": 503,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 7,
+      "max_queued": 3,
+      "longest_queue": 31,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 748,
+      "head_green_stopped": 15,
+      "longest_head_green_stopped": 1,
+      "arrivals": 142,
+      "departures": 140,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        0.545,
+        1.07,
+        1.1283333333333334,
+        0.7083333333333334,
+        0.7183333333333334,
+        1.185
+      ],
+      "mean_queued_10min": [
+        0.08166666666666667,
+        0.325,
+        0.2833333333333333,
+        0.12166666666666667,
+        0.17833333333333334,
+        0.18166666666666667
+      ]
+    },
+    "4919459#0_0": {
+      "length": 32.61,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 167,
+      "departures": 167,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.14666666666666667,
+        0.225,
+        0.26166666666666666,
+        0.18166666666666667,
+        0.21166666666666667,
+        0.18
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "532427444#7_1": {
+      "length": 110.24,
+      "tls": "1448442",
+      "source": false,
+      "queue_seconds": 275,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 2,
+      "longest_queue": 37,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 107,
+      "head_green_stopped": 1,
+      "longest_head_green_stopped": 1,
+      "arrivals": 29,
+      "departures": 29,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.25,
+        0.17166666666666666,
+        0.22166666666666668,
+        0.185,
+        0.355,
+        0.07
+      ],
+      "mean_queued_10min": [
+        0.08833333333333333,
+        0.09166666666666666,
+        0.04833333333333333,
+        0.06,
+        0.115,
+        0.06166666666666667
+      ]
+    },
+    "-532427445#1_0": {
+      "length": 107.32,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 136,
+      "departures": 136,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.48833333333333334,
+        0.4816666666666667,
+        0.405,
+        0.5983333333333334,
+        0.59,
+        0.63
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gneE63_0": {
+      "length": 15.69,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 30,
+      "departures": 30,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.008333333333333333,
+        0.005,
+        0.008333333333333333,
+        0.011666666666666667,
+        0.018333333333333333,
+        0.011666666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "16309917#0_0": {
+      "length": 85.84,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 6,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 459,
+      "departures": 456,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.1333333333333333,
+        1.4033333333333333,
+        1.74,
+        1.5433333333333332,
+        1.7083333333333333,
+        1.485
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4074531#0_0": {
+      "length": 129.52,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 9,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 532,
+      "departures": 528,
+      "end_vehicles": 4,
+      "mean_vehicles_10min": [
+        2.3266666666666667,
+        2.165,
+        2.8033333333333332,
+        3.1483333333333334,
+        2.6566666666666667,
+        3.0033333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4629169#0_0": {
+      "length": 182.15,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 119,
+      "departures": 119,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.535,
+        0.8416666666666667,
+        0.7783333333333333,
+        1.14,
+        0.6183333333333333,
+        0.975
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "26545993#0_0": {
+      "length": 129.01,
+      "tls": "1430847303",
+      "source": false,
+      "queue_seconds": 279,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 3,
+      "longest_queue": 28,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 493,
+      "head_green_stopped": 10,
+      "longest_head_green_stopped": 1,
+      "arrivals": 77,
+      "departures": 74,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        0.5033333333333333,
+        0.43333333333333335,
+        0.465,
+        0.6433333333333333,
+        0.35333333333333333,
+        0.7083333333333334
+      ],
+      "mean_queued_10min": [
+        0.09333333333333334,
+        0.07833333333333334,
+        0.15,
+        0.12666666666666668,
+        0.05333333333333334,
+        0.11166666666666666
+      ]
+    },
+    "-554991019_0": {
+      "length": 77.72,
+      "tls": "1448442",
+      "source": false,
+      "queue_seconds": 1905,
+      "tail_near_entry_seconds": 84,
+      "max_vehicles": 10,
+      "max_queued": 10,
+      "longest_queue": 135,
+      "longest_tail_near_entry": 41,
+      "head_green_seconds": 549,
+      "head_green_stopped": 52,
+      "longest_head_green_stopped": 1,
+      "arrivals": 224,
+      "departures": 224,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        1.7033333333333334,
+        1.05,
+        2.263333333333333,
+        3.591666666666667,
+        2.3766666666666665,
+        5.136666666666667
+      ],
+      "mean_queued_10min": [
+        0.6733333333333333,
+        0.47333333333333333,
+        1.39,
+        2.5016666666666665,
+        1.3416666666666666,
+        3.8016666666666667
+      ]
+    },
+    "37721356#0_0": {
+      "length": 373.05,
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "source": false,
+      "queue_seconds": 1200,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 9,
+      "max_queued": 7,
+      "longest_queue": 113,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 941,
+      "head_green_stopped": 28,
+      "longest_head_green_stopped": 1,
+      "arrivals": 151,
+      "departures": 149,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        3.2733333333333334,
+        2.465,
+        2.8766666666666665,
+        3.2916666666666665,
+        3.16,
+        2.941666666666667
+      ],
+      "mean_queued_10min": [
+        1.0016666666666667,
+        0.305,
+        0.5533333333333333,
+        0.7133333333333334,
+        1.1916666666666667,
+        0.7933333333333333
+      ]
+    },
+    "2110698#0_1": {
+      "length": 66.96,
+      "tls": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "source": false,
+      "queue_seconds": 284,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 3,
+      "longest_queue": 40,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 245,
+      "head_green_stopped": 6,
+      "longest_head_green_stopped": 1,
+      "arrivals": 67,
+      "departures": 67,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.36333333333333334,
+        0.22333333333333333,
+        0.41833333333333333,
+        0.2683333333333333,
+        0.30666666666666664,
+        0.135
+      ],
+      "mean_queued_10min": [
+        0.135,
+        0.04666666666666667,
+        0.15333333333333332,
+        0.06,
+        0.12333333333333334,
+        0.045
+      ]
+    },
+    "4628796#1_0": {
+      "length": 258.84,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 10,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 297,
+      "departures": 295,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        2.236666666666667,
+        3.16,
+        2.92,
+        3.3633333333333333,
+        3.28,
+        2.685
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "554991019_0": {
+      "length": 77.72,
+      "tls": "26165126",
+      "source": false,
+      "queue_seconds": 589,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 4,
+      "longest_queue": 69,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 212,
+      "head_green_stopped": 11,
+      "longest_head_green_stopped": 1,
+      "arrivals": 69,
+      "departures": 69,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.25166666666666665,
+        0.37666666666666665,
+        0.9283333333333333,
+        0.49666666666666665,
+        0.7116666666666667,
+        0.2733333333333333
+      ],
+      "mean_queued_10min": [
+        0.11166666666666666,
+        0.115,
+        0.505,
+        0.2733333333333333,
+        0.4,
+        0.165
+      ]
+    },
+    "4919471#0_0": {
+      "length": 74.68,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 118,
+      "departures": 118,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.37833333333333335,
+        0.455,
+        0.24166666666666667,
+        0.37833333333333335,
+        0.20166666666666666,
+        0.31833333333333336
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "15464769#2_0": {
+      "length": 40.17,
+      "tls": "26165090",
+      "source": false,
+      "queue_seconds": 540,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 2,
+      "longest_queue": 153,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 74,
+      "head_green_stopped": 6,
+      "longest_head_green_stopped": 1,
+      "arrivals": 40,
+      "departures": 40,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.25166666666666665,
+        0.135,
+        0.2783333333333333,
+        0.25,
+        0.19333333333333333,
+        0.4116666666666667
+      ],
+      "mean_queued_10min": [
+        0.16666666666666666,
+        0.10666666666666667,
+        0.16333333333333333,
+        0.13,
+        0.11333333333333333,
+        0.335
+      ]
+    },
+    "271848004#1_0": {
+      "length": 54.22,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 67,
+      "departures": 67,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.14333333333333334,
+        0.12666666666666668,
+        0.18333333333333332,
+        0.14,
+        0.13333333333333333,
+        0.06333333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gneE62_0": {
+      "length": 45.27,
+      "tls": "cluster_1998326407_2876012598_4781977262_658429",
+      "source": false,
+      "queue_seconds": 466,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 4,
+      "longest_queue": 61,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 285,
+      "head_green_stopped": 15,
+      "longest_head_green_stopped": 1,
+      "arrivals": 133,
+      "departures": 132,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.3233333333333333,
+        0.4683333333333333,
+        0.44166666666666665,
+        0.325,
+        0.21666666666666667,
+        0.7483333333333333
+      ],
+      "mean_queued_10min": [
+        0.105,
+        0.21833333333333332,
+        0.16666666666666666,
+        0.11666666666666667,
+        0.05333333333333334,
+        0.48333333333333334
+      ]
+    },
+    "4628796#1_1": {
+      "length": 258.84,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 86,
+      "departures": 84,
+      "end_vehicles": 2,
+      "mean_vehicles_10min": [
+        0.735,
+        0.87,
+        1.0366666666666666,
+        0.75,
+        0.72,
+        0.695
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4919462#0_0": {
+      "length": 21.14,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 49,
+      "departures": 49,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.03666666666666667,
+        0.043333333333333335,
+        0.05,
+        0.035,
+        0.045,
+        0.03
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "532435057#0_0": {
+      "length": 68.94,
+      "tls": "5166592132",
+      "source": false,
+      "queue_seconds": 405,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 2,
+      "longest_queue": 29,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 478,
+      "head_green_stopped": 9,
+      "longest_head_green_stopped": 1,
+      "arrivals": 105,
+      "departures": 104,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.3983333333333333,
+        0.36833333333333335,
+        0.6533333333333333,
+        0.345,
+        0.42833333333333334,
+        0.375
+      ],
+      "mean_queued_10min": [
+        0.07166666666666667,
+        0.09333333333333334,
+        0.24666666666666667,
+        0.08833333333333333,
+        0.08833333333333333,
+        0.15333333333333332
+      ]
+    },
+    "52879956_0": {
+      "length": 54.2,
+      "tls": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 854,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 136,
+      "departures": 136,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.26,
+        0.22666666666666666,
+        0.19333333333333333,
+        0.3516666666666667,
+        0.335,
+        0.2633333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gneE48_0": {
+      "length": 11.87,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.005,
+        0.0,
+        0.0,
+        0.01,
+        0.005,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "26545993#0_1": {
+      "length": 129.01,
+      "tls": "1430847303",
+      "source": false,
+      "queue_seconds": 356,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 3,
+      "longest_queue": 35,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 552,
+      "head_green_stopped": 9,
+      "longest_head_green_stopped": 1,
+      "arrivals": 104,
+      "departures": 103,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.785,
+        0.4866666666666667,
+        0.8766666666666667,
+        0.59,
+        0.7033333333333334,
+        0.55
+      ],
+      "mean_queued_10min": [
+        0.20166666666666666,
+        0.065,
+        0.135,
+        0.11166666666666666,
+        0.10833333333333334,
+        0.155
+      ]
+    },
+    "2294382#0_1": {
+      "length": 3.5,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 5,
+      "departures": 5,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0033333333333333335,
+        0.0,
+        0.0,
+        0.0033333333333333335,
+        0.0016666666666666668,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "2294382#1_1": {
+      "length": 55.02,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.025,
+        0.0,
+        0.0,
+        0.04666666666666667,
+        0.02666666666666667,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "357012332#0_0": {
+      "length": 15.03,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 136,
+      "departures": 136,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.065,
+        0.06,
+        0.056666666666666664,
+        0.095,
+        0.08666666666666667,
+        0.07333333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "-3791031#3_0": {
+      "length": 125.07,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 103,
+      "departures": 103,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.4533333333333333,
+        0.39,
+        0.6933333333333334,
+        0.4633333333333333,
+        0.5216666666666666,
+        0.3516666666666667
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "15464767#0_1": {
+      "length": 87.89,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 77,
+      "departures": 77,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.14666666666666667,
+        0.24166666666666667,
+        0.30666666666666664,
+        0.29,
+        0.29833333333333334,
+        0.20833333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "14039949#0_0": {
+      "length": 93.57,
+      "tls": "26165090",
+      "source": false,
+      "queue_seconds": 179,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 2,
+      "longest_queue": 22,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 549,
+      "head_green_stopped": 5,
+      "longest_head_green_stopped": 1,
+      "arrivals": 82,
+      "departures": 82,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.2866666666666667,
+        0.515,
+        0.315,
+        0.41,
+        0.3933333333333333,
+        0.3016666666666667
+      ],
+      "mean_queued_10min": [
+        0.02,
+        0.10666666666666667,
+        0.02666666666666667,
+        0.10666666666666667,
+        0.065,
+        0.018333333333333333
+      ]
+    },
+    "38192816_0": {
+      "length": 43.33,
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "source": false,
+      "queue_seconds": 220,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 2,
+      "longest_queue": 51,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 72,
+      "head_green_stopped": 2,
+      "longest_head_green_stopped": 1,
+      "arrivals": 33,
+      "departures": 33,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.10333333333333333,
+        0.26666666666666666,
+        0.07166666666666667,
+        0.095,
+        0.19,
+        0.055
+      ],
+      "mean_queued_10min": [
+        0.03,
+        0.17333333333333334,
+        0.021666666666666667,
+        0.02666666666666667,
+        0.1,
+        0.02
+      ]
+    },
+    "-15464769#2_0": {
+      "length": 40.17,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 151,
+      "departures": 151,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.185,
+        0.315,
+        0.24,
+        0.21166666666666667,
+        0.245,
+        0.155
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "2110697#0_0": {
+      "length": 297.36,
+      "tls": "26165090",
+      "source": false,
+      "queue_seconds": 919,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 10,
+      "max_queued": 8,
+      "longest_queue": 67,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 1043,
+      "head_green_stopped": 21,
+      "longest_head_green_stopped": 1,
+      "arrivals": 140,
+      "departures": 137,
+      "end_vehicles": 3,
+      "mean_vehicles_10min": [
+        1.1066666666666667,
+        4.3533333333333335,
+        2.263333333333333,
+        2.375,
+        1.6833333333333333,
+        1.1833333333333333
+      ],
+      "mean_queued_10min": [
+        0.25166666666666665,
+        1.465,
+        0.5816666666666667,
+        0.30333333333333334,
+        0.29333333333333333,
+        0.19333333333333333
+      ]
+    },
+    "668344588_1": {
+      "length": 10.3,
+      "tls": "1448436",
+      "source": false,
+      "queue_seconds": 11,
+      "tail_near_entry_seconds": 11,
+      "max_vehicles": 1,
+      "max_queued": 1,
+      "longest_queue": 9,
+      "longest_tail_near_entry": 9,
+      "head_green_seconds": 6,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.02666666666666667,
+        0.008333333333333333,
+        0.01,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.015,
+        0.0,
+        0.0033333333333333335,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "125872847#0_0": {
+      "length": 193.05,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 4,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 30,
+      "departures": 29,
+      "end_vehicles": 1,
+      "mean_vehicles_10min": [
+        0.145,
+        0.19666666666666666,
+        0.38,
+        0.12333333333333334,
+        0.2633333333333333,
+        0.14333333333333334
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4629169#5_0": {
+      "length": 196.2,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.08166666666666667,
+        0.0,
+        0.0,
+        0.13333333333333333,
+        0.125,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "128944693#0_0": {
+      "length": 86.44,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.075,
+        0.03666666666666667,
+        0.043333333333333335,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "37721356#0_1": {
+      "length": 373.05,
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "source": false,
+      "queue_seconds": 492,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 3,
+      "longest_queue": 96,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 672,
+      "head_green_stopped": 12,
+      "longest_head_green_stopped": 1,
+      "arrivals": 61,
+      "departures": 61,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.605,
+        2.3983333333333334,
+        0.9183333333333333,
+        1.2366666666666666,
+        0.265,
+        1.0683333333333334
+      ],
+      "mean_queued_10min": [
+        0.05333333333333334,
+        0.5783333333333334,
+        0.05333333333333334,
+        0.18333333333333332,
+        0.005,
+        0.375
+      ]
+    },
+    "-523892327#0_0": {
+      "length": 107.8,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 30,
+      "departures": 30,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.075,
+        0.165,
+        0.12166666666666667,
+        0.02,
+        0.19333333333333333,
+        0.13333333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "-14039718#5_0": {
+      "length": 163.3,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.145,
+        0.0,
+        0.0,
+        0.14333333333333334,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "-5976022_0": {
+      "length": 0.87,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 37,
+      "departures": 37,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.01,
+        0.01,
+        0.01,
+        0.013333333333333334,
+        0.01,
+        0.008333333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "523892321#0_0": {
+      "length": 44.49,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.018333333333333333,
+        0.02666666666666667,
+        0.008333333333333333,
+        0.02,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "7849019#2_0": {
+      "length": 68.1,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.028333333333333332,
+        0.041666666666666664,
+        0.013333333333333334,
+        0.03,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "7849021#0_0": {
+      "length": 66.68,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.02666666666666667,
+        0.03833333333333333,
+        0.013333333333333334,
+        0.028333333333333332,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "521969636_0": {
+      "length": 70.83,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 11,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 1,
+      "longest_queue": 9,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.03,
+        0.06833333333333333,
+        0.015,
+        0.04,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.015,
+        0.0,
+        0.0033333333333333335,
+        0.0,
+        0.0
+      ]
+    },
+    "15464767#0_0": {
+      "length": 87.89,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 31,
+      "departures": 31,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.02,
+        0.19333333333333333,
+        0.09666666666666666,
+        0.155,
+        0.058333333333333334,
+        0.08333333333333333
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "2294382#0_0": {
+      "length": 3.5,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 5,
+      "departures": 5,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0016666666666666668,
+        0.0016666666666666668,
+        0.0016666666666666668,
+        0.0,
+        0.0033333333333333335,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "2294382#1_0": {
+      "length": 55.02,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 8,
+      "departures": 8,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.013333333333333334,
+        0.04,
+        0.028333333333333332,
+        0.0,
+        0.02,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "4472590#0_1": {
+      "length": 218.37,
+      "tls": "cluster_1998326407_2876012598_4781977262_658429",
+      "source": false,
+      "queue_seconds": 66,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 2,
+      "longest_queue": 21,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 154,
+      "head_green_stopped": 1,
+      "longest_head_green_stopped": 1,
+      "arrivals": 15,
+      "departures": 15,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0033333333333333335,
+        0.5583333333333333,
+        0.19,
+        0.11166666666666666,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.07,
+        0.035,
+        0.016666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    "-15464769#0_0": {
+      "length": 41.55,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 409,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 5,
+      "max_queued": 5,
+      "longest_queue": 126,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 30,
+      "departures": 30,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        1.605,
+        0.10333333333333333,
+        0.02666666666666667,
+        0.041666666666666664,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        1.3633333333333333,
+        0.02,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "3792491#0_1": {
+      "length": 137.26,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 6,
+      "departures": 6,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.115,
+        0.0,
+        0.05333333333333334,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "230483152#0_0": {
+      "length": 166.98,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 6,
+      "departures": 6,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.14,
+        0.0,
+        0.06666666666666667,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "13890256_0": {
+      "length": 87.27,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 1,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 6,
+      "departures": 6,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.06833333333333333,
+        0.0,
+        0.03333333333333333,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "553868718#1_0": {
+      "length": 108.01,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 2,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 14,
+      "departures": 14,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.06166666666666667,
+        0.19333333333333333,
+        0.09666666666666666,
+        0.0,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "317003249#1_1": {
+      "length": 79.67,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 14,
+      "departures": 14,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.08,
+        0.11,
+        0.035,
+        0.03333333333333333,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "317003249#2_1": {
+      "length": 21.61,
+      "tls": "1448436",
+      "source": false,
+      "queue_seconds": 113,
+      "tail_near_entry_seconds": 24,
+      "max_vehicles": 3,
+      "max_queued": 3,
+      "longest_queue": 29,
+      "longest_tail_near_entry": 14,
+      "head_green_seconds": 36,
+      "head_green_stopped": 4,
+      "longest_head_green_stopped": 1,
+      "arrivals": 22,
+      "departures": 22,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.205,
+        0.135,
+        0.03333333333333333,
+        0.11333333333333333,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.13333333333333333,
+        0.05333333333333334,
+        0.008333333333333333,
+        0.085,
+        0.0
+      ]
+    },
+    "304634278#0_1": {
+      "length": 88.1,
+      "tls": null,
+      "source": false,
+      "queue_seconds": 0,
+      "tail_near_entry_seconds": 0,
+      "max_vehicles": 3,
+      "max_queued": 0,
+      "longest_queue": 0,
+      "longest_tail_near_entry": 0,
+      "head_green_seconds": 0,
+      "head_green_stopped": 0,
+      "longest_head_green_stopped": 0,
+      "arrivals": 22,
+      "departures": 22,
+      "end_vehicles": 0,
+      "mean_vehicles_10min": [
+        0.0,
+        0.058333333333333334,
+        0.23166666666666666,
+        0.07333333333333333,
+        0.07666666666666666,
+        0.0
+      ],
+      "mean_queued_10min": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

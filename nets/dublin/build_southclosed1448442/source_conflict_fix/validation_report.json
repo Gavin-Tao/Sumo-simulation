@@ -1,0 +1,266 @@
+{
+  "date": "2026-10-28",
+  "scope": "separate the artificial source from cluster_389667 outlet turn; cluster_2498303858 geometry unchanged",
+  "net_sha256": "46ac6018efc1346891ddf6845a5199b437b0a0ec75829e6bfd76b886e9190f8f",
+  "meta_sha256": "d119963d1f3a56ed0846ea096cfb1412d9c4ac380fed27b3d999605a64b65c9b",
+  "unchanged_rl_inlet_lanes": 55,
+  "unchanged_all_rl_metadata": true,
+  "unchanged_external_lane_connections": true,
+  "unchanged_scene_inputs": {
+    "nets/dublin/dublin_8std_splitslot15_southclosed.net.xml": "44fe02a0cf782ce3d3eba74742532e23ef6002697a5eefe30ce39e40ffd6f52e",
+    "nets/dublin/dublin_8std_splitslot15_southclosed_meta.json": "e47d0853a11966961328791d6a83f415bb555a76da7d1de59a1f16d99769aefb",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_unseen_tt1.rou.xml": "06efd7f3fb7a40633a7dc96c6bea8717d5331feacb8fdcc7781a3b3af51394dd",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_tt1.rou.xml": "ea6e6eccf5f5b2a3dd34d75c156b44c859ce3fe8b7af6d4b740b8a851a1f9320",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_unseen_routes.rou.xml": "48fefc41f123be85291ec67f93809b115e0b83b5a6052d9a40b8b300ac479e07",
+    "nets/dublin/weekday_pairs50_15_southclosed/vtypes_same.add.xml": "a9318e0e750b1387975408329527d0d9a48a6aa4f0115d690b8a84b29a65acaf",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_routes.rou.xml": "c349cae17f07500e0b43b0daf74314b57bfe85ba215cddcfa53a390ca9098078",
+    "nets/dublin/weekday_pairs50_15_southclosed/background_cars.rou.xml": "512ab2de2f1250e6089745c2100d3837aad3877187440b8d2db2d5459902a87e",
+    "nets/dublin/weekday_pairs50_15_southclosed/dublin_weekday_pairs50_15.sumocfg": "b0bc05616eb7c2f18659cbebee41874e067614d86f93c47fd615db375c0d30c2",
+    "nets/dublin/weekday_18h_15_southclosed/bus_weekday_18h.rou.xml": "1f383adb2d94f170026d5676f941059162b889c7038d378e3d94a540f9d94fbe",
+    "nets/dublin/weekday_18h_15_southclosed/added_flows.rou.xml": "d5dedc97e0526c505fab797455d17367244eb94e487214b0d557c91debf87b1f",
+    "nets/dublin/weekday_18h_15_southclosed/car_weekday_18h.rou.xml": "4e8ca9511ef8ec14a07523227f3d2117f4c3c4e6d999ed2e5192b08525793bc6",
+    "nets/dublin/weekday_18h_15_southclosed/probe_amb_18h.rou.xml": "58695e6fda70ac87a607c8227874cfeb4784dac9e29894058faaf90229df6272",
+    "nets/dublin/weekday_18h_15_southclosed/vtypes_same.add.xml": "a9318e0e750b1387975408329527d0d9a48a6aa4f0115d690b8a84b29a65acaf",
+    "nets/dublin/weekday_18h_15_southclosed/amb_weekday_18h_probe11h.rou.xml": "085628b554f20cdaef5e85fc57dfcd9faa833182a386a5b4e2e91ac8c93a00cc",
+    "nets/dublin/weekday_18h_15_southclosed/probe_car_18h.rou.xml": "42659a5db47ddefeac3b0d4e9569412eca7c1024f69a77606358555cc5a3aa78",
+    "nets/dublin/weekday_18h_15_southclosed/probe_bus_18h.rou.xml": "82c093814b3cc963889bfccb3044887aea5caab7d5d90aa7321ed122d9f6e2bd",
+    "nets/dublin/weekday_18h_15_southclosed/dublin_weekday_18h_15.sumocfg": "cd5f5367fc0aebc7ba76b2cc71c9ea63e8c721934cfbc06bf4db670932157558"
+  },
+  "scenarios": {
+    "weekday_18h_15_southclosed": [
+      {
+        "policy": "native",
+        "seed": 123,
+        "pending_3300": 2,
+        "drain": {
+          "cleared": true,
+          "time": 3992.0,
+          "collisions": 0,
+          "teleports": 0
+        },
+        "outlet_turn": {
+          "stopped_vehicle_seconds": 0,
+          "stopped_ids": 0,
+          "passed_ids": 157
+        }
+      },
+      {
+        "policy": "native",
+        "seed": 124,
+        "pending_3300": 3,
+        "drain": {
+          "cleared": true,
+          "time": 3993.0,
+          "collisions": 0,
+          "teleports": 0
+        },
+        "outlet_turn": {
+          "stopped_vehicle_seconds": 0,
+          "stopped_ids": 0,
+          "passed_ids": 158
+        }
+      },
+      {
+        "policy": "native",
+        "seed": 125,
+        "pending_3300": 2,
+        "drain": {
+          "cleared": true,
+          "time": 3988.0,
+          "collisions": 0,
+          "teleports": 0
+        },
+        "outlet_turn": {
+          "stopped_vehicle_seconds": 0,
+          "stopped_ids": 0,
+          "passed_ids": 158
+        }
+      },
+      {
+        "policy": "fixed",
+        "seed": 123,
+        "pending_3300": 2,
+        "lock_visits": 4,
+        "max_visit_wait": 165.0,
+        "running_growth_last2_vs_34": 0.06703289656499156,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "fixed",
+        "seed": 124,
+        "pending_3300": 3,
+        "lock_visits": 0,
+        "max_visit_wait": 136.0,
+        "running_growth_last2_vs_34": 0.06621033776867957,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "fixed",
+        "seed": 125,
+        "pending_3300": 2,
+        "lock_visits": 0,
+        "max_visit_wait": 132.0,
+        "running_growth_last2_vs_34": 0.04513603939145261,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "random",
+        "seed": 123,
+        "pending_3300": 3,
+        "lock_visits": 183,
+        "max_visit_wait": 391.0,
+        "running_growth_last2_vs_34": 0.20167359096966364,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "random",
+        "seed": 124,
+        "pending_3300": 2,
+        "lock_visits": 66,
+        "max_visit_wait": 371.0,
+        "running_growth_last2_vs_34": -0.00504505211911821,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "random",
+        "seed": 125,
+        "pending_3300": 2,
+        "lock_visits": 76,
+        "max_visit_wait": 373.0,
+        "running_growth_last2_vs_34": -0.034211287988422545,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      }
+    ],
+    "weekday_pairs50_15_southclosed": [
+      {
+        "policy": "native",
+        "seed": 123,
+        "pending_3300": 0,
+        "drain": {
+          "cleared": true,
+          "time": 3775.0,
+          "collisions": 0,
+          "teleports": 0
+        },
+        "outlet_turn": {
+          "stopped_vehicle_seconds": 0,
+          "stopped_ids": 0,
+          "passed_ids": 0
+        }
+      },
+      {
+        "policy": "native",
+        "seed": 124,
+        "pending_3300": 0,
+        "drain": {
+          "cleared": true,
+          "time": 3776.0,
+          "collisions": 0,
+          "teleports": 0
+        },
+        "outlet_turn": {
+          "stopped_vehicle_seconds": 0,
+          "stopped_ids": 0,
+          "passed_ids": 0
+        }
+      },
+      {
+        "policy": "native",
+        "seed": 125,
+        "pending_3300": 0,
+        "drain": {
+          "cleared": true,
+          "time": 3774.0,
+          "collisions": 0,
+          "teleports": 0
+        },
+        "outlet_turn": {
+          "stopped_vehicle_seconds": 0,
+          "stopped_ids": 0,
+          "passed_ids": 0
+        }
+      },
+      {
+        "policy": "fixed",
+        "seed": 123,
+        "pending_3300": 0,
+        "lock_visits": 2,
+        "max_visit_wait": 177.0,
+        "running_growth_last2_vs_34": -0.07120330247942352,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "fixed",
+        "seed": 124,
+        "pending_3300": 0,
+        "lock_visits": 2,
+        "max_visit_wait": 175.0,
+        "running_growth_last2_vs_34": -0.07235967692464973,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "fixed",
+        "seed": 125,
+        "pending_3300": 0,
+        "lock_visits": 0,
+        "max_visit_wait": 139.0,
+        "running_growth_last2_vs_34": -0.08654020341088486,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "random",
+        "seed": 123,
+        "pending_3300": 2,
+        "lock_visits": 71,
+        "max_visit_wait": 302.0,
+        "running_growth_last2_vs_34": 0.006123106670963718,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "random",
+        "seed": 124,
+        "pending_3300": 0,
+        "lock_visits": 63,
+        "max_visit_wait": 442.0,
+        "running_growth_last2_vs_34": -0.07030798965837504,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      },
+      {
+        "policy": "random",
+        "seed": 125,
+        "pending_3300": 1,
+        "lock_visits": 73,
+        "max_visit_wait": 324.0,
+        "running_growth_last2_vs_34": -0.015469585006008701,
+        "state_checks": 10800,
+        "reward_checks": 10800
+      }
+    ]
+  },
+  "baseline_18h_s123": {
+    "stopped_vehicle_seconds": 335,
+    "stopped_ids": 52,
+    "passed_ids": 157
+  },
+  "known_geometry_issue": {
+    "junction": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+    "lane": "52879956_0",
+    "internal_lane": ":cluster_2498303858_3624079904_6141082777_6141082778_9936781_3_0",
+    "always_green": true,
+    "foes": "00000",
+    "description": "The internal lane doubles back towards its inlet. Vehicle rectangle overlap was reproduced in native seed 123; SUMO reported zero collisions. Not modified in this fix.",
+    "audit_network": "before/dublin_8std_splitslot15_southclosed.net.xml",
+    "evidence": "cluster249_audit/"
+  }
+}

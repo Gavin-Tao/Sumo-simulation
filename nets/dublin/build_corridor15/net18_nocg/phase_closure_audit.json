@@ -1,0 +1,1124 @@
+{
+  "hash": "18497bb0ba1f467400c6eda591c69405e69ceaf2420f653a579d8e9cc3c1c626",
+  "tls": {
+    "133307283": {
+      "links": 6,
+      "connections": 7,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGrGGrr",
+          "green_links": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "green_movements": [
+            "S-L",
+            "S-T",
+            "N-L",
+            "N-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "rrGrrrG",
+          "green_links": [
+            2,
+            6
+          ],
+          "green_movements": [
+            "S-R",
+            "N-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a4",
+          "state": "rrrGGrG",
+          "green_links": [
+            3,
+            4,
+            6
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "N-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a5",
+          "state": "GGGrrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "S-L",
+            "S-T",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 4,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "1430847303": {
+      "links": 4,
+      "connections": 4,
+      "phases": [
+        {
+          "action": "a1",
+          "state": "rrGG",
+          "green_links": [
+            2,
+            3
+          ],
+          "green_movements": [
+            "W-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a6",
+          "state": "GGrr",
+          "green_links": [
+            0,
+            1
+          ],
+          "green_movements": [
+            "E-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "1448436": {
+      "links": 7,
+      "connections": 7,
+      "phases": [
+        {
+          "action": "a1",
+          "state": "rrrGGGG",
+          "green_links": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "green_movements": [
+            "E-L",
+            "E-T",
+            "W-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "GGGGrrr",
+          "green_links": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "green_movements": [
+            "S-L",
+            "S-R",
+            "E-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a7",
+          "state": "GrrGrGG",
+          "green_links": [
+            0,
+            3,
+            5,
+            6
+          ],
+          "green_movements": [
+            "S-L",
+            "E-L",
+            "W-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 3,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "E-L"
+      ]
+    },
+    "1448442": {
+      "links": 7,
+      "connections": 7,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "rrrGrGG",
+          "green_links": [
+            3,
+            5,
+            6
+          ],
+          "green_movements": [
+            "N-T",
+            "S-L",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a1",
+          "state": "GGGrrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "E-L",
+            "E-T",
+            "E-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "GrrrGrr",
+          "green_links": [
+            0,
+            4
+          ],
+          "green_movements": [
+            "E-L",
+            "N-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GrGrrGr",
+          "green_links": [
+            0,
+            2,
+            5
+          ],
+          "green_movements": [
+            "E-L",
+            "E-R",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a4",
+          "state": "rrrGGrr",
+          "green_links": [
+            3,
+            4
+          ],
+          "green_movements": [
+            "N-T",
+            "N-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a5",
+          "state": "GrrrrGG",
+          "green_links": [
+            0,
+            5,
+            6
+          ],
+          "green_movements": [
+            "E-L",
+            "S-L",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 6,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "26165090": {
+      "links": 5,
+      "connections": 5,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GrGGr",
+          "green_links": [
+            0,
+            2,
+            3
+          ],
+          "green_movements": [
+            "E-L",
+            "N-T",
+            "W-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GGrrG",
+          "green_links": [
+            0,
+            1,
+            4
+          ],
+          "green_movements": [
+            "E-L",
+            "E-R",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a7",
+          "state": "GrrGG",
+          "green_links": [
+            0,
+            3,
+            4
+          ],
+          "green_movements": [
+            "E-L",
+            "W-L",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 3,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "E-L"
+      ]
+    },
+    "26165126": {
+      "links": 6,
+      "connections": 6,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGGrrG",
+          "green_links": [
+            0,
+            1,
+            2,
+            5
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "W-L",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a1",
+          "state": "rrGGGr",
+          "green_links": [
+            2,
+            3,
+            4
+          ],
+          "green_movements": [
+            "W-L",
+            "W-T",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GrGrGr",
+          "green_links": [
+            0,
+            2,
+            4
+          ],
+          "green_movements": [
+            "N-L",
+            "W-L",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 3,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "W-L"
+      ]
+    },
+    "389281": {
+      "links": 8,
+      "connections": 8,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGrrrGGr",
+          "green_links": [
+            0,
+            1,
+            5,
+            6
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a1",
+          "state": "rrGGGrrr",
+          "green_links": [
+            2,
+            3,
+            4
+          ],
+          "green_movements": [
+            "W-L",
+            "W-T",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "rrGrrrrG",
+          "green_links": [
+            2,
+            7
+          ],
+          "green_movements": [
+            "W-L",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GrGrGrrr",
+          "green_links": [
+            0,
+            2,
+            4
+          ],
+          "green_movements": [
+            "N-L",
+            "W-L",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a4",
+          "state": "GGGrrrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "W-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a5",
+          "state": "rrrrrGGG",
+          "green_links": [
+            5,
+            6,
+            7
+          ],
+          "green_movements": [
+            "S-T",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 6,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "389332": {
+      "links": 4,
+      "connections": 6,
+      "phases": [
+        {
+          "action": "a1",
+          "state": "GGrGrr",
+          "green_links": [
+            0,
+            1,
+            3
+          ],
+          "green_movements": [
+            "E-L",
+            "E-T",
+            "W-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GrrGrG",
+          "green_links": [
+            0,
+            3,
+            5
+          ],
+          "green_movements": [
+            "E-L",
+            "W-T",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "E-L",
+        "W-T"
+      ]
+    },
+    "5166592132": {
+      "links": 4,
+      "connections": 4,
+      "phases": [
+        {
+          "action": "a1",
+          "state": "GGGr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "W-T",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "rrrG",
+          "green_links": [
+            3
+          ],
+          "green_movements": [
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "659799": {
+      "links": 9,
+      "connections": 9,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "rrrGGGrGr",
+          "green_links": [
+            3,
+            4,
+            5,
+            7
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "N-R",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a1",
+          "state": "GGGGrrGrr",
+          "green_links": [
+            0,
+            1,
+            2,
+            3,
+            6
+          ],
+          "green_movements": [
+            "E-L",
+            "E-T",
+            "N-L",
+            "W-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "GrrGrGrGG",
+          "green_links": [
+            0,
+            3,
+            5,
+            7,
+            8
+          ],
+          "green_movements": [
+            "E-L",
+            "N-L",
+            "N-R",
+            "S-L",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a7",
+          "state": "GrrGrrGGr",
+          "green_links": [
+            0,
+            3,
+            6,
+            7
+          ],
+          "green_movements": [
+            "E-L",
+            "N-L",
+            "W-T",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 4,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "N-L"
+      ]
+    },
+    "659802": {
+      "links": 6,
+      "connections": 6,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "rrGGGr",
+          "green_links": [
+            2,
+            3,
+            4
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "GrrrGG",
+          "green_links": [
+            0,
+            4,
+            5
+          ],
+          "green_movements": [
+            "E-L",
+            "S-T",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GGGrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "E-L",
+            "E-R",
+            "N-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 4,
+      "missing_maximal_sets": [
+        [
+          0,
+          2,
+          4
+        ]
+      ],
+      "always_green_movements": []
+    },
+    "659805": {
+      "links": 6,
+      "connections": 6,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGGrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "W-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a1",
+          "state": "rrGGGG",
+          "green_links": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "green_movements": [
+            "W-L",
+            "W-T",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "GrGrrG",
+          "green_links": [
+            0,
+            2,
+            5
+          ],
+          "green_movements": [
+            "N-L",
+            "W-L",
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 3,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "W-L"
+      ]
+    },
+    "9101555": {
+      "links": 4,
+      "connections": 4,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGGr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "N-T",
+            "N-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "rrrG",
+          "green_links": [
+            3
+          ],
+          "green_movements": [
+            "W-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "cluster_1448439_2464758361": {
+      "links": 5,
+      "connections": 5,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGGGr",
+          "green_links": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "green_movements": [
+            "N-L",
+            "N-T",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "rrGGG",
+          "green_links": [
+            2,
+            3,
+            4
+          ],
+          "green_movements": [
+            "S-T",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "S-T"
+      ]
+    },
+    "cluster_1998326407_2876012598_4781977262_658429": {
+      "links": 7,
+      "connections": 7,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GGGGGrr",
+          "green_links": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "green_movements": [
+            "S-L",
+            "S-T",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a4",
+          "state": "GrrrrGG",
+          "green_links": [
+            0,
+            5,
+            6
+          ],
+          "green_movements": [
+            "S-L",
+            "N-T",
+            "N-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "S-L"
+      ]
+    },
+    "cluster_21620852_2383668110_2383668118_4009885977": {
+      "links": 8,
+      "connections": 8,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "rrrrrGGG",
+          "green_links": [
+            5,
+            6,
+            7
+          ],
+          "green_movements": [
+            "S-L",
+            "S-T",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a1",
+          "state": "GGrGGrrr",
+          "green_links": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "green_movements": [
+            "E-T",
+            "W-L",
+            "W-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "rrrGrGrG",
+          "green_links": [
+            3,
+            5,
+            7
+          ],
+          "green_movements": [
+            "W-L",
+            "S-L",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "rrGrrGrr",
+          "green_links": [
+            2,
+            5
+          ],
+          "green_movements": [
+            "E-R",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a6",
+          "state": "GGGrrrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "E-T",
+            "E-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a7",
+          "state": "rrrGGGrr",
+          "green_links": [
+            3,
+            4,
+            5
+          ],
+          "green_movements": [
+            "W-L",
+            "W-T",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 6,
+      "missing_maximal_sets": [],
+      "always_green_movements": []
+    },
+    "cluster_2498303858_3624079904_6141082777_6141082778_9936781": {
+      "links": 5,
+      "connections": 5,
+      "phases": [
+        {
+          "action": "a1",
+          "state": "GGGGr",
+          "green_links": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "green_movements": [
+            "W-T",
+            "W-R",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "rrrGG",
+          "green_links": [
+            3,
+            4
+          ],
+          "green_movements": [
+            "S-L",
+            "S-R"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 2,
+      "missing_maximal_sets": [],
+      "always_green_movements": [
+        "S-L"
+      ]
+    },
+    "cluster_5166592137_5166592140_557198554_57744042": {
+      "links": 6,
+      "connections": 6,
+      "phases": [
+        {
+          "action": "a0",
+          "state": "GrrrGG",
+          "green_links": [
+            0,
+            4,
+            5
+          ],
+          "green_movements": [
+            "N-T",
+            "S-L",
+            "S-T"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a2",
+          "state": "GGGrrr",
+          "green_links": [
+            0,
+            1,
+            2
+          ],
+          "green_movements": [
+            "N-T",
+            "N-R",
+            "W-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        },
+        {
+          "action": "a3",
+          "state": "rrGGGr",
+          "green_links": [
+            2,
+            3,
+            4
+          ],
+          "green_movements": [
+            "W-L",
+            "W-R",
+            "S-L"
+          ],
+          "can_add_links": [],
+          "can_add_whole_movements": []
+        }
+      ],
+      "maximal_sets": 4,
+      "missing_maximal_sets": [
+        [
+          0,
+          2,
+          4
+        ]
+      ],
+      "always_green_movements": []
+    }
+  },
+  "missing_extensions": [],
+  "unsafe": [],
+  "partial_slots": [],
+  "metadata_errors": []
+}

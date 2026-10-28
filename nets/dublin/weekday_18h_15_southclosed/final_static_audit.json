@@ -1,0 +1,163 @@
+{
+  "main_vehicles": 5677,
+  "main_vehicles_by_type": {
+    "bus": 262,
+    "car": 5414,
+    "ambulance": 1
+  },
+  "all_files_vehicles": 5785,
+  "removed_background": 943,
+  "vehicles_starting_on_rl_inlets": 0,
+  "all_lane_connected": true,
+  "priority_vehicles_preserved": true,
+  "paired_routes_identical": true,
+  "sources": {
+    "-4074528#4": 15,
+    "532097269#1.24": 546,
+    "230483152#0": 18,
+    "43538577#3": 150,
+    "4629169#0": 13,
+    "4919535#1": 38,
+    "74233405#1": 89,
+    "419502786#0": 94,
+    "2294384#0": 3,
+    "271848004#1": 4,
+    "source_4074528#0": 425,
+    "3791745#0": 96,
+    "7849019#2": 116,
+    "5826896#0": 79,
+    "15464769#0": 77,
+    "532435056#1": 28,
+    "344354262": 24,
+    "source_22962979": 240,
+    "source_-77616869#2": 500,
+    "4074526#0": 291,
+    "-4475731": 719,
+    "source_-4074527#1": 400,
+    "-4475730": 480,
+    "source_372226878#0": 194,
+    "110223240#0": 297,
+    "source_43321718#3": 680,
+    "-40701185": 12,
+    "43538584": 49
+  },
+  "capped_inlet_demand": {
+    "-77616869#2": 500,
+    "-4074527#1": 400,
+    "-4475730": 480,
+    "22962979": 240
+  },
+  "capped_source_demand": {
+    "532097269#1.24_1": 300
+  },
+  "existing_terminal_rl_routes": [
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9133"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_38A_5579_9742"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39_5579_10035"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39A_5579_10483"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9314"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_70_5579_15291"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9136"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_38_5579_9470"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_11_5579_607"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39A_5579_10487"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9316"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_133_5578_9697"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39A_5579_10490"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_38A_5579_9745"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39_5579_10041"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_44_5579_13557"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9140"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_70_5579_15294"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_44_5579_13496"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_11_5579_610"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39A_5579_10493"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9322"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_38_5579_9474"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39A_5579_10498"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_37_5579_9144"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_11_5579_615"
+    ],
+    [
+      "bus_weekday_18h.rou.xml",
+      "bus_39A_5579_10500"
+    ]
+  ]
+}

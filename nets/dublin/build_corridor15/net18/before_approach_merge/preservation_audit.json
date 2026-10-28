@@ -1,0 +1,10 @@
+{
+  "baseline_unexpected_changes": [],
+  "existing_nodes_with_connection_changes": [
+    {
+      "node": "gneJ70",
+      "reason": "added two lane-preserving source-buffer connections"
+    }
+  ],
+  "removed_nodes_absent": true
+}

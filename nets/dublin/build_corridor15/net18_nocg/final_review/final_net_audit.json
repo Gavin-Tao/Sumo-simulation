@@ -1,0 +1,352 @@
+{
+  "net": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_nocg.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_nocg_meta.json",
+  "net_sha256": "18497bb0ba1f467400c6eda591c69405e69ceaf2420f653a579d8e9cc3c1c626",
+  "meta_sha256": "4b7bd420338a6e50c317084c219697547a994507ed25bba266a4ae19f1b5a418",
+  "tls": [
+    {
+      "number": 1,
+      "tls": "133307283",
+      "dcc_reference_signal": true,
+      "actions": 4,
+      "connections": 7,
+      "position": [
+        4317.36,
+        1737.97
+      ]
+    },
+    {
+      "number": 2,
+      "tls": "1430847303",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 4,
+      "position": [
+        5151.28,
+        2364.38
+      ]
+    },
+    {
+      "number": 3,
+      "tls": "1448436",
+      "dcc_reference_signal": true,
+      "actions": 3,
+      "connections": 7,
+      "position": [
+        4350.8,
+        2602.34
+      ]
+    },
+    {
+      "number": 4,
+      "tls": "1448442",
+      "dcc_reference_signal": true,
+      "actions": 6,
+      "connections": 7,
+      "position": [
+        4288.32,
+        2209.44
+      ]
+    },
+    {
+      "number": 5,
+      "tls": "26165090",
+      "dcc_reference_signal": true,
+      "actions": 3,
+      "connections": 5,
+      "position": [
+        4379.15,
+        2054.04
+      ]
+    },
+    {
+      "number": 6,
+      "tls": "26165126",
+      "dcc_reference_signal": true,
+      "actions": 3,
+      "connections": 6,
+      "position": [
+        4298.92,
+        2298.39
+      ]
+    },
+    {
+      "number": 7,
+      "tls": "389281",
+      "dcc_reference_signal": true,
+      "actions": 6,
+      "connections": 8,
+      "position": [
+        4276.3,
+        2088.49
+      ]
+    },
+    {
+      "number": 8,
+      "tls": "389332",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 6,
+      "position": [
+        4484.28,
+        2615.09
+      ]
+    },
+    {
+      "number": 9,
+      "tls": "5166592132",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 4,
+      "position": [
+        5018.48,
+        2406.38
+      ]
+    },
+    {
+      "number": 10,
+      "tls": "659799",
+      "dcc_reference_signal": true,
+      "actions": 4,
+      "connections": 9,
+      "position": [
+        5276.1,
+        2303.04
+      ]
+    },
+    {
+      "number": 11,
+      "tls": "659802",
+      "dcc_reference_signal": true,
+      "actions": 3,
+      "connections": 6,
+      "position": [
+        5195.29,
+        2142.72
+      ]
+    },
+    {
+      "number": 12,
+      "tls": "659805",
+      "dcc_reference_signal": true,
+      "actions": 3,
+      "connections": 6,
+      "position": [
+        5096.9,
+        1959.36
+      ]
+    },
+    {
+      "number": 13,
+      "tls": "cluster_1448439_2464758361",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 5,
+      "position": [
+        4357.76,
+        2473.77
+      ]
+    },
+    {
+      "number": 14,
+      "tls": "cluster_1998326407_2876012598_4781977262_658429",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 7,
+      "position": [
+        4865.82,
+        1726.85
+      ]
+    },
+    {
+      "number": 15,
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "dcc_reference_signal": true,
+      "actions": 6,
+      "connections": 8,
+      "position": [
+        4491.84,
+        1867.89
+      ]
+    },
+    {
+      "number": 16,
+      "tls": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 5,
+      "position": [
+        4972.84,
+        1996.4
+      ]
+    },
+    {
+      "number": 17,
+      "tls": "cluster_5166592137_5166592140_557198554_57744042",
+      "dcc_reference_signal": true,
+      "actions": 3,
+      "connections": 6,
+      "position": [
+        4973.39,
+        2257.84
+      ]
+    },
+    {
+      "number": 18,
+      "tls": "9101555",
+      "dcc_reference_signal": true,
+      "actions": 2,
+      "connections": 4,
+      "position": [
+        4367.0,
+        1957.96
+      ]
+    }
+  ],
+  "total_connections": 110,
+  "boundary_entry_edges": [
+    "-40701185",
+    "-4475730",
+    "-4475731",
+    "110223240#0",
+    "4074526#0",
+    "74233405#1",
+    "source_-4074527#1",
+    "source_-77616869#2",
+    "source_1448436_W",
+    "source_22962979",
+    "source_372226878#0",
+    "source_43321718#3",
+    "source_659799_E",
+    "source_659799_N",
+    "source_college_green_E_outer"
+  ],
+  "previews": [
+    "nets/dublin/weekday_18h_15_southclosed_corridor/net_preview.sumocfg",
+    "nets/dublin/weekday_pairs50_15_southclosed_corridor/net_preview.sumocfg"
+  ],
+  "decision_9101555": {
+    "add": true,
+    "replace_existing": false,
+    "dcc_signal": true,
+    "reason": "Added as a controlled side-road priority and Mercer corridor test point. The 70.85 m outlet's uncontrolled yield at 9101554 remains a mandatory demand-calibration check."
+  },
+  "retained_short_approaches": [
+    {
+      "tls": "1448436",
+      "edge": "317003249#2",
+      "length": 21.61
+    },
+    {
+      "tls": "26165090",
+      "edge": "15464769#2",
+      "length": 40.17
+    },
+    {
+      "tls": "cluster_1998326407_2876012598_4781977262_658429",
+      "edge": "gneE62",
+      "length": 45.27
+    },
+    {
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "edge": "38192816",
+      "length": 43.33
+    }
+  ],
+  "retained_minor_connections_after_rl_outlets": [
+    {
+      "tls": "133307283",
+      "outlet": "77616869#0",
+      "length": 90.89,
+      "downstream": "cluster_389667_5421212978",
+      "from_lane": "77616869#0_0",
+      "to_lane": "8080823#0_0"
+    },
+    {
+      "tls": "389281",
+      "outlet": "-532427444#2",
+      "length": 105.79,
+      "downstream": "cluster_2384200130_2384200132_389663",
+      "from_lane": "-532427444#2_0",
+      "to_lane": "369977731_0"
+    },
+    {
+      "tls": "659805",
+      "outlet": "3792491#0",
+      "length": 137.26,
+      "downstream": "cluster_2389844198_2389844201_2389844205_2389844211_6039199296",
+      "from_lane": "3792491#0_0",
+      "to_lane": "230483152#0_1"
+    },
+    {
+      "tls": "cluster_1448439_2464758361",
+      "outlet": "4919459#0",
+      "length": 32.61,
+      "downstream": "26165224",
+      "from_lane": "4919459#0_0",
+      "to_lane": "4919459#1_0"
+    },
+    {
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "outlet": "4078079#1",
+      "length": 43.24,
+      "downstream": "cluster_449382698_9101552",
+      "from_lane": "4078079#1_1",
+      "to_lane": "38192815_0"
+    },
+    {
+      "tls": "cluster_5166592137_5166592140_557198554_57744042",
+      "outlet": "-523892327#0",
+      "length": 107.8,
+      "downstream": "57744043",
+      "from_lane": "-523892327#0_0",
+      "to_lane": "7849021#0_0"
+    },
+    {
+      "tls": "9101555",
+      "outlet": "-14039867#2",
+      "length": 86.94,
+      "downstream": "cluster_2384200130_2384200132_389663",
+      "from_lane": "-14039867#2_0",
+      "to_lane": "-341583777#1_0"
+    },
+    {
+      "tls": "9101555",
+      "outlet": "-14039867#2",
+      "length": 86.94,
+      "downstream": "cluster_2384200130_2384200132_389663",
+      "from_lane": "-14039867#2_0",
+      "to_lane": "369977731_0"
+    },
+    {
+      "tls": "9101555",
+      "outlet": "-14039867#2",
+      "length": 86.94,
+      "downstream": "cluster_2384200130_2384200132_389663",
+      "from_lane": "-14039867#2_0",
+      "to_lane": "532427444#0_1"
+    },
+    {
+      "tls": "9101555",
+      "outlet": "15464767#5",
+      "length": 70.85,
+      "downstream": "9101554",
+      "from_lane": "15464767#5_0",
+      "to_lane": "42636056_0"
+    },
+    {
+      "tls": "9101555",
+      "outlet": "15464767#5",
+      "length": 70.85,
+      "downstream": "9101554",
+      "from_lane": "15464767#5_1",
+      "to_lane": "42636056_1"
+    }
+  ],
+  "limits": [
+    "Topology and diagnostic routes are validated, not future traffic capacity or learned priority performance.",
+    "Existing non-RL merges/yields and 4 approaches below 50 m remain. College Green south is now a yield; future demand must measure waiting there as well as queues outside RL inlets.",
+    "Formal routes must originate on allowed non-RL entry roads and finish at boundary exits; net topology alone does not enforce vehicle origins."
+  ],
+  "removed_tls": "cluster_1426051358_1426100603_3206752725_3783453672_3783453675"
+}

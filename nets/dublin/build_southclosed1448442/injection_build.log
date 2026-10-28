@@ -1,0 +1,72 @@
+RL length changes: []
+{
+  "source_buffers": [
+    "source_-4074527#1",
+    "source_-77616869#2",
+    "source_22962979",
+    "source_372226878#0",
+    "source_4074528#0",
+    "source_43321718#3"
+  ],
+  "rl_length_changes": [],
+  "source_net_sha256": "10f6248b12570107c412ba04c6bbb00fe1fbf5684e0fd81891ec68cb9987aded",
+  "net_sha256": "44fe02a0cf782ce3d3eba74742532e23ef6002697a5eefe30ce39e40ffd6f52e",
+  "scenarios": {
+    "weekday_pairs50_15_southclosed": {
+      "relocated": 7393,
+      "removed_background": 185,
+      "caps": {
+        "317003251#0": {
+          "total_before": 271,
+          "protected": 16,
+          "kept_background": 180,
+          "total_after": 196
+        },
+        "4919535#1": {
+          "total_before": 310,
+          "protected": 30,
+          "kept_background": 170,
+          "total_after": 200
+        }
+      },
+      "source_lane_caps": {}
+    },
+    "weekday_18h_15_southclosed": {
+      "relocated": 3528,
+      "removed_background": 943,
+      "caps": {
+        "-77616869#2": {
+          "total_before": 736,
+          "protected": 0,
+          "kept_background": 500,
+          "total_after": 500
+        },
+        "-4074527#1": {
+          "total_before": 577,
+          "protected": 0,
+          "kept_background": 400,
+          "total_after": 400
+        },
+        "-4475730": {
+          "total_before": 786,
+          "protected": 0,
+          "kept_background": 480,
+          "total_after": 480
+        },
+        "22962979": {
+          "total_before": 328,
+          "protected": 0,
+          "kept_background": 240,
+          "total_after": 240
+        }
+      },
+      "source_lane_caps": {
+        "532097269#1.24_1": {
+          "total_before": 436,
+          "protected": 21,
+          "total_after": 300
+        }
+      }
+    }
+  }
+}

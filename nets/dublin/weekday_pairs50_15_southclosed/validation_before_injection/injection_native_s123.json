@@ -1,0 +1,220 @@
+{
+  "scenario": "weekday_pairs50_15_southclosed",
+  "controller": "native net TLS program, as sumo-gui loading the sumocfg",
+  "seed": 123,
+  "seconds": 3600,
+  "lanes": {
+    "-77616869#2_0": {
+      "tls": "133307283",
+      "length": 89.91,
+      "planned": 458,
+      "inserted": 458,
+      "discharged": 458,
+      "longest_continuous_queue": 80,
+      "queue_seconds": 1889,
+      "empty_queue_seconds": 1711,
+      "queue_to_entry_seconds": 184,
+      "head_green_seconds": 1541,
+      "head_green_stopped_seconds": 27,
+      "head_red_seconds": 1836,
+      "max_stopped": 12,
+      "max_vehicles": 12,
+      "max_pending": 9,
+      "windows": [
+        {
+          "time": [
+            0,
+            600
+          ],
+          "mean_vehicles": 4.395,
+          "mean_queued": 2.513333333333333,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            600,
+            1200
+          ],
+          "mean_vehicles": 4.928333333333334,
+          "mean_queued": 2.73,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            1200,
+            1800
+          ],
+          "mean_vehicles": 4.735,
+          "mean_queued": 3.0183333333333335,
+          "end_pending": 1
+        },
+        {
+          "time": [
+            1800,
+            2400
+          ],
+          "mean_vehicles": 4.653333333333333,
+          "mean_queued": 2.4833333333333334,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            2400,
+            3000
+          ],
+          "mean_vehicles": 4.941666666666666,
+          "mean_queued": 3.066666666666667,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            3000,
+            3600
+          ],
+          "mean_vehicles": 4.8116666666666665,
+          "mean_queued": 2.5233333333333334,
+          "end_pending": 0
+        }
+      ],
+      "pending_samples": [
+        [
+          600,
+          0
+        ],
+        [
+          1200,
+          0
+        ],
+        [
+          1800,
+          1
+        ],
+        [
+          2400,
+          0
+        ],
+        [
+          3000,
+          0
+        ],
+        [
+          3300,
+          0
+        ],
+        [
+          3600,
+          0
+        ]
+      ],
+      "seen_vehicles": 458,
+      "delay_mean": 3.7168122270742336,
+      "delay_max": 37.599999999999994
+    },
+    "317003251#0_0": {
+      "tls": "cluster_21620852_2383668110_2383668118_4009885977",
+      "length": 98.08,
+      "planned": 255,
+      "inserted": 255,
+      "discharged": 270,
+      "longest_continuous_queue": 178,
+      "queue_seconds": 3067,
+      "empty_queue_seconds": 533,
+      "queue_to_entry_seconds": 1061,
+      "head_green_seconds": 665,
+      "head_green_stopped_seconds": 26,
+      "head_red_seconds": 2910,
+      "max_stopped": 13,
+      "max_vehicles": 13,
+      "max_pending": 13,
+      "windows": [
+        {
+          "time": [
+            0,
+            600
+          ],
+          "mean_vehicles": 9.636666666666667,
+          "mean_queued": 8.276666666666667,
+          "end_pending": 3
+        },
+        {
+          "time": [
+            600,
+            1200
+          ],
+          "mean_vehicles": 9.378333333333334,
+          "mean_queued": 8.046666666666667,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            1200,
+            1800
+          ],
+          "mean_vehicles": 10.665,
+          "mean_queued": 9.053333333333333,
+          "end_pending": 6
+        },
+        {
+          "time": [
+            1800,
+            2400
+          ],
+          "mean_vehicles": 8.46,
+          "mean_queued": 6.693333333333333,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            2400,
+            3000
+          ],
+          "mean_vehicles": 9.298333333333334,
+          "mean_queued": 7.59,
+          "end_pending": 0
+        },
+        {
+          "time": [
+            3000,
+            3600
+          ],
+          "mean_vehicles": 6.273333333333333,
+          "mean_queued": 4.81,
+          "end_pending": 0
+        }
+      ],
+      "pending_samples": [
+        [
+          600,
+          3
+        ],
+        [
+          1200,
+          0
+        ],
+        [
+          1800,
+          6
+        ],
+        [
+          2400,
+          0
+        ],
+        [
+          3000,
+          0
+        ],
+        [
+          3300,
+          0
+        ],
+        [
+          3600,
+          0
+        ]
+      ],
+      "seen_vehicles": 271,
+      "delay_mean": 20.755686274509806,
+      "delay_max": 139.79999999999995
+    }
+  }
+}

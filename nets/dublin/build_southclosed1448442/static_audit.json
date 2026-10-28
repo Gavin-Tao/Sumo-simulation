@@ -1,0 +1,42 @@
+{
+  "source_hashes_unchanged": true,
+  "external_connections_exact": true,
+  "action_semantics_unchanged": true,
+  "tls_count": 15,
+  "inlet_length_changes": [
+    {
+      "tls": "1448442",
+      "lane": "532427444#7_0",
+      "old": 10.68,
+      "new": 110.24
+    },
+    {
+      "tls": "1448442",
+      "lane": "532427444#7_1",
+      "old": 10.68,
+      "new": 110.24
+    },
+    {
+      "tls": "389281",
+      "lane": "-532427444#3_0",
+      "old": 10.59,
+      "new": 110.04
+    }
+  ],
+  "scenarios": {
+    "weekday_pairs50_15": {
+      "checked_vehicle_definitions": 7777,
+      "main_vehicles": 7677,
+      "paired_routes_identical": true,
+      "all_lane_connected": true,
+      "original_vehicle_attributes_preserved": true
+    },
+    "weekday_18h_15": {
+      "checked_vehicle_definitions": 6728,
+      "main_vehicles": 6620,
+      "paired_routes_identical": true,
+      "all_lane_connected": true,
+      "original_vehicle_attributes_preserved": true
+    }
+  }
+}

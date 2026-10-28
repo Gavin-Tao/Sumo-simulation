@@ -1,0 +1,82 @@
+{
+  "files": {
+    "nets/dublin/dublin_8std_splitslot19_southclosed_corridor.net.xml": "205bdd33b3b213e69411f9672f60ffb4e614be200e8c6f7bb0bb514d98ec85f4",
+    "nets/dublin/dublin_8std_splitslot19_southclosed_corridor_meta.json": "c35bd26b350a09afd4bac220b98d3ad708e0b9936b73d576001bcb5c5e0db16b",
+    "nets/dublin/build_corridor15/build_net19.py": "063dbb36373c0ae20f64a6cdc5900c02ad9f8ad992d9c7b0b97215494ffcb49f",
+    "nets/dublin/build_corridor15/validate_net19.py": "7a4ab7bc572ad13aea132cc8894a627c5c5dd5f1627d69dcd4f68f9d2b50347c",
+    "nets/dublin/build_corridor15/validate_net18.py": "845c7666c7b5b41cb7aa1898d9f06365c1063339ecb0ff55d597cf7bd62bea32",
+    "nets/dublin/build_corridor15/validate_net18_full_routes.py": "6e576d4d0881728f7e24974255f8866fe3896b0fd16afb0fd8c73fb17a4aad2e",
+    "nets/dublin/build_corridor15/review_final_net19.py": "de8ce6b656ee4afff7567de61a1e4078350851011f0a3f76ebcdc28972a02194",
+    "nets/dublin/build_corridor15/review_final_net18.py": "41f68ac8230739b423e2dd1d21159dee6f3f5e9d74908b384e38d9510a085e96",
+    "nets/dublin/build_corridor15/net19/build_report.json": "a9668ba7af51c3ea7aa5e044f7bc8ea3907640581453d1c409a5e6badc1bc9c1",
+    "nets/dublin/build_corridor15/net19/final_review/final_net_audit.json": "726c16fe11b2373483d24ea51ee4b900e6cb3cf8cbb8f86971052677c2f53560",
+    "nets/dublin/build_corridor15/net19/README.md": "e08093fd0c24cbce22a30f4b037441cd8788c52687ef8053233d6bbb51fd11d8",
+    "nets/dublin/build_corridor15/net19/validation/fixed_123_report.json": "81fe90a71f08e3d92e5e7598f604038b7b61d930161fddc7fa2ec8cd6b8951a7",
+    "nets/dublin/build_corridor15/net19/validation/random_123_report.json": "d3cdd294d6fe7a70dcdc8ccdc4720a8dda721f8affdda5e3679fc0c0a28b0575",
+    "nets/dublin/build_corridor15/net19/validation/random_124_report.json": "f0962f8f8cb6cd9f9ba4cf0bdac851bc931f3ce4c153fffd3922cf25b7d2102e",
+    "nets/dublin/build_corridor15/net19/validation/full_routes/fixed_123_report.json": "e9629b605b538dfbb14f61a3c88d30abb1234de3009ef6af46e95e55e8446b57",
+    "nets/dublin/build_corridor15/net19/validation/full_routes/random_123_report.json": "5dfdea06a5c3f42330199d749131ea061453884d09ad14dc181a885a378ef536",
+    "nets/dublin/weekday_18h_15_southclosed_corridor/vtypes_same.add.xml": "911b25c75c2bdf278eb476319e844ea094c7346e819e8ffd9cc865993b267cd0",
+    "nets/dublin/weekday_18h_15_southclosed_corridor/README.md": "880a9e3dff9803562277f3723d06ce09ed93a5284fe8959abebf116c03088fa4",
+    "nets/dublin/weekday_18h_15_southclosed_corridor/net_preview.sumocfg": "7b791c710180ca8b725fe1e736f90f082c12e38080d722dfcf313313856d133d",
+    "nets/dublin/weekday_pairs50_15_southclosed_corridor/vtypes_same.add.xml": "911b25c75c2bdf278eb476319e844ea094c7346e819e8ffd9cc865993b267cd0",
+    "nets/dublin/weekday_pairs50_15_southclosed_corridor/README.md": "3691bc14cd84f3b86d9a623a469dc658e951f89c6b72e7f4bf3081e3d9264e75",
+    "nets/dublin/weekday_pairs50_15_southclosed_corridor/net_preview.sumocfg": "7b791c710180ca8b725fe1e736f90f082c12e38080d722dfcf313313856d133d"
+  },
+  "runs": {
+    "fixed_123_report.json": {
+      "planned": 381,
+      "arrived": 381,
+      "state_checks": 4560,
+      "reward_checks": 4560,
+      "lane_changes": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "tracker_missing": 0
+    },
+    "random_123_report.json": {
+      "planned": 381,
+      "arrived": 381,
+      "state_checks": 4560,
+      "reward_checks": 4560,
+      "lane_changes": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "tracker_missing": 0
+    },
+    "random_124_report.json": {
+      "planned": 381,
+      "arrived": 381,
+      "state_checks": 4560,
+      "reward_checks": 4560,
+      "lane_changes": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "tracker_missing": 0
+    },
+    "full_routes/fixed_123_report.json": {
+      "planned": 360,
+      "arrived": 360,
+      "state_checks": 13680,
+      "reward_checks": 13680,
+      "lane_changes": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "tracker_missing": 0
+    },
+    "full_routes/random_123_report.json": {
+      "planned": 360,
+      "arrived": 360,
+      "state_checks": 13680,
+      "reward_checks": 13680,
+      "lane_changes": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "tracker_missing": 0
+    }
+  },
+  "three_vehicle_classes_identical_except_id_color": true,
+  "new_scene_types_identical": true,
+  "original_scene_files_unchanged": 164,
+  "stage": "Final net19; formal traffic calibration and training have not started."
+}

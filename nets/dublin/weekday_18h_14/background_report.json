@@ -1,0 +1,66 @@
+{
+ "version": 2,
+ "seed": 7,
+ "minlen": 40.0,
+ "net": "nets/dublin/dublin_8std_splitslot14.net.xml",
+ "n_vehicles": 432,
+ "nnls_routes": 95,
+ "nnls_used": 11,
+ "nnls_residual": 9.249208876435231,
+ "target_total": 436,
+ "realized_total": 432,
+ "missing_candidates": [],
+ "deviation_gt_tol": [],
+ "tol": 0.15,
+ "realized": {
+  "5166592132|S-R": {
+   "target": 31,
+   "realized": 28
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|N-T": {
+   "target": 14,
+   "realized": 14
+  },
+  "cluster_1998326407_2876012598_4781977262_658429|N-R": {
+   "target": 11,
+   "realized": 10
+  },
+  "26165090|N-T": {
+   "target": 77,
+   "realized": 77
+  },
+  "26165090|W-L": {
+   "target": 35,
+   "realized": 35
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|W-R": {
+   "target": 100,
+   "realized": 100
+  },
+  "cluster_5166592137_5166592140_557198554_57744042|W-L": {
+   "target": 16,
+   "realized": 16
+  },
+  "cluster_1448439_2464758361|S-R": {
+   "target": 79,
+   "realized": 79
+  },
+  "cluster_2498303858_3624079904_6141082777_6141082778_9936781|S-R": {
+   "target": 73,
+   "realized": 73
+  }
+ },
+ "extra_traversals": {
+  "1430847303|W-T": 28,
+  "cluster_21620852_2383668110_2383668118_4009885977|E-T": 6,
+  "26165090|E-L": 2,
+  "cluster_21620852_2383668110_2383668118_4009885977|E-R": 4,
+  "26165090|E-R": 2
+ },
+ "vehicles_ending_on_rl_approach": 0,
+ "routes_by_n_rl": {
+  "1": 67,
+  "2": 24,
+  "3": 4
+ }
+}

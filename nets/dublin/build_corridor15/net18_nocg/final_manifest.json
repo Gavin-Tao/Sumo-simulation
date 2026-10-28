@@ -1,0 +1,64 @@
+{
+  "net": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_nocg.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_nocg_meta.json",
+  "net_sha256": "18497bb0ba1f467400c6eda591c69405e69ceaf2420f653a579d8e9cc3c1c626",
+  "meta_sha256": "4b7bd420338a6e50c317084c219697547a994507ed25bba266a4ae19f1b5a418",
+  "source_net19_and_inputs_unchanged": true,
+  "original_scene_files_unchanged": 164,
+  "tests": {
+    "fixed_123": {
+      "planned": 330,
+      "arrived": 330,
+      "state_checks": 12960,
+      "reward_checks": 12960,
+      "tracker_checks": 47631,
+      "collisions": 0,
+      "teleports": 0,
+      "lane_changes": 0,
+      "tracker_missing": 0
+    },
+    "random_123": {
+      "planned": 330,
+      "arrived": 330,
+      "state_checks": 12960,
+      "reward_checks": 12960,
+      "tracker_checks": 47304,
+      "collisions": 0,
+      "teleports": 0,
+      "lane_changes": 0,
+      "tracker_missing": 0
+    },
+    "explicit_classes": {
+      "planned": 330,
+      "arrived": 330,
+      "classes": {
+        "car": "passenger",
+        "bus": "bus",
+        "ambulance": "emergency"
+      },
+      "collisions": 0,
+      "teleports": 0,
+      "lane_changes": 0,
+      "all_lane_permissions_checked": true,
+      "pending": [],
+      "remaining": []
+    }
+  },
+  "independent_phase_checks": {
+    "tls": 18,
+    "phases": 58,
+    "unsafe": 0,
+    "missing_compatible_movements": 0
+  },
+  "commands": [
+    "python -B nets/dublin/build_corridor15/build_net18_nocg.py",
+    "python -B nets/dublin/build_corridor15/audit_net18_nocg.py",
+    "python -B nets/dublin/build_corridor15/validate_net18_nocg.py fixed 123",
+    "python -B nets/dublin/build_corridor15/validate_net18_nocg.py random 123",
+    "python -B nets/dublin/build_corridor15/validate_net18_nocg_permissions.py",
+    "python -B nets/dublin/build_corridor15/review_final_net18_nocg.py"
+  ],
+  "scope": "Net-only v2 local-junction restoration. 389332 corridor merges retained. West approach is terminal as in v2; formal demand has not been generated.",
+  "college_green_connections_match_v2": true,
+  "previous_variant_backup": "nets/dublin/build_corridor15/net18_nocg_before_v2_restore"
+}

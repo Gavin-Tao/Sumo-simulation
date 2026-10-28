@@ -1,0 +1,215 @@
+{
+  "inputs": {
+    "nets/dublin/dublin_8std_splitslot19_southclosed_corridor.net.xml": "205bdd33b3b213e69411f9672f60ffb4e614be200e8c6f7bb0bb514d98ec85f4",
+    "nets/dublin/dublin_8std_splitslot19_southclosed_corridor_meta.json": "c35bd26b350a09afd4bac220b98d3ad708e0b9936b73d576001bcb5c5e0db16b",
+    "nets/dublin/dublin_8std_splitslot.net.xml": "6e4eda83142672a4f84f322b873fab354e883746148af13bbf57c311e6738611",
+    "nets/dublin/build_corridor15/net19/corridor19.nod.xml": "f0ce6a002142d7dcae8238061373cabb0c8eb0b7abed24fe49473aeb2fe504ca",
+    "nets/dublin/build_corridor15/net19/corridor19.edg.xml": "d09d44a941ba1e1e735ee196ea3b89e088a2629758df34744eda9fddbac579b9",
+    "nets/dublin/build_corridor15/net19/corridor19.con.xml": "dac3608dcf4e02720ff3fa08ea88166ef70df2584773383850b286f278064071",
+    "nets/dublin/build_corridor15/net19/corridor19.tll.xml": "c53113561db0c1a7487d6536f6e2b69d61c39572f6bb7eadd39e1d24615a30c0"
+  },
+  "net": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_nocg.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_nocg_meta.json",
+  "tls_count": 18,
+  "removed_tls": "cluster_1426051358_1426100603_3206752725_3783453672_3783453675",
+  "retained_9101555": true,
+  "removed_edges": [
+    "-129212230#1",
+    "129212230#0",
+    "4476041#0",
+    "sink_college_green_N",
+    "source_college_green_N"
+  ],
+  "removed_nodes": [
+    "3206753875",
+    "boundary_college_green_E_exit",
+    "boundary_college_green_N_exit",
+    "source_college_green_N_boundary"
+  ],
+  "remaining_18_meta_unchanged": true,
+  "retained_lane_geometry_changes": [
+    {
+      "lane": "-304634278#0_0",
+      "before": 87.74,
+      "after": 88.24,
+      "max_point_shift_m": 0.488364617883399,
+      "reason": "v2 three-arm junction boundary restored"
+    },
+    {
+      "lane": "-304634278#0_1",
+      "before": 87.74,
+      "after": 88.24,
+      "max_point_shift_m": 0.48662100242431217,
+      "reason": "v2 three-arm junction boundary restored"
+    },
+    {
+      "lane": "304634278#0_0",
+      "before": 87.61,
+      "after": 88.1,
+      "max_point_shift_m": 0.48662100242341494,
+      "reason": "v2 three-arm junction boundary restored"
+    },
+    {
+      "lane": "304634278#0_1",
+      "before": 87.61,
+      "after": 88.1,
+      "max_point_shift_m": 0.4883646178825051,
+      "reason": "v2 three-arm junction boundary restored"
+    },
+    {
+      "lane": "532097269#1.24_0",
+      "before": 125.79,
+      "after": 126.02,
+      "max_point_shift_m": 0.11180339887555892,
+      "reason": "v2 three-arm junction boundary restored"
+    },
+    {
+      "lane": "532097269#1.24_1",
+      "before": 125.79,
+      "after": 126.02,
+      "max_point_shift_m": 0.3492849839315846,
+      "reason": "v2 three-arm junction boundary restored"
+    }
+  ],
+  "widened_lanes": [
+    "-3791034#1_0",
+    "-3791034#1_1",
+    "3791034#0_0",
+    "3791034#0_1",
+    "532096352#0_0",
+    "532096352#0_1",
+    "532096352#0_2",
+    "source_-4074527#1_0",
+    "source_-77616869#2_0",
+    "source_1448436_W_0",
+    "source_1448436_W_1",
+    "source_22962979_0",
+    "source_372226878#0_0",
+    "source_43321718#3_0",
+    "source_659799_E_0",
+    "source_659799_E_1",
+    "source_659799_N_0",
+    "source_659799_N_1",
+    "source_659799_N_2",
+    "source_college_green_E_outer_0",
+    "source_college_green_E_outer_1"
+  ],
+  "permission_elements": [
+    [
+      "source_-4074527#1",
+      null
+    ],
+    [
+      "source_-77616869#2",
+      null
+    ],
+    [
+      "source_22962979",
+      null
+    ],
+    [
+      "source_372226878#0",
+      null
+    ],
+    [
+      "source_43321718#3",
+      null
+    ],
+    [
+      "532096352#0",
+      null
+    ],
+    [
+      "-3791034#1",
+      null
+    ],
+    [
+      "3791034#0",
+      null
+    ],
+    [
+      "source_659799_N",
+      null
+    ],
+    [
+      "source_659799_E",
+      null
+    ],
+    [
+      "source_college_green_E_outer",
+      null
+    ],
+    [
+      "source_1448436_W",
+      null
+    ]
+  ],
+  "college_green_connections_match_v2": true,
+  "merged_edge_aliases": {
+    "4476043#0": "304634278#0",
+    "52879957#1": "-304634278#0"
+  },
+  "college_green_connections": [
+    {
+      "from_lane": "4475687_0",
+      "to_lane": "-304634278#0_0",
+      "state": "m"
+    },
+    {
+      "from_lane": "4475687_0",
+      "to_lane": "-304634278#0_1",
+      "state": "m"
+    },
+    {
+      "from_lane": "4475687_1",
+      "to_lane": "-304634278#0_0",
+      "state": "m"
+    },
+    {
+      "from_lane": "532097269#1.24_0",
+      "to_lane": "-304634278#0_0",
+      "state": "M"
+    },
+    {
+      "from_lane": "532097269#1.24_1",
+      "to_lane": "-304634278#0_1",
+      "state": "M"
+    }
+  ],
+  "physical_connections_elsewhere_unchanged": true,
+  "connection_state_changes": [
+    {
+      "from_lane": "4475687_0",
+      "to_lane": "-304634278#0_0",
+      "before": "o",
+      "after": "m"
+    },
+    {
+      "from_lane": "4475687_0",
+      "to_lane": "-304634278#0_1",
+      "before": "o",
+      "after": "m"
+    },
+    {
+      "from_lane": "4475687_1",
+      "to_lane": "-304634278#0_0",
+      "before": null,
+      "after": "m"
+    },
+    {
+      "from_lane": "532097269#1.24_0",
+      "to_lane": "-304634278#0_0",
+      "before": "O",
+      "after": "M"
+    },
+    {
+      "from_lane": "532097269#1.24_1",
+      "to_lane": "-304634278#0_1",
+      "before": "O",
+      "after": "M"
+    }
+  ],
+  "college_green_east_inlet_has_priority": true,
+  "terminal_edge_restored": "304634278#0",
+  "demand_note": "The west approach terminates as in v2. Future demand must explicitly decide whether to use this study boundary; it must not be mistaken for a through road."
+}

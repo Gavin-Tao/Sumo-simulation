@@ -1,0 +1,790 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<routes>
+    <!--换车型孪生 (只供评估): 公交时刻表 1 以 car 身份-->
+    <vehicle id="bus_111X_5578_7300" type="car" depart="0.0" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9133" type="car" depart="0.0" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_150_5579_4399" type="car" depart="3.8" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_2083" type="car" depart="14.9" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_4945" type="car" depart="31.2" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_NX_5578_80135" type="car" depart="34.3" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_3206" type="car" depart="37.1" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_103X_5578_3490" type="car" depart="37.6" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5334" type="car" depart="43.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_22193" type="car" depart="47.9" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_38A_5579_9742" type="car" depart="48.3" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_39_5579_10035" type="car" depart="66.1" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3954" type="car" depart="107.7" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21398" type="car" depart="117.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_5118" type="car" depart="158.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_21941" type="car" depart="160.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7804" type="car" depart="174.8" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_65B_5579_14588" type="car" depart="181.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5560" type="car" depart="189.7" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20089" type="car" depart="198.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11492" type="car" depart="223.5" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8133" type="car" depart="225.2" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16842" type="car" depart="227.3" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16540" type="car" depart="302.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1356" type="car" depart="317.2" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_23_5579_7086" type="car" depart="346.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17286" type="car" depart="357.5" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_20839" type="car" depart="360.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_21118" type="car" depart="375.5" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19674" type="car" depart="383.8" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10874" type="car" depart="387.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19238" type="car" depart="409.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_7A_5579_16273" type="car" depart="424.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11235" type="car" depart="441.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_21137" type="car" depart="446.1" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_2912" type="car" depart="448.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20501" type="car" depart="450.7" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_11_5579_755" type="car" depart="454.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3560" type="car" depart="456.8" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_56A_5579_14095" type="car" depart="522.9" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_142_5579_3319" type="car" depart="523.1" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16543" type="car" depart="534.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10483" type="car" depart="554.8" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_15994" type="car" depart="559.6" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1563" type="car" depart="567.2" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9314" type="car" depart="582.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_38D_5579_9938" type="car" depart="604.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_150_5579_4232" type="car" depart="604.6" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_5837" type="car" depart="610.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_3208" type="car" depart="610.9" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19244" type="car" depart="613.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21674" type="car" depart="626.1" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3957" type="car" depart="633.9" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20094" type="car" depart="642.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_70_5579_15291" type="car" depart="658.6" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_70_5579_15378" type="car" depart="697.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_19_5579_6680" type="car" depart="705.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_6172" type="car" depart="718.6" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_7_5579_15058" type="car" depart="730.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11496" type="car" depart="748.1" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7807" type="car" depart="751.3" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8136" type="car" depart="771.6" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1361" type="car" depart="811.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_1819" type="car" depart="817.6" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17084" type="car" depart="828.5" departLane="1" departSpeed="max">
+        <route edges="7849019#2 523892327#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_68A_5579_14816" type="car" depart="851.6" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_15822" type="car" depart="864.0" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9136" type="car" depart="871.8" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16843" type="car" depart="882.0" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_22195" type="car" depart="883.9" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_2088" type="car" depart="896.9" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_7_5579_15182" type="car" depart="909.2" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_4949" type="car" depart="918.0" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_38_5579_9470" type="car" depart="939.4" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19678" type="car" depart="953.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3563" type="car" depart="972.9" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20504" type="car" depart="996.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_11_5579_607" type="car" depart="1018.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10876" type="car" depart="1035.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_151_5579_4580" type="car" depart="1038.4" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_5119" type="car" depart="1043.3" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5565" type="car" depart="1047.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_100X_5578_825" type="car" depart="1059.6" departLane="1" departSpeed="max">
+        <route edges="source_659799_N 532096352#0 4074528#0 4074527#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10487" type="car" depart="1065.1" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20096" type="car" depart="1066.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_39_5579_10176" type="car" depart="1079.2" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_11_5579_759" type="car" depart="1083.1" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_3211" type="car" depart="1095.0" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_20843" type="car" depart="1097.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_150_5579_4402" type="car" depart="1098.1" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_24_5579_7489" type="car" depart="1110.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21404" type="car" depart="1119.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_21946" type="car" depart="1132.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_38A_5579_9855" type="car" depart="1150.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5339" type="car" depart="1151.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_133_5578_9391" type="car" depart="1153.7" departLane="1" departSpeed="max">
+        <route edges="source_659799_N 532096352#0 4074528#0 125872847#0 3792428 10577341#0 -47638297#3 3792427#0 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_14_5579_2916" type="car" depart="1157.2" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_23_5579_7091" type="car" depart="1159.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16546" type="car" depart="1171.6" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7809" type="car" depart="1223.0" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11240" type="car" depart="1229.2" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_NX_5578_80146" type="car" depart="1243.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3960" type="car" depart="1258.8" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19247" type="car" depart="1269.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_21124" type="car" depart="1301.0" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_5842" type="car" depart="1323.3" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_38_5579_9600" type="car" depart="1346.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8138" type="car" depart="1379.7" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_6174" type="car" depart="1398.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20101" type="car" depart="1417.2" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20508" type="car" depart="1419.1" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8143" type="car" depart="1522.6" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20511" type="car" depart="1530.1" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11500" type="car" depart="1531.8" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_15997" type="car" depart="1548.8" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17290" type="car" depart="1570.9" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9316" type="car" depart="1582.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10881" type="car" depart="1594.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_133_5578_9697" type="car" depart="1597.5" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_68_5579_14789" type="car" depart="1599.7" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3566" type="car" depart="1617.2" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_65B_5579_14659" type="car" depart="1625.8" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21677" type="car" depart="1631.1" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_5846" type="car" depart="1642.6" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19682" type="car" depart="1685.8" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_38A_5579_9857" type="car" depart="1690.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_24_5579_7493" type="car" depart="1694.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10490" type="car" depart="1708.1" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19680" type="car" depart="1716.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19253" type="car" depart="1721.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7813" type="car" depart="1732.1" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_X1_5579_27908" type="car" depart="1751.7" departLane="1" departSpeed="max">
+        <route edges="source_659799_N 532096352#0 4074528#0 125872847#0 3792428 10577341#0 -47638297#3 3792427#0 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_13_5579_1824" type="car" depart="1755.4" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17087" type="car" depart="1759.2" departLane="1" departSpeed="max">
+        <route edges="7849019#2 523892327#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_7A_5579_16155" type="car" depart="1762.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_38A_5579_9745" type="car" depart="1765.6" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16548" type="car" depart="1780.7" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16847" type="car" depart="1787.9" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1363" type="car" depart="1804.8" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_4952" type="car" depart="1822.7" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_3215" type="car" depart="1827.4" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_2092" type="car" depart="1842.0" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_150_5579_4235" type="car" depart="1850.6" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1569" type="car" depart="1856.4" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_22201" type="car" depart="1856.6" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5570" type="car" depart="1860.1" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11244" type="car" depart="1863.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3964" type="car" depart="1886.9" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_2919" type="car" depart="1892.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_19_5579_6684" type="car" depart="1899.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_5124" type="car" depart="1903.6" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_65_5579_14458" type="car" depart="1924.3" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_39_5579_10041" type="car" depart="1925.1" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20514" type="car" depart="1936.8" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_56A_5579_14043" type="car" depart="1941.2" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_21129" type="car" depart="1986.4" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20104" type="car" depart="1998.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21406" type="car" depart="2015.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_19_5579_6688" type="car" depart="2018.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_20847" type="car" depart="2021.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10884" type="car" depart="2025.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_15826" type="car" depart="2036.3" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_7A_5579_16277" type="car" depart="2047.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_21951" type="car" depart="2085.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_70_5579_15294" type="car" depart="2093.6" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_16_5579_6179" type="car" depart="2102.9" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_44_5579_13557" type="car" depart="2115.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9140" type="car" depart="2125.3" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_44_5579_13496" type="car" depart="2163.3" departLane="1" departSpeed="max">
+        <route edges="source_659799_N 532096352#0 4074528#0 125872847#0 3792428 10577341#0 -47638297#3 3792427#0 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8147" type="car" depart="2186.3" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19255" type="car" depart="2189.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_11_5579_610" type="car" depart="2194.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_39_5579_10179" type="car" depart="2201.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_151_5579_4585" type="car" depart="2217.3" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_150_5579_4405" type="car" depart="2240.5" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3570" type="car" depart="2248.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11503" type="car" depart="2251.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19687" type="car" depart="2256.4" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10493" type="car" depart="2274.7" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16553" type="car" depart="2279.3" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_23_5579_7094" type="car" depart="2300.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5343" type="car" depart="2347.6" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_11_5579_763" type="car" depart="2350.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20517" type="car" depart="2358.5" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_2095" type="car" depart="2389.3" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_100X_5578_560" type="car" depart="2393.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7819" type="car" depart="2400.6" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_16001" type="car" depart="2408.7" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3966" type="car" depart="2434.6" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_65_5579_14509" type="car" depart="2441.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_1828" type="car" depart="2443.5" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_5849" type="car" depart="2445.8" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17297" type="car" depart="2447.1" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_70_5579_15381" type="car" depart="2473.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_7_5579_15187" type="car" depart="2483.3" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20106" type="car" depart="2494.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9322" type="car" depart="2500.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17090" type="car" depart="2504.7" departLane="1" departSpeed="max">
+        <route edges="7849019#2 523892327#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_14_5579_2923" type="car" depart="2521.2" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21681" type="car" depart="2531.6" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_7_5579_15063" type="car" depart="2545.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11247" type="car" depart="2561.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_14_5579_3219" type="car" depart="2577.1" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16851" type="car" depart="2594.0" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10887" type="car" depart="2651.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_4955" type="car" depart="2660.3" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_38_5579_9474" type="car" depart="2679.3" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_NX_5578_80160" type="car" depart="2686.1" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19690" type="car" depart="2688.8" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_68_5579_14728" type="car" depart="2712.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_16002" type="car" depart="2765.0" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_22203" type="car" depart="2777.4" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8150" type="car" depart="2778.6" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10498" type="car" depart="2778.6" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19258" type="car" depart="2781.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_16_5579_6182" type="car" depart="2799.2" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_5127" type="car" depart="2802.3" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15B_5579_5573" type="car" depart="2807.6" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3574" type="car" depart="2808.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_24_5579_7497" type="car" depart="2834.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20522" type="car" depart="2846.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_21136" type="car" depart="2888.3" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19693" type="car" depart="2900.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_38A_5579_9861" type="car" depart="2925.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21409" type="car" depart="2932.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_F1_5579_20851" type="car" depart="2939.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_150_5579_4239" type="car" depart="2942.4" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1573" type="car" depart="2950.2" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11506" type="car" depart="2957.8" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="bus_122_5579_1367" type="car" depart="2967.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7822" type="car" depart="2976.2" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_16_5579_5853" type="car" depart="3058.0" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3970" type="car" depart="3107.1" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_77A_5579_15827" type="car" depart="3142.2" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20110" type="car" depart="3196.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_4_5579_11251" type="car" depart="3212.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16555" type="car" depart="3234.4" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10892" type="car" depart="3252.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_F3_5579_21955" type="car" depart="3263.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 4078079#1 38192817 gneE51 gneE52 -43321722 -43321718#3" />
+    </vehicle>
+    <vehicle id="bus_14_5579_3221" type="car" depart="3264.2" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_E2_5579_20525" type="car" depart="3271.7" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_13_5579_2098" type="car" depart="3280.4" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_11_5579_615" type="car" depart="3290.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_14_5579_2926" type="car" depart="3299.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_37_5579_9144" type="car" depart="3342.1" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_7A_5579_16158" type="car" depart="3371.2" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_39A_5579_10500" type="car" depart="3387.8" departLane="1" departSpeed="max">
+        <route edges="230483152#0 13890256 2294384#0 4472590#0 gneE63 419502786#0 52879956 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_27_5579_8153" type="car" depart="3393.6" departLane="0" departSpeed="max">
+        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_80_5579_16857" type="car" depart="3408.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_82_5579_17094" type="car" depart="3416.4" departLane="1" departSpeed="max">
+        <route edges="7849019#2 523892327#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_13_5579_1830" type="car" depart="3424.1" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_151_5579_4589" type="car" depart="3453.4" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_F2_5579_21685" type="car" depart="3457.6" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 2294382#0 2294382#1 42636056 38192816 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_23_5579_7098" type="car" depart="3462.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="bus_15_5579_3577" type="car" depart="3466.5" departLane="0" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -317003249#2 -317003249#1 -369564011#1 -5826896#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 77616869#0 8080823#0" />
+    </vehicle>
+    <vehicle id="bus_15A_5579_5130" type="car" depart="3467.8" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_38_5579_9607" type="car" depart="3472.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 4475731" />
+    </vehicle>
+    <vehicle id="bus_16_5579_6186" type="car" depart="3500.0" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="bus_27_5579_7826" type="car" depart="3500.0" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="bus_39_5579_10183" type="car" depart="3500.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19695" type="car" depart="3500.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 59604115 37956677#0 2294310#0 375772038#0 375772038#6 53750891#0 521969635#0 -553868720 -553868718#0" />
+    </vehicle>
+    <vehicle id="bus_E1_5579_19264" type="car" depart="3506.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 4628796#1" />
+    </vehicle>
+</routes>

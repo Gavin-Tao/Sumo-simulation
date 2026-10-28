@@ -1,0 +1,50 @@
+{
+  "originals_unchanged": true,
+  "rl_inlet_lengths_unchanged_after_injection": true,
+  "all_15_tls_action_semantics_unchanged": true,
+  "only_six_external_source_connections_added": true,
+  "scenarios": {
+    "weekday_pairs50_15_southclosed": {
+      "main_vehicles": 7492,
+      "main_vehicles_by_type": {
+        "bus": 50,
+        "ambulance": 50,
+        "car": 7392
+      },
+      "all_files_vehicles": 7592,
+      "removed_background": 185,
+      "vehicles_starting_on_rl_inlets": 0,
+      "all_lane_connected": true,
+      "priority_vehicles_preserved": true,
+      "paired_routes_identical": true,
+      "capped_inlet_demand": {
+        "317003251#0": 196,
+        "4919535#1": 200
+      },
+      "capped_source_demand": {}
+    },
+    "weekday_18h_15_southclosed": {
+      "main_vehicles": 5677,
+      "main_vehicles_by_type": {
+        "bus": 262,
+        "car": 5414,
+        "ambulance": 1
+      },
+      "all_files_vehicles": 5785,
+      "removed_background": 943,
+      "vehicles_starting_on_rl_inlets": 0,
+      "all_lane_connected": true,
+      "priority_vehicles_preserved": true,
+      "paired_routes_identical": true,
+      "capped_inlet_demand": {
+        "-77616869#2": 500,
+        "-4074527#1": 400,
+        "-4475730": 480,
+        "22962979": 240
+      },
+      "capped_source_demand": {
+        "532097269#1.24_1": 300
+      }
+    }
+  }
+}

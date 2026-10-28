@@ -1,0 +1,377 @@
+{
+  "static": {
+    "main_vehicles": 7492,
+    "main_vehicles_by_type": {
+      "bus": 50,
+      "ambulance": 50,
+      "car": 7392
+    },
+    "all_files_vehicles": 7592,
+    "removed_background": 185,
+    "vehicles_starting_on_rl_inlets": 0,
+    "all_lane_connected": true,
+    "priority_vehicles_preserved": true,
+    "paired_routes_identical": true,
+    "sources": {
+      "source_-77616869#2": 458,
+      "source_372226878#0": 258,
+      "43538577#3": 108,
+      "532097269#1.24": 512,
+      "4074526#0": 16,
+      "110223240#0": 8,
+      "source_22962979": 248,
+      "-4475730": 6,
+      "419502786#0": 236,
+      "74233405#1": 14,
+      "7849019#2": 166,
+      "3791745#0": 370,
+      "53750892#0": 310,
+      "4074526#4": 180,
+      "3792490#0": 160,
+      "-4074528#4": 450,
+      "5826896#0": 300,
+      "-341583777#1": 260,
+      "2294384#0": 487,
+      "357012332#1": 30,
+      "317003249#1": 170,
+      "source_4074528#0": 270,
+      "-369564011#1": 170,
+      "source_-4074527#1": 300,
+      "8080825": 290,
+      "-3791745#5": 450,
+      "4919535#1": 170,
+      "2294311#0": 310,
+      "341583777#0": 170,
+      "-14039867#2": 60,
+      "3790875#0": 197,
+      "42636056": 95,
+      "344354262": 126,
+      "15464769#0": 40,
+      "532435056#1": 97
+    },
+    "capped_inlet_demand": {
+      "317003251#0": 196,
+      "4919535#1": 200
+    },
+    "capped_source_demand": {},
+    "existing_terminal_rl_routes": []
+  },
+  "rows": [
+    {
+      "policy": "native",
+      "seed": 123,
+      "pending_3300": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 9,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 458,
+          "queue_seconds": 1808,
+          "tail_near_entry_seconds": 181,
+          "longest_queue": 78
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2468,
+          "tail_near_entry_seconds": 69,
+          "longest_queue": 160
+        }
+      },
+      "drain": {
+        "cleared": true,
+        "time": 3775.0,
+        "remaining": 0,
+        "pending": 0,
+        "collisions": 0,
+        "teleports": 0
+      }
+    },
+    {
+      "policy": "native",
+      "seed": 124,
+      "pending_3300": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 10,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 458,
+          "queue_seconds": 1829,
+          "tail_near_entry_seconds": 161,
+          "longest_queue": 80
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2410,
+          "tail_near_entry_seconds": 69,
+          "longest_queue": 161
+        }
+      },
+      "drain": {
+        "cleared": true,
+        "time": 3776.0,
+        "remaining": 0,
+        "pending": 0,
+        "collisions": 0,
+        "teleports": 0
+      }
+    },
+    {
+      "policy": "native",
+      "seed": 125,
+      "pending_3300": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 10,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 458,
+          "queue_seconds": 1830,
+          "tail_near_entry_seconds": 143,
+          "longest_queue": 78
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2477,
+          "tail_near_entry_seconds": 84,
+          "longest_queue": 177
+        }
+      },
+      "drain": {
+        "cleared": true,
+        "time": 3774.0,
+        "remaining": 0,
+        "pending": 0,
+        "collisions": 0,
+        "teleports": 0
+      }
+    },
+    {
+      "policy": "fixed",
+      "seed": 123,
+      "pending_3300": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 6,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 456,
+          "queue_seconds": 1764,
+          "tail_near_entry_seconds": 69,
+          "longest_queue": 59
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2121,
+          "tail_near_entry_seconds": 25,
+          "longest_queue": 134
+        }
+      },
+      "lock_visits": 2,
+      "max_visit_wait": 179.0,
+      "opp_by_type": {
+        "bus": {
+          "visits": 261,
+          "with_opp": 187
+        },
+        "ambulance": {
+          "visits": 261,
+          "with_opp": 194
+        }
+      },
+      "running_growth_last2_vs_34": -0.07146696700540112,
+      "pairs_arrived": 100
+    },
+    {
+      "policy": "fixed",
+      "seed": 124,
+      "pending_3300": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 7,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 456,
+          "queue_seconds": 1729,
+          "tail_near_entry_seconds": 61,
+          "longest_queue": 62
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2161,
+          "tail_near_entry_seconds": 25,
+          "longest_queue": 134
+        }
+      },
+      "lock_visits": 2,
+      "max_visit_wait": 176.0,
+      "opp_by_type": {
+        "bus": {
+          "visits": 261,
+          "with_opp": 186
+        },
+        "ambulance": {
+          "visits": 261,
+          "with_opp": 193
+        }
+      },
+      "running_growth_last2_vs_34": -0.07331408274346451,
+      "pairs_arrived": 100
+    },
+    {
+      "policy": "fixed",
+      "seed": 125,
+      "pending_3300": 0,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 6,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 456,
+          "queue_seconds": 1685,
+          "tail_near_entry_seconds": 75,
+          "longest_queue": 62
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2056,
+          "tail_near_entry_seconds": 24,
+          "longest_queue": 132
+        }
+      },
+      "lock_visits": 6,
+      "max_visit_wait": 244.0,
+      "opp_by_type": {
+        "bus": {
+          "visits": 261,
+          "with_opp": 185
+        },
+        "ambulance": {
+          "visits": 261,
+          "with_opp": 190
+        }
+      },
+      "running_growth_last2_vs_34": -0.05857061943257291,
+      "pairs_arrived": 100
+    },
+    {
+      "policy": "random",
+      "seed": 123,
+      "pending_3300": 2,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 7,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 458,
+          "queue_seconds": 1634,
+          "tail_near_entry_seconds": 55,
+          "longest_queue": 79
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2257,
+          "tail_near_entry_seconds": 297,
+          "longest_queue": 306
+        }
+      },
+      "lock_visits": 74,
+      "max_visit_wait": 285.0,
+      "opp_by_type": {
+        "bus": {
+          "visits": 261,
+          "with_opp": 189
+        },
+        "ambulance": {
+          "visits": 261,
+          "with_opp": 182
+        }
+      },
+      "running_growth_last2_vs_34": -0.00808558891682698,
+      "pairs_arrived": 100
+    },
+    {
+      "policy": "random",
+      "seed": 124,
+      "pending_3300": 1,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 17,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 458,
+          "queue_seconds": 1610,
+          "tail_near_entry_seconds": 40,
+          "longest_queue": 111
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 2553,
+          "tail_near_entry_seconds": 676,
+          "longest_queue": 424
+        }
+      },
+      "lock_visits": 62,
+      "max_visit_wait": 424.0,
+      "opp_by_type": {
+        "bus": {
+          "visits": 261,
+          "with_opp": 180
+        },
+        "ambulance": {
+          "visits": 261,
+          "with_opp": 183
+        }
+      },
+      "running_growth_last2_vs_34": -0.07341836090415466,
+      "pairs_arrived": 100
+    },
+    {
+      "policy": "random",
+      "seed": 125,
+      "pending_3300": 1,
+      "collisions": 0,
+      "teleports": 0,
+      "max_source_pending": 9,
+      "targets": {
+        "-77616869#2_0": {
+          "arrivals": 452,
+          "queue_seconds": 1998,
+          "tail_near_entry_seconds": 113,
+          "longest_queue": 86
+        },
+        "317003251#0_0": {
+          "arrivals": 196,
+          "queue_seconds": 1990,
+          "tail_near_entry_seconds": 326,
+          "longest_queue": 438
+        }
+      },
+      "lock_visits": 76,
+      "max_visit_wait": 321.0,
+      "opp_by_type": {
+        "bus": {
+          "visits": 261,
+          "with_opp": 179
+        },
+        "ambulance": {
+          "visits": 261,
+          "with_opp": 182
+        }
+      },
+      "running_growth_last2_vs_34": -0.007201961385227995,
+      "pairs_arrived": 100
+    }
+  ],
+  "route_and_cfg_hashes": {
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_unseen_tt1.rou.xml": "06efd7f3fb7a40633a7dc96c6bea8717d5331feacb8fdcc7781a3b3af51394dd",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_tt1.rou.xml": "ea6e6eccf5f5b2a3dd34d75c156b44c859ce3fe8b7af6d4b740b8a851a1f9320",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_unseen_routes.rou.xml": "48fefc41f123be85291ec67f93809b115e0b83b5a6052d9a40b8b300ac479e07",
+    "nets/dublin/weekday_pairs50_15_southclosed/pairs50_routes.rou.xml": "c349cae17f07500e0b43b0daf74314b57bfe85ba215cddcfa53a390ca9098078",
+    "nets/dublin/weekday_pairs50_15_southclosed/background_cars.rou.xml": "512ab2de2f1250e6089745c2100d3837aad3877187440b8d2db2d5459902a87e",
+    "nets/dublin/weekday_pairs50_15_southclosed/dublin_weekday_pairs50_15.sumocfg": "b0bc05616eb7c2f18659cbebee41874e067614d86f93c47fd615db375c0d30c2"
+  },
+  "state_checks": 64800,
+  "reward_checks": 64800
+}

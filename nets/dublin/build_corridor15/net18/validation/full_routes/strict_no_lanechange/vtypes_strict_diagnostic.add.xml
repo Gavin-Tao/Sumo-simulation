@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<additional>
+    <vType id="car" color="1,0,0" lcStrategic="-1" lcCooperative="-1" lcSpeedGain="0" lcKeepRight="0" />
+    <vType id="bus" color="0,0,1" lcStrategic="-1" lcCooperative="-1" lcSpeedGain="0" lcKeepRight="0" />
+    <vType id="ambulance" color="0,1,0" lcStrategic="-1" lcCooperative="-1" lcSpeedGain="0" lcKeepRight="0" />
+</additional>

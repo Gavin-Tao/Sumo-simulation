@@ -1,0 +1,32 @@
+[
+  {
+    "scene": "weekday_pairs50_15_southclosed",
+    "route_set": "main",
+    "exit_code": 0
+  },
+  {
+    "scene": "weekday_pairs50_15_southclosed",
+    "route_set": "unseen",
+    "exit_code": 0
+  },
+  {
+    "scene": "weekday_18h_15_southclosed",
+    "route_set": "main",
+    "exit_code": 0
+  },
+  {
+    "scene": "weekday_18h_15_southclosed",
+    "route_set": "probe_car",
+    "exit_code": 0
+  },
+  {
+    "scene": "weekday_18h_15_southclosed",
+    "route_set": "probe_bus",
+    "exit_code": 0
+  },
+  {
+    "scene": "weekday_18h_15_southclosed",
+    "route_set": "probe_amb",
+    "exit_code": 0
+  }
+]

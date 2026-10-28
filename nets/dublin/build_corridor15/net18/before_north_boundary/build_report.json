@@ -1,0 +1,218 @@
+{
+  "inputs": {
+    "nets/dublin/dublin_8std_splitslot17_southclosed_corridor.net.xml": "a30328fe6f7612432fde0bffa5ec26ca5f113491125fecc1b57a25c3031b54da",
+    "nets/dublin/dublin_8std_splitslot17_southclosed_corridor_meta.json": "d6ea1c3e235e7ccd5de46bd0e765c916a4a8b27c72e657c85ef221b084e857f6",
+    "nets/dcc/dcc.net.xml": "fd83b3573b684be7a7f48bcef5f3d6522b8f2efbaed1859b897fd593786c21b7",
+    "nets/dublin/build_corridor15/net17/corridor17.nod.xml": "751caaff5b41ce8018143ce6e07091ba07e7d50e994cf04c951e7762c60fbbf8",
+    "nets/dublin/build_corridor15/net17/corridor17.edg.xml": "c7d6fd5a85d418b70de3f1fd41bfb80d9d316147bb63dad095cf7fc9ba14d407",
+    "nets/dublin/build_corridor15/net17/corridor17.con.xml": "2da1b35d0a06f20f58227d86baf78760e6090f39453430300d5e89c3d330be62",
+    "nets/dublin/build_corridor15/net17/corridor17.tll.xml": "c53113561db0c1a7487d6536f6e2b69d61c39572f6bb7eadd39e1d24615a30c0"
+  },
+  "net": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json",
+  "tls_count": 18,
+  "existing_17_action_tables_unchanged": true,
+  "reference_edge_mapping": {
+    "4476043#0": "304634278#0",
+    "52879957#1": "-304634278#0"
+  },
+  "approach_merges": [
+    {
+      "old_edges": [
+        "source_668344588",
+        "668344588"
+      ],
+      "new_edge": "668344588",
+      "removed_node": "source_join_668344588",
+      "from_node": "cluster_1426051354_2705523737",
+      "to_node": "1448436"
+    },
+    {
+      "old_edges": [
+        "source_college_green_E",
+        "532097269#1.24"
+      ],
+      "new_edge": "532097269#1.24",
+      "removed_node": "gneJ70",
+      "from_node": "source_college_green_E_boundary",
+      "to_node": "cluster_1426051358_1426100603_3206752725_3783453672_3783453675"
+    }
+  ],
+  "existing_lane_length_changes": [
+    {
+      "lane": "-304634278#0_0",
+      "old": 88.24,
+      "new": 87.74,
+      "old_rl_inlet": true
+    },
+    {
+      "lane": "-304634278#0_1",
+      "old": 88.24,
+      "new": 87.74,
+      "old_rl_inlet": true
+    },
+    {
+      "lane": "304634278#0_0",
+      "old": 88.1,
+      "new": 87.61,
+      "old_rl_inlet": false
+    },
+    {
+      "lane": "304634278#0_1",
+      "old": 88.1,
+      "new": 87.61,
+      "old_rl_inlet": false
+    },
+    {
+      "lane": "532097269#1.24_0",
+      "old": 66.02,
+      "new": 125.79,
+      "old_rl_inlet": false
+    },
+    {
+      "lane": "532097269#1.24_1",
+      "old": 66.02,
+      "new": 125.79,
+      "old_rl_inlet": false
+    },
+    {
+      "lane": "668344588_0",
+      "old": 47.69,
+      "new": 87.69,
+      "old_rl_inlet": true
+    },
+    {
+      "lane": "668344588_1",
+      "old": 47.69,
+      "new": 87.69,
+      "old_rl_inlet": true
+    }
+  ],
+  "reference_connections": [
+    {
+      "from": "129212230#0",
+      "to": "4476041#0",
+      "fromLane": "0",
+      "toLane": "0"
+    },
+    {
+      "from": "4475687",
+      "to": "-304634278#0",
+      "fromLane": "0",
+      "toLane": "0"
+    },
+    {
+      "from": "4475687",
+      "to": "-304634278#0",
+      "fromLane": "0",
+      "toLane": "1"
+    },
+    {
+      "from": "4475687",
+      "to": "4476041#0",
+      "fromLane": "1",
+      "toLane": "0"
+    },
+    {
+      "from": "4475687",
+      "to": "4476041#0",
+      "fromLane": "1",
+      "toLane": "1"
+    },
+    {
+      "from": "304634278#0",
+      "to": "-129212230#1",
+      "fromLane": "0",
+      "toLane": "0"
+    },
+    {
+      "from": "304634278#0",
+      "to": "4476041#0",
+      "fromLane": "0",
+      "toLane": "0"
+    },
+    {
+      "from": "304634278#0",
+      "to": "4476041#0",
+      "fromLane": "1",
+      "toLane": "1"
+    },
+    {
+      "from": "532097269#1.24",
+      "to": "-304634278#0",
+      "fromLane": "0",
+      "toLane": "0"
+    },
+    {
+      "from": "532097269#1.24",
+      "to": "-304634278#0",
+      "fromLane": "1",
+      "toLane": "1"
+    }
+  ],
+  "new_tls": {
+    "id": "cluster_1426051358_1426100603_3206752725_3783453672_3783453675",
+    "mask": [
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      true
+    ],
+    "actions": {
+      "a0": {
+        "valid": false,
+        "reason": "empty-core"
+      },
+      "a1": {
+        "valid": true,
+        "state": "rrrrGGrGGG"
+      },
+      "a2": {
+        "valid": true,
+        "state": "GGGGrrrGrr"
+      },
+      "a3": {
+        "valid": false,
+        "reason": "empty-core"
+      },
+      "a4": {
+        "valid": true,
+        "state": "GGrrrrGGrr"
+      },
+      "a5": {
+        "valid": false,
+        "reason": "dup-of-a2",
+        "state": "GGGGrrrGrr"
+      },
+      "a6": {
+        "valid": true,
+        "state": "rrrrGGGGrr"
+      },
+      "a7": {
+        "valid": true,
+        "state": "GGrrrrrGGG"
+      }
+    },
+    "approaches": {
+      "129212230#0": [
+        74.98
+      ],
+      "304634278#0": [
+        87.61,
+        87.61
+      ],
+      "4475687": [
+        35.15,
+        35.15
+      ],
+      "532097269#1.24": [
+        125.79,
+        125.79
+      ]
+    }
+  }
+}

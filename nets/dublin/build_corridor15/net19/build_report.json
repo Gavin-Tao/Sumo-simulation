@@ -1,0 +1,164 @@
+{
+  "inputs": {
+    "nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml": "bd8bf456e9b5fdf1b3adffb41b3e15f112196548493e747674dd6c4a6e1919d1",
+    "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json": "6683d4ec4c51ce465c4b4b6b9668e8c2f107835c415d324578e65c0c57265573",
+    "nets/dcc/dcc.net.xml": "fd83b3573b684be7a7f48bcef5f3d6522b8f2efbaed1859b897fd593786c21b7",
+    "nets/dublin/build_corridor15/net18/corridor18.nod.xml": "d0042c59b77a353eee0bd9c80c9c313a5fad18ca10b0e1039dc6618eb463de14",
+    "nets/dublin/build_corridor15/net18/corridor18.edg.xml": "d09d44a941ba1e1e735ee196ea3b89e088a2629758df34744eda9fddbac579b9",
+    "nets/dublin/build_corridor15/net18/corridor18.con.xml": "dac3608dcf4e02720ff3fa08ea88166ef70df2584773383850b286f278064071",
+    "nets/dublin/build_corridor15/net18/corridor18.tll.xml": "c53113561db0c1a7487d6536f6e2b69d61c39572f6bb7eadd39e1d24615a30c0"
+  },
+  "net": "nets/dublin/dublin_8std_splitslot19_southclosed_corridor.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot19_southclosed_corridor_meta.json",
+  "added_tls": "9101555",
+  "tls_count": 19,
+  "original_18_meta_unchanged": true,
+  "existing_lane_shapes_and_lengths_unchanged": true,
+  "physical_connections_unchanged": true,
+  "non_rl_connections_elsewhere_unchanged": true,
+  "new_tls": {
+    "n_links": 4,
+    "n_state": 4,
+    "controlled_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "mask": [
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    "canonical": {
+      "0": 0,
+      "2": 0,
+      "3": 3,
+      "4": 0,
+      "7": 3
+    },
+    "std_to_green_index": {
+      "0": 0,
+      "3": 1
+    },
+    "actions": {
+      "a0": {
+        "valid": true,
+        "state": "GGGr"
+      },
+      "a1": {
+        "valid": false,
+        "reason": "empty-core"
+      },
+      "a2": {
+        "valid": false,
+        "reason": "dup-of-a0",
+        "state": "GGGr"
+      },
+      "a3": {
+        "valid": true,
+        "state": "rrrG"
+      },
+      "a4": {
+        "valid": false,
+        "reason": "dup-of-a0",
+        "state": "GGGr"
+      },
+      "a5": {
+        "valid": false,
+        "reason": "empty-core"
+      },
+      "a6": {
+        "valid": false,
+        "reason": "empty-core"
+      },
+      "a7": {
+        "valid": false,
+        "reason": "dup-of-a3",
+        "state": "rrrG"
+      }
+    },
+    "arms": {
+      "W": {
+        "edges": [
+          "14039867#0"
+        ],
+        "bearing": 268.0
+      },
+      "N": {
+        "edges": [
+          "15464767#0"
+        ],
+        "bearing": 356.4
+      }
+    },
+    "links": {
+      "0": [
+        {
+          "tl_index": 0,
+          "junction": "9101555",
+          "junction_index": 0,
+          "from_edge": "15464767#0",
+          "from_lane": 0,
+          "to_edge": "15464767#5",
+          "to_lane": 0,
+          "dir": "s",
+          "dir_turn": "T",
+          "approach": "N",
+          "turn": "T"
+        }
+      ],
+      "1": [
+        {
+          "tl_index": 1,
+          "junction": "9101555",
+          "junction_index": 1,
+          "from_edge": "15464767#0",
+          "from_lane": 1,
+          "to_edge": "15464767#5",
+          "to_lane": 1,
+          "dir": "s",
+          "dir_turn": "T",
+          "approach": "N",
+          "turn": "T"
+        }
+      ],
+      "2": [
+        {
+          "tl_index": 2,
+          "junction": "9101555",
+          "junction_index": 2,
+          "from_edge": "15464767#0",
+          "from_lane": 1,
+          "to_edge": "-14039867#2",
+          "to_lane": 0,
+          "dir": "r",
+          "dir_turn": "R",
+          "approach": "N",
+          "turn": "R"
+        }
+      ],
+      "3": [
+        {
+          "tl_index": 3,
+          "junction": "9101555",
+          "junction_index": 3,
+          "from_edge": "14039867#0",
+          "from_lane": 0,
+          "to_edge": "15464767#5",
+          "to_lane": 1,
+          "dir": "r",
+          "dir_turn": "R",
+          "approach": "W",
+          "turn": "R"
+        }
+      ]
+    }
+  },
+  "downstream_yield_9101554_retained": true
+}

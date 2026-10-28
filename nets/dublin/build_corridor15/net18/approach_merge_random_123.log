@@ -1,0 +1,470 @@
+✅ Using libsumo (C++ accelerated, faster).
+
+[_build_phases] TS=133307283 — green phases sent to SUMO:
+  green_phase[0]: GGrGGrr
+  green_phase[1]: rrGrrrG
+  green_phase[2]: rrrGGrG
+  green_phase[3]: GGGrrrr
+[_build_phases] TS=133307283 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGrGGrr
+  runtime green phase[1]: rrGrrrG
+  runtime green phase[2]: rrrGGrG
+  runtime green phase[3]: GGGrrrr
+  runtime green phase[0]: GGrGGrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=1430847303 — green phases sent to SUMO:
+  green_phase[0]: rrGG
+  green_phase[1]: GGrr
+[_build_phases] TS=1430847303 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrGG
+  runtime green phase[1]: GGrr
+  runtime green phase[0]: rrGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=1448436 — green phases sent to SUMO:
+  green_phase[0]: rrrGGGG
+  green_phase[1]: GGGGrrr
+  green_phase[2]: GrrGrGG
+[_build_phases] TS=1448436 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrGGGG
+  runtime green phase[1]: GGGGrrr
+  runtime green phase[2]: GrrGrGG
+  runtime green phase[0]: rrrGGGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=1448442 — green phases sent to SUMO:
+  green_phase[0]: rrrGrGG
+  green_phase[1]: GGGrrrr
+  green_phase[2]: GrrrGrr
+  green_phase[3]: GrGrrGr
+  green_phase[4]: rrrGGrr
+  green_phase[5]: GrrrrGG
+[_build_phases] TS=1448442 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrGrGG
+  runtime green phase[1]: GGGrrrr
+  runtime green phase[2]: GrrrGrr
+  runtime green phase[3]: GrGrrGr
+  runtime green phase[4]: rrrGGrr
+  runtime green phase[5]: GrrrrGG
+  runtime green phase[0]: rrrGrGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=26165090 — green phases sent to SUMO:
+  green_phase[0]: GrGGr
+  green_phase[1]: GGrrG
+  green_phase[2]: GrrGG
+[_build_phases] TS=26165090 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrGGr
+  runtime green phase[1]: GGrrG
+  runtime green phase[2]: GrrGG
+  runtime green phase[0]: GrGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=26165126 — green phases sent to SUMO:
+  green_phase[0]: GGGrrG
+  green_phase[1]: rrGGGr
+  green_phase[2]: GrGrGr
+[_build_phases] TS=26165126 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGrrG
+  runtime green phase[1]: rrGGGr
+  runtime green phase[2]: GrGrGr
+  runtime green phase[0]: GGGrrG
+✅TThis is the local ts.py
+
+[_build_phases] TS=389281 — green phases sent to SUMO:
+  green_phase[0]: GGrrrGGr
+  green_phase[1]: rrGGGrrr
+  green_phase[2]: rrGrrrrG
+  green_phase[3]: GrGrGrrr
+  green_phase[4]: GGGrrrrr
+  green_phase[5]: rrrrrGGG
+[_build_phases] TS=389281 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGrrrGGr
+  runtime green phase[1]: rrGGGrrr
+  runtime green phase[2]: rrGrrrrG
+  runtime green phase[3]: GrGrGrrr
+  runtime green phase[4]: GGGrrrrr
+  runtime green phase[5]: rrrrrGGG
+  runtime green phase[0]: GGrrrGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=389332 — green phases sent to SUMO:
+  green_phase[0]: GGrGrr
+  green_phase[1]: GrrGrG
+[_build_phases] TS=389332 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGrGrr
+  runtime green phase[1]: GrrGrG
+  runtime green phase[0]: GGrGrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=5166592132 — green phases sent to SUMO:
+  green_phase[0]: GGGr
+  green_phase[1]: rrrG
+[_build_phases] TS=5166592132 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGr
+  runtime green phase[1]: rrrG
+  runtime green phase[0]: GGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=659799 — green phases sent to SUMO:
+  green_phase[0]: rrrGGGrGr
+  green_phase[1]: GGGGrrGrr
+  green_phase[2]: GrrGrGrGG
+  green_phase[3]: GrrGrrGGr
+[_build_phases] TS=659799 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrGGGrGr
+  runtime green phase[1]: GGGGrrGrr
+  runtime green phase[2]: GrrGrGrGG
+  runtime green phase[3]: GrrGrrGGr
+  runtime green phase[0]: rrrGGGrGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=659802 — green phases sent to SUMO:
+  green_phase[0]: rrGGGr
+  green_phase[1]: GrrrGG
+  green_phase[2]: GGGrrr
+[_build_phases] TS=659802 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrGGGr
+  runtime green phase[1]: GrrrGG
+  runtime green phase[2]: GGGrrr
+  runtime green phase[0]: rrGGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=659805 — green phases sent to SUMO:
+  green_phase[0]: GGGrrr
+  green_phase[1]: rrGGGG
+  green_phase[2]: GrGrrG
+[_build_phases] TS=659805 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGrrr
+  runtime green phase[1]: rrGGGG
+  runtime green phase[2]: GrGrrG
+  runtime green phase[0]: GGGrrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_1426051358_1426100603_3206752725_3783453672_3783453675 — green phases sent to SUMO:
+  green_phase[0]: rrrrGGrGGG
+  green_phase[1]: GGGGrrrGrr
+  green_phase[2]: GGrrrrGGrr
+  green_phase[3]: rrrrGGGGrr
+  green_phase[4]: GGrrrrrGGG
+[_build_phases] TS=cluster_1426051358_1426100603_3206752725_3783453672_3783453675 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrrGGrGGG
+  runtime green phase[1]: GGGGrrrGrr
+  runtime green phase[2]: GGrrrrGGrr
+  runtime green phase[3]: rrrrGGGGrr
+  runtime green phase[4]: GGrrrrrGGG
+  runtime green phase[0]: rrrrGGrGGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_1448439_2464758361 — green phases sent to SUMO:
+  green_phase[0]: GGGGr
+  green_phase[1]: rrGGG
+[_build_phases] TS=cluster_1448439_2464758361 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGGr
+  runtime green phase[1]: rrGGG
+  runtime green phase[0]: GGGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_1998326407_2876012598_4781977262_658429 — green phases sent to SUMO:
+  green_phase[0]: GGGGGrr
+  green_phase[1]: GrrrrGG
+[_build_phases] TS=cluster_1998326407_2876012598_4781977262_658429 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGGGrr
+  runtime green phase[1]: GrrrrGG
+  runtime green phase[0]: GGGGGrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_21620852_2383668110_2383668118_4009885977 — green phases sent to SUMO:
+  green_phase[0]: rrrrrGGG
+  green_phase[1]: GGrGGrrr
+  green_phase[2]: rrrGrGrG
+  green_phase[3]: rrGrrGrr
+  green_phase[4]: GGGrrrrr
+  green_phase[5]: rrrGGGrr
+[_build_phases] TS=cluster_21620852_2383668110_2383668118_4009885977 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrrrGGG
+  runtime green phase[1]: GGrGGrrr
+  runtime green phase[2]: rrrGrGrG
+  runtime green phase[3]: rrGrrGrr
+  runtime green phase[4]: GGGrrrrr
+  runtime green phase[5]: rrrGGGrr
+  runtime green phase[0]: rrrrrGGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_2498303858_3624079904_6141082777_6141082778_9936781 — green phases sent to SUMO:
+  green_phase[0]: GGGGr
+  green_phase[1]: rrrGG
+[_build_phases] TS=cluster_2498303858_3624079904_6141082777_6141082778_9936781 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGGr
+  runtime green phase[1]: rrrGG
+  runtime green phase[0]: GGGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_5166592137_5166592140_557198554_57744042 — green phases sent to SUMO:
+  green_phase[0]: GrrrGG
+  green_phase[1]: GGGrrr
+  green_phase[2]: rrGGGr
+[_build_phases] TS=cluster_5166592137_5166592140_557198554_57744042 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrrGG
+  runtime green phase[1]: GGGrrr
+  runtime green phase[2]: rrGGGr
+  runtime green phase[0]: GrrrGG
+✅TThis is the local ts.py
+✅This is local env.py
+
+[_build_phases] TS=133307283 — green phases sent to SUMO:
+  green_phase[0]: GGrGGrr
+  green_phase[1]: rrGrrrG
+  green_phase[2]: rrrGGrG
+  green_phase[3]: GGGrrrr
+[_build_phases] TS=133307283 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGrGGrr
+  runtime green phase[1]: rrGrrrG
+  runtime green phase[2]: rrrGGrG
+  runtime green phase[3]: GGGrrrr
+  runtime green phase[0]: GGrGGrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=1430847303 — green phases sent to SUMO:
+  green_phase[0]: rrGG
+  green_phase[1]: GGrr
+[_build_phases] TS=1430847303 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrGG
+  runtime green phase[1]: GGrr
+  runtime green phase[0]: rrGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=1448436 — green phases sent to SUMO:
+  green_phase[0]: rrrGGGG
+  green_phase[1]: GGGGrrr
+  green_phase[2]: GrrGrGG
+[_build_phases] TS=1448436 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrGGGG
+  runtime green phase[1]: GGGGrrr
+  runtime green phase[2]: GrrGrGG
+  runtime green phase[0]: rrrGGGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=1448442 — green phases sent to SUMO:
+  green_phase[0]: rrrGrGG
+  green_phase[1]: GGGrrrr
+  green_phase[2]: GrrrGrr
+  green_phase[3]: GrGrrGr
+  green_phase[4]: rrrGGrr
+  green_phase[5]: GrrrrGG
+[_build_phases] TS=1448442 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrGrGG
+  runtime green phase[1]: GGGrrrr
+  runtime green phase[2]: GrrrGrr
+  runtime green phase[3]: GrGrrGr
+  runtime green phase[4]: rrrGGrr
+  runtime green phase[5]: GrrrrGG
+  runtime green phase[0]: rrrGrGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=26165090 — green phases sent to SUMO:
+  green_phase[0]: GrGGr
+  green_phase[1]: GGrrG
+  green_phase[2]: GrrGG
+[_build_phases] TS=26165090 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrGGr
+  runtime green phase[1]: GGrrG
+  runtime green phase[2]: GrrGG
+  runtime green phase[0]: GrGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=26165126 — green phases sent to SUMO:
+  green_phase[0]: GGGrrG
+  green_phase[1]: rrGGGr
+  green_phase[2]: GrGrGr
+[_build_phases] TS=26165126 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGrrG
+  runtime green phase[1]: rrGGGr
+  runtime green phase[2]: GrGrGr
+  runtime green phase[0]: GGGrrG
+✅TThis is the local ts.py
+
+[_build_phases] TS=389281 — green phases sent to SUMO:
+  green_phase[0]: GGrrrGGr
+  green_phase[1]: rrGGGrrr
+  green_phase[2]: rrGrrrrG
+  green_phase[3]: GrGrGrrr
+  green_phase[4]: GGGrrrrr
+  green_phase[5]: rrrrrGGG
+[_build_phases] TS=389281 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGrrrGGr
+  runtime green phase[1]: rrGGGrrr
+  runtime green phase[2]: rrGrrrrG
+  runtime green phase[3]: GrGrGrrr
+  runtime green phase[4]: GGGrrrrr
+  runtime green phase[5]: rrrrrGGG
+  runtime green phase[0]: GGrrrGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=389332 — green phases sent to SUMO:
+  green_phase[0]: GGrGrr
+  green_phase[1]: GrrGrG
+[_build_phases] TS=389332 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGrGrr
+  runtime green phase[1]: GrrGrG
+  runtime green phase[0]: GGrGrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=5166592132 — green phases sent to SUMO:
+  green_phase[0]: GGGr
+  green_phase[1]: rrrG
+[_build_phases] TS=5166592132 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGr
+  runtime green phase[1]: rrrG
+  runtime green phase[0]: GGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=659799 — green phases sent to SUMO:
+  green_phase[0]: rrrGGGrGr
+  green_phase[1]: GGGGrrGrr
+  green_phase[2]: GrrGrGrGG
+  green_phase[3]: GrrGrrGGr
+[_build_phases] TS=659799 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrGGGrGr
+  runtime green phase[1]: GGGGrrGrr
+  runtime green phase[2]: GrrGrGrGG
+  runtime green phase[3]: GrrGrrGGr
+  runtime green phase[0]: rrrGGGrGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=659802 — green phases sent to SUMO:
+  green_phase[0]: rrGGGr
+  green_phase[1]: GrrrGG
+  green_phase[2]: GGGrrr
+[_build_phases] TS=659802 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrGGGr
+  runtime green phase[1]: GrrrGG
+  runtime green phase[2]: GGGrrr
+  runtime green phase[0]: rrGGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=659805 — green phases sent to SUMO:
+  green_phase[0]: GGGrrr
+  green_phase[1]: rrGGGG
+  green_phase[2]: GrGrrG
+[_build_phases] TS=659805 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGrrr
+  runtime green phase[1]: rrGGGG
+  runtime green phase[2]: GrGrrG
+  runtime green phase[0]: GGGrrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_1426051358_1426100603_3206752725_3783453672_3783453675 — green phases sent to SUMO:
+  green_phase[0]: rrrrGGrGGG
+  green_phase[1]: GGGGrrrGrr
+  green_phase[2]: GGrrrrGGrr
+  green_phase[3]: rrrrGGGGrr
+  green_phase[4]: GGrrrrrGGG
+[_build_phases] TS=cluster_1426051358_1426100603_3206752725_3783453672_3783453675 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrrGGrGGG
+  runtime green phase[1]: GGGGrrrGrr
+  runtime green phase[2]: GGrrrrGGrr
+  runtime green phase[3]: rrrrGGGGrr
+  runtime green phase[4]: GGrrrrrGGG
+  runtime green phase[0]: rrrrGGrGGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_1448439_2464758361 — green phases sent to SUMO:
+  green_phase[0]: GGGGr
+  green_phase[1]: rrGGG
+[_build_phases] TS=cluster_1448439_2464758361 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGGr
+  runtime green phase[1]: rrGGG
+  runtime green phase[0]: GGGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_1998326407_2876012598_4781977262_658429 — green phases sent to SUMO:
+  green_phase[0]: GGGGGrr
+  green_phase[1]: GrrrrGG
+[_build_phases] TS=cluster_1998326407_2876012598_4781977262_658429 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGGGrr
+  runtime green phase[1]: GrrrrGG
+  runtime green phase[0]: GGGGGrr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_21620852_2383668110_2383668118_4009885977 — green phases sent to SUMO:
+  green_phase[0]: rrrrrGGG
+  green_phase[1]: GGrGGrrr
+  green_phase[2]: rrrGrGrG
+  green_phase[3]: rrGrrGrr
+  green_phase[4]: GGGrrrrr
+  green_phase[5]: rrrGGGrr
+[_build_phases] TS=cluster_21620852_2383668110_2383668118_4009885977 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: rrrrrGGG
+  runtime green phase[1]: GGrGGrrr
+  runtime green phase[2]: rrrGrGrG
+  runtime green phase[3]: rrGrrGrr
+  runtime green phase[4]: GGGrrrrr
+  runtime green phase[5]: rrrGGGrr
+  runtime green phase[0]: rrrrrGGG
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_2498303858_3624079904_6141082777_6141082778_9936781 — green phases sent to SUMO:
+  green_phase[0]: GGGGr
+  green_phase[1]: rrrGG
+[_build_phases] TS=cluster_2498303858_3624079904_6141082777_6141082778_9936781 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GGGGr
+  runtime green phase[1]: rrrGG
+  runtime green phase[0]: GGGGr
+✅TThis is the local ts.py
+
+[_build_phases] TS=cluster_5166592137_5166592140_557198554_57744042 — green phases sent to SUMO:
+  green_phase[0]: GrrrGG
+  green_phase[1]: GGGrrr
+  green_phase[2]: rrGGGr
+[_build_phases] TS=cluster_5166592137_5166592140_557198554_57744042 — SUMO runtime phases (after setProgramLogic):
+  runtime green phase[0]: GrrrGG
+  runtime green phase[1]: GGGrrr
+  runtime green phase[2]: rrGGGr
+  runtime green phase[0]: GrrrGG
+✅TThis is the local ts.py
+{
+  "planned": 357,
+  "arrived": 357,
+  "decisions": 240,
+  "state_checks": 4320,
+  "reward_checks": 4320,
+  "tracker_checks": 6405,
+  "collisions": 0,
+  "teleports": 0,
+  "lane_changes": 0,
+  "body_overlap_samples": [],
+  "tracker_missing": 0,
+  "nonzero_wait_checks": 3662,
+  "expanded_upstream_wait_samples": {
+    "668344588": 44,
+    "532097269#1.24": 50
+  },
+  "farthest_observed_distance": {
+    "668344588": 77.69,
+    "532097269#1.24": 115.79
+  },
+  "remaining": [],
+  "pending": [],
+  "observed_turn_lane_pairs": {
+    "133307283": 6,
+    "1430847303": 4,
+    "1448436": 7,
+    "1448442": 7,
+    "26165090": 5,
+    "26165126": 6,
+    "389281": 8,
+    "389332": 6,
+    "5166592132": 4,
+    "659802": 6,
+    "659805": 6,
+    "cluster_1426051358_1426100603_3206752725_3783453672_3783453675": 8,
+    "cluster_1448439_2464758361": 5,
+    "cluster_1998326407_2876012598_4781977262_658429": 6,
+    "cluster_21620852_2383668110_2383668118_4009885977": 8,
+    "cluster_2498303858_3624079904_6141082777_6141082778_9936781": 5,
+    "cluster_5166592137_5166592140_557198554_57744042": 6,
+    "659799": 9
+  }
+}

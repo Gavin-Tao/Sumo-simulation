@@ -1,0 +1,27 @@
+Loading net-file from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/../dublin_8std_splitslot15_southclosed.net.xml' ... done (15ms).
+Loading additional-files from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/vtypes_same.add.xml' ... done (0ms).
+Loading route-files from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/car_weekday_18h.rou.xml' ... done (153ms).
+Loading route-files from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/bus_weekday_18h.rou.xml' ... done (8ms).
+Loading route-files from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/amb_weekday_18h_probe11h.rou.xml' ... done (0ms).
+Loading route-files from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/added_flows.rou.xml' ... done (15ms).
+Loading route-files from '/home/xiaowen/sumo-rl/nets/dublin/weekday_18h_15_southclosed/probe_car_18h.rou.xml' ... done (2ms).
+Loading done.
+Simulation version 1.24.0 started with time: 0.00.
+Simulation ended at time: 1.00.
+Reason: The final simulation step has been reached.
+Performance:
+ Duration: 0.18s
+ Real time factor: 5.61798
+ UPS: 22.471910
+Vehicles:
+ Inserted: 4 (Loaded: 6656)
+ Running: 4
+ Waiting: 3
+Statistics (avg of 0):
+ RouteLength: 0.00
+ Speed: 0.00
+ Duration: 0.00
+ WaitingTime: 0.00
+ TimeLoss: 0.00
+ DepartDelay: 0.00
+Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.

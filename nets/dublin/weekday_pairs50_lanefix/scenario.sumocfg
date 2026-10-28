@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<configuration>
+    <input>
+        <net-file value="../dublin_8std_splitslot18_southclosed_corridor_nocg_lanefix.net.xml" />
+        <additional-files value="vtypes_same.add.xml" />
+        <route-files value="background_cars_100.rou.xml,background_gtfs_as_car.rou.xml,pairs_tt1.rou.xml" />
+    </input>
+    <time>
+        <begin value="0" />
+        <end value="3600" />
+    </time>
+    <processing>
+        <time-to-teleport value="-1" />
+        <ignore-junction-blocker value="-1" />
+        <collision.check-junctions value="true" />
+        <collision.action value="warn" />
+    </processing>
+    <report>
+        <no-step-log value="true" />
+        <duration-log.statistics value="true" />
+    </report>
+</configuration>

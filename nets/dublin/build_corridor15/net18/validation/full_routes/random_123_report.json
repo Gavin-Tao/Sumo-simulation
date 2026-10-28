@@ -1,0 +1,49 @@
+{
+  "planned": 348,
+  "arrived": 348,
+  "decisions": 720,
+  "state_checks": 12960,
+  "reward_checks": 12960,
+  "tracker_checks": 45439,
+  "diagnostic_mode": "external_boundary_routes",
+  "require_no_lane_changes": true,
+  "vtypes": "nets/dublin/weekday_18h_15_southclosed_corridor/vtypes_same.add.xml",
+  "collisions": 0,
+  "teleports": 0,
+  "lane_changes": 0,
+  "body_overlap_samples": [],
+  "tracker_missing": 0,
+  "nonzero_wait_checks": 23026,
+  "lane_change_samples": [],
+  "expanded_upstream_wait_samples": {
+    "668344588": 0,
+    "532097269#1.24": 66
+  },
+  "boundary_probe_edges": {},
+  "farthest_observed_distance": {
+    "668344588": 82.72010678111552,
+    "532097269#1.24": 125.75150410750989
+  },
+  "remaining": [],
+  "pending": [],
+  "observed_turn_lane_pairs": {
+    "133307283": 6,
+    "389281": 8,
+    "cluster_21620852_2383668110_2383668118_4009885977": 7,
+    "659799": 9,
+    "1430847303": 4,
+    "5166592132": 4,
+    "26165126": 6,
+    "cluster_1448439_2464758361": 5,
+    "cluster_1426051358_1426100603_3206752725_3783453672_3783453675": 8,
+    "26165090": 5,
+    "1448436": 7,
+    "389332": 6,
+    "1448442": 7,
+    "659802": 6,
+    "cluster_5166592137_5166592140_557198554_57744042": 6,
+    "cluster_2498303858_3624079904_6141082777_6141082778_9936781": 5,
+    "cluster_1998326407_2876012598_4781977262_658429": 5,
+    "659805": 5
+  }
+}

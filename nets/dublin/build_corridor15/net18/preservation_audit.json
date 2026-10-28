@@ -1,0 +1,16 @@
+{
+  "baseline_unexpected_changes": [],
+  "approved_baseline_exception": "nets/dublin/weekday_18h_15_southclosed/bus_weekday_18h.rou.xml",
+  "corridor_removed_segmentation_nodes": [
+    "source_join_668344588",
+    "gneJ70"
+  ],
+  "new_rl_nodes": [
+    "659799",
+    "659805",
+    "cluster_1426051358_1426100603_3206752725_3783453672_3783453675"
+  ],
+  "approach_merge_report": "approach_merge_audit.json",
+  "boundary_expansion_report": "boundary_audit.json",
+  "additional_original_scene_hashes_checked": 164
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Net-only preview: no scenario routes, demand or training. -->
+<configuration>
+    <input><net-file value="../dublin_8std_splitslot18_southclosed_corridor_nocg.net.xml"/></input>
+    <time><begin value="0"/><end value="3600"/></time>
+    <processing><time-to-teleport value="-1"/></processing>
+    <report><no-step-log value="true"/></report>
+</configuration>

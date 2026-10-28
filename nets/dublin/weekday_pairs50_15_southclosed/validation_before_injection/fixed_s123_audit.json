@@ -1,0 +1,18 @@
+{
+  "seconds": 3600,
+  "decisions": 720,
+  "state_checks": 10800,
+  "reward_checks": 10800,
+  "collisions": 0,
+  "teleports": 0,
+  "tracker_checks": 299177,
+  "tracker_missing": 0,
+  "south_farthest_from_stopline": 110.231973312755,
+  "south_upstream_wait_seen": true,
+  "south_capacity": {
+    "532427444#7_0": 14.698666666666666,
+    "532427444#7_1": 14.698666666666666
+  },
+  "arrived_detours": [],
+  "unfinished_detours": {}
+}

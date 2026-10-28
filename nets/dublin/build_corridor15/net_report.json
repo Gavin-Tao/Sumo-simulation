@@ -1,0 +1,96 @@
+{
+  "source": "nets/dublin/dublin_8std_splitslot15_southclosed.net.xml",
+  "net": "nets/dublin/dublin_8std_splitslot15_southclosed_corridor.net.xml",
+  "meta": "nets/dublin/dublin_8std_splitslot15_southclosed_corridor_meta.json",
+  "renames": {
+    "43538577#3": "668344588",
+    "-43538577#3": "-668344588",
+    "3791745#0": "3791745#4",
+    "-3791745#5": "-3791745#3"
+  },
+  "closed": [
+    "43538584",
+    "4401661#0"
+  ],
+  "removed_nodes": [
+    "1426049017",
+    "26911836",
+    "26911837",
+    "26912118"
+  ],
+  "rl_inlet_changes": [
+    [
+      "-3791745#3_0",
+      61.8,
+      "-3791745#3_0",
+      120.08
+    ],
+    [
+      "-3791745#3_1",
+      61.8,
+      "-3791745#3_1",
+      120.08
+    ],
+    [
+      "668344588_0",
+      10.3,
+      "668344588_0",
+      47.69
+    ],
+    [
+      "668344588_1",
+      10.3,
+      "668344588_1",
+      47.69
+    ],
+    [
+      "3791745#4_0",
+      47.07,
+      "3791745#4_0",
+      119.84
+    ],
+    [
+      "3791745#4_1",
+      47.07,
+      "3791745#4_1",
+      119.84
+    ],
+    [
+      "52879956_0",
+      54.2,
+      "52879956_0",
+      53.43
+    ],
+    [
+      "52879956_1",
+      54.2,
+      "52879956_1",
+      53.43
+    ]
+  ],
+  "tls_count": 15,
+  "corridor_actions_unchanged": true,
+  "geometry_tls": "cluster_2498303858_3624079904_6141082777_6141082778_9936781",
+  "geometry_old_mask": [
+    true,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "geometry_new_mask": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "geometry_green_states_unchanged": true,
+  "west_boundary_buffer_length": 40.0
+}

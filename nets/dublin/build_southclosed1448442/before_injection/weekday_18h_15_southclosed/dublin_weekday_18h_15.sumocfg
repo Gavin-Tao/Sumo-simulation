@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<configuration>
+  <input>
+    <net-file value="../dublin_8std_splitslot15_southclosed.net.xml" />
+    <additional-files value="vtypes_same.add.xml" />
+    <route-files value="car_weekday_18h.rou.xml,bus_weekday_18h.rou.xml,amb_weekday_18h_probe11h.rou.xml,added_flows.rou.xml" />
+  </input>
+  <time>
+    <begin value="0" />
+    <end value="3600" />
+  </time>
+  <processing>
+    <ignore-junction-blocker value="60" />
+    <time-to-teleport value="-1" />
+  </processing>
+  <report>
+    <no-step-log value="true" />
+    <duration-log.statistics value="true" />
+  </report>
+</configuration>

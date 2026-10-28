@@ -1,0 +1,32 @@
+{
+  "files": {
+    "nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml": "bd8bf456e9b5fdf1b3adffb41b3e15f112196548493e747674dd6c4a6e1919d1",
+    "nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json": "6683d4ec4c51ce465c4b4b6b9668e8c2f107835c415d324578e65c0c57265573",
+    "nets/dublin/build_corridor15/build_net18.py": "631f1d452f97f5913080b0b424f3d20c8c700c7ac0c526963daebebce0dae2ea",
+    "nets/dublin/build_corridor15/validate_net18.py": "17fa076bc668ac36636fe98bba2af09278a98fa702e95cf9e6562e4360ddeccf",
+    "nets/dublin/build_corridor15/audit_net18_boundaries.py": "20d98fda872cd3b0a6736870d33bb9d4ac703e838e8241ab7ccb43cd65a0325f",
+    "nets/dublin/build_corridor15/net18/boundary_audit.json": "08805a078bfa4f197f3ccb7031c6d0c22830c87416530ac238978479853b16d0",
+    "nets/dublin/build_corridor15/net18/validation/fixed_123_report.json": "78bfbffaad58899f0c6c4715eee5619fee0ec88c5785da25e983bc92d23b0856",
+    "nets/dublin/build_corridor15/net18/validation/random_123_report.json": "fd50e63b9386002f1121e4b89cbdd540c99155cf51f45badd1d33b0e7738ea2d",
+    "nets/dublin/build_corridor15/net18/validation/random_124_report.json": "cfe929435e900d0cc3f747d40d92b4ef05de84396fd21f519da0b195ed7586a4"
+  },
+  "runs": {
+    "fixed_123": {
+      "arrived": 369,
+      "state_checks": 4320,
+      "reward_checks": 4320
+    },
+    "random_123": {
+      "arrived": 369,
+      "state_checks": 4320,
+      "reward_checks": 4320
+    },
+    "random_124": {
+      "arrived": 369,
+      "state_checks": 4320,
+      "reward_checks": 4320
+    }
+  },
+  "original_scene_files_unchanged": 164,
+  "scope": "Net connectivity and state/reward diagnostics only; no demand calibration or training."
+}

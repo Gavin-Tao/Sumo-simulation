@@ -1,0 +1,95 @@
+/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/sumo/bin/netconvert -n /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.nod.xml -e /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.edg.xml -x /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.con.xml -i /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.tll.xml --lefthand --offset.disable-normalization --no-turnarounds --junctions.corner-detail 5 -o /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml
+Success.
+Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+Warning: Found sharp turn with radius 6.85 at the end of edge '-37264303#1'.
+Warning: Found sharp turn with radius 6.85 at the start of edge '14151839#3'.
+Warning: Unused state in tlLogic '133307283', program '8std' at tl-index 5
+Warning: Unused state in tlLogic '389332', program '8std' at tl-index 2
+
+/home/xiaowen/anaconda3/envs/sumo_rl/bin/python -B /home/xiaowen/sumo-rl/experiments/tools/dublin/reindex_8std.py /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml --split-slots --tag splitslot18_southclosed_corridor
+source net: /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml | split-slots: True | out: /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+split-slots cluster_1426051358_1426100603_3206752725_3783453672_3783453675: [(7, ['W', 'T'], ['W', 'L'])]
+split-slots cluster_21620852_2383668110_2383668118_4009885977: [(2, ['E', 'T'], ['E', 'R']), (6, ['S', 'L'], ['S', 'T'])]
+TLS reindexed: 18  | valid-action count distribution: {2: 6, 3: 6, 4: 2, 5: 1, 6: 3}
+boundary: 15 entries / 15 exits
+sumo load test: OK (1 warnings)
+   Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json
+
+/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/sumo/bin/netconvert -n /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.nod.xml -e /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.edg.xml -x /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.con.xml -i /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.tll.xml --lefthand --offset.disable-normalization --no-turnarounds --junctions.corner-detail 5 -o /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml
+Success.
+Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+Warning: Found sharp turn with radius 6.85 at the end of edge '-37264303#1'.
+Warning: Found sharp turn with radius 6.85 at the start of edge '14151839#3'.
+Warning: Unused state in tlLogic '133307283', program '8std' at tl-index 5
+Warning: Unused state in tlLogic '389332', program '8std' at tl-index 2
+
+/home/xiaowen/anaconda3/envs/sumo_rl/bin/python -B /home/xiaowen/sumo-rl/experiments/tools/dublin/reindex_8std.py /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml --split-slots --tag splitslot18_southclosed_corridor
+source net: /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml | split-slots: True | out: /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+split-slots cluster_1426051358_1426100603_3206752725_3783453672_3783453675: [(7, ['W', 'T'], ['W', 'L'])]
+split-slots cluster_21620852_2383668110_2383668118_4009885977: [(2, ['E', 'T'], ['E', 'R']), (6, ['S', 'L'], ['S', 'T'])]
+TLS reindexed: 18  | valid-action count distribution: {2: 6, 3: 6, 4: 2, 5: 1, 6: 3}
+boundary: 15 entries / 15 exits
+sumo load test: OK (1 warnings)
+   Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json
+
+/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/sumo/bin/netconvert -n /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.nod.xml -e /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.edg.xml -x /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.con.xml -i /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.tll.xml --lefthand --offset.disable-normalization --no-turnarounds --junctions.corner-detail 5 -o /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml
+Success.
+Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+Warning: Found sharp turn with radius 6.85 at the end of edge '-37264303#1'.
+Warning: Found sharp turn with radius 6.85 at the start of edge '14151839#3'.
+Warning: Unused state in tlLogic '133307283', program '8std' at tl-index 5
+Warning: Unused state in tlLogic '389332', program '8std' at tl-index 2
+
+/home/xiaowen/anaconda3/envs/sumo_rl/bin/python -B /home/xiaowen/sumo-rl/experiments/tools/dublin/reindex_8std.py /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml --split-slots --tag splitslot18_southclosed_corridor
+source net: /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml | split-slots: True | out: /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+split-slots cluster_1426051358_1426100603_3206752725_3783453672_3783453675: [(7, ['W', 'T'], ['W', 'L'])]
+split-slots cluster_21620852_2383668110_2383668118_4009885977: [(2, ['E', 'T'], ['E', 'R']), (6, ['S', 'L'], ['S', 'T'])]
+TLS reindexed: 18  | valid-action count distribution: {2: 6, 3: 6, 4: 2, 5: 1, 6: 3}
+boundary: 16 entries / 16 exits
+sumo load test: OK (1 warnings)
+   Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json
+
+/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/sumo/bin/netconvert -n /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.nod.xml -e /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.edg.xml -x /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.con.xml -i /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.tll.xml --lefthand --offset.disable-normalization --no-turnarounds --junctions.corner-detail 5 -o /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml
+Success.
+Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+Warning: Found sharp turn with radius 6.85 at the end of edge '-37264303#1'.
+Warning: Found sharp turn with radius 6.85 at the start of edge '14151839#3'.
+Warning: Unused state in tlLogic '133307283', program '8std' at tl-index 5
+Warning: Unused state in tlLogic '389332', program '8std' at tl-index 2
+
+/home/xiaowen/anaconda3/envs/sumo_rl/bin/python -B /home/xiaowen/sumo-rl/experiments/tools/dublin/reindex_8std.py /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml --split-slots --tag splitslot18_southclosed_corridor
+source net: /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml | split-slots: True | out: /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+split-slots cluster_1426051358_1426100603_3206752725_3783453672_3783453675: [(7, ['W', 'T'], ['W', 'L'])]
+split-slots cluster_21620852_2383668110_2383668118_4009885977: [(2, ['E', 'T'], ['E', 'R']), (6, ['S', 'L'], ['S', 'T'])]
+TLS reindexed: 18  | valid-action count distribution: {2: 6, 3: 6, 4: 2, 5: 1, 6: 3}
+boundary: 16 entries / 16 exits
+sumo load test: OK (1 warnings)
+   Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json
+
+/home/xiaowen/anaconda3/envs/sumo_rl/lib/python3.9/site-packages/sumo/bin/netconvert -n /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.nod.xml -e /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.edg.xml -x /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.con.xml -i /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.tll.xml --lefthand --offset.disable-normalization --no-turnarounds --junctions.corner-detail 5 -o /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml
+Success.
+Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+Warning: Found sharp turn with radius 6.85 at the end of edge '-37264303#1'.
+Warning: Found sharp turn with radius 6.85 at the start of edge '14151839#3'.
+Warning: Unused state in tlLogic '133307283', program '8std' at tl-index 5
+Warning: Unused state in tlLogic '389332', program '8std' at tl-index 2
+
+/home/xiaowen/anaconda3/envs/sumo_rl/bin/python -B /home/xiaowen/sumo-rl/experiments/tools/dublin/reindex_8std.py /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml --split-slots --tag splitslot18_southclosed_corridor
+source net: /home/xiaowen/sumo-rl/nets/dublin/build_corridor15/net18/corridor18.net.xml | split-slots: True | out: /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+split-slots cluster_1426051358_1426100603_3206752725_3783453672_3783453675: [(7, ['W', 'T'], ['W', 'L'])]
+split-slots cluster_21620852_2383668110_2383668118_4009885977: [(2, ['E', 'T'], ['E', 'R']), (6, ['S', 'L'], ['S', 'T'])]
+TLS reindexed: 18  | valid-action count distribution: {2: 6, 3: 6, 4: 2, 5: 1, 6: 3}
+boundary: 16 entries / 16 exits
+sumo load test: OK (1 warnings)
+   Warning: Environment variable SUMO_HOME is not set properly, disabling XML validation. Set 'auto' or 'always' for web lookups.
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor.net.xml
+wrote /home/xiaowen/sumo-rl/nets/dublin/dublin_8std_splitslot18_southclosed_corridor_meta.json
+

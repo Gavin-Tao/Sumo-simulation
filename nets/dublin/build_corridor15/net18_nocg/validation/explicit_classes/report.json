@@ -1,0 +1,15 @@
+{
+  "planned": 330,
+  "arrived": 330,
+  "classes": {
+    "car": "passenger",
+    "bus": "bus",
+    "ambulance": "emergency"
+  },
+  "collisions": 0,
+  "teleports": 0,
+  "lane_changes": 0,
+  "all_lane_permissions_checked": true,
+  "pending": [],
+  "remaining": []
+}

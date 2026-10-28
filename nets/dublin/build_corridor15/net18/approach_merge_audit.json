@@ -1,0 +1,35 @@
+{
+  "tls_count": 18,
+  "complete_tls_meta_unchanged": true,
+  "changed_lanes": [
+    {
+      "lane": "532097269#1.24_0",
+      "old": 65.79,
+      "new": 125.79
+    },
+    {
+      "lane": "532097269#1.24_1",
+      "old": 65.79,
+      "new": 125.79
+    },
+    {
+      "lane": "668344588_0",
+      "old": 47.69,
+      "new": 87.69
+    },
+    {
+      "lane": "668344588_1",
+      "old": 47.69,
+      "new": 87.69
+    }
+  ],
+  "other_external_lane_lengths_and_shapes_unchanged": true,
+  "source_segment_lengths_preserved": true,
+  "real_west_north_branch_retained": true,
+  "old_southclosed_unchanged": true,
+  "removed_nodes": [
+    "source_join_668344588",
+    "gneJ70"
+  ],
+  "scope": "Historical approach-merge stage, before the later boundary additions. See boundary_audit.json for subsequent length/topology changes."
+}

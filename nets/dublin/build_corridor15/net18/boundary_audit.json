@@ -1,0 +1,220 @@
+{
+  "tls_count": 18,
+  "complete_tls_meta_unchanged": true,
+  "new_edges": [
+    "sink_college_green_N",
+    "source_1448436_W",
+    "source_college_green_E_outer",
+    "source_college_green_N"
+  ],
+  "original_scene_files_checked": 164,
+  "original_scene_changes": [],
+  "existing_lane_changes": [
+    {
+      "lane": "-668344588_0",
+      "old": 87.83,
+      "new": 82.89
+    },
+    {
+      "lane": "129212233#0_0",
+      "old": 102.32,
+      "new": 103.02
+    },
+    {
+      "lane": "668344588_0",
+      "old": 87.69,
+      "new": 82.74
+    },
+    {
+      "lane": "668344588_1",
+      "old": 87.69,
+      "new": 82.74
+    }
+  ],
+  "other_existing_lane_shapes_and_lengths_unchanged": true,
+  "removed_connections": [
+    [
+      "-129212230#1_0",
+      "129212230#0_0"
+    ]
+  ],
+  "existing_M_connections_downgraded": [],
+  "joins": [
+    {
+      "node": "3206753875",
+      "conflicts": 0,
+      "connections": [
+        {
+          "from_lane": "-129212230#1_0",
+          "to_lane": "sink_college_green_N_0",
+          "state": "M"
+        },
+        {
+          "from_lane": "source_college_green_N_0",
+          "to_lane": "129212230#0_0",
+          "state": "M"
+        }
+      ]
+    },
+    {
+      "node": "cluster_1426051354_2705523737",
+      "conflicts": 0,
+      "connections": [
+        {
+          "from_lane": "-668344588_0",
+          "to_lane": "129212233#0_0",
+          "state": "M"
+        },
+        {
+          "from_lane": "source_1448436_W_0",
+          "to_lane": "668344588_0",
+          "state": "M"
+        },
+        {
+          "from_lane": "source_1448436_W_1",
+          "to_lane": "668344588_1",
+          "state": "M"
+        }
+      ]
+    },
+    {
+      "node": "source_college_green_E_boundary",
+      "conflicts": 0,
+      "connections": [
+        {
+          "from_lane": "source_college_green_E_outer_0",
+          "to_lane": "532097269#1.24_0",
+          "state": "M"
+        },
+        {
+          "from_lane": "source_college_green_E_outer_1",
+          "to_lane": "532097269#1.24_1",
+          "state": "M"
+        }
+      ]
+    }
+  ],
+  "exit_2397311044_unchanged": true,
+  "entry_count": 16,
+  "entries": [
+    {
+      "edge": "-40701185",
+      "lanes": 1,
+      "length": 65.93,
+      "downstream": "135109491",
+      "direct_rl": false
+    },
+    {
+      "edge": "-4475730",
+      "lanes": 1,
+      "length": 158.03,
+      "downstream": "9101323",
+      "direct_rl": false
+    },
+    {
+      "edge": "-4475731",
+      "lanes": 1,
+      "length": 161.22,
+      "downstream": "9101324",
+      "direct_rl": false
+    },
+    {
+      "edge": "110223240#0",
+      "lanes": 1,
+      "length": 58.01,
+      "downstream": "5099319590",
+      "direct_rl": false
+    },
+    {
+      "edge": "4074526#0",
+      "lanes": 1,
+      "length": 215.13,
+      "downstream": "130159360",
+      "direct_rl": false
+    },
+    {
+      "edge": "74233405#1",
+      "lanes": 1,
+      "length": 122.38,
+      "downstream": "5345930965",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_-4074527#1",
+      "lanes": 1,
+      "length": 150.0,
+      "downstream": "659804",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_-77616869#2",
+      "lanes": 1,
+      "length": 155.06,
+      "downstream": "source_join_-77616869#2",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_1448436_W",
+      "lanes": 2,
+      "length": 102.58,
+      "downstream": "cluster_1426051354_2705523737",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_22962979",
+      "lanes": 1,
+      "length": 150.0,
+      "downstream": "247416073",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_372226878#0",
+      "lanes": 1,
+      "length": 150.0,
+      "downstream": "2705322908",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_43321718#3",
+      "lanes": 1,
+      "length": 148.5,
+      "downstream": "508057825",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_659799_E",
+      "lanes": 2,
+      "length": 60.0,
+      "downstream": "32334797",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_659799_N",
+      "lanes": 3,
+      "length": 60.0,
+      "downstream": "2396578262",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_college_green_E_outer",
+      "lanes": 2,
+      "length": 100.0,
+      "downstream": "source_college_green_E_boundary",
+      "direct_rl": false
+    },
+    {
+      "edge": "source_college_green_N",
+      "lanes": 1,
+      "length": 100.0,
+      "downstream": "3206753875",
+      "direct_rl": false
+    }
+  ],
+  "direct_external_rl_entries": [],
+  "geometry_close_runs": [],
+  "geometry_screen": {
+    "sample_spacing_max_m": 0.5,
+    "distance_threshold_m": 2,
+    "continuous_run_threshold_m": 5
+  }
+}
