@@ -51,7 +51,7 @@ def run_all(groups):
                 nm = f"g{gi}_{pol}_{s}"
                 if (D / f"{nm}_pairs.json").exists(): continue
                 routes = ",".join([str(P.OUT / f) for f in P.BG_DEFAULT] + [str(D / f"probes_g{gi}.rou.xml")])
-                procs.append(subprocess.Popen([PY, CAL, "--policy", pol, "--seed", str(s), "--routes", routes, "--manifest", str(D / f"probes_g{gi}_manifest.json"),
+                procs.append(subprocess.Popen([PY, CAL, "--policy", pol, "--seed", str(s), "--routes", routes, "--manifest", str(D / f"probes_g{gi}_manifest.json"), "--sumocfg", str(P.OUT / "scenario.sumocfg"),
                                                "--out", str(D / nm), "--out-pairs", str(D / f"{nm}_pairs.json")], cwd=str(P.TOOLS18),
                                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=dict(os.environ, OMP_NUM_THREADS="1")))
                 while sum(p.poll() is None for p in procs) >= 8:
@@ -130,11 +130,18 @@ def allocate(chosen_all):
     raise RuntimeError("K = 10–12 都无法在每条进口车道 ≤ %d 对的上限下分出 50 对" % MAX_PAIRS_PER_LANE)
 
 
+def rl_in_edges(lanes, net, meta):
+    """路线经过的所有 RL 进口边 (车道所在边的终点是 RL 路口), 不只竞争转向的进口。"""
+    return {l.rsplit("_", 1)[0] for l in lanes if not l.startswith(":") and net.getLane(l).getEdge().getToNode().getID() in meta}
+
+
 def pick_unseen(unseen, stats_u, chosen, n=3):
-    used = {l.rsplit("_", 1)[0] for c in chosen for _, _, l in c["competing"]}; out = []
+    import sumolib
+    net = sumolib.net.readNet(str(P.NET)); meta = P.load_meta()
+    used = set().union(*[rl_in_edges(c["lanes"], net, meta) for c in chosen]); out = []
     for i in sorted(range(len(unseen)), key=lambda i: (not stats_u.get(i, {}).get("lane_paths_identical", False), -len(unseen[i]["competing"]), i)):
-        ins = {l.rsplit("_", 1)[0] for _, _, l in unseen[i]["competing"]}
-        if ins & used or any(ins & {l.rsplit("_", 1)[0] for _, _, l in u["competing"]} for u in out): continue
+        ins = rl_in_edges(unseen[i]["lanes"], net, meta)
+        if ins & used or any(ins & rl_in_edges(u["lanes"], net, meta) for u in out): continue
         out.append(dict(unseen[i], measured=stats_u.get(i)))
         if len(out) == n: break
     return out

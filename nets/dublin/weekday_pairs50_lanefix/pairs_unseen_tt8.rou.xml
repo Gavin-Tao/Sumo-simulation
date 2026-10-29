@@ -1,76 +1,52 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <routes>
     <!--pairs50lf 未见路线 第 8 份 orig-->
-    <vehicle id="t08u_p01_x" type="ambulance" depart="1002.7" departLane="0" departSpeed="max">
-        <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
-    </vehicle>
-    <vehicle id="t08u_p02_x" type="ambulance" depart="1072.5" departLane="1" departSpeed="max">
+    <vehicle id="t08u_p01_x" type="ambulance" depart="963.7" departLane="1" departSpeed="max">
         <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
     </vehicle>
-    <vehicle id="t08u_p03_x" type="ambulance" depart="1151.5" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p01_y" type="bus" depart="1182.7" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p02_x" type="ambulance" depart="1011.4" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p02_y" type="bus" depart="1257.5" departLane="1" departSpeed="max">
+    <vehicle id="t08u_p03_x" type="bus" depart="1101.0" departLane="1" departSpeed="max">
         <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
     </vehicle>
-    <vehicle id="t08u_p04_x" type="bus" depart="1300.1" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p01_y" type="bus" depart="1143.7" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="t08u_p04_x" type="bus" depart="1150.8" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p03_y" type="bus" depart="1331.5" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p05_x" type="bus" depart="1444.5" departLane="1" departSpeed="max">
-        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
-    </vehicle>
-    <vehicle id="t08u_p06_x" type="bus" depart="1463.1" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p04_y" type="ambulance" depart="1480.1" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p02_y" type="bus" depart="1191.4" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p05_y" type="ambulance" depart="1629.5" departLane="1" departSpeed="max">
+    <vehicle id="t08u_p03_y" type="ambulance" depart="1281.0" departLane="1" departSpeed="max">
         <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
     </vehicle>
-    <vehicle id="t08u_p06_y" type="ambulance" depart="1643.1" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p07_x" type="ambulance" depart="1696.4" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p04_y" type="ambulance" depart="1330.8" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p07_y" type="bus" depart="1876.4" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p05_x" type="bus" depart="1563.7" departLane="1" departSpeed="max">
+        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="t08u_p06_x" type="bus" depart="1611.4" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p08_x" type="ambulance" depart="1982.0" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p09_x" type="ambulance" depart="2060.5" departLane="1" departSpeed="max">
+    <vehicle id="t08u_p07_x" type="ambulance" depart="1701.0" departLane="1" departSpeed="max">
         <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
     </vehicle>
-    <vehicle id="t08u_p08_y" type="bus" depart="2162.0" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p09_y" type="bus" depart="2242.0" departLane="1" departSpeed="max">
+    <vehicle id="t08u_p05_y" type="ambulance" depart="1743.7" departLane="1" departSpeed="max">
         <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
     </vehicle>
-    <vehicle id="t08u_p10_x" type="bus" depart="2314.3" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p11_x" type="bus" depart="2348.8" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p08_x" type="ambulance" depart="1750.8" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p12_x" type="bus" depart="2421.0" departLane="1" departSpeed="max">
-        <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
-    </vehicle>
-    <vehicle id="t08u_p10_y" type="ambulance" depart="2494.3" departLane="0" departSpeed="max">
-        <route edges="source_1448436_W 668344588 3791745#4 304634278#0" />
-    </vehicle>
-    <vehicle id="t08u_p11_y" type="ambulance" depart="2528.8" departLane="0" departSpeed="max">
+    <vehicle id="t08u_p06_y" type="ambulance" depart="1791.4" departLane="0" departSpeed="max">
         <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
-    <vehicle id="t08u_p12_y" type="ambulance" depart="2602.5" departLane="1" departSpeed="max">
+    <vehicle id="t08u_p07_y" type="bus" depart="1881.0" departLane="1" departSpeed="max">
         <route edges="source_college_green_E_outer 532097269#1.24 -304634278#0 -3791745#3 -668344588 129212233#0" />
+    </vehicle>
+    <vehicle id="t08u_p08_y" type="bus" depart="1930.8" departLane="0" departSpeed="max">
+        <route edges="source_659799_E -3791034#1 4074528#0 4074527#0" />
     </vehicle>
 </routes>

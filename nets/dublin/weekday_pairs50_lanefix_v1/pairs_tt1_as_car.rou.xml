@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<routes>
+    <!--pairs50lf 第 1 份 twin-->
+    <vehicle id="t01c_p02_x" type="car" depart="911.1" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p03_x" type="car" depart="913.2" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p01_x" type="car" depart="921.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p04_x" type="car" depart="953.3" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p05_x" type="car" depart="971.9" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p06_x" type="car" depart="992.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p08_x" type="car" depart="1063.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p07_x" type="car" depart="1071.5" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p04_y" type="car" depart="1074.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p02_y" type="car" depart="1091.1" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p03_y" type="car" depart="1094.2" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p05_y" type="car" depart="1094.4" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p01_y" type="car" depart="1106.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p09_x" type="car" depart="1109.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p06_y" type="car" depart="1112.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p08_y" type="car" depart="1153.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p07_y" type="car" depart="1191.5" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p10_x" type="car" depart="1196.7" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p11_x" type="car" depart="1208.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p12_x" type="car" depart="1238.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p13_x" type="car" depart="1273.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p09_y" type="car" depart="1289.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p11_y" type="car" depart="1305.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p14_x" type="car" depart="1346.7" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p16_x" type="car" depart="1356.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p15_x" type="car" depart="1358.9" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p17_x" type="car" depart="1374.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p10_y" type="car" depart="1377.7" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p18_x" type="car" depart="1384.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p13_y" type="car" depart="1393.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p12_y" type="car" depart="1423.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p19_x" type="car" depart="1427.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p18_y" type="car" depart="1474.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p15_y" type="car" depart="1481.4" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p17_y" type="car" depart="1494.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p20_x" type="car" depart="1524.2" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p14_y" type="car" depart="1526.7" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p21_x" type="car" depart="1531.0" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p16_y" type="car" depart="1542.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p22_x" type="car" depart="1552.4" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p23_x" type="car" depart="1564.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p24_x" type="car" depart="1571.2" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p25_x" type="car" depart="1590.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p19_y" type="car" depart="1607.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p26_x" type="car" depart="1636.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p20_y" type="car" depart="1645.7" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p23_y" type="car" depart="1662.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p27_x" type="car" depart="1663.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p22_y" type="car" depart="1673.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p28_x" type="car" depart="1680.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p24_y" type="car" depart="1695.7" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p29_x" type="car" depart="1701.4" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p21_y" type="car" depart="1711.5" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p30_x" type="car" depart="1712.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p31_x" type="car" depart="1739.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p25_y" type="car" depart="1770.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p27_y" type="car" depart="1783.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p28_y" type="car" depart="1801.5" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p26_y" type="car" depart="1822.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p32_x" type="car" depart="1828.2" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p31_y" type="car" depart="1864.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p33_x" type="car" depart="1872.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p34_x" type="car" depart="1877.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p29_y" type="car" depart="1882.4" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p30_y" type="car" depart="1903.2" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p35_x" type="car" depart="1913.1" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p36_x" type="car" depart="1933.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p34_y" type="car" depart="1969.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p33_y" type="car" depart="1986.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p37_x" type="car" depart="1990.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p38_x" type="car" depart="2002.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p32_y" type="car" depart="2008.7" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p35_y" type="car" depart="2033.1" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p39_x" type="car" depart="2048.3" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p40_x" type="car" depart="2080.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p41_x" type="car" depart="2112.3" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p37_y" type="car" depart="2122.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p38_y" type="car" depart="2122.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p36_y" type="car" depart="2123.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p42_x" type="car" depart="2156.2" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p39_y" type="car" depart="2168.3" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p43_x" type="car" depart="2181.6" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p44_x" type="car" depart="2191.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p40_y" type="car" depart="2204.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p41_y" type="car" depart="2244.3" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t01c_p45_x" type="car" depart="2265.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p46_x" type="car" depart="2335.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p42_y" type="car" depart="2336.2" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p43_y" type="car" depart="2364.6" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p44_y" type="car" depart="2372.5" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t01c_p48_x" type="car" depart="2373.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p47_x" type="car" depart="2378.9" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p45_y" type="car" depart="2385.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t01c_p49_x" type="car" depart="2418.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p46_y" type="car" depart="2449.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t01c_p48_y" type="car" depart="2464.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p50_x" type="car" depart="2469.5" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t01c_p49_y" type="car" depart="2538.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t01c_p47_y" type="car" depart="2561.9" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t01c_p50_y" type="car" depart="2593.5" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+</routes>

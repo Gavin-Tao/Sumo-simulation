@@ -1,68 +1,76 @@
 """任务 3: 时刻表、镜像、换车型孪生、未见路线文件与 id 清单。
 - 出发窗: 路线 r = [900, 3000 − 第 99 分位行程时间 − 对内间隔 − 120 s] (§5.2)。
 - 对内间隔: 在标定时刻表上试 60/90/120 s, 逐路线取 "同对两车同时在同一 RL 进口" ≤ 10% 的最小值 (中性控制器, §5.3)。
-- 每条路线 n 对在出发窗内分层抽样; 路线内交替先后 (首对车型随机), 对数为偶数 → 两类先行次数相等 (§5.4)。
-- 配对车辆按块联合找空档 (同路线相邻两对为一块, 块内实际对内间隔相同, ∈ [Δ, Δ+40 s]): 与同入口车道背景车及已排配对车辆相距 ≥ 3 s, 首车不出出发窗 (§3; 实施时由逐车改为按块, 见进度记录)。
+- 第三版 (2026-10-29, 审阅后重做): 每份时刻表自身镜像对称 —— 前半段每条路线 n/2 对在全局前半窗内分层抽样, 后半段为前半段整体晚 600 s 并对调车型 (见 plan_pairs)。
+- 配对车辆只与其他配对车辆保持 ≥ 3 s; 与背景挨得近时由 SUMO 正常排队插入 (出发延迟实测)。
 - 第 1–6 份 (训练/标定): 单份优先车相遇不对称 > 20% 或有效冲突不足时换种子重抽 (§5.5); 第 7–13 份用预定种子一次生成, 不仿真。
 - id 不含车型: t{k:02d}{m}_p{NN}_{x|y}, m = '' 原份 / 'm' 镜像 / 'c' 孪生 / 'u' 未见 / 'um' 未见镜像; 清单 pairs_manifest.json。"""
-import collections, json, os, random, subprocess, sys
+import collections, json, math, os, random, subprocess, sys
 import numpy as np
 import common50 as P
 
 PY = sys.executable; CAL = str(P.TOOLS18 / "calib18.py"); D = P.WORK / "tt"
 OTHER = {"bus": "ambulance", "ambulance": "bus"}
 CHECK_POLICIES = ("fixed", "served"); CHECK_SEEDS = (123, 124)
-ASYM_MAX = 0.20; MIN_CONFLICT_PER_CLASS = 20; MAX_REDRAW = 30; COPRESENCE_MAX = 0.10; UNSEEN_DELTA = 180.0; UNSEEN_PAIRS = 4; MAX_PAIR_SHIFT = 150.0; D_SLACK = 40.0
+ASYM_MAX = 0.20; MIN_CONFLICT_PER_CLASS = 20; MAX_REDRAW = 30; COPRESENCE_MAX = 0.10; UNSEEN_DELTA = 180.0; UNSEEN_PAIRS = 4; MAX_PAIR_SHIFT = 150.0; MIRROR_SHIFT = 600.0; HALF_GAP = 120.0; MAX_DELTA_ITERS = 4
 
 
 def windows(routes, deltas):
     return {r["id"]: (float(P.PLATEAU[0]), float(P.PLATEAU[1] - r["measured"]["tt99_s"] - deltas[r["id"]] - P.WINDOW_MARGIN)) for r in routes}
 
 
-def plan_pairs(routes, deltas, win, seed, bg, taken=None):
-    """一份时刻表的配对计划 (找空档后)。taken: 已占用的入口车道时刻 (给未见路线用)。"""
+def plan_pairs(routes, deltas, win, seed, bg=None, taken=None):
+    """一份时刻表的配对计划, 自身镜像对称 (2026-10-29 第三版, 审阅后重做):
+    前半段 = 每条路线一半的对, 放在全局前半窗 [900, 900+W]; 后半段 = 前半段每一对整体晚 MIRROR_SHIFT 秒、公交与救护车对调。
+    于是单份时刻表里每一种结构 (同路线结伴、跨路线共现、优先车相遇、出发时刻、固定轮转的相位对齐) 都恰好一次由公交、一次由救护车承担;
+    每条路线上两类的先行次数与平均出发时刻严格相等。MIRROR_SHIFT = 600 s 是各路口固定轮转周期 (50/75/100/150 s) 最小公倍数 300 s 的倍数。
+    W = min_r(出发窗上限) − 900 − MIRROR_SHIFT, 使后半段也落在每条路线自己的出发窗内。
+    配对车辆只与其他配对车辆保持 ≥ 3 s (同入口车道); 不再为背景车找空档 (密集入口上两半同时找空档不可行), 与背景挨得近时由 SUMO 正常排队插入, 出发延迟实测报告。
+    bg 参数保留只为接口兼容, 不再使用。taken: 已占用的入口车道时刻 (给未见路线用)。"""
     rng = random.Random(seed); raw = []
+    lo = float(P.PLATEAU[0]); min_hi = min(win[r["id"]][1] for r in routes)
+    # 前半段窗: 起点 900; 终点 = min(各路线出发窗上限的最小值 − 600, 900 + 600 − Δ_r − HALF_GAP) —— 前半段的后车也比后半段首车早 ≥ HALF_GAP 出发, 两半不交错
+    hi_r = {r["id"]: min(min_hi - MIRROR_SHIFT, lo + MIRROR_SHIFT - deltas[r["id"]] - HALF_GAP) for r in routes}
+    assert min(hi_r.values()) > lo, ("前半段窗为空", hi_r)
     for r in routes:
-        lo, hi = win[r["id"]]; n = r["n_pairs"]; t0 = rng.choice(["bus", "ambulance"])
-        for j in range(n):
-            raw.append(dict(route=r["id"], t_plan=round(lo + (j + rng.random()) / n * (hi - lo), 1), x_type=t0 if j % 2 == 0 else OTHER[t0],
-                            delta=deltas[r["id"]], lane=r["lanes"][0], edges=r["edges"]))
+        h = r["n_pairs"] // 2; t0 = rng.choice(["bus", "ambulance"]); hi = hi_r[r["id"]]
+        for j in range(h):
+            raw.append(dict(route=r["id"], t_plan=round(lo + (j + rng.random()) / h * (hi - lo), 1), x_type=t0 if j % 2 == 0 else OTHER[t0],
+                            delta=deltas[r["id"]], lane=r["lanes"][0], edges=r["edges"], half="base"))
     raw.sort(key=lambda p: (p["t_plan"], p["route"]))
-    for nn, p in enumerate(raw, 1): p["pair"] = nn
     taken = collections.defaultdict(list, {k: list(v) for k, v in (taken or {}).items()})
-    # 按块找空档: 同一路线上时间相邻的两对 (一对公交先、一对救护车先) 为一块; 两对各自可挪, 但实际对内间隔取同一个值 d ∈ [Δ, Δ + D_SLACK]。
-    # 块内公交出发时刻之和 = tA + (tB + d) = 救护车之和 → 路线内两类平均出发时刻严格相等; 所有车与同车道背景及已排配对车辆相距 ≥ 3 s, 首车不出出发窗。
-    blocks = []
-    for r in routes:
-        ps = [p for p in raw if p["route"] == r["id"]]
-        blocks += [(ps[i], ps[i + 1]) for i in range(0, len(ps), 2)]
-    blocks.sort(key=lambda b: (b[0]["t_plan"], b[0]["route"]))
-    def shifts():
-        yield 0.0
-        for kk in range(1, int(MAX_PAIR_SHIFT / 0.5) + 1): yield kk * 0.5; yield -kk * 0.5
-    for A, B in blocks:
-        l = A["lane"]; lo, hi = win[A["route"]]; busy = bg.get(l, []) + taken[l]; dgrid = [round(A["delta"] + 0.5 * i, 1) for i in range(int(D_SLACK / 0.5) + 1)]
-        ok = lambda t, extra=(): all(abs(t - x) >= P.MIN_HEADWAY for x in busy) and all(abs(t - x) >= P.MIN_HEADWAY for x in extra)
-        found = None
-        for sA in shifts():
-            ta = round(A["t_plan"] + sA, 1)
-            if not (lo <= ta <= hi and ok(ta)): continue
-            dA = [d for d in dgrid if ok(round(ta + d, 1))]
-            if not dA: continue
-            for sB in shifts():
-                tb = round(B["t_plan"] + sB, 1)
-                if not (lo <= tb <= hi): continue
-                for d in dA:
-                    ex = (ta, round(ta + d, 1))
-                    if ok(tb, ex) and ok(round(tb + d, 1), ex): found = (ta, tb, d, sA, sB); break
-                if found: break
-            if found: break
-        if not found: raise RuntimeError(f"{A['route']} 第 {A['pair']}/{B['pair']} 对在 ±{MAX_PAIR_SHIFT} s 内找不到空档")
-        ta, tb, d, sA, sB = found
-        for p, t, s_ in ((A, ta, sA), (B, tb, sB)):
-            p["t_x"], p["t_y"], p["shift"], p["offset"] = t, round(t + d, 1), s_, d
-            taken[l] += [p["t_x"], p["t_y"]]
-    return raw, taken
+    out = []
+    for p in raw:     # 前半段一对与它在后半段的镜像对一起挪: 四辆车都与同车道已排配对车辆相距 ≥ 3 s, 前半段首车不出前半窗
+        l = p["lane"]; busy = taken[l]; d = p["delta"]
+        for kk in range(0, 2 * int(MAX_PAIR_SHIFT / 0.5) + 1):
+            s_ = (kk + 1) // 2 * 0.5 * (1 if kk % 2 else -1) if kk else 0.0
+            tx = round(p["t_plan"] + s_, 1)
+            ts = (tx, round(tx + d, 1), round(tx + MIRROR_SHIFT, 1), round(tx + MIRROR_SHIFT + d, 1))
+            if lo <= tx <= hi_r[p["route"]] and all(abs(t - b) >= P.MIN_HEADWAY for t in ts for b in busy): break
+        else:
+            raise RuntimeError(f"{p['route']} 在 ±{MAX_PAIR_SHIFT} s 内找不到与其他配对车辆相距 ≥ 3 s 的时刻")
+        taken[l] += list(ts)
+        base = dict(p, t_x=ts[0], t_y=ts[1], shift=s_, offset=d)
+        mirr = dict(p, t_plan=round(p["t_plan"] + MIRROR_SHIFT, 1), t_x=ts[2], t_y=ts[3], shift=s_, offset=d, x_type=OTHER[p["x_type"]], half="mirror")
+        out += [base, mirr]
+    out.sort(key=lambda p: (p["t_x"], p["route"]))
+    for nn, p in enumerate(out, 1): p["pair"] = nn
+    for p in out:     # 记下每对在另一半段的对应对号
+        q = next(x for x in out if x is not p and x["route"] == p["route"] and abs(abs(x["t_x"] - p["t_x"]) - MIRROR_SHIFT) < 1e-6 and x["x_type"] != p["x_type"] and x["half"] != p["half"])
+        p["twin_pair"] = q["pair"]
+    return out, taken
+
+
+def adjacency_weights(pairs):
+    """每条路线上按时间相邻、同一类的两车: 按间隔加权 exp(−间隔/30 s) 计入该类 (越近越可能结伴、共用绿灯)。"""
+    w = {"bus": 0.0, "ambulance": 0.0}; by_r = collections.defaultdict(list)
+    for p in pairs:
+        by_r[p["route"]] += [(p["t_x"], p["x_type"]), (p["t_y"], OTHER[p["x_type"]])]
+    for vs in by_r.values():
+        vs.sort()
+        for (t1, c1), (t2, c2) in zip(vs, vs[1:]):
+            if c1 == c2: w[c1] += math.exp(-(t2 - t1) / 30.0)
+    return w
 
 
 def vehicles(pairs, k, mark, kind):
@@ -86,7 +94,7 @@ def simulate(name, route_file, man_file, policies=CHECK_POLICIES, seeds=CHECK_SE
             nm = f"{name}_{pol}_{s}"
             if (D / f"{nm}_pairs.json").exists(): continue
             routes = ",".join([str(P.OUT / f) for f in P.BG_DEFAULT] + [str(route_file)])
-            procs[nm] = subprocess.Popen([PY, CAL, "--policy", pol, "--seed", str(s), "--routes", routes, "--manifest", str(man_file), "--end", str(end),
+            procs[nm] = subprocess.Popen([PY, CAL, "--policy", pol, "--seed", str(s), "--routes", routes, "--manifest", str(man_file), "--end", str(end), "--sumocfg", str(P.OUT / "scenario.sumocfg"),
                                           "--out", str(D / nm), "--out-pairs", str(D / f"{nm}_pairs.json")], cwd=str(P.TOOLS18),
                                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=dict(os.environ, OMP_NUM_THREADS="1"))
     for nm, pr in procs.items():
@@ -146,30 +154,46 @@ def main():
     for r in routes:
         ok = [dl for dl in P.DELTA_CANDIDATES if all(cal[dl][pol].get(r["id"], 1.0) <= COPRESENCE_MAX for pol in CHECK_POLICIES)]
         deltas[r["id"]] = min(ok) if ok else max(P.DELTA_CANDIDATES)
-    win = windows(routes, deltas)
-    print("对内间隔:", deltas); print("共现 (固定轮转/排队驱动):", {dl: {pol: {k: round(v, 2) for k, v in c.items()} for pol, c in x.items()} for dl, x in cal.items()})
-    # ---- 第 1–13 份
-    man_all = {}; T = {}
+    print("初始对内间隔 (标定时刻表 delta*):", deltas)
     kinds = (("orig", "", ""), ("mirror", "m", "_mirror"), ("twin", "c", "_as_car"))
-    for k in range(1, P.N_TT + 1):
-        if k in P.HOLDOUT_SEEDS:
-            seed = P.HOLDOUT_SEEDS[k]; pairs, taken = plan_pairs(routes, deltas, win, seed, bg)
-            T[k] = dict(seed=seed, rejected=0, simulated_for_selection=False, pairs=pairs)
-        else:
+    # ---- 第 1–6 份 (训练/标定): 相遇不对称时换种子重抽; 用同一批仿真统计同对共现, 某条路线在第 1 份或第 1–6 份合计 > 10% 就把它的对内间隔提一档并全部重来
+    delta_hist = []
+    for it in range(MAX_DELTA_ITERS):
+        win = windows(routes, deltas); T = {}; cp_tot = collections.defaultdict(lambda: [0.0, 0]); cp_tt1 = {}
+        for k in range(1, 7):
             rej = 0; best = None
             for att in range(MAX_REDRAW):
                 seed = P.TRAIN_SEED_BASE + 100 * k + att; pairs, taken = plan_pairs(routes, deltas, win, seed, bg)
-                vs, man = vehicles(pairs, k, f"s{att}", "orig")
-                f = D / f"tt{k}_s{att}.rou.xml"; P.write_vehicles(f, vs, "相遇检查"); json.dump(man, open(D / f"tt{k}_s{att}_man.json", "w"))
-                e = encounters(simulate(f"tt{k}_s{att}", f, D / f"tt{k}_s{att}_man.json"), man)
+                tag = f"i{it}_tt{k}_s{att}"; vs, man = vehicles(pairs, k, f"x{it}s{att}", "orig")
+                f = D / f"{tag}.rou.xml"; P.write_vehicles(f, vs, "相遇与共现检查"); json.dump(man, open(D / f"{tag}_man.json", "w"))
+                recs = simulate(tag, f, D / f"{tag}_man.json"); e = encounters(recs, man)
                 good = e["asym"] <= ASYM_MAX and min(e["conflict_visits_per_ep"].values()) >= MIN_CONFLICT_PER_CLASS
-                if best is None or e["asym"] < best[1]["asym"]: best = (seed, e, pairs, taken)
+                if best is None or e["asym"] < best[1]["asym"]: best = (seed, e, pairs, taken, recs, man)
                 if good: break
                 rej += 1
-            seed, e, pairs, taken = best
-            T[k] = dict(seed=seed, rejected=rej, simulated_for_selection=True, encounters=e, pairs=pairs, passed=e["asym"] <= ASYM_MAX)
+            seed, e, pairs, taken, recs, man = best
+            cps = {pol: copresence({k_: v for k_, v in recs.items() if k_[0] == pol}, man) for pol in CHECK_POLICIES}
+            for pol, c in cps.items():
+                for rid, v in c.items(): cp_tot[(rid, pol)][0] += v; cp_tot[(rid, pol)][1] += 1
+            if k == 1: cp_tt1 = cps
+            T[k] = dict(seed=seed, rejected=rej, simulated_for_selection=True, encounters=e, pairs=pairs, passed=e["asym"] <= ASYM_MAX, copresence=cps)
+        bad = sorted({rid for (rid, pol), (sm, n) in cp_tot.items() if sm / n > COPRESENCE_MAX} | {rid for pol, c in cp_tt1.items() for rid, v in c.items() if v > COPRESENCE_MAX})
+        delta_hist.append(dict(iter=it, deltas=dict(deltas), bad=bad))
+        print(f"第 {it} 轮对内间隔 {deltas}; 同对共现超 10% 的路线 {bad}")
+        if not bad or it == MAX_DELTA_ITERS - 1: break      # 最后一轮不再提间隔, 保证第 1–6 份与最终间隔一致 (未收敛的路线如实记录)
+        for rid in bad:
+            nxt = [d for d in P.DELTA_CANDIDATES if d > deltas[rid]]
+            if nxt: deltas[rid] = nxt[0]
+    man_all = {}
+    for k in range(1, 7):
+        T[k]["adjacency_w"] = adjacency_weights(T[k]["pairs"]); write_set(T[k]["pairs"], k, kinds, "pairs_tt", man_all)
+    # ---- 第 7–13 份: 用最终对内间隔与预定种子一次生成, 不仿真
+    for k in range(7, P.N_TT + 1):
+        seed = P.HOLDOUT_SEEDS[k]; pairs, taken = plan_pairs(routes, deltas, win, seed, bg)
+        T[k] = dict(seed=seed, rejected=0, simulated_for_selection=False, pairs=pairs)
+        T[k]["adjacency_w"] = adjacency_weights(pairs)
         write_set(pairs, k, kinds, "pairs_tt", man_all)
-        if k >= 8:     # 未见路线 (评估用): 与本份配对车辆一起找空档
+        if k >= 8:     # 未见路线 (评估用): 与本份配对车辆一起排同车道间隔
             uroutes = [dict(u, id=f"u{i + 1}", n_pairs=UNSEEN_PAIRS) for i, u in enumerate(unseen)]
             ud = {u["id"]: UNSEEN_DELTA for u in uroutes}; uw = windows(uroutes, ud)
             up, _ = plan_pairs(uroutes, ud, uw, 9000 + k, bg, taken)
@@ -178,7 +202,7 @@ def main():
                 P.write_vehicles(P.OUT / f"pairs_unseen_tt{k}{suf}.rou.xml", vs, f"pairs50lf 未见路线 第 {k} 份 {kind}")
             T[k]["unseen_pairs"] = up
     json.dump(man_all, open(P.OUT / "pairs_manifest.json", "w"), ensure_ascii=False, indent=0)
-    P.dump(dict(deltas=deltas, windows=win, delta_calibration={str(k): v for k, v in cal.items()}, timetables={str(k): v for k, v in T.items()}), "timetables.json")
+    P.dump(dict(deltas=deltas, windows=win, delta_calibration={str(k): v for k, v in cal.items()}, delta_iterations=delta_hist, timetables={str(k): v for k, v in T.items()}), "timetables.json")
     for k in range(1, P.N_TT + 1):
         t = T[k]; print(k, "种子", t["seed"], "重抽", t["rejected"], ("相遇不对称 %.2f 冲突/类/集 %s" % (t["encounters"]["asym"], {a: round(b, 1) for a, b in t["encounters"]["conflict_visits_per_ep"].items()})) if "encounters" in t else "(留出, 未仿真)",
               "整对最大移动", max(abs(p["shift"]) for p in t["pairs"]))

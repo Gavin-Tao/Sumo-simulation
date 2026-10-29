@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<routes>
+    <!--pairs50lf 第 4 份 mirror-->
+    <vehicle id="t04m_p01_x" type="bus" depart="901.8" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p02_x" type="bus" depart="964.6" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p03_x" type="bus" depart="1000.9" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p05_x" type="bus" depart="1057.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p04_x" type="ambulance" depart="1063.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p02_y" type="ambulance" depart="1085.6" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p01_y" type="ambulance" depart="1086.3" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p06_x" type="bus" depart="1107.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p07_x" type="bus" depart="1117.6" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p08_x" type="bus" depart="1128.1" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p09_x" type="bus" depart="1153.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p05_y" type="ambulance" depart="1179.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p03_y" type="ambulance" depart="1180.9" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p10_x" type="ambulance" depart="1193.5" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p12_x" type="ambulance" depart="1213.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p11_x" type="ambulance" depart="1215.4" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p07_y" type="ambulance" depart="1240.1" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p08_y" type="ambulance" depart="1249.6" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p09_y" type="ambulance" depart="1249.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p04_y" type="bus" depart="1261.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p13_x" type="ambulance" depart="1266.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p06_y" type="ambulance" depart="1305.4" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p14_x" type="bus" depart="1308.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p15_x" type="ambulance" depart="1315.5" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p16_x" type="ambulance" depart="1315.8" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p10_y" type="bus" depart="1318.5" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p18_x" type="ambulance" depart="1326.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p17_x" type="ambulance" depart="1326.5" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p12_y" type="bus" depart="1334.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p13_y" type="bus" depart="1388.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p11_y" type="bus" depart="1401.9" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p19_x" type="bus" depart="1405.2" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p20_x" type="bus" depart="1420.3" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p21_x" type="bus" depart="1429.1" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p14_y" type="ambulance" depart="1433.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p15_y" type="bus" depart="1437.0" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p16_y" type="bus" depart="1438.3" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p22_x" type="ambulance" depart="1445.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p23_x" type="bus" depart="1458.0" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p24_x" type="ambulance" depart="1491.5" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p17_y" type="bus" depart="1506.5" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p25_x" type="bus" depart="1528.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p19_y" type="ambulance" depart="1533.2" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p22_y" type="bus" depart="1542.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p18_y" type="bus" depart="1545.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p26_x" type="bus" depart="1567.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p23_y" type="ambulance" depart="1578.0" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p20_y" type="ambulance" depart="1606.8" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p21_y" type="ambulance" depart="1610.1" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p27_x" type="bus" depart="1615.7" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p25_y" type="ambulance" depart="1653.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p28_x" type="ambulance" depart="1659.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p24_y" type="bus" depart="1676.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p29_x" type="ambulance" depart="1757.4" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p26_y" type="ambulance" depart="1786.9" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p28_y" type="bus" depart="1787.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p30_x" type="ambulance" depart="1794.6" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p27_y" type="ambulance" depart="1801.7" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p31_x" type="ambulance" depart="1801.8" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p32_x" type="ambulance" depart="1810.1" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p33_x" type="ambulance" depart="1868.6" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p34_x" type="bus" depart="1875.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p29_y" type="bus" depart="1877.4" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p30_y" type="bus" depart="1920.1" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p35_x" type="ambulance" depart="1925.1" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p36_x" type="bus" depart="1931.3" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p37_x" type="bus" depart="1972.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p31_y" type="bus" depart="1982.8" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p38_x" type="bus" depart="1994.5" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p39_x" type="bus" depart="1999.4" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p32_y" type="bus" depart="2009.6" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p40_x" type="bus" depart="2046.8" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p35_y" type="bus" depart="2050.6" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p33_y" type="bus" depart="2051.6" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p36_y" type="ambulance" depart="2051.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p41_x" type="bus" depart="2060.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p34_y" type="ambulance" depart="2074.8" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 271848004#1 344354262 gneE62 37721356#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p42_x" type="ambulance" depart="2075.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p37_y" type="ambulance" depart="2082.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p43_x" type="bus" depart="2084.4" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p38_y" type="ambulance" depart="2114.5" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p39_y" type="ambulance" depart="2119.4" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p44_x" type="ambulance" depart="2135.0" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p45_x" type="ambulance" depart="2142.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p41_y" type="ambulance" depart="2183.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p42_y" type="bus" depart="2195.0" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 4629169#0 4629169#5 4629169#8 419502786#0 52879956 357012332#0 357012332#1 -53750892#4 532435056#1 532435057#0 26545993#0 -3791031#3 3791034#0" />
+    </vehicle>
+    <vehicle id="t04m_p40_y" type="ambulance" depart="2229.8" departLane="0" departSpeed="max">
+        <route edges="source_22962979 22962979 14039949#0 -15464769#2 -15464769#0 4919535#1 24349650 554991019 5826896#0 5826896#1 317003249#1 317003249#2 3791745#4 304634278#0" />
+    </vehicle>
+    <vehicle id="t04m_p44_y" type="bus" depart="2255.5" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 -125872847#11 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p43_y" type="ambulance" depart="2264.4" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p46_x" type="ambulance" depart="2273.9" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p45_y" type="bus" depart="2328.9" departLane="0" departSpeed="max">
+        <route edges="4074526#0 4074526#4 317003251#0 2110697#0 -15464769#2 -15464769#0 4919535#1 24349650 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p47_x" type="ambulance" depart="2335.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p48_x" type="ambulance" depart="2379.7" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p49_x" type="ambulance" depart="2384.0" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+    <vehicle id="t04m_p46_y" type="bus" depart="2396.4" departLane="0" departSpeed="max">
+        <route edges="source_-4074527#1 -4074527#1 -4074528#4 3791031#0 4074531#0" />
+    </vehicle>
+    <vehicle id="t04m_p50_x" type="bus" depart="2407.5" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p47_y" type="bus" depart="2455.8" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 14039718#0" />
+    </vehicle>
+    <vehicle id="t04m_p48_y" type="bus" depart="2489.2" departLane="0" departSpeed="max">
+        <route edges="74233405#1 553868718#1 3790875#0 3790875#2 2294311#0 524737392#0 53750892#0 2110698#0 3792490#0 3792491#0 230483152#0 13890256 2294384#0 4472590#0 4628796#1" />
+    </vehicle>
+    <vehicle id="t04m_p50_y" type="ambulance" depart="2533.0" departLane="0" departSpeed="max">
+        <route edges="source_372226878#0 372226878#0 -554991019 -532427444#3 -532427444#2 -341583777#1 -5976022 gneE49 532427445#0 48454248#0 -14039718#5" />
+    </vehicle>
+    <vehicle id="t04m_p49_y" type="bus" depart="2564.0" departLane="0" departSpeed="max">
+        <route edges="source_-77616869#2 -77616869#2 -532427445#1 gneE48 5976022 341583777#0 532427444#0 532427444#7 16309917#0" />
+    </vehicle>
+</routes>

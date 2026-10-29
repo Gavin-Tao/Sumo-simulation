@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 三类车除 id/颜色外参数相同，物理参数为 passenger 默认。2026-10-28：lcStrategic/lcCooperative 用 -1 禁用策略/协作换道；0 并不完全禁用。仅更新新 corridor 副本。 -->
+<additional>
+    <vType id="car" color="1,0,0" lcStrategic="-1" lcCooperative="-1" lcSpeedGain="0" lcKeepRight="0"/>
+    <vType id="bus" color="0,0,1" lcStrategic="-1" lcCooperative="-1" lcSpeedGain="0" lcKeepRight="0"/>
+    <vType id="ambulance" color="0,1,0" lcStrategic="-1" lcCooperative="-1" lcSpeedGain="0" lcKeepRight="0"/>
+</additional>

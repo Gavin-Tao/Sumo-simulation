@@ -28,7 +28,7 @@ class Runner:
     def add(self, name, policy, seed, routes, end=3600, table=None):
         if (D / f"{name}.json").exists(): return
         cmd = [PY, CAL, "--policy", policy, "--seed", str(seed), "--routes", routes, "--manifest", str(MAN), "--end", str(end),
-               "--out", str(D / name), "--out-pairs", str(D / f"{name}_pairs.json")] + (["--priority-table", table] if table else [])
+               "--out", str(D / name), "--out-pairs", str(D / f"{name}_pairs.json"), "--sumocfg", str(P.OUT / "scenario.sumocfg")] + (["--priority-table", table] if table else [])
         self.q.append((name, cmd))
 
     def run(self, par=8):
@@ -99,6 +99,7 @@ def main():
     R.add("p2_prio111_mirr", "prio", 123, routes_of(1, mirror=True), end=P.END_DRAIN, table="111")
     for tab in ("531", "351", "111"):
         for s in SEEDS5: R.add(f"p6_{tab}_{s}", "prio", s, routes_of(1), table=tab)
+    for pol in ("served", "fixed"): R.add(f"p1_{pol}_0", pol, 0, routes_of(1), end=P.END_DRAIN)     # 训练用的 SUMO 种子 (exp470–472 seed: 0), 只报告
     R.run()
     # P1: 按预跑方差补种子
     def p1_diffs(pol, n): return [(lambda cm: cm["bus"] - cm["ambulance"])(class_means(PR(f"p1_{pol}_{s}"))) for s in range(123, 123 + n)]
@@ -163,30 +164,51 @@ def main():
                    order_531=p6["531"]["mean"]["ambulance"] < p6["531"]["mean"]["bus"] < p6["531"]["mean"]["car"],
                    order_351=p6["351"]["mean"]["bus"] < p6["351"]["mean"]["ambulance"] < p6["351"]["mean"]["car"],
                    mirror_gap_s=abs(p6["531"]["mean"]["ambulance"] - p6["351"]["mean"]["bus"]))
+    F["P1"]["training_seed0"] = {pol: (lambda cm: cm["bus"] - cm["ambulance"])(class_means(PR(f"p1_{pol}_0"))) for pol in ("served", "fixed")}
+    # P11: 同类同进口共现 (审阅 2026-10-28 新增): 一次访问期间, 同一 RL 进口边上有另一辆同类配对车辆的访问占比, 两类应相近
+    share = {}
+    for pol in ("served", "fixed"):
+        hit = collections.Counter(); tot = collections.Counter()
+        for s in SEEDS5:
+            by_e = collections.defaultdict(list)
+            for vid, r in PR(f"p1_{pol}_{s}").items():
+                for v in r["visits"]: by_e[(v["tid"], v["lane"].rsplit("_", 1)[0])].append((v["t0"], v["t_last"], r["type"], vid))
+            for lst in by_e.values():
+                for a0, a1, ty, vid in lst:
+                    tot[ty] += 1; hit[ty] += any(b0 <= a1 and a0 <= b1 for b0, b1, ty2, vid2 in lst if ty2 == ty and vid2 != vid)
+        share[pol] = {t: hit[t] / max(1, tot[t]) for t in ("bus", "ambulance")}
+    F["P11"] = dict(same_class_copresence=share, max_abs_diff=max(abs(v["bus"] - v["ambulance"]) for v in share.values()))
+    # P12: 中间档镜像差 (531 下公交 对 351 下救护车, 知道车型的控制器), 与最高档 (P6 mirror_gap_s) 同一门槛
+    F["P12"] = dict(mid_mirror_gap_s=abs(p6["531"]["mean"]["bus"] - p6["351"]["mean"]["ambulance"]))
     # P7 / P8 / P9 / P10
     from timetable50 import copresence
     cp = {pol: copresence({(pol, s): PR(f"p1_{pol}_{s}") for s in SEEDS5}, man) for pol in ("served", "fixed")}
     F["P7"] = dict(by_policy=cp, max_by_route={rid: max(cp[p].get(rid, 0.0) for p in cp) for rid in routes})
-    nr = collections.defaultdict(list); viol = 0; cen = 0; late = 0
+    nr = collections.defaultdict(list); viol = 0; cen = 0; late = 0; ddl = collections.defaultdict(list); nrp = collections.defaultdict(list)
     for pol in ("served", "fixed"):
         for s in SEEDS5:
             for vid, r in PR(f"p1_{pol}_{s}").items():
-                nr[r["type"]].append(r["nonrl_stop_s"])
+                nr[r["type"]].append(r["nonrl_stop_s"]); nrp[(pol, r["type"])].append(r["nonrl_stop_s"])
+                if r["depart_delay"] is not None: ddl[r["type"]].append(r["depart_delay"])
                 viol += not lanes_follow_plan(r, routes[man[vid]["route"]]["lanes"])
                 cen += r["depart"] is not None and r["arrival"] is None
                 late += r["arrival"] is not None and r["arrival"] > P.PLATEAU[1]
-    F["P8"] = dict(nonrl_stop_mean_s={t: float(np.mean(v)) for t, v in nr.items()})
+    F["P8"] = dict(nonrl_stop_mean_s={t: float(np.mean(v)) for t, v in nr.items()},
+                   by_policy={pol: {t: float(np.mean(nrp[(pol, t)])) for t in ("bus", "ambulance")} for pol in ("served", "fixed")},
+                   note="固定轮转下多出的停车主要在 4919535#1_0: 1448442 的 58 m 短进口在 6 相位固定周期下排队回溢到上游 (RL 路口延误漏到进口车道之外), 两类相同")
     F["P9"] = dict(violations=viol)
-    F["P10"] = dict(reported=True, censored_neutral=cen, arrived_after_3000_neutral=late, runs=2 * len(SEEDS5))
+    F["P10"] = dict(reported=True, censored_neutral=cen, arrived_after_3000_neutral=late, runs=2 * len(SEEDS5),
+                    depart_delay_mean_s={t: float(np.mean(v)) for t, v in ddl.items()}, depart_delay_max_s={t: float(np.max(v)) for t, v in ddl.items()})
     P.dump(F, "final_calibration.json")
     for pol in ("served", "fixed", "random"):
         h = F["hard"][pol]; print(pol, "C1", [round(x, 3) for x in h["C1_growth"]], "C3", sum(h["C3_blocked"]), "C4", sum(h["C4_missed"]), "C6", sum(h["C6_spill"]), "C7", sum(h["C7_long_over_5pct"]),
                                   "C9", h["C9_lc_col_tp_missing"][0], "C14", max(h["C14_worst_excess"]), "C16", h["C16_by_type"], "C17", h["C17_cutins"])
-    print("P1", {p: (v["n_seeds"], round(v["mean_diff_bus_minus_amb"], 3), [round(x, 3) for x in v["ci90"]]) for p, v in F["P1"].items()})
+    print("P1", {p: (v["n_seeds"], round(v["mean_diff_bus_minus_amb"], 3), [round(x, 3) for x in v["ci90"]]) for p, v in F["P1"].items() if p in ("served", "fixed")})
     print("P2", {k: v["identical"] for k, v in F["P2"].items()})
     print("P3", F["P3"]["union_counts"], {k: round(v, 1) for k, v in F["P3"]["conflict_visits_per_ep"].items()})
     print("P4", {k: round(v, 2) for k, v in F["P4"]["by_route"].items()}, {k: round(v, 1) for k, v in F["P4"]["with_opp_per_class_per_ep"].items()})
     print("P5", F["P5"]); print("P6", {t: {k: round(v, 2) for k, v in x["mean"].items()} for t, x in p6.items()}, F["P6"]["order_531"], F["P6"]["order_351"], round(F["P6"]["mirror_gap_s"], 3))
+    print("P1 训练种子 0:", {k: round(v, 3) for k, v in F["P1"]["training_seed0"].items()}); print("P11", F["P11"]); print("P12", F["P12"])
     print("P7", {k: round(v, 2) for k, v in F["P7"]["max_by_route"].items()}); print("P8", F["P8"]); print("P9", F["P9"]); print("P10", F["P10"])
 
 
