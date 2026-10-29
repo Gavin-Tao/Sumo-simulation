@@ -10,6 +10,16 @@ import numpy as np
 import ckpt_env
 from exp_params import assert_tracker_clean
 
+def sumocfg_additional(exp):
+    """该实验配置的 sumocfg 里声明的 additional-files (绝对路径列表; 没有则为空)。"""
+    import glob, yaml
+    xp = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))      # experiments/ (配置里的路径相对它)
+    cfg = yaml.safe_load(open(sorted(glob.glob(os.path.join(xp, f"configs/exp{exp}_*.yaml")))[0]))
+    sc = os.path.normpath(os.path.join(xp, cfg["cfg_file"])); el = ET.parse(sc).getroot().find("input/additional-files")
+    if el is None or not el.get("value"): return []
+    return [os.path.normpath(os.path.join(os.path.dirname(sc), v.strip())) for v in el.get("value").split(",") if v.strip()]
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("exp"); ap.add_argument("--ckpt"); ap.add_argument("--seed", type=int); ap.add_argument("--out", default="analysis/data/pervehicle"); ap.add_argument("--routes", help="评估专用路由文件 (逗号分隔), 覆盖配置的 route_file"); ap.add_argument("--tag", default="", help="输出文件名后缀"); ap.add_argument("--collector", action="store_true", help="同时运行训练用的 EpisodeMetricsCollector (5 s 采样口径), 导出其逐车记录与 eval_* 汇总")
     ap.add_argument("--collector-1s", action="store_true", help="(2026-10-15 用户令 \"best 10 种子验证要每秒采集\") 收集器每个仿真秒采样一次 (单步时长按 SUMO 步长计), 停车时间/停车次数/访问都按逐秒口径; 默认关 = 原 5 s 口径 (与 train.py 评估相同, 逐位不变)")
@@ -21,7 +31,10 @@ def main():
     rld = None
     if a.rl_delay:   # 2026-10-10: 与 eval_rl_delay.py 同一份 edgeData 附加文件 (输出设备, 不改变仿真轨迹)
         import eval_rl_delay as rld
-        add, outs = rld.edgedata_files(a.exp); extra = f"--additional-files {add} " + extra
+        add, outs = rld.edgedata_files(a.exp)
+        # 2026-10-29: 命令行 --additional-files 会覆盖 sumocfg 里的 additional-files; 新场景 (weekday_pairs50_lanefix / weekday_18h_nocg_claude) 的车型定义在那里,
+        # 所以把 sumocfg 原有的附加文件一并传入。旧配置的 sumocfg 没有这一项, 行为逐位不变。
+        extra = f"--additional-files {','.join(sumocfg_additional(a.exp) + [add])} " + extra
     B = ckpt_env.build(a.exp, a.ckpt, a.seed, extra_sumo=extra, route_override=a.routes)
     env, act, states = B["env"], B["act"], B["states"]; sumo = env.sumo
     approach = rld.approach_edges(env) if rld else None
